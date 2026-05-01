@@ -23,8 +23,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "7d5ee94ae05c4953c41ad8ac70e37bb70c550c47",
-  "feedstock_hash_ts": 1777016260,
+  "feedstock_hash": "18010015da311125fadf52928071d686dacd30d1",
+  "feedstock_hash_ts": 1777672004,
   "feedstock_name": "quarto",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,7 +38,7 @@
       "summary": "An open-source scientific and technical publishing system built on Pandoc"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -159,7 +159,7 @@
       "summary": "An open-source scientific and technical publishing system built on Pandoc"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -239,7 +239,7 @@
       "summary": "An open-source scientific and technical publishing system built on Pandoc"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -356,7 +356,7 @@
       "summary": "An open-source scientific and technical publishing system built on Pandoc"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -478,7 +478,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/quarto.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.9.37\" %}\n{% set sha256 = \"ae9498e9b1e52795609a6f4a5577b081b98635a77a90f8f6bafb84e6b4efb83c\" %}\n{% set build_number = 0 %}\n{% set deno_version = load_file_regex(load_file='configuration', regex_pattern='export\\sDENO=v(\\S+)') %}\n{% set deno_dom_version = load_file_regex(load_file='configuration', regex_pattern='export DENO_DOM=v([^-]+)') %}\n{% set pandoc_version = load_file_regex(load_file='configuration', regex_pattern='export PANDOC=(\\S+)') %}\n{% set typst_version = load_file_regex(load_file='configuration', regex_pattern='export TYPST=(\\S+)') %}\n\npackage:\n  name: quarto\n  version: {{ version }}\n\nsource:\n  url: https://github.com/quarto-dev/quarto-cli/releases/download/v{{ version }}/quarto-{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n  patches:\n    - patches/0001-win-conda-path-overrides.patch  # [win]\n\nbuild:\n  number: {{ build_number }}\n\nrequirements:\n  build:\n    # Rust (+ C toolchain) is required at build time to compile the\n    # package/typst-gather/ binary that Quarto's configure.sh invokes since 1.9.\n    - {{ compiler('c') }}\n    - {{ stdlib('c') }}\n    - {{ compiler('rust') }}\n    - deno      {{ deno_version.group(1) if deno_version else \"\" }}\n    - deno-dom  {{ deno_dom_version.group(1) if deno_dom_version else \"\" }}\n    - esbuild\n    - pandoc {{ \"==\" ~ pandoc_version.group(1) if pandoc_version else \"\" }}\n    - typst {{ \"==\" ~ typst_version.group(1) if typst_version else \"\" }}\n    - nodejs\n  host:\n    # deno and deno-dom are duplicated from build: so pin_compatible() in run:\n    # can resolve their versions. conda-build only looks at host for that.\n    - deno      {{ deno_version.group(1) if deno_version else \"\" }}\n    - deno-dom  {{ deno_dom_version.group(1) if deno_dom_version else \"\" }}\n    # typst-gather (built during configure.sh) transitively depends on the\n    # openssl-sys crate via typst-kit. On Linux it needs the openssl dev\n    # headers/libs; macOS uses SecureTransport and Windows uses Schannel.\n    - openssl  # [linux]\n  run:\n    # Deno, deno-dom and pandoc have proven to be fickle\n    #    regarding Quarto's source code. The pinning here\n    #    is not so much that there are binary compatibility\n    #    issues, but just that these dependencies are only\n    #    known to work in a pretty narrow range.\n    - {{ pin_compatible(\"deno\", max_pin=\"x.x.x\") }}\n    # we vendor deno-dom JS dependencies, so it is important\n    #  that the version at runtime matches the one at build time\n    - {{ pin_compatible(\"deno-dom\", max_pin=\"x.x.x\") }}\n    - pandoc {{ \"==\" ~ pandoc_version.group(1) if pandoc_version else \"\" }}\n    - typst {{ \"==\" ~ typst_version.group(1) if typst_version else \"\" }}\n    - esbuild\n    - dart-sass\n    - openssl  # [linux]\n\ntest:\n  commands:\n    - quarto check\n    - \"[ \\\"$(quarto --version)\\\" = \\\"{{ version }}\\\" ] || (echo \\\"Version set incorrectly\\\" && exit 1)\"  # [unix]\n    # it would be nice to do a version check on windows too, but I don't have a win machine and don't want to debug on CI\n    - quarto render hello.qmd --to html\n    - test -e \"${QUARTO_SHARE_PATH}/preview/quarto-preview.js\"  # [unix]\n  files:\n    - hello.qmd\n  requires:\n    - jupyter\n    - python >=3\n    - r-base >=4\n\nabout:\n  home: https://quarto.org/\n  license: MIT\n  license_file:\n    - COPYRIGHT\n    - COPYING.md\n  summary: An open-source scientific and technical publishing system built on Pandoc\n\nextra:\n  recipe-maintainers:\n    - SaravananSathyanandhaQC\n    - cderv\n    - cscheid\n    - dragonstyle\n    - mfisher87\n    - msarahan\n",
+  "raw_meta_yaml": "{% set version = \"1.9.37\" %}\n{% set sha256 = \"ae9498e9b1e52795609a6f4a5577b081b98635a77a90f8f6bafb84e6b4efb83c\" %}\n{% set build_number = 1 %}\n{% set deno_version = load_file_regex(load_file='configuration', regex_pattern='export\\sDENO=v(\\S+)') %}\n{% set deno_dom_version = load_file_regex(load_file='configuration', regex_pattern='export DENO_DOM=v([^-]+)') %}\n{% set pandoc_version = load_file_regex(load_file='configuration', regex_pattern='export PANDOC=(\\S+)') %}\n{% set typst_version = load_file_regex(load_file='configuration', regex_pattern='export TYPST=(\\S+)') %}\n\npackage:\n  name: quarto\n  version: {{ version }}\n\nsource:\n  url: https://github.com/quarto-dev/quarto-cli/releases/download/v{{ version }}/quarto-{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n  patches:\n    - patches/0001-win-conda-path-overrides.patch  # [win]\n\nbuild:\n  number: {{ build_number }}\n\nrequirements:\n  build:\n    # Rust (+ C toolchain) is required at build time to compile the\n    # package/typst-gather/ binary that Quarto's configure.sh invokes since 1.9.\n    - {{ compiler('c') }}\n    - {{ stdlib('c') }}\n    - {{ compiler('rust') }}\n    - deno      {{ deno_version.group(1) if deno_version else \"\" }}\n    - deno-dom  {{ deno_dom_version.group(1) if deno_dom_version else \"\" }}\n    - esbuild\n    - pandoc {{ \"==\" ~ pandoc_version.group(1) if pandoc_version else \"\" }}\n    - typst {{ \"==\" ~ typst_version.group(1) if typst_version else \"\" }}\n    - nodejs\n  host:\n    # deno and deno-dom are duplicated from build: so pin_compatible() in run:\n    # can resolve their versions. conda-build only looks at host for that.\n    - deno      {{ deno_version.group(1) if deno_version else \"\" }}\n    - deno-dom  {{ deno_dom_version.group(1) if deno_dom_version else \"\" }}\n    # typst-gather (built during configure.sh) transitively depends on the\n    # openssl-sys crate via typst-kit. On Linux it needs the openssl dev\n    # headers/libs; macOS uses SecureTransport and Windows uses Schannel.\n    - openssl  # [linux]\n  run:\n    # Deno, deno-dom and pandoc have proven to be fickle\n    #    regarding Quarto's source code. The pinning here\n    #    is not so much that there are binary compatibility\n    #    issues, but just that these dependencies are only\n    #    known to work in a pretty narrow range.\n    - {{ pin_compatible(\"deno\", max_pin=\"x.x.x\") }}\n    # we vendor deno-dom JS dependencies, so it is important\n    #  that the version at runtime matches the one at build time\n    - {{ pin_compatible(\"deno-dom\", max_pin=\"x.x.x\") }}\n    - pandoc {{ \"==\" ~ pandoc_version.group(1) if pandoc_version else \"\" }}\n    - typst {{ \"==\" ~ typst_version.group(1) if typst_version else \"\" }}\n    - esbuild\n    - dart-sass\n    - openssl  # [linux]\n\ntest:\n  commands:\n    - quarto check\n    - \"[ \\\"$(quarto --version)\\\" = \\\"{{ version }}\\\" ] || (echo \\\"Version set incorrectly\\\" && exit 1)\"  # [unix]\n    # it would be nice to do a version check on windows too, but I don't have a win machine and don't want to debug on CI\n    - quarto render hello.qmd --to html\n    - test -e \"${QUARTO_SHARE_PATH}/preview/quarto-preview.js\"  # [unix]\n  files:\n    - hello.qmd\n  requires:\n    - jupyter\n    - python >=3\n    - r-base >=4\n\nabout:\n  home: https://quarto.org/\n  license: MIT\n  license_file:\n    - COPYRIGHT\n    - COPYING.md\n  summary: An open-source scientific and technical publishing system built on Pandoc\n\nextra:\n  recipe-maintainers:\n    - SaravananSathyanandhaQC\n    - cderv\n    - cscheid\n    - dragonstyle\n    - mfisher87\n    - msarahan\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -604,7 +604,7 @@
       "summary": "An open-source scientific and technical publishing system built on Pandoc"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
