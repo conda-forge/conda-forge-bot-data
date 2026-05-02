@@ -1,10 +1,14 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_blas_implmklpython3.10.____cpython.yaml": "blas_impl:\n- mkl\nc_compiler:\n- gcc\nc_compiler_version:\n- '9'\ncdt_name:\n- cos6\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '9'\ndocker_image:\n- quay.io/condaforge/linux-anvil-cos7-x86_64\nfftw:\n- '3'\nliblapack:\n- 3.8 *netlib\nmkl_devel:\n- '2022'\nopenblas:\n- 0.3.*\npin_run_as_build:\n  fftw:\n    max_pin: x\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\nsuitesparse:\n- '5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfftw:\n- '3'\nliblapack:\n- 3.9.* *netlib\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\nsuitesparse:\n- '7'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
+    "build_platform": {
+      "linux_aarch64": "linux_64",
+      "osx_arm64": "osx_64"
+    },
     "conda_build": {
-      "pkg_format": "2"
+      "error_overlinking": true
     },
     "conda_forge_output_validation": true,
     "github": {
@@ -12,14 +16,15 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "5a5cc24eda2e8fa7d927ff711aebc7bf50bb6269",
-  "feedstock_hash_ts": 1777007244,
+  "feedstock_hash": "13fa37e885d9e32ae121cd67fb0c600e01d59069",
+  "feedstock_hash_ts": 1777707919,
   "feedstock_name": "toast",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "description": "TOAST is a software framework for simulating and processing timestream data\ncollected by microwave telescopes.\n",
       "dev_url": "https://github.com/hpc4cmb/toast",
+      "doc_url": "https://hpc4cmb.github.io/toast",
       "home": "https://github.com/hpc4cmb/toast",
       "license": "BSD-2-Clause",
       "license_family": "BSD",
@@ -27,12 +32,13 @@
       "summary": "Time Ordered Astrophysics Scalable Tools"
     },
     "build": {
-      "number": "102",
-      "run_exports": [
-        "toast * mkl_*",
-        "toast * openblas_*"
+      "number": "0",
+      "script": [
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
       ],
-      "string": "openblas_pyh1234567_102"
+      "script_env": [
+        "SETUPTOOLS_SCM_PRETEND_VERSION=3.0.2"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -41,51 +47,66 @@
     },
     "package": {
       "name": "toast",
-      "version": "2.3.14"
+      "version": "3.0.2"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "cxx_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
-        "make"
+        "make",
+        "ninja",
+        "libgomp"
       ],
       "host": [
         "python",
-        "mkl-devel",
-        "liblapack",
-        "suitesparse",
-        "libaatm",
+        "pip",
+        "scikit-build-core",
+        "pybind11",
+        "setuptools",
+        "setuptools-scm",
+        "numpy",
+        "libgomp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
         "fftw",
-        "openblas * openmp_*"
+        "suitesparse",
+        "libaatm"
       ],
       "run": [
+        "libgomp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
         "python",
-        "mkl",
-        "liblapack",
-        "suitesparse",
-        "libaatm",
         "numpy",
         "scipy",
-        "astropy",
+        "astropy-base",
         "healpy",
         "h5py",
         "ephem",
-        "fftw",
-        "openblas * openmp_*"
+        "tomlkit",
+        "traitlets",
+        "matplotlib-base",
+        "psutil",
+        "ruamel.yaml",
+        "wurlitzer",
+        "pshmem >=1.3.3",
+        "flacarray >=0.4.0"
       ]
     },
     "schema_version": 0,
     "source": {
-      "sha256": "924912213af3bbacd622b9318bd6d79055c4d57f58c2da486f4b3f62a12466f1",
-      "url": "https://github.com/hpc4cmb/toast/archive/2.3.14.tar.gz"
+      "sha256": "f90cde38d4369d19dad13ab3a6388a96ab0c199e6fcb52196304e4910353bf0e",
+      "url": "https://pypi.org/packages/source/t/toast/toast-3.0.2.tar.gz"
     },
     "test": {
       "commands": [
-        "./run_test.sh"
+        "OMP_NUM_THREADS=2 python -c 'import toast.tests; toast.tests.run()'"
       ],
-      "files": [
-        "run_test.sh"
+      "requires": [
+        "mpi4py",
+        "mpich"
       ]
     }
   },
@@ -94,9 +115,12 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make"
+        "libgomp",
+        "make",
+        "ninja"
       ]
     },
     "host": {
@@ -104,40 +128,55 @@
       "elements": [
         "fftw",
         "libaatm",
-        "liblapack",
-        "mkl-devel",
-        "openblas",
+        "libblas",
+        "libgomp",
+        "libopenblas",
+        "numpy",
+        "pip",
+        "pybind11",
         "python",
+        "scikit-build-core",
+        "setuptools",
+        "setuptools-scm",
         "suitesparse"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "astropy",
+        "astropy-base",
         "ephem",
-        "fftw",
+        "flacarray",
         "h5py",
         "healpy",
-        "libaatm",
-        "liblapack",
-        "mkl",
+        "libblas",
+        "libgomp",
+        "libopenblas",
+        "matplotlib-base",
         "numpy",
-        "openblas",
+        "pshmem",
+        "psutil",
         "python",
+        "ruamel.yaml",
         "scipy",
-        "suitesparse"
+        "tomlkit",
+        "traitlets",
+        "wurlitzer"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mpi4py",
+        "mpich"
+      ]
     }
   },
-  "meta_yaml": {
+  "linux_aarch64_meta_yaml": {
     "about": {
       "description": "TOAST is a software framework for simulating and processing timestream data\ncollected by microwave telescopes.\n",
       "dev_url": "https://github.com/hpc4cmb/toast",
+      "doc_url": "https://hpc4cmb.github.io/toast",
       "home": "https://github.com/hpc4cmb/toast",
       "license": "BSD-2-Clause",
       "license_family": "BSD",
@@ -145,12 +184,13 @@
       "summary": "Time Ordered Astrophysics Scalable Tools"
     },
     "build": {
-      "number": "102",
-      "run_exports": [
-        "toast * mkl_*",
-        "toast * openblas_*"
+      "number": "0",
+      "script": [
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
       ],
-      "string": "openblas_pyh1234567_102"
+      "script_env": [
+        "SETUPTOOLS_SCM_PRETEND_VERSION=3.0.2"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -159,54 +199,221 @@
     },
     "package": {
       "name": "toast",
-      "version": "2.3.14"
+      "version": "3.0.2"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "cxx_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "make",
-        "llvm-openmp >=4.0.1"
+        "ninja",
+        "libgomp"
       ],
       "host": [
         "python",
-        "mkl-devel",
-        "liblapack",
-        "suitesparse",
-        "libaatm",
+        "pip",
+        "scikit-build-core",
+        "pybind11",
+        "setuptools",
+        "setuptools-scm",
+        "numpy",
+        "libgomp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
         "fftw",
-        "openblas * openmp_*",
-        "llvm-openmp >=4.0.1"
+        "suitesparse",
+        "libaatm"
       ],
       "run": [
+        "libgomp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
         "python",
-        "mkl",
-        "liblapack",
-        "suitesparse",
-        "libaatm",
         "numpy",
         "scipy",
-        "astropy",
+        "astropy-base",
         "healpy",
         "h5py",
         "ephem",
-        "fftw",
-        "openblas * openmp_*",
-        "llvm-openmp >=4.0.1"
+        "tomlkit",
+        "traitlets",
+        "matplotlib-base",
+        "psutil",
+        "ruamel.yaml",
+        "wurlitzer",
+        "pshmem >=1.3.3",
+        "flacarray >=0.4.0"
       ]
     },
     "schema_version": 0,
     "source": {
-      "sha256": "924912213af3bbacd622b9318bd6d79055c4d57f58c2da486f4b3f62a12466f1",
-      "url": "https://github.com/hpc4cmb/toast/archive/2.3.14.tar.gz"
+      "sha256": "f90cde38d4369d19dad13ab3a6388a96ab0c199e6fcb52196304e4910353bf0e",
+      "url": "https://pypi.org/packages/source/t/toast/toast-3.0.2.tar.gz"
     },
     "test": {
       "commands": [
-        "./run_test.sh"
+        "OMP_NUM_THREADS=2 python -c 'import toast.tests; toast.tests.run()'"
       ],
-      "files": [
-        "run_test.sh"
+      "requires": [
+        "mpi4py",
+        "mpich"
+      ]
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "libgomp",
+        "make",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "fftw",
+        "libaatm",
+        "libblas",
+        "libgomp",
+        "libopenblas",
+        "numpy",
+        "pip",
+        "pybind11",
+        "python",
+        "scikit-build-core",
+        "setuptools",
+        "setuptools-scm",
+        "suitesparse"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "astropy-base",
+        "ephem",
+        "flacarray",
+        "h5py",
+        "healpy",
+        "libblas",
+        "libgomp",
+        "libopenblas",
+        "matplotlib-base",
+        "numpy",
+        "pshmem",
+        "psutil",
+        "python",
+        "ruamel.yaml",
+        "scipy",
+        "tomlkit",
+        "traitlets",
+        "wurlitzer"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "mpi4py",
+        "mpich"
+      ]
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "description": "TOAST is a software framework for simulating and processing timestream data\ncollected by microwave telescopes.\n",
+      "dev_url": "https://github.com/hpc4cmb/toast",
+      "doc_url": "https://hpc4cmb.github.io/toast",
+      "home": "https://github.com/hpc4cmb/toast",
+      "license": "BSD-2-Clause",
+      "license_family": "BSD",
+      "license_file": "LICENSE",
+      "summary": "Time Ordered Astrophysics Scalable Tools"
+    },
+    "build": {
+      "number": "0",
+      "script": [
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+      ],
+      "script_env": [
+        "SETUPTOOLS_SCM_PRETEND_VERSION=3.0.2"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "tskisner"
+      ]
+    },
+    "package": {
+      "name": "toast",
+      "version": "3.0.2"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "make",
+        "ninja",
+        "libgomp",
+        "llvm-openmp"
+      ],
+      "host": [
+        "python",
+        "pip",
+        "scikit-build-core",
+        "pybind11",
+        "setuptools",
+        "setuptools-scm",
+        "numpy",
+        "libgomp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
+        "fftw",
+        "suitesparse",
+        "libaatm",
+        "llvm-openmp"
+      ],
+      "run": [
+        "libgomp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
+        "python",
+        "numpy",
+        "scipy",
+        "astropy-base",
+        "healpy",
+        "h5py",
+        "ephem",
+        "tomlkit",
+        "traitlets",
+        "matplotlib-base",
+        "psutil",
+        "ruamel.yaml",
+        "wurlitzer",
+        "pshmem >=1.3.3",
+        "flacarray >=0.4.0",
+        "llvm-openmp"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "sha256": "f90cde38d4369d19dad13ab3a6388a96ab0c199e6fcb52196304e4910353bf0e",
+      "url": "https://pypi.org/packages/source/t/toast/toast-3.0.2.tar.gz"
+    },
+    "test": {
+      "commands": [
+        "OMP_NUM_THREADS=2 python -c 'import toast.tests; toast.tests.run()'"
+      ],
+      "requires": [
+        "mpi4py",
+        "mpich"
       ]
     }
   },
@@ -215,6 +422,7 @@
     "about": {
       "description": "TOAST is a software framework for simulating and processing timestream data\ncollected by microwave telescopes.\n",
       "dev_url": "https://github.com/hpc4cmb/toast",
+      "doc_url": "https://hpc4cmb.github.io/toast",
       "home": "https://github.com/hpc4cmb/toast",
       "license": "BSD-2-Clause",
       "license_family": "BSD",
@@ -222,12 +430,13 @@
       "summary": "Time Ordered Astrophysics Scalable Tools"
     },
     "build": {
-      "number": "102",
-      "run_exports": [
-        "toast * mkl_*",
-        "toast * openblas_*"
+      "number": "0",
+      "script": [
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
       ],
-      "string": "openblas_pyh1234567_102"
+      "script_env": [
+        "SETUPTOOLS_SCM_PRETEND_VERSION=3.0.2"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -236,54 +445,66 @@
     },
     "package": {
       "name": "toast",
-      "version": "2.3.14"
+      "version": "3.0.2"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "cxx_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "make",
-        "llvm-openmp >=4.0.1"
+        "ninja",
+        "llvm-openmp"
       ],
       "host": [
-        "llvm-openmp >=4.0.1",
         "python",
-        "mkl-devel",
-        "liblapack",
-        "suitesparse",
-        "libaatm",
+        "pip",
+        "scikit-build-core",
+        "pybind11",
+        "setuptools",
+        "setuptools-scm",
+        "numpy",
+        "llvm-openmp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
         "fftw",
-        "openblas * openmp_*"
+        "suitesparse",
+        "libaatm"
       ],
       "run": [
-        "llvm-openmp >=4.0.1",
+        "llvm-openmp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
         "python",
-        "mkl",
-        "liblapack",
-        "suitesparse",
-        "libaatm",
         "numpy",
         "scipy",
-        "astropy",
+        "astropy-base",
         "healpy",
         "h5py",
         "ephem",
-        "fftw",
-        "openblas * openmp_*"
+        "tomlkit",
+        "traitlets",
+        "matplotlib-base",
+        "psutil",
+        "ruamel.yaml",
+        "wurlitzer",
+        "pshmem >=1.3.3",
+        "flacarray >=0.4.0"
       ]
     },
     "schema_version": 0,
     "source": {
-      "sha256": "924912213af3bbacd622b9318bd6d79055c4d57f58c2da486f4b3f62a12466f1",
-      "url": "https://github.com/hpc4cmb/toast/archive/2.3.14.tar.gz"
+      "sha256": "f90cde38d4369d19dad13ab3a6388a96ab0c199e6fcb52196304e4910353bf0e",
+      "url": "https://pypi.org/packages/source/t/toast/toast-3.0.2.tar.gz"
     },
     "test": {
       "commands": [
-        "./run_test.sh"
+        "OMP_NUM_THREADS=2 python -c 'import toast.tests; toast.tests.run()'"
       ],
-      "files": [
-        "run_test.sh"
+      "requires": [
+        "mpi4py",
+        "mpich"
       ]
     }
   },
@@ -292,10 +513,12 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
         "llvm-openmp",
-        "make"
+        "make",
+        "ninja"
       ]
     },
     "host": {
@@ -303,36 +526,200 @@
       "elements": [
         "fftw",
         "libaatm",
-        "liblapack",
+        "libblas",
+        "libopenblas",
         "llvm-openmp",
-        "mkl-devel",
-        "openblas",
+        "numpy",
+        "pip",
+        "pybind11",
         "python",
+        "scikit-build-core",
+        "setuptools",
+        "setuptools-scm",
         "suitesparse"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "astropy",
+        "astropy-base",
         "ephem",
-        "fftw",
+        "flacarray",
         "h5py",
         "healpy",
-        "libaatm",
-        "liblapack",
+        "libblas",
+        "libopenblas",
         "llvm-openmp",
-        "mkl",
+        "matplotlib-base",
         "numpy",
-        "openblas",
+        "pshmem",
+        "psutil",
         "python",
+        "ruamel.yaml",
         "scipy",
-        "suitesparse"
+        "tomlkit",
+        "traitlets",
+        "wurlitzer"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mpi4py",
+        "mpich"
+      ]
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "description": "TOAST is a software framework for simulating and processing timestream data\ncollected by microwave telescopes.\n",
+      "dev_url": "https://github.com/hpc4cmb/toast",
+      "doc_url": "https://hpc4cmb.github.io/toast",
+      "home": "https://github.com/hpc4cmb/toast",
+      "license": "BSD-2-Clause",
+      "license_family": "BSD",
+      "license_file": "LICENSE",
+      "summary": "Time Ordered Astrophysics Scalable Tools"
+    },
+    "build": {
+      "number": "0",
+      "script": [
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+      ],
+      "script_env": [
+        "SETUPTOOLS_SCM_PRETEND_VERSION=3.0.2"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "tskisner"
+      ]
+    },
+    "package": {
+      "name": "toast",
+      "version": "3.0.2"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "make",
+        "ninja",
+        "llvm-openmp"
+      ],
+      "host": [
+        "python",
+        "pip",
+        "scikit-build-core",
+        "pybind11",
+        "setuptools",
+        "setuptools-scm",
+        "numpy",
+        "llvm-openmp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
+        "fftw",
+        "suitesparse",
+        "libaatm"
+      ],
+      "run": [
+        "llvm-openmp",
+        "libopenblas * *openmp*",
+        "libblas * *openblas",
+        "python",
+        "numpy",
+        "scipy",
+        "astropy-base",
+        "healpy",
+        "h5py",
+        "ephem",
+        "tomlkit",
+        "traitlets",
+        "matplotlib-base",
+        "psutil",
+        "ruamel.yaml",
+        "wurlitzer",
+        "pshmem >=1.3.3",
+        "flacarray >=0.4.0"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "sha256": "f90cde38d4369d19dad13ab3a6388a96ab0c199e6fcb52196304e4910353bf0e",
+      "url": "https://pypi.org/packages/source/t/toast/toast-3.0.2.tar.gz"
+    },
+    "test": {
+      "commands": [
+        "OMP_NUM_THREADS=2 python -c 'import toast.tests; toast.tests.run()'"
+      ],
+      "requires": [
+        "mpi4py",
+        "mpich"
+      ]
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "llvm-openmp",
+        "make",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "fftw",
+        "libaatm",
+        "libblas",
+        "libopenblas",
+        "llvm-openmp",
+        "numpy",
+        "pip",
+        "pybind11",
+        "python",
+        "scikit-build-core",
+        "setuptools",
+        "setuptools-scm",
+        "suitesparse"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "astropy-base",
+        "ephem",
+        "flacarray",
+        "h5py",
+        "healpy",
+        "libblas",
+        "libopenblas",
+        "llvm-openmp",
+        "matplotlib-base",
+        "numpy",
+        "pshmem",
+        "psutil",
+        "python",
+        "ruamel.yaml",
+        "scipy",
+        "tomlkit",
+        "traitlets",
+        "wurlitzer"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "mpi4py",
+        "mpich"
+      ]
     }
   },
   "outputs_names": {
@@ -344,34 +731,50 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64"
+    "linux_aarch64",
+    "osx_64",
+    "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/toast.json"
   },
-  "raw_meta_yaml": "\n{% set version = \"2.3.14\" %}\n{% set sha256 = \"924912213af3bbacd622b9318bd6d79055c4d57f58c2da486f4b3f62a12466f1\" %}\n\n{% set build = 2 %}\n{% if blas_impl == 'openblas' %}\n{% set build = build + 100 %}\n{% endif %}\n\n{% set blas_prefix = blas_impl %}\n\npackage:\n  name: toast\n  version: {{ version }}\n\nsource:\n  url: https://github.com/hpc4cmb/toast/archive/{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n\nbuild:\n  skip: True  # [py<37]\n  skip: True  # [win]\n  number: {{ build }}\n  string: \"{{ blas_prefix }}_py{{ py }}h{{ PKG_HASH }}_{{ build }}\"\n  run_exports:\n    - toast * {{ blas_prefix }}_*\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - cmake\n    - make                 # [unix]\n    - llvm-openmp >=4.0.1  # [osx]\n  host:\n    - llvm-openmp >=4.0.1  # [osx]\n    - python\n    - fftw  # [blas_impl == 'openblas']\n    - openblas * openmp_*  # [blas_impl == 'openblas']\n    - mkl-devel  # [blas_impl == 'mkl']\n    - liblapack\n    - suitesparse\n    - libaatm\n  run:\n    - llvm-openmp >=4.0.1  # [osx]\n    - python\n    - {{ pin_compatible(\"fftw\") }}  # [blas_impl == 'openblas']\n    - openblas * openmp_*  # [blas_impl == 'openblas']\n    - {{ pin_compatible(\"mkl\") }}  # [blas_impl == 'mkl']\n    - {{ pin_compatible(\"liblapack\") }}\n    - {{ pin_compatible(\"suitesparse\") }}\n    - {{ pin_compatible(\"libaatm\") }}\n    - numpy\n    - scipy\n    - astropy\n    - healpy\n    - h5py\n    - ephem\n\ntest:\n  files:\n    - run_test.sh\n  commands:\n    - ./run_test.sh\n\nabout:\n  home: https://github.com/hpc4cmb/toast\n  license: BSD-2-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: 'Time Ordered Astrophysics Scalable Tools'\n  description: |\n    TOAST is a software framework for simulating and processing timestream data\n    collected by microwave telescopes.\n  dev_url: https://github.com/hpc4cmb/toast\n\nextra:\n  recipe-maintainers:\n    - tskisner\n",
+  "raw_meta_yaml": "\n{% set version = \"3.0.2\" %}\n\npackage:\n  name: toast\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/t/toast/toast-{{ version }}.tar.gz\n  sha256: f90cde38d4369d19dad13ab3a6388a96ab0c199e6fcb52196304e4910353bf0e\n\nbuild:\n  number: 0\n  skip: True  # [py<310 or win]\n  script_env:\n    - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}\n  script:\n    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - python                              # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - numpy                               # [build_platform != target_platform]\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake\n    - make\n    - ninja\n    - llvm-openmp  # [osx]\n    - libgomp  # [linux]\n  host:\n    - python\n    - pip\n    - scikit-build-core\n    - pybind11\n    - setuptools\n    - setuptools-scm\n    - numpy\n    - llvm-openmp  # [osx]\n    - libgomp  # [linux]\n    - libopenblas * *openmp*\n    - libblas * *openblas\n    - fftw\n    - suitesparse\n    - libaatm\n  run:\n    - llvm-openmp  # [osx]\n    - libgomp  # [linux]\n    - libopenblas * *openmp*\n    - libblas * *openblas\n    - python\n    - numpy\n    - scipy\n    - astropy-base\n    - healpy\n    - h5py\n    - ephem\n    - tomlkit\n    - traitlets\n    - matplotlib-base\n    - psutil\n    - ruamel.yaml\n    - wurlitzer\n    - pshmem >=1.3.3\n    - flacarray >=0.4.0\n\ntest:\n  requires:\n    - mpi4py\n    - mpich\n  commands:\n    - OMP_NUM_THREADS=2 python -c 'import toast.tests; toast.tests.run()'  # [build_platform == target_platform]\n    #- OMP_NUM_THREADS=1 mpirun -np 2 python -c 'import toast.tests; toast.tests.run()'  # [build_platform == target_platform]\n\nabout:\n  home: https://github.com/hpc4cmb/toast\n  license: BSD-2-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: 'Time Ordered Astrophysics Scalable Tools'\n  description: |\n    TOAST is a software framework for simulating and processing timestream data\n    collected by microwave telescopes.\n  doc_url: https://hpc4cmb.github.io/toast\n  dev_url: https://github.com/hpc4cmb/toast\n\nextra:\n  recipe-maintainers:\n    - tskisner\n",
   "req": {
     "__set__": true,
     "elements": [
-      "astropy",
+      "astropy-base",
       "c_compiler_stub",
+      "c_stdlib_stub",
       "cmake",
       "cxx_compiler_stub",
       "ephem",
       "fftw",
+      "flacarray",
       "h5py",
       "healpy",
       "libaatm",
-      "liblapack",
+      "libblas",
+      "libgomp",
+      "libopenblas",
       "llvm-openmp",
       "make",
-      "mkl",
-      "mkl-devel",
+      "matplotlib-base",
+      "ninja",
       "numpy",
-      "openblas",
+      "pip",
+      "pshmem",
+      "psutil",
+      "pybind11",
       "python",
+      "ruamel.yaml",
+      "scikit-build-core",
       "scipy",
-      "suitesparse"
+      "setuptools",
+      "setuptools-scm",
+      "suitesparse",
+      "tomlkit",
+      "traitlets",
+      "wurlitzer"
     ]
   },
   "requirements": {
@@ -379,53 +782,74 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
+        "libgomp",
         "llvm-openmp",
-        "make"
+        "make",
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "c_stdlib_stub",
+        "ctng-compilers",
         "cxx_compiler_stub",
         "fftw",
         "libaatm",
-        "liblapack",
+        "libblas",
+        "libgomp",
+        "libopenblas",
         "llvm-openmp",
-        "mkl-devel",
-        "openblas",
+        "numpy",
         "openmp",
+        "pip",
+        "pybind11",
         "python",
+        "scikit-build-core",
+        "setuptools",
+        "setuptools-scm",
         "suitesparse"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "astropy",
+        "astropy-base",
         "c_compiler_stub",
+        "c_stdlib_stub",
+        "ctng-compilers",
         "cxx_compiler_stub",
         "ephem",
-        "fftw",
+        "flacarray",
         "h5py",
         "healpy",
-        "libaatm",
-        "liblapack",
+        "libblas",
+        "libgomp",
+        "libopenblas",
         "llvm-openmp",
-        "mkl",
+        "matplotlib-base",
         "numpy",
-        "openblas",
         "openmp",
+        "pshmem",
+        "psutil",
         "python",
+        "ruamel.yaml",
         "scipy",
-        "suitesparse"
+        "tomlkit",
+        "traitlets",
+        "wurlitzer"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mpi4py",
+        "mpich"
+      ]
     }
   },
   "strong_exports": false,
@@ -434,10 +858,13 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "llvm-openmp >=4.0.1",
-        "make"
+        "libgomp",
+        "llvm-openmp",
+        "make",
+        "ninja"
       ]
     },
     "host": {
@@ -445,40 +872,54 @@
       "elements": [
         "fftw",
         "libaatm",
-        "liblapack",
-        "llvm-openmp >=4.0.1",
-        "mkl-devel",
-        "openblas * openmp_*",
+        "libblas * *openblas",
+        "libgomp",
+        "libopenblas * *openmp*",
+        "llvm-openmp",
+        "numpy",
+        "pip",
+        "pybind11",
         "python",
+        "scikit-build-core",
+        "setuptools",
+        "setuptools-scm",
         "suitesparse"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "astropy",
+        "astropy-base",
         "ephem",
-        "fftw",
+        "flacarray >=0.4.0",
         "h5py",
         "healpy",
-        "libaatm",
-        "liblapack",
-        "llvm-openmp >=4.0.1",
-        "mkl",
+        "libblas * *openblas",
+        "libgomp",
+        "libopenblas * *openmp*",
+        "llvm-openmp",
+        "matplotlib-base",
         "numpy",
-        "openblas * openmp_*",
+        "pshmem >=1.3.3",
+        "psutil",
         "python",
+        "ruamel.yaml",
         "scipy",
-        "suitesparse"
+        "tomlkit",
+        "traitlets",
+        "wurlitzer"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mpi4py",
+        "mpich"
+      ]
     }
   },
-  "url": "https://github.com/hpc4cmb/toast/archive/2.3.14.tar.gz",
-  "version": "2.3.14",
+  "url": "https://pypi.org/packages/source/t/toast/toast-3.0.2.tar.gz",
+  "version": "3.0.2",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/toast.json"
   }
