@@ -21,8 +21,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "21ddd40400964ad59073e8d8c35558be0ecf2c79",
-  "feedstock_hash_ts": 1777834660,
+  "feedstock_hash": "4aeece3c1b3ad5aafc68bb4e0613824cfafb4f1d",
+  "feedstock_hash_ts": 1777838927,
   "feedstock_name": "dovi_tool",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -37,7 +37,7 @@
       "summary": "CLI utilities for working with Dolby Vision metadata and HEVC streams"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "build-dovi_tool"
     },
     "extra": {
@@ -240,7 +240,7 @@
       "summary": "CLI utilities for working with Dolby Vision metadata and HEVC streams"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "build-dovi_tool"
     },
     "extra": {
@@ -443,7 +443,7 @@
       "summary": "CLI utilities for working with Dolby Vision metadata and HEVC streams"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "build-dovi_tool"
     },
     "extra": {
@@ -1111,7 +1111,7 @@
       "summary": "CLI utilities for working with Dolby Vision metadata and HEVC streams"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "build-dovi_tool"
     },
     "extra": {
@@ -1314,7 +1314,7 @@
       "summary": "CLI utilities for working with Dolby Vision metadata and HEVC streams"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "build-dovi_tool"
     },
     "extra": {
@@ -1523,7 +1523,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/dovi_tool.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"2.3.2\"\n  libdovi_version: \"3.3.2\"\n  build_number: 0\n\nrecipe:\n  name: dovi_tool\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/quietvoid/dovi_tool/archive/refs/tags/${{ version }}.tar.gz\n    sha256: 8e1ca50219a68ba27a200ea1dd4210a6ef232b5f66d1b6ffc4a8303c87fe16bf\n    target_directory: dovi_tool_src\n  - url: https://github.com/quietvoid/dovi_tool/archive/refs/tags/libdovi-${{ libdovi_version }}.tar.gz\n    sha256: 8ccb1922d7dbb57bc4f2c15c10b90c462f7a5f292efe317c116db923728dd3f1\n    target_directory: libdovi_src\n\nbuild:\n  number: ${{ build_number }}\n\noutputs:\n  - package:\n      name: dovi_tool\n      version: ${{ version }}\n    build:\n      script: build-dovi_tool\n    requirements:\n      build:\n        - ${{ stdlib('c') }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('rust') }}\n        - cargo-auditable\n        - cargo-bundle-licenses\n        - if: linux\n          then:\n            - pkg-config\n      host:\n        - if: linux\n          then:\n            - fontconfig\n            - freetype\n      ignore_run_exports:\n        from_package:\n          # fontconfig pulls expat transitively on Linux, but the Rust binary\n          # uses the crate's dlopen mode rather than linking against libexpat.\n          - expat\n    tests:\n      - script:\n          - if: build_platform == target_platform or target_platform == \"linux-aarch64\" # no emulation for osx-arm64\n            then:\n              - dovi_tool --help\n              - dovi_tool --version\n      - package_contents:\n          strict: true\n          bin:\n            - dovi_tool\n          files:\n            exists:\n              - etc/conda/test-files/dovi_tool/**/check-no-static-libs.py\n            # Keep the CLI output free of library artifacts.\n            not_exists:\n              - \"**/*.a\"\n              - \"**/pkgconfig/*.pc\"\n              - if: unix\n                then:\n                  - include/**\n                  - lib/libdovi*\n              - if: win\n                then:\n                  - Library/include/**\n                  - Library/bin/dovi.dll\n                  - Library/lib/dovi*.lib\n                  - Library/lib/dovi.def\n      - script:\n          - if: build_platform == target_platform or target_platform == \"linux-aarch64\"\n            then:\n              - python check-no-static-libs.py dovi_tool\n        requirements:\n          run:\n            - python\n        files:\n          recipe:\n            - check-no-static-libs.py\n    about:\n      homepage: https://github.com/quietvoid/dovi_tool\n      repository: https://github.com/quietvoid/dovi_tool\n      documentation: https://github.com/quietvoid/dovi_tool/blob/main/README.md\n      summary: CLI utilities for working with Dolby Vision metadata and HEVC streams\n      description: Command-line tools for inspecting, converting, extracting, and muxing Dolby Vision metadata and related HEVC bitstreams.\n      license: MIT\n      license_file:\n        - dovi_tool_src/LICENSE\n        - THIRDPARTY_dovi_tool.yml\n\n  - package:\n      name: libdovi\n      version: ${{ libdovi_version }}\n    build:\n      script: build-libdovi\n    requirements:\n      build:\n        - ${{ stdlib('c') }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('rust') }}\n        - cargo-bundle-licenses\n        - cargo-c\n        - if: unix\n          then:\n            - pkg-config\n      run_exports:\n        - ${{ pin_subpackage('libdovi', upper_bound='x') }}\n    tests:\n      - package_contents:\n          include:\n            - libdovi/rpu_parser.h\n          files:\n            exists:\n              - if: linux\n                then: lib/libdovi.so*\n              - if: osx\n                then: lib/libdovi*.dylib\n              - if: win\n                then:\n                  - Library/bin/dovi.dll\n                  - Library/lib/dovi.dll.lib\n              - \"**/pkgconfig/dovi.pc\"\n            # check no static libs are present\n            not_exists:\n              - \"**/*.a\"\n      - script:\n          - if: build_platform == target_platform or target_platform == \"linux-aarch64\"\n            then:\n              - python check-no-static-libs.py libdovi\n        requirements:\n          run:\n            - python\n        files:\n          recipe:\n            - check-no-static-libs.py\n      # test pkg-config can find the library and print the correct version (run export done ok)\n      - script:\n          - if: unix\n            then:\n              - export PKG_CONFIG_PATH=\"${PREFIX}/lib/pkgconfig\"\n              - pkg-config --exists dovi\n        requirements:\n          run:\n            - if: unix\n              then:\n                - pkg-config\n    about:\n      homepage: https://github.com/quietvoid/dovi_tool/tree/main/dolby_vision\n      repository: https://github.com/quietvoid/dovi_tool\n      documentation: https://github.com/quietvoid/dovi_tool/blob/main/dolby_vision/README.md\n      summary: C library to read and write Dolby Vision metadata\n      description: Shared C library and headers for parsing, writing, and packaging Dolby Vision metadata.\n      license: MIT\n      license_file:\n        - libdovi_src/dolby_vision/LICENSE\n        - THIRDPARTY_libdovi.yml\n\nabout:\n  homepage: https://github.com/quietvoid/dovi_tool\n  repository: https://github.com/quietvoid/dovi_tool\n  documentation: https://github.com/quietvoid/dovi_tool/blob/main/README.md\n  summary: CLI tools and a C library for working with Dolby Vision metadata\n  description: Split packaging for the dovi_tool command-line utilities and the libdovi shared C library used for Dolby Vision metadata workflows.\n  license: MIT\n  license_file: dovi_tool_src/LICENSE\n\nextra:\n  feedstock-name: dovi_tool\n  recipe-maintainers:\n    - ndeybach\n",
+  "raw_meta_yaml": "context:\n  version: \"2.3.2\"\n  libdovi_version: \"3.3.2\"\n  dovi_tool_build_number: 1\n  libdovi_build_number: 4\n\nrecipe:\n  name: dovi_tool\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/quietvoid/dovi_tool/archive/refs/tags/${{ version }}.tar.gz\n    sha256: 8e1ca50219a68ba27a200ea1dd4210a6ef232b5f66d1b6ffc4a8303c87fe16bf\n    target_directory: dovi_tool_src\n  - url: https://github.com/quietvoid/dovi_tool/archive/refs/tags/libdovi-${{ libdovi_version }}.tar.gz\n    sha256: 8ccb1922d7dbb57bc4f2c15c10b90c462f7a5f292efe317c116db923728dd3f1\n    target_directory: libdovi_src\n\nbuild:\n  number: ${{ dovi_tool_build_number }}\n\noutputs:\n  - package:\n      name: dovi_tool\n      version: ${{ version }}\n    build:\n      script: build-dovi_tool\n    requirements:\n      build:\n        - ${{ stdlib('c') }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('rust') }}\n        - cargo-auditable\n        - cargo-bundle-licenses\n        - if: linux\n          then:\n            - pkg-config\n      host:\n        - if: linux\n          then:\n            - fontconfig\n            - freetype\n      ignore_run_exports:\n        from_package:\n          # fontconfig pulls expat transitively on Linux, but the Rust binary\n          # uses the crate's dlopen mode rather than linking against libexpat.\n          - expat\n    tests:\n      - script:\n          - if: build_platform == target_platform or target_platform == \"linux-aarch64\" # no emulation for osx-arm64\n            then:\n              - dovi_tool --help\n              - dovi_tool --version\n      - package_contents:\n          strict: true\n          bin:\n            - dovi_tool\n          files:\n            exists:\n              - etc/conda/test-files/dovi_tool/**/check-no-static-libs.py\n            # Keep the CLI output free of library artifacts.\n            not_exists:\n              - \"**/*.a\"\n              - \"**/pkgconfig/*.pc\"\n              - if: unix\n                then:\n                  - include/**\n                  - lib/libdovi*\n              - if: win\n                then:\n                  - Library/include/**\n                  - Library/bin/dovi.dll\n                  - Library/lib/dovi*.lib\n                  - Library/lib/dovi.def\n      - script:\n          - if: build_platform == target_platform or target_platform == \"linux-aarch64\"\n            then:\n              - python check-no-static-libs.py dovi_tool\n        requirements:\n          run:\n            - python\n        files:\n          recipe:\n            - check-no-static-libs.py\n    about:\n      homepage: https://github.com/quietvoid/dovi_tool\n      repository: https://github.com/quietvoid/dovi_tool\n      documentation: https://github.com/quietvoid/dovi_tool/blob/main/README.md\n      summary: CLI utilities for working with Dolby Vision metadata and HEVC streams\n      description: Command-line tools for inspecting, converting, extracting, and muxing Dolby Vision metadata and related HEVC bitstreams.\n      license: MIT\n      license_file:\n        - dovi_tool_src/LICENSE\n        - THIRDPARTY_dovi_tool.yml\n\n  - package:\n      name: libdovi\n      version: ${{ libdovi_version }}\n    build:\n      number: ${{ libdovi_build_number }}\n      script: build-libdovi\n    requirements:\n      build:\n        - ${{ stdlib('c') }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('rust') }}\n        - cargo-bundle-licenses\n        - cargo-c\n        - if: unix\n          then:\n            - pkg-config\n      run_exports:\n        - ${{ pin_subpackage('libdovi', upper_bound='x') }}\n    tests:\n      - package_contents:\n          include:\n            - libdovi/rpu_parser.h\n          files:\n            exists:\n              - if: linux\n                then: lib/libdovi.so*\n              - if: osx\n                then: lib/libdovi*.dylib\n              - if: win\n                then:\n                  - Library/bin/dovi.dll\n                  - Library/lib/dovi.dll.lib\n              - \"**/pkgconfig/dovi.pc\"\n            # check no static libs are present\n            not_exists:\n              - \"**/*.a\"\n      - script:\n          - if: build_platform == target_platform or target_platform == \"linux-aarch64\"\n            then:\n              - python check-no-static-libs.py libdovi\n        requirements:\n          run:\n            - python\n        files:\n          recipe:\n            - check-no-static-libs.py\n      # test pkg-config can find the library and print the correct version (run export done ok)\n      - script:\n          - if: unix\n            then:\n              - export PKG_CONFIG_PATH=\"${PREFIX}/lib/pkgconfig\"\n              - pkg-config --exists dovi\n        requirements:\n          run:\n            - if: unix\n              then:\n                - pkg-config\n    about:\n      homepage: https://github.com/quietvoid/dovi_tool/tree/main/dolby_vision\n      repository: https://github.com/quietvoid/dovi_tool\n      documentation: https://github.com/quietvoid/dovi_tool/blob/main/dolby_vision/README.md\n      summary: C library to read and write Dolby Vision metadata\n      description: Shared C library and headers for parsing, writing, and packaging Dolby Vision metadata.\n      license: MIT\n      license_file:\n        - libdovi_src/dolby_vision/LICENSE\n        - THIRDPARTY_libdovi.yml\n\nabout:\n  homepage: https://github.com/quietvoid/dovi_tool\n  repository: https://github.com/quietvoid/dovi_tool\n  documentation: https://github.com/quietvoid/dovi_tool/blob/main/README.md\n  summary: CLI tools and a C library for working with Dolby Vision metadata\n  description: Split packaging for the dovi_tool command-line utilities and the libdovi shared C library used for Dolby Vision metadata workflows.\n  license: MIT\n  license_file: dovi_tool_src/LICENSE\n\nextra:\n  feedstock-name: dovi_tool\n  recipe-maintainers:\n    - ndeybach\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1625,7 +1625,7 @@
       "summary": "CLI utilities for working with Dolby Vision metadata and HEVC streams"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "build-dovi_tool"
     },
     "extra": {
