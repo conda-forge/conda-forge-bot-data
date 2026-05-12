@@ -6,11 +6,6 @@
     "bot": {
       "inspection": "hint-grayskull"
     },
-    "build_platform": {
-      "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "error_overlinking": true
     },
@@ -20,13 +15,17 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default",
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
+    },
     "shellcheck": {
       "enabled": true
-    },
-    "test": "native_and_emulated"
+    }
   },
-  "feedstock_hash": "2815b7969aaba2fb4c61671a3b540f4b18718015",
-  "feedstock_hash_ts": 1776971180,
+  "feedstock_hash": "7bfdf543d2370ea3bca033d9be4f2f21cb817fea",
+  "feedstock_hash_ts": 1778624961,
   "feedstock_name": "tach",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -42,7 +41,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-tach"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -59,7 +70,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -96,22 +108,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -121,7 +130,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -163,9 +173,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -173,24 +183,26 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       }
     ],
     "package": {
       "name": "tach",
-      "version": "0.34.1"
+      "version": "0.35.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.5,<2.0",
@@ -212,8 +224,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde",
-      "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz"
+      "sha256": "db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb",
+      "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -222,6 +234,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -252,7 +265,7 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
@@ -273,7 +286,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-tach"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -290,7 +315,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -327,22 +353,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -352,7 +375,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -394,9 +418,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -404,24 +428,26 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       }
     ],
     "package": {
       "name": "tach",
-      "version": "0.34.1"
+      "version": "0.35.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.5,<2.0",
@@ -443,8 +469,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde",
-      "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz"
+      "sha256": "db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb",
+      "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -453,6 +479,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -483,7 +510,7 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
@@ -504,7 +531,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-tach"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -521,7 +560,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -558,22 +598,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -583,7 +620,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -625,9 +663,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -635,24 +673,26 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       }
     ],
     "package": {
       "name": "tach",
-      "version": "0.34.1"
+      "version": "0.35.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.5,<2.0",
@@ -674,8 +714,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde",
-      "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz"
+      "sha256": "db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb",
+      "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -684,6 +724,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -714,7 +755,7 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
@@ -735,7 +776,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-tach"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -752,7 +805,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -789,22 +843,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -814,7 +865,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -856,9 +908,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -866,12 +918,13 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -881,7 +934,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -918,22 +972,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -943,7 +994,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -985,9 +1037,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -995,12 +1047,13 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1010,7 +1063,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1047,22 +1101,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1072,7 +1123,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1114,9 +1166,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -1124,12 +1176,13 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1139,7 +1192,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1176,22 +1230,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1201,7 +1252,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1243,9 +1295,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -1253,12 +1305,13 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1268,7 +1321,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1305,22 +1359,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1330,7 +1381,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1372,9 +1424,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -1382,12 +1434,13 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1397,7 +1450,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1434,22 +1488,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1459,7 +1510,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1501,9 +1553,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -1511,24 +1563,26 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       }
     ],
     "package": {
       "name": "tach",
-      "version": "0.34.1"
+      "version": "0.35.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.5,<2.0",
@@ -1550,8 +1604,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde",
-      "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz"
+      "sha256": "db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb",
+      "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz"
     }
   },
   "name": "tach",
@@ -1568,7 +1622,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-tach"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -1585,7 +1651,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1622,22 +1689,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1647,7 +1711,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1689,9 +1754,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -1699,24 +1764,26 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       }
     ],
     "package": {
       "name": "tach",
-      "version": "0.34.1"
+      "version": "0.35.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.5,<2.0",
@@ -1738,8 +1805,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde",
-      "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz"
+      "sha256": "db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb",
+      "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -1748,6 +1815,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -1778,7 +1846,7 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
@@ -1799,7 +1867,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-tach"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -1816,7 +1896,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1853,22 +1934,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -1878,7 +1956,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -1920,9 +1999,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -1930,24 +2009,26 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       }
     ],
     "package": {
       "name": "tach",
-      "version": "0.34.1"
+      "version": "0.35.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.5,<2.0",
@@ -1969,8 +2050,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde",
-      "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz"
+      "sha256": "db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb",
+      "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -1979,6 +2060,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -2009,7 +2091,7 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
@@ -2035,12 +2117,13 @@
   "pr_info": {
     "__lazy_json__": "pr_info/tach.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"0.34.1\"\n  maturin_min: \"1.5\"\n  maturin_max: \"2.0\"\n  python_check_max: \"3.14\"\n\npackage:\n  name: tach\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/t/tach/tach-${{ version }}.tar.gz\n  sha256: 58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde\n\nbuild:\n  number: 0\n  skip: is_abi3 and not is_python_min\n  python:\n    version_independent: ${{ is_abi3 }}\n    entry_points:\n      - tach = tach.start:start\n  script:\n    file: build-tach\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - maturin >=${{ maturin_min }},<${{ maturin_max }}\n  host:\n    - maturin >=${{ maturin_min }},<${{ maturin_max }}\n    - pip\n    - python\n    - if: is_abi3\n      then:\n        - python-abi3\n  run:\n    - gitpython >=3.1,<4.0\n    - networkx >=2.6,<4.0\n    - prompt-toolkit >=3.0,<4.0\n    - pydot >=2,<5\n    - python\n    - pyyaml >=6.0,<7.0\n    - rich >=13.0\n    - tomli >=1.2.2\n    - tomli-w >=1.0,<2.0\n  ignore_run_exports:\n    from_package:\n      - cross-python_${{ target_platform }}\n\ntests:\n  - if: is_abi3\n    then:\n      python:\n        imports: tach\n        pip_check: true\n        python_version:\n          - ${{ python_min }}.*\n          - ${{ python_check_max }}.*\n    else:\n      python:\n        imports: tach\n        pip_check: true\n  - files:\n      source:\n        - python/tests/\n        - Cargo.toml\n        - pyproject.toml\n    requirements:\n      run:\n        - coverage\n        - pytest\n        - pytest-mock\n        - python ${{ \"!=\" ~ python_min ~ \".*\" if is_abi3 }}\n    script:\n      - tach --help\n      - tach --version\n      - tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"\n      # windows tests don't exit/cleanup properly, and generally have path issues\n      - if: unix\n        then:\n          - coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"\n          - coverage report --show-missing --skip-covered --fail-under=47\n\nabout:\n  summary: A Python tool to maintain a modular package architecture.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://pypi.org/project/tach\n  repository: https://github.com/tach-org/tach\n  documentation: https://docs.gauge.sh\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"0.35.0\"\n  maturin_min: \"1.5\"\n  maturin_max: \"2.0\"\n  python_check_max: \"3.14\"\n  unix_sp_dir: $(python -c \"print(__import__('site').getsitepackages()[-1])\")\n  win_sp_dir: Lib\\site-packages\n  sp_dir: ${{ unix_sp_dir if unix else \"%PREFIX%\\\\\" ~ win_sp_dir }}\n  abi3_bin: extension.${{ \"abi3.so\" if unix else \"pyd\" }}\n  all_test_skips: |-\n    not-a-test\n    export_report_diagnostics\n  # appear to fail due to path assumptions\n  win_test_skips: |-\n    changed_files_new_branch\n    changed_files_working_directory\n    distributed_config_example_dir\n    layers_explicit_depends_on\n    many_features_example_dir\n    monorepo_workspace_example_dir_external\n    source_change_runs_dependent_tests\n    test_file_change_runs_that_file\n    valid_example_dir_monorepo\n  test_skips: ${{ (all_test_skips ~ ((\" \" ~ win_test_skips) if win else \"\")) | split | join(\" or \") }}\n\npackage:\n  name: tach\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/t/tach/tach-${{ version }}.tar.gz\n  sha256: db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb\n\nbuild:\n  number: 0\n  skip: is_abi3 and not is_python_min\n  python:\n    version_independent: ${{ is_abi3 }}\n    entry_points:\n      - tach = tach.start:start\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO: cargo-auditable-wrapper${{ \".bat\" if win }}\n      PYTHONIOENCODING: utf-8\n      PYTHONLEGACYTEXTENCODING: utf-8\n    content:\n      - if: win\n        then:\n          # for `path too long` errors\n          - set CARGO_HOME=c:\\.cg\n          - md %CARGO_HOME%\n          - copy \"%RECIPE_DIR%\\cargo-auditable-wrapper.bat\" \"%BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\"\n        else:\n          - cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n          - chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n      - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check\n      - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n  host:\n    - maturin >=${{ maturin_min }},<${{ maturin_max }}\n    - pip\n    - python\n    - if: is_abi3\n      then:\n        - python-abi3\n  run:\n    - gitpython >=3.1,<4.0\n    - networkx >=2.6,<4.0\n    - prompt-toolkit >=3.0,<4.0\n    - pydot >=2,<5\n    - python\n    - pyyaml >=6.0,<7.0\n    - rich >=13.0\n    - tomli >=1.2.2\n    - tomli-w >=1.0,<2.0\n\ntests:\n  - if: is_abi3\n    then:\n      python:\n        imports: tach\n        pip_check: true\n        python_version:\n          - ${{ python_min }}.*\n          - ${{ python_check_max }}.*\n    else:\n      python:\n        imports: tach\n        pip_check: true\n  - files:\n      source:\n        - python/tests/\n        - Cargo.toml\n        - pyproject.toml\n    requirements:\n      run:\n        # - coverage\n        - pytest\n        - pytest-mock\n        - if: is_abi3\n          then:\n            - abi3audit\n            - python !=${{ python_min }}.*\n    script:\n      - tach --help\n      - tach --version\n      - tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"\n      # fails with circular import of `logging` (maybe because `tach.logging`?)\n      # - coverage run --source=tach --branch pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"\n      # - coverage report --show-missing --skip-covered --fail-under=47\n      - pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"\n      - if: is_abi3\n        then:\n          - cd \"${{ sp_dir }}\" && cd tach\n          - abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}\n\nabout:\n  summary: A Python tool to maintain a modular package architecture.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://pypi.org/project/tach\n  repository: https://github.com/tach-org/tach\n  documentation: https://docs.gauge.sh\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cargo-auditable",
       "cargo-bundle-licenses",
       "gitpython",
       "maturin",
@@ -2063,6 +2146,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -2097,7 +2181,7 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
@@ -2112,6 +2196,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -2142,17 +2227,16 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
-        "python",
         "python !=3.10.*"
       ]
     }
   },
-  "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz",
-  "version": "0.34.1",
+  "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz",
+  "version": "0.35.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/tach.json"
   },
@@ -2169,7 +2253,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-tach"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -2186,7 +2282,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -2223,22 +2320,19 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
-                "pytest-mock",
-                "python"
+                "pytest-mock"
               ]
             },
             "script": [
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\""
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       },
       {
         "build": null,
@@ -2248,7 +2342,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.5,<2.0",
@@ -2290,9 +2385,9 @@
             },
             "requirements": {
               "run": [
-                "coverage",
                 "pytest",
                 "pytest-mock",
+                "abi3audit",
                 "python !=3.10.*"
               ]
             },
@@ -2300,24 +2395,26 @@
               "tach --help",
               "tach --version",
               "tach --version | python -c \"import sys; assert '${{ version }}' in sys.stdin.read()\"",
-              "coverage run --source=tach --branch -m pytest -vv --tb=long --color=yes -k \"not export_report_diagnostics\"",
-              "coverage report --show-missing --skip-covered --fail-under=47"
+              "pytest -vv --tb=long --color=yes -k \"not (${{ test_skips }})\"",
+              "cd \"${{ sp_dir }}\" && cd tach",
+              "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} ${{ abi3_bin }}"
             ]
           }
         ],
-        "version": "0.34.1"
+        "version": "0.35.0"
       }
     ],
     "package": {
       "name": "tach",
-      "version": "0.34.1"
+      "version": "0.35.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.5,<2.0",
@@ -2339,8 +2436,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "58b5a8f9dd4f5c9fc9b1ade875aa0b31d3ac2f2f6802c655c05197a503d5acde",
-      "url": "https://pypi.org/packages/source/t/tach/tach-0.34.1.tar.gz"
+      "sha256": "db8594820685f8ce316ef45d4dfa1a8ed39ce97dd873aa5006800d2668c3b3bb",
+      "url": "https://pypi.org/packages/source/t/tach/tach-0.35.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -2349,6 +2446,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -2379,7 +2477,7 @@
     "test": {
       "__set__": true,
       "elements": [
-        "coverage",
+        "abi3audit",
         "pip",
         "pytest",
         "pytest-mock",
