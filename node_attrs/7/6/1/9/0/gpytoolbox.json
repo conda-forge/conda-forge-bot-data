@@ -3,6 +3,13 @@
   "branch": "main",
   "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npython_impl:\n- cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
+    "bot": {
+      "automerge": true
+    },
+    "build_platform": {
+      "linux_aarch64": "linux_64",
+      "osx_arm64": "osx_64"
+    },
     "conda_build": {
       "error_overlinking": true
     },
@@ -10,10 +17,14 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "provider": {
+      "linux_aarch64": "default"
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "7248d0dea9d20971506b3c710b8edaf9aa66b96c",
-  "feedstock_hash_ts": 1778683157,
+  "feedstock_hash": "0cfd646e262e1b3d90434968753c76c290533642",
+  "feedstock_hash_ts": 1778730317,
   "feedstock_name": "gpytoolbox",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -28,7 +39,7 @@
       "summary": "A collection of utility functions to prototype geometry processing research in python"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
       ]
@@ -82,7 +93,8 @@
     "source": [
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -109,7 +121,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -136,7 +149,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -165,7 +179,11 @@
     "test": {
       "commands": [
         "pip check",
+        "python run_test.py",
         "python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\""
+      ],
+      "files": [
+        "run_test.py"
       ],
       "imports": [
         "gpytoolbox",
@@ -229,6 +247,226 @@
       ]
     }
   },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/sgsellan/gpytoolbox",
+      "license": "MIT AND GPL-3.0-only",
+      "license_file": [
+        "LICENSE.MIT",
+        "LICENSE.GPL",
+        "ext/webgpu-distribution-headers/LICENSE.txt"
+      ],
+      "summary": "A collection of utility functions to prototype geometry processing research in python"
+    },
+    "build": {
+      "number": "1",
+      "script": [
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "jeongseok-meta"
+      ]
+    },
+    "package": {
+      "name": "gpytoolbox",
+      "version": "0.3.7"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake >=3.16,<3.27",
+        "make"
+      ],
+      "host": [
+        "packaging",
+        "pip",
+        "python",
+        "pybind11",
+        "setuptools",
+        "wheel",
+        "libgl-devel",
+        "libopengl-devel",
+        "xorg-libx11",
+        "xorg-xorgproto",
+        "xorg-libxrandr",
+        "xorg-libxinerama",
+        "xorg-libxcursor",
+        "xorg-libxi",
+        "libxkbcommon",
+        "nanoflann",
+        "wayland",
+        "wgpu-native 0.17.0.2"
+      ],
+      "run": [
+        "numpy >=1.22.4,<2.3",
+        "python",
+        "scikit-image",
+        "scipy >=1.7,<1.14",
+        "scs"
+      ]
+    },
+    "schema_version": 0,
+    "source": [
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      }
+    ],
+    "test": {
+      "commands": [
+        "pip check",
+        "python run_test.py",
+        "python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\""
+      ],
+      "files": [
+        "run_test.py"
+      ],
+      "imports": [
+        "gpytoolbox",
+        "gpytoolbox.copyleft",
+        "gpytoolbox_bindings",
+        "gpytoolbox_bindings_copyleft"
+      ],
+      "requires": [
+        "pip"
+      ]
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "make"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libgl-devel",
+        "libopengl-devel",
+        "libxkbcommon",
+        "nanoflann",
+        "packaging",
+        "pip",
+        "pybind11",
+        "python",
+        "setuptools",
+        "wayland",
+        "wgpu-native",
+        "wheel",
+        "xorg-libx11",
+        "xorg-libxcursor",
+        "xorg-libxi",
+        "xorg-libxinerama",
+        "xorg-libxrandr",
+        "xorg-xorgproto"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "numpy",
+        "python",
+        "scikit-image",
+        "scipy",
+        "scs"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip"
+      ]
+    }
+  },
   "meta_yaml": {
     "about": {
       "home": "https://github.com/sgsellan/gpytoolbox",
@@ -241,7 +479,7 @@
       "summary": "A collection of utility functions to prototype geometry processing research in python"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
         "for lib in \"${SP_DIR}\"/gpytoolbox_bindings*.so; do old_path=\"$(otool -L \"${lib}\" | awk '/libwgpu_native[.]dylib/ {print $1; exit}')\"; if [ -n \"${old_path}\" ]; then install_name_tool -change \"${old_path}\" \"@rpath/libwgpu_native.dylib\" \"${lib}\"; fi; done"
@@ -296,7 +534,8 @@
     "source": [
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -323,7 +562,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -350,7 +590,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -377,7 +618,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -404,7 +646,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -431,7 +674,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -458,7 +702,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -485,7 +730,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -512,7 +758,176 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -541,7 +956,11 @@
     "test": {
       "commands": [
         "pip check",
+        "python run_test.py",
         "python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\""
+      ],
+      "files": [
+        "run_test.py"
       ],
       "imports": [
         "gpytoolbox",
@@ -567,7 +986,7 @@
       "summary": "A collection of utility functions to prototype geometry processing research in python"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
         "for lib in \"${SP_DIR}\"/gpytoolbox_bindings*.so; do old_path=\"$(otool -L \"${lib}\" | awk '/libwgpu_native[.]dylib/ {print $1; exit}')\"; if [ -n \"${old_path}\" ]; then install_name_tool -change \"${old_path}\" \"@rpath/libwgpu_native.dylib\" \"${lib}\"; fi; done"
@@ -611,7 +1030,8 @@
     "source": [
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -638,7 +1058,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -665,7 +1086,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -694,7 +1116,11 @@
     "test": {
       "commands": [
         "pip check",
+        "python run_test.py",
         "python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\""
+      ],
+      "files": [
+        "run_test.py"
       ],
       "imports": [
         "gpytoolbox",
@@ -747,6 +1173,205 @@
       ]
     }
   },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/sgsellan/gpytoolbox",
+      "license": "MIT AND GPL-3.0-only",
+      "license_file": [
+        "LICENSE.MIT",
+        "LICENSE.GPL",
+        "ext/webgpu-distribution-headers/LICENSE.txt"
+      ],
+      "summary": "A collection of utility functions to prototype geometry processing research in python"
+    },
+    "build": {
+      "number": "1",
+      "script": [
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
+        "for lib in \"${SP_DIR}\"/gpytoolbox_bindings*.so; do old_path=\"$(otool -L \"${lib}\" | awk '/libwgpu_native[.]dylib/ {print $1; exit}')\"; if [ -n \"${old_path}\" ]; then install_name_tool -change \"${old_path}\" \"@rpath/libwgpu_native.dylib\" \"${lib}\"; fi; done"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "jeongseok-meta"
+      ]
+    },
+    "package": {
+      "name": "gpytoolbox",
+      "version": "0.3.7"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake >=3.16,<3.27"
+      ],
+      "host": [
+        "packaging",
+        "pip",
+        "python",
+        "pybind11",
+        "setuptools",
+        "wheel",
+        "nanoflann",
+        "wgpu-native 0.17.0.2"
+      ],
+      "run": [
+        "numpy >=1.22.4,<2.3",
+        "python",
+        "scikit-image",
+        "scipy >=1.7,<1.14",
+        "scs"
+      ]
+    },
+    "schema_version": 0,
+    "source": [
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      },
+      {
+        "patches": [
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
+        ],
+        "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
+        "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers/webgpu",
+        "sha256": "61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp"
+      },
+      {
+        "folder": "ext/webgpu-distribution-headers",
+        "sha256": "46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668",
+        "url": "https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt"
+      }
+    ],
+    "test": {
+      "commands": [
+        "pip check",
+        "python run_test.py",
+        "python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\""
+      ],
+      "files": [
+        "run_test.py"
+      ],
+      "imports": [
+        "gpytoolbox",
+        "gpytoolbox.copyleft",
+        "gpytoolbox_bindings",
+        "gpytoolbox_bindings_copyleft"
+      ],
+      "requires": [
+        "pip"
+      ]
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "nanoflann",
+        "packaging",
+        "pip",
+        "pybind11",
+        "python",
+        "setuptools",
+        "wgpu-native",
+        "wheel"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "numpy",
+        "python",
+        "scikit-image",
+        "scipy",
+        "scs"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip"
+      ]
+    }
+  },
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -756,13 +1381,15 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
     "osx_64",
+    "osx_arm64",
     "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/gpytoolbox.json"
   },
-  "raw_meta_yaml": "{% set name = \"gpytoolbox\" %}\n{% set version = \"0.3.7\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  - url: https://github.com/sgsellan/gpytoolbox/archive/v{{ version }}.tar.gz\n    sha256: 826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940\n    patches:\n      - patches/0001-use-conda-wgpu-native.patch\n  # These C headers must match the generated C++ wrapper below. The current\n  # conda-forge WebGPU C headers are source-incompatible with this wrapper.\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h\n    sha256: 09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb\n    folder: ext/webgpu-distribution-headers/webgpu\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h\n    sha256: a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f\n    folder: ext/webgpu-distribution-headers/webgpu\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp\n    sha256: 61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46\n    folder: ext/webgpu-distribution-headers/webgpu\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt\n    sha256: 46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668\n    folder: ext/webgpu-distribution-headers\n\nbuild:\n  number: 0\n  skip: true  # [python_impl == 'pypy' or py>=313]\n  script:\n    - \"{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\"\n    # wgpu-native 0.17.0.2 has a macOS install name with its build prefix.\n    # Rewrite the extension dependency to the packaged dylib's rpath.\n    - for lib in \"${SP_DIR}\"/gpytoolbox_bindings*.so; do old_path=\"$(otool -L \"${lib}\" | awk '/libwgpu_native[.]dylib/ {print $1; exit}')\"; if [ -n \"${old_path}\" ]; then install_name_tool -change \"${old_path}\" \"@rpath/libwgpu_native.dylib\" \"${lib}\"; fi; done  # [osx]\n\nrequirements:\n  build:\n    - {{ compiler(\"c\") }}\n    - {{ compiler(\"cxx\") }}\n    - {{ stdlib(\"c\") }}\n    - cmake >=3.16,<3.27\n    - make        # [linux]\n    - packaging   # [target_platform != build_platform]\n    - pip         # [target_platform != build_platform]\n    - python      # [target_platform != build_platform]\n    - setuptools  # [target_platform != build_platform]\n    - wheel       # [target_platform != build_platform]\n  host:\n    - packaging\n    - pip\n    - python\n    - pybind11\n    - setuptools\n    - wheel\n    - libgl-devel           # [linux]\n    - libopengl-devel       # [linux]\n    - xorg-libx11            # [linux]\n    - xorg-xorgproto         # [linux]\n    - xorg-libxrandr         # [linux]\n    - xorg-libxinerama       # [linux]\n    - xorg-libxcursor        # [linux]\n    - xorg-libxi             # [linux]\n    - libxkbcommon           # [linux]\n    - nanoflann\n    - wayland                # [linux]\n    # gpytoolbox v0.3.4's generated WebGPU wrapper matches this runtime.\n    # Newer 0.17.x headers remove or rename APIs used by upstream.\n    - wgpu-native 0.17.0.2\n  run:\n    - numpy >=1.22.4,<2.3\n    - python\n    - scikit-image\n    - scipy >=1.7,<1.14\n    - scs\n\ntest:\n  imports:\n    - gpytoolbox\n    - gpytoolbox.copyleft\n    - gpytoolbox_bindings\n    - gpytoolbox_bindings_copyleft\n  commands:\n    - pip check\n    - python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\"\n  requires:\n    - pip\n\nabout:\n  home: https://github.com/sgsellan/gpytoolbox\n  summary: A collection of utility functions to prototype geometry processing research in python\n  license: MIT AND GPL-3.0-only\n  license_file:\n    - LICENSE.MIT\n    - LICENSE.GPL\n    - ext/webgpu-distribution-headers/LICENSE.txt\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n",
+  "raw_meta_yaml": "{% set name = \"gpytoolbox\" %}\n{% set version = \"0.3.7\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  - url: https://github.com/sgsellan/gpytoolbox/archive/v{{ version }}.tar.gz\n    sha256: 826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940\n    patches:\n      - patches/0001-use-conda-wgpu-native.patch\n      - patches/0002-honor-conda-cmake-args.patch\n  # These C headers must match the generated C++ wrapper below. The current\n  # conda-forge WebGPU C headers are source-incompatible with this wrapper.\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.h\n    sha256: 09e3fca980bfbb880b26b0d7fbdfd9d284a3faa99942d198c7a208f9be7a0bfb\n    folder: ext/webgpu-distribution-headers/webgpu\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/wgpu.h\n    sha256: a9310591ee1bc51928577f4140d12172b0257f253afce9838e53b665f0ee0d7f\n    folder: ext/webgpu-distribution-headers/webgpu\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/include/webgpu/webgpu.hpp\n    sha256: 61ab357865b9d7d765f46837fe651c0ebd84e4f3955a9bea084f962fa539de46\n    folder: ext/webgpu-distribution-headers/webgpu\n  - url: https://raw.githubusercontent.com/eliemichel/WebGPU-distribution/9dd47f8515dfd7112b750da07e719460a88bf2e8/LICENSE.txt\n    sha256: 46f069fb0e448fb4d5e9e21b3483912495381399656fe7a1190541b7bf74f668\n    folder: ext/webgpu-distribution-headers\n\nbuild:\n  number: 1\n  # Upstream builds libigl's Embree integration, which currently supports\n  # conda-forge's x86 and ARM targets but not linux-ppc64le.\n  skip: true  # [python_impl == 'pypy' or py>=313]\n  script:\n    - \"{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\"\n    # wgpu-native 0.17.0.2 has a macOS install name with its build prefix.\n    # Rewrite the extension dependency to the packaged dylib's rpath.\n    - for lib in \"${SP_DIR}\"/gpytoolbox_bindings*.so; do old_path=\"$(otool -L \"${lib}\" | awk '/libwgpu_native[.]dylib/ {print $1; exit}')\"; if [ -n \"${old_path}\" ]; then install_name_tool -change \"${old_path}\" \"@rpath/libwgpu_native.dylib\" \"${lib}\"; fi; done  # [osx]\n\nrequirements:\n  build:\n    - {{ compiler(\"c\") }}\n    - {{ compiler(\"cxx\") }}\n    - {{ stdlib(\"c\") }}\n    - cmake >=3.16,<3.27\n    - cross-python_{{ target_platform }}  # [target_platform != build_platform]\n    - make        # [linux]\n    - packaging   # [target_platform != build_platform]\n    - pip         # [target_platform != build_platform]\n    - pybind11    # [target_platform != build_platform]\n    - python      # [target_platform != build_platform]\n    - setuptools  # [target_platform != build_platform]\n    - wheel       # [target_platform != build_platform]\n  host:\n    - packaging\n    - pip\n    - python\n    - pybind11\n    - setuptools\n    - wheel\n    - libgl-devel           # [linux]\n    - libopengl-devel       # [linux]\n    - xorg-libx11            # [linux]\n    - xorg-xorgproto         # [linux]\n    - xorg-libxrandr         # [linux]\n    - xorg-libxinerama       # [linux]\n    - xorg-libxcursor        # [linux]\n    - xorg-libxi             # [linux]\n    - libxkbcommon           # [linux]\n    - nanoflann\n    - wayland                # [linux]\n    # gpytoolbox v0.3.4's generated WebGPU wrapper matches this runtime.\n    # Newer 0.17.x headers remove or rename APIs used by upstream.\n    - wgpu-native 0.17.0.2\n  run:\n    - numpy >=1.22.4,<2.3\n    - python\n    - scikit-image\n    - scipy >=1.7,<1.14\n    - scs\n\ntest:\n  files:\n    - run_test.py\n  imports:\n    - gpytoolbox\n    - gpytoolbox.copyleft\n    - gpytoolbox_bindings\n    - gpytoolbox_bindings_copyleft\n  commands:\n    - pip check\n    - python run_test.py\n    - python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\"\n  requires:\n    - pip\n\nabout:\n  home: https://github.com/sgsellan/gpytoolbox\n  summary: A collection of utility functions to prototype geometry processing research in python\n  license: MIT AND GPL-3.0-only\n  license_file:\n    - LICENSE.MIT\n    - LICENSE.GPL\n    - ext/webgpu-distribution-headers/LICENSE.txt\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -921,7 +1548,7 @@
       "summary": "A collection of utility functions to prototype geometry processing research in python"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
       ]
@@ -964,7 +1591,8 @@
     "source": [
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -991,7 +1619,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -1018,7 +1647,8 @@
       },
       {
         "patches": [
-          "patches/0001-use-conda-wgpu-native.patch"
+          "patches/0001-use-conda-wgpu-native.patch",
+          "patches/0002-honor-conda-cmake-args.patch"
         ],
         "sha256": "826bc93720cd341c751a19a9ac0c772afcea3a5992854534fe2c44d2d6cf1940",
         "url": "https://github.com/sgsellan/gpytoolbox/archive/v0.3.7.tar.gz"
@@ -1047,7 +1677,11 @@
     "test": {
       "commands": [
         "pip check",
+        "python run_test.py",
         "python -c \"import gpytoolbox as gpy; v, f = gpy.regular_square_mesh(2); assert v.shape[1] == 2; assert f.shape[1] == 3\""
+      ],
+      "files": [
+        "run_test.py"
       ],
       "imports": [
         "gpytoolbox",
