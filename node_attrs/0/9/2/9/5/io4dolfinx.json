@@ -1,19 +1,24 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nmpich:\n- '4'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npython_min:\n- '3.10'\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "noarch_platforms": [
+      "linux_64",
+      "win_64"
+    ]
   },
-  "feedstock_hash": "2a34b635cca36e1f3e8babcf6706b1656cd62fcc",
-  "feedstock_hash_ts": 1778567446,
+  "feedstock_hash": "009a5de1a2d58d4c42ef073217bf89eeeabdfe65",
+  "feedstock_hash_ts": 1778862075,
   "feedstock_name": "io4dolfinx",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -22,18 +27,14 @@
       "doc_url": "https://scientificcomputing.github.io/io4dolfinx/",
       "home": "https://github.com/scientificcomputing/io4dolfinx",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "Input/Output for dolfinx"
     },
     "build": {
-      "number": "1",
-      "script": "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
-      "script_env": [
-        "MPIEXEC_TIMEOUT=1200",
-        "HDF5_USE_FILE_LOCKING=FALSE",
-        "HYDRA_IFACE=lo",
-        "FI_PROVIDER=tcp"
-      ]
+      "noarch": "python",
+      "number": "2",
+      "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
     },
     "extra": {
       "recipe-maintainers": [
@@ -41,54 +42,96 @@
         "jorgensd"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "io4dolfinx",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.10",
+            "numpy",
+            "packaging",
+            "fenics-dolfinx >=0.10.0",
+            "pyvista",
+            "__unix",
+            "adios2 >=2.10.2 mpi_*",
+            "h5py * mpi_*"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "io4dolfinx"
+              ],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "pyproject.toml",
+                "tests"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python 3.10.*",
+                "pip",
+                "ipyparallel",
+                "mpich",
+                "pytest"
+              ]
+            },
+            "script": {
+              "content": [
+                "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
+                "mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests"
+              ],
+              "env": {
+                "HDF5_USE_FILE_LOCKING": "FALSE",
+                "MPIEXEC_TIMEOUT": "1200"
+              }
+            }
+          }
+        ],
+        "version": "1.2.0"
+      }
+    ],
     "package": {
       "name": "io4dolfinx",
       "version": "1.2.0"
     },
     "requirements": {
       "host": [
-        "python 3.10",
+        "python 3.10.*",
         "pip",
         "setuptools"
       ],
       "run": [
-        "python",
+        "python >=3.10",
         "numpy",
         "packaging",
         "fenics-dolfinx >=0.10.0",
         "pyvista",
-        "adios2  >=2.10.2 mpi_*",
+        "__unix",
+        "adios2 >=2.10.2 mpi_*",
         "h5py * mpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Increase-tolerance-on-yet-another-test-to-make-tests.patch"
       ],
       "sha256": "2da5fb02998cef9203c2da75a6280231ff66bc044557e6816148e968fcbf53b7",
       "url": "https://github.com/scientificcomputing/io4dolfinx/archive/refs/tags/v1.2.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
-        "mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests",
-        "pip check"
-      ],
-      "imports": [
-        "io4dolfinx"
-      ],
-      "requires": [
-        "python 3.10",
-        "pip",
-        "ipyparallel",
-        "mpich",
-        "pytest"
-      ],
-      "source_files": [
-        "pyproject.toml",
-        "tests"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -107,6 +150,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__unix",
         "adios2",
         "fenics-dolfinx",
         "h5py",
@@ -133,19 +177,14 @@
       "doc_url": "https://scientificcomputing.github.io/io4dolfinx/",
       "home": "https://github.com/scientificcomputing/io4dolfinx",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "Input/Output for dolfinx"
     },
     "build": {
-      "number": "1",
-      "script": "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
-      "script_env": [
-        "MPIEXEC_TIMEOUT=1200",
-        "HDF5_USE_FILE_LOCKING=FALSE",
-        "HYDRA_IFACE=lo",
-        "FI_PROVIDER=tcp",
-        "HYDRA_IFACE=lo0"
-      ]
+      "noarch": "python",
+      "number": "2",
+      "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
     },
     "extra": {
       "recipe-maintainers": [
@@ -153,169 +192,159 @@
         "jorgensd"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "io4dolfinx",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.10",
+            "numpy",
+            "packaging",
+            "fenics-dolfinx >=0.10.0",
+            "pyvista",
+            "__unix",
+            "adios2 >=2.10.2 mpi_*",
+            "h5py * mpi_*"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "io4dolfinx"
+              ],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "pyproject.toml",
+                "tests"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python 3.10.*",
+                "pip",
+                "ipyparallel",
+                "mpich",
+                "pytest"
+              ]
+            },
+            "script": {
+              "content": [
+                "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
+                "mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests"
+              ],
+              "env": {
+                "HDF5_USE_FILE_LOCKING": "FALSE",
+                "MPIEXEC_TIMEOUT": "1200"
+              }
+            }
+          }
+        ],
+        "version": "1.2.0"
+      },
+      {
+        "build": null,
+        "name": "io4dolfinx",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.10",
+            "numpy",
+            "packaging",
+            "fenics-dolfinx >=0.10.0",
+            "pyvista",
+            "__unix",
+            "adios2 >=2.10.2 mpi_*",
+            "h5py * mpi_*"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "io4dolfinx"
+              ],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "pyproject.toml",
+                "tests"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python 3.10.*",
+                "pip",
+                "ipyparallel",
+                "mpich",
+                "pytest"
+              ]
+            },
+            "script": {
+              "content": [
+                "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
+                "mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests"
+              ],
+              "env": {
+                "HDF5_USE_FILE_LOCKING": "FALSE",
+                "MPIEXEC_TIMEOUT": "1200"
+              }
+            }
+          }
+        ],
+        "version": "1.2.0"
+      }
+    ],
     "package": {
       "name": "io4dolfinx",
       "version": "1.2.0"
     },
     "requirements": {
       "host": [
-        "python 3.10",
+        "python 3.10.*",
         "pip",
         "setuptools"
       ],
       "run": [
-        "python",
+        "python >=3.10",
         "numpy",
         "packaging",
         "fenics-dolfinx >=0.10.0",
         "pyvista",
-        "adios2  >=2.10.2 mpi_*",
-        "h5py * mpi_*",
-        "h5py"
-      ]
-    },
-    "schema_version": 0,
-    "source": {
-      "patches": [
-        "0001-Increase-tolerance-on-yet-another-test-to-make-tests.patch"
-      ],
-      "sha256": "2da5fb02998cef9203c2da75a6280231ff66bc044557e6816148e968fcbf53b7",
-      "url": "https://github.com/scientificcomputing/io4dolfinx/archive/refs/tags/v1.2.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
-        "mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests",
-        "pip check"
-      ],
-      "imports": [
-        "io4dolfinx"
-      ],
-      "requires": [
-        "python 3.10",
-        "pip",
-        "ipyparallel",
-        "mpich",
-        "pytest"
-      ],
-      "source_files": [
-        "pyproject.toml",
-        "tests"
-      ]
-    }
-  },
-  "name": "io4dolfinx",
-  "osx_64_meta_yaml": {
-    "about": {
-      "dev_url": "https://github.com/scientificcomputing/io4dolfinx",
-      "doc_url": "https://scientificcomputing.github.io/io4dolfinx/",
-      "home": "https://github.com/scientificcomputing/io4dolfinx",
-      "license": "MIT",
-      "license_file": "LICENSE",
-      "summary": "Input/Output for dolfinx"
-    },
-    "build": {
-      "number": "1",
-      "script": "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
-      "script_env": [
-        "MPIEXEC_TIMEOUT=1200",
-        "HDF5_USE_FILE_LOCKING=FALSE",
-        "HYDRA_IFACE=lo0",
-        "FI_PROVIDER=tcp"
-      ]
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "finsberg",
-        "jorgensd"
-      ]
-    },
-    "package": {
-      "name": "io4dolfinx",
-      "version": "1.2.0"
-    },
-    "requirements": {
-      "host": [
-        "python 3.10",
-        "pip",
-        "setuptools"
-      ],
-      "run": [
-        "python",
-        "numpy",
-        "packaging",
-        "fenics-dolfinx >=0.10.0",
-        "pyvista",
-        "adios2  >=2.10.2 mpi_*",
+        "__unix",
+        "adios2 >=2.10.2 mpi_*",
         "h5py * mpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Increase-tolerance-on-yet-another-test-to-make-tests.patch"
       ],
       "sha256": "2da5fb02998cef9203c2da75a6280231ff66bc044557e6816148e968fcbf53b7",
       "url": "https://github.com/scientificcomputing/io4dolfinx/archive/refs/tags/v1.2.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
-        "mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests",
-        "pip check"
-      ],
-      "imports": [
-        "io4dolfinx"
-      ],
-      "requires": [
-        "python 3.10",
-        "pip",
-        "ipyparallel",
-        "mpich",
-        "pytest"
-      ],
-      "source_files": [
-        "pyproject.toml",
-        "tests"
-      ]
     }
   },
-  "osx_64_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": []
-    },
-    "host": {
-      "__set__": true,
-      "elements": [
-        "pip",
-        "python",
-        "setuptools"
-      ]
-    },
-    "run": {
-      "__set__": true,
-      "elements": [
-        "adios2",
-        "fenics-dolfinx",
-        "h5py",
-        "numpy",
-        "packaging",
-        "python",
-        "pyvista"
-      ]
-    },
-    "test": {
-      "__set__": true,
-      "elements": [
-        "ipyparallel",
-        "mpich",
-        "pip",
-        "pytest",
-        "python"
-      ]
-    }
-  },
+  "name": "io4dolfinx",
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -325,16 +354,16 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64",
     "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/io4dolfinx.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.2.0\" %}\n\npackage:\n  name: \"io4dolfinx\"\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/scientificcomputing/io4dolfinx/archive/refs/tags/v{{ version }}.tar.gz\n  sha256: 2da5fb02998cef9203c2da75a6280231ff66bc044557e6816148e968fcbf53b7\n  patches:\n    - 0001-Increase-tolerance-on-yet-another-test-to-make-tests.patch\n\nbuild:\n  number: 1\n\n  # openmpi oversubscribe env\n  script_env:\n    - MPIEXEC_TIMEOUT=1200\n    - HDF5_USE_FILE_LOCKING=FALSE # prevent HDF5 from deadlocking on CI filesystems\n    - HYDRA_IFACE=lo0  # [osx] Force MPICH to use the local loopback network interface\n    - HYDRA_IFACE=lo   # [linux] Force MPICH to use the local loopback network interface\n    - FI_PROVIDER=tcp  # Force MPI to use standard TCP instead of looking for HPC interconnects\n  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\n\nrequirements:\n  host:\n    - python {{ python_min }}\n    - pip\n    - setuptools\n  run:\n    - python\n    - numpy\n    - packaging\n    - fenics-dolfinx >=0.10.0\n    - pyvista\n    - adios2  >=2.10.2 mpi_*  # [not win]\n    - h5py * mpi_*  # [not win]\n    - h5py  # [win]\ntest:\n  source_files:\n    - pyproject.toml\n    - tests\n  requires:\n    - python {{ python_min }}\n    - pip\n    - ipyparallel\n    - mpich  # [not win]\n    - pytest\n  imports:\n    - io4dolfinx\n  commands:\n    - pytest --log-cli-level=debug -vvs --maxfail 4 tests\n    - mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests  # [not win]\n    - pip check\n\nabout:\n  home: https://github.com/scientificcomputing/io4dolfinx\n  summary: Input/Output for dolfinx\n  license: MIT\n  license_file: LICENSE\n  doc_url: https://scientificcomputing.github.io/io4dolfinx/\n  dev_url: https://github.com/scientificcomputing/io4dolfinx\n\nextra:\n  recipe-maintainers:\n    - finsberg\n    - jorgensd\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.2.0\"\n\npackage:\n  name: io4dolfinx\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/scientificcomputing/io4dolfinx/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 2da5fb02998cef9203c2da75a6280231ff66bc044557e6816148e968fcbf53b7\n  patches:\n    - 0001-Increase-tolerance-on-yet-another-test-to-make-tests.patch\n\nbuild:\n  number: 2\n  noarch: python\n  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - pip\n    - setuptools\n  run:\n    - python >=${{ python_min }}\n    - numpy\n    - packaging\n    - fenics-dolfinx >=0.10.0\n    - pyvista\n    - if: unix\n      then:\n        - __unix\n        - adios2 >=2.10.2 mpi_*\n        - h5py * mpi_*\n    - if: win\n      then:\n        - __win\n        - h5py\n\ntests:\n  - python:\n      imports:\n        - io4dolfinx\n      pip_check: true\n      python_version: ${{ python_min }}\n  - files:\n      source:\n        - pyproject.toml\n        - tests\n    requirements:\n      run:\n        - python ${{ python_min }}.*\n        - pip\n        - ipyparallel\n        - if: unix\n          then:\n            - mpich\n        - pytest\n    script:\n      env:\n        MPIEXEC_TIMEOUT: \"1200\"\n        HDF5_USE_FILE_LOCKING: \"FALSE\"\n      content:\n        - if: unix\n          then:\n            - pytest --log-cli-level=debug -vvs --maxfail 4 tests\n            - mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests\n\nabout:\n  summary: Input/Output for dolfinx\n  license: MIT\n  license_file: LICENSE\n  homepage: https://github.com/scientificcomputing/io4dolfinx\n  repository: https://github.com/scientificcomputing/io4dolfinx\n  documentation: https://scientificcomputing.github.io/io4dolfinx/\n\nextra:\n  recipe-maintainers:\n    - finsberg\n    - jorgensd\n",
   "req": {
     "__set__": true,
     "elements": [
+      "__unix",
       "adios2",
       "fenics-dolfinx",
       "h5py",
@@ -362,6 +391,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__unix",
         "adios2",
         "fenics-dolfinx",
         "h5py",
@@ -392,20 +422,20 @@
       "__set__": true,
       "elements": [
         "pip",
-        "python 3.10",
+        "python 3.10.*",
         "setuptools"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "adios2  >=2.10.2 mpi_*",
+        "__unix",
+        "adios2 >=2.10.2 mpi_*",
         "fenics-dolfinx >=0.10.0",
-        "h5py",
         "h5py * mpi_*",
         "numpy",
         "packaging",
-        "python",
+        "python >=3.10",
         "pyvista"
       ]
     },
@@ -416,7 +446,7 @@
         "mpich",
         "pip",
         "pytest",
-        "python 3.10"
+        "python 3.10.*"
       ]
     }
   },
@@ -431,17 +461,14 @@
       "doc_url": "https://scientificcomputing.github.io/io4dolfinx/",
       "home": "https://github.com/scientificcomputing/io4dolfinx",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "Input/Output for dolfinx"
     },
     "build": {
-      "number": "1",
-      "script": "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
-      "script_env": [
-        "MPIEXEC_TIMEOUT=1200",
-        "HDF5_USE_FILE_LOCKING=FALSE",
-        "FI_PROVIDER=tcp"
-      ]
+      "noarch": "python",
+      "number": "2",
+      "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
     },
     "extra": {
       "recipe-maintainers": [
@@ -449,51 +476,96 @@
         "jorgensd"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "io4dolfinx",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.10",
+            "numpy",
+            "packaging",
+            "fenics-dolfinx >=0.10.0",
+            "pyvista",
+            "__unix",
+            "adios2 >=2.10.2 mpi_*",
+            "h5py * mpi_*"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "io4dolfinx"
+              ],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "pyproject.toml",
+                "tests"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python 3.10.*",
+                "pip",
+                "ipyparallel",
+                "mpich",
+                "pytest"
+              ]
+            },
+            "script": {
+              "content": [
+                "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
+                "mpiexec -n 2 pytest --log-cli-level=debug -vvs --maxfail 4 tests"
+              ],
+              "env": {
+                "HDF5_USE_FILE_LOCKING": "FALSE",
+                "MPIEXEC_TIMEOUT": "1200"
+              }
+            }
+          }
+        ],
+        "version": "1.2.0"
+      }
+    ],
     "package": {
       "name": "io4dolfinx",
       "version": "1.2.0"
     },
     "requirements": {
       "host": [
-        "python 3.10",
+        "python 3.10.*",
         "pip",
         "setuptools"
       ],
       "run": [
-        "python",
+        "python >=3.10",
         "numpy",
         "packaging",
         "fenics-dolfinx >=0.10.0",
         "pyvista",
-        "h5py"
+        "__unix",
+        "adios2 >=2.10.2 mpi_*",
+        "h5py * mpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Increase-tolerance-on-yet-another-test-to-make-tests.patch"
       ],
       "sha256": "2da5fb02998cef9203c2da75a6280231ff66bc044557e6816148e968fcbf53b7",
       "url": "https://github.com/scientificcomputing/io4dolfinx/archive/refs/tags/v1.2.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pytest --log-cli-level=debug -vvs --maxfail 4 tests",
-        "pip check"
-      ],
-      "imports": [
-        "io4dolfinx"
-      ],
-      "requires": [
-        "python 3.10",
-        "pip",
-        "ipyparallel",
-        "pytest"
-      ],
-      "source_files": [
-        "pyproject.toml",
-        "tests"
-      ]
     }
   },
   "win_64_requirements": {
@@ -512,6 +584,8 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__unix",
+        "adios2",
         "fenics-dolfinx",
         "h5py",
         "numpy",
@@ -524,6 +598,7 @@
       "__set__": true,
       "elements": [
         "ipyparallel",
+        "mpich",
         "pip",
         "pytest",
         "python"
