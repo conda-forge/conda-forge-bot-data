@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -14,15 +14,17 @@
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "1d18360bc7ece758c327f685b85f510165b9e0be",
-  "feedstock_hash_ts": 1778744317,
+  "feedstock_hash": "df5567345ecc9e53ec73975b3501882109450cb8",
+  "feedstock_hash_ts": 1778826567,
   "feedstock_name": "osg2vsg",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -30,20 +32,79 @@
       "dev_url": "https://github.com/vsg-dev/osg2vsg",
       "home": "https://vsg-dev.github.io/vsg-dev.io/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE.md",
       "summary": "Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "osg2vsg"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "osg2vsg"
+        ]
+      },
+      "script": "bash \"${RECIPE_DIR}/build.sh\""
     },
     "extra": {
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
     "package": {
       "name": "osg2vsg",
       "version": "0.3.0"
@@ -62,38 +123,15 @@
         "libvulkan-loader",
         "openscenegraph",
         "vulkanscenegraph"
-      ],
-      "run": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/osg2vsg/Export.h",
-        "test -f $PREFIX/lib/libosg2vsg${SHLIB_EXT}",
-        "test -f $PREFIX/lib/cmake/osg2vsg/osg2vsgConfig.cmake"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Use-current-vsg-mipmap-property.patch"
       ],
-      "files": [
-        "tests/"
-      ],
-      "requires": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "cmake",
-        "ninja",
-        "pkgconfig"
-      ]
+      "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
+      "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -119,15 +157,12 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
         "ninja",
@@ -140,20 +175,79 @@
       "dev_url": "https://github.com/vsg-dev/osg2vsg",
       "home": "https://vsg-dev.github.io/vsg-dev.io/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE.md",
       "summary": "Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "osg2vsg"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "osg2vsg"
+        ]
+      },
+      "script": "bash \"${RECIPE_DIR}/build.sh\""
     },
     "extra": {
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
     "package": {
       "name": "osg2vsg",
       "version": "0.3.0"
@@ -172,38 +266,15 @@
         "libvulkan-loader",
         "openscenegraph",
         "vulkanscenegraph"
-      ],
-      "run": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/osg2vsg/Export.h",
-        "test -f $PREFIX/lib/libosg2vsg${SHLIB_EXT}",
-        "test -f $PREFIX/lib/cmake/osg2vsg/osg2vsgConfig.cmake"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Use-current-vsg-mipmap-property.patch"
       ],
-      "files": [
-        "tests/"
-      ],
-      "requires": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "cmake",
-        "ninja",
-        "pkgconfig"
-      ]
+      "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
+      "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -229,15 +300,12 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
         "ninja",
@@ -250,20 +318,79 @@
       "dev_url": "https://github.com/vsg-dev/osg2vsg",
       "home": "https://vsg-dev.github.io/vsg-dev.io/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE.md",
       "summary": "Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "osg2vsg"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "osg2vsg"
+        ]
+      },
+      "script": "bash \"${RECIPE_DIR}/build.sh\""
     },
     "extra": {
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
     "package": {
       "name": "osg2vsg",
       "version": "0.3.0"
@@ -282,38 +409,15 @@
         "libvulkan-loader",
         "openscenegraph",
         "vulkanscenegraph"
-      ],
-      "run": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/osg2vsg/Export.h",
-        "test -f $PREFIX/lib/libosg2vsg${SHLIB_EXT}",
-        "test -f $PREFIX/lib/cmake/osg2vsg/osg2vsgConfig.cmake"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Use-current-vsg-mipmap-property.patch"
       ],
-      "files": [
-        "tests/"
-      ],
-      "requires": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "cmake",
-        "ninja",
-        "pkgconfig"
-      ]
+      "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
+      "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -339,15 +443,12 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
         "ninja",
@@ -360,20 +461,344 @@
       "dev_url": "https://github.com/vsg-dev/osg2vsg",
       "home": "https://vsg-dev.github.io/vsg-dev.io/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE.md",
       "summary": "Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "osg2vsg"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "osg2vsg"
+        ]
+      },
+      "script": "bash \"${RECIPE_DIR}/build.sh\""
     },
     "extra": {
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
     "package": {
       "name": "osg2vsg",
       "version": "0.3.0"
@@ -392,77 +817,15 @@
         "libvulkan-loader",
         "openscenegraph",
         "vulkanscenegraph"
-      ],
-      "run": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      },
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      },
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      },
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      },
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      },
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/osg2vsg/Export.h",
-        "test -f $PREFIX/lib/libosg2vsg${SHLIB_EXT}",
-        "test -f $PREFIX/lib/cmake/osg2vsg/osg2vsgConfig.cmake",
-        "if not exist %PREFIX%\\\\Library\\\\include\\\\osg2vsg\\\\Export.h exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\lib\\\\osg2vsg.lib exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\bin\\\\osg2vsg.dll exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\lib\\\\cmake\\\\osg2vsg\\\\osg2vsgConfig.cmake exit 1"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Use-current-vsg-mipmap-property.patch"
       ],
-      "files": [
-        "tests/"
-      ],
-      "requires": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "cmake",
-        "ninja",
-        "pkgconfig"
-      ]
+      "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
+      "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
     }
   },
   "name": "osg2vsg",
@@ -471,20 +834,79 @@
       "dev_url": "https://github.com/vsg-dev/osg2vsg",
       "home": "https://vsg-dev.github.io/vsg-dev.io/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE.md",
       "summary": "Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "osg2vsg"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "osg2vsg"
+        ]
+      },
+      "script": "bash \"${RECIPE_DIR}/build.sh\""
     },
     "extra": {
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
     "package": {
       "name": "osg2vsg",
       "version": "0.3.0"
@@ -494,44 +916,24 @@
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "ninja",
+        "pkgconfig"
       ],
       "host": [
+        "libgl-devel",
         "libvulkan-headers",
         "libvulkan-loader",
         "openscenegraph",
         "vulkanscenegraph"
-      ],
-      "run": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/osg2vsg/Export.h",
-        "test -f $PREFIX/lib/libosg2vsg${SHLIB_EXT}",
-        "test -f $PREFIX/lib/cmake/osg2vsg/osg2vsgConfig.cmake"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Use-current-vsg-mipmap-property.patch"
       ],
-      "files": [
-        "tests/"
-      ],
-      "requires": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "cmake",
-        "ninja"
-      ]
+      "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
+      "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -541,12 +943,14 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja"
+        "ninja",
+        "pkgconfig"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libgl-devel",
         "libvulkan-headers",
         "libvulkan-loader",
         "openscenegraph",
@@ -555,18 +959,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja"
+        "ninja",
+        "pkgconfig"
       ]
     }
   },
@@ -575,20 +977,79 @@
       "dev_url": "https://github.com/vsg-dev/osg2vsg",
       "home": "https://vsg-dev.github.io/vsg-dev.io/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE.md",
       "summary": "Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "osg2vsg"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "osg2vsg"
+        ]
+      },
+      "script": "bash \"${RECIPE_DIR}/build.sh\""
     },
     "extra": {
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
     "package": {
       "name": "osg2vsg",
       "version": "0.3.0"
@@ -598,44 +1059,24 @@
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "ninja",
+        "pkgconfig"
       ],
       "host": [
+        "libgl-devel",
         "libvulkan-headers",
         "libvulkan-loader",
         "openscenegraph",
         "vulkanscenegraph"
-      ],
-      "run": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/osg2vsg/Export.h",
-        "test -f $PREFIX/lib/libosg2vsg${SHLIB_EXT}",
-        "test -f $PREFIX/lib/cmake/osg2vsg/osg2vsgConfig.cmake"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Use-current-vsg-mipmap-property.patch"
       ],
-      "files": [
-        "tests/"
-      ],
-      "requires": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "cmake",
-        "ninja"
-      ]
+      "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
+      "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -645,12 +1086,14 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja"
+        "ninja",
+        "pkgconfig"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libgl-devel",
         "libvulkan-headers",
         "libvulkan-loader",
         "openscenegraph",
@@ -659,18 +1102,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja"
+        "ninja",
+        "pkgconfig"
       ]
     }
   },
@@ -692,7 +1133,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/osg2vsg.json"
   },
-  "raw_meta_yaml": "{% set name = \"osg2vsg\" %}\n{% set version = \"0.3.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  - url: https://github.com/vsg-dev/osg2vsg/archive/v{{ version }}.tar.gz\n    sha256: 784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0\n    patches:\n      - patches/0001-Use-current-vsg-mipmap-property.patch\n\nbuild:\n  number: 1\n  run_exports:\n    - {{ pin_subpackage('osg2vsg', max_pin='x.x') }}\n\nrequirements:\n  build:\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake\n    - ninja  # [unix]\n    - pkgconfig  # [linux]\n  host:\n    - libgl-devel  # [linux]\n    - libvulkan-headers\n    - libvulkan-loader\n    - openscenegraph\n    - vulkanscenegraph\n  run:\n    - libvulkan-loader\n    - vulkanscenegraph\n\ntest:\n  commands:\n    - test -f $PREFIX/include/osg2vsg/Export.h  # [unix]\n    - test -f $PREFIX/lib/libosg2vsg${SHLIB_EXT}  # [unix]\n    - test -f $PREFIX/lib/cmake/osg2vsg/osg2vsgConfig.cmake  # [unix]\n    - if not exist %PREFIX%\\\\Library\\\\include\\\\osg2vsg\\\\Export.h exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\lib\\\\osg2vsg.lib exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\bin\\\\osg2vsg.dll exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\lib\\\\cmake\\\\osg2vsg\\\\osg2vsgConfig.cmake exit 1  # [win]\n  requires:\n    - {{ compiler(\"c\") }}\n    - {{ compiler(\"cxx\") }}\n    - cmake\n    - ninja  # [unix]\n    - pkgconfig  # [linux]\n  files:\n    - tests/\n\nabout:\n  home: https://vsg-dev.github.io/vsg-dev.io/\n  summary: Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph\n  license: MIT\n  license_file: LICENSE.md\n  dev_url: https://github.com/vsg-dev/osg2vsg\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n",
+  "raw_meta_yaml": "context:\n  name: osg2vsg\n  version: \"0.3.0\"\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/vsg-dev/osg2vsg/archive/v${{ version }}.tar.gz\n  sha256: 784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0\n  patches:\n    - patches/0001-Use-current-vsg-mipmap-property.patch\n\nbuild:\n  number: 2\n  script:\n    - if: win\n      then: call \"%RECIPE_DIR%\\\\build.bat\"\n    - if: unix\n      then: bash \"${RECIPE_DIR}/build.sh\"\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - if: unix\n      then: ninja\n    - if: linux\n      then: pkgconfig\n  host:\n    - if: linux\n      then: libgl-devel\n    - libvulkan-headers\n    - libvulkan-loader\n    - openscenegraph\n    - vulkanscenegraph\n  run_exports:\n    - ${{ pin_subpackage('osg2vsg', upper_bound='x.x') }}\n  ignore_run_exports:\n    from_package:\n      - libgl-devel\n      - libvulkan-loader\n\ntests:\n  - requirements:\n      run:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - if: unix\n          then: ninja\n        - if: linux\n          then: pkgconfig\n    files:\n      recipe:\n        - run_test.bat\n        - run_test.sh\n        - tests/\n    script:\n      - if: unix\n        then:\n          - test -f \"${PREFIX}/include/osg2vsg/Export.h\"\n          - test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"\n          - test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"\n          - bash run_test.sh\n      - if: win\n        then:\n          - if not exist \"%PREFIX%\\\\Library\\\\include\\\\osg2vsg\\\\Export.h\" exit 1\n          - if not exist \"%PREFIX%\\\\Library\\\\lib\\\\osg2vsg.lib\" exit 1\n          - if not exist \"%PREFIX%\\\\Library\\\\bin\\\\osg2vsg.dll\" exit 1\n          - if not exist \"%PREFIX%\\\\Library\\\\lib\\\\cmake\\\\osg2vsg\\\\osg2vsgConfig.cmake\" exit 1\n          - call run_test.bat\n\nabout:\n  homepage: https://vsg-dev.github.io/vsg-dev.io/\n  repository: https://github.com/vsg-dev/osg2vsg\n  summary: Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph\n  license: MIT\n  license_file: LICENSE.md\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -722,7 +1163,6 @@
     "host": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
         "libgl-devel",
@@ -735,17 +1175,14 @@
     "run": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub",
-        "libvulkan-loader",
-        "vulkanscenegraph"
+        "cxx_compiler_stub"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
         "ninja",
@@ -777,15 +1214,12 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
         "ninja",
@@ -803,20 +1237,79 @@
       "dev_url": "https://github.com/vsg-dev/osg2vsg",
       "home": "https://vsg-dev.github.io/vsg-dev.io/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE.md",
       "summary": "Adapter library for converting OpenSceneGraph Images and 3D models to VulkanSceneGraph"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "osg2vsg"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "osg2vsg"
+        ]
+      },
+      "script": "bash \"${RECIPE_DIR}/build.sh\""
     },
     "extra": {
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "osg2vsg"
+          ]
+        },
+        "name": "osg2vsg",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkgconfig"
+          ],
+          "host": [
+            "libgl-devel",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "openscenegraph",
+            "vulkanscenegraph"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh",
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkgconfig"
+              ]
+            },
+            "script": [
+              "test -f \"${PREFIX}/include/osg2vsg/Export.h\"",
+              "test -f \"${PREFIX}/lib/libosg2vsg${SHLIB_EXT}\"",
+              "test -f \"${PREFIX}/lib/cmake/osg2vsg/osg2vsgConfig.cmake\"",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
     "package": {
       "name": "osg2vsg",
       "version": "0.3.0"
@@ -825,44 +1318,25 @@
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "cmake"
+        "cmake",
+        "ninja",
+        "pkgconfig"
       ],
       "host": [
+        "libgl-devel",
         "libvulkan-headers",
         "libvulkan-loader",
         "openscenegraph",
         "vulkanscenegraph"
-      ],
-      "run": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "patches/0001-Use-current-vsg-mipmap-property.patch"
-        ],
-        "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
-        "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "if not exist %PREFIX%\\\\Library\\\\include\\\\osg2vsg\\\\Export.h exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\lib\\\\osg2vsg.lib exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\bin\\\\osg2vsg.dll exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\lib\\\\cmake\\\\osg2vsg\\\\osg2vsgConfig.cmake exit 1"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Use-current-vsg-mipmap-property.patch"
       ],
-      "files": [
-        "tests/"
-      ],
-      "requires": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "cmake"
-      ]
+      "sha256": "784ca5b8712fa66207bafcf6e71d41494e82d0a0ee65aa75cec6f8ebbc6a28f0",
+      "url": "https://github.com/vsg-dev/osg2vsg/archive/v0.3.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -871,12 +1345,15 @@
       "elements": [
         "c_stdlib_stub",
         "cmake",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja",
+        "pkgconfig"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libgl-devel",
         "libvulkan-headers",
         "libvulkan-loader",
         "openscenegraph",
@@ -885,17 +1362,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "libvulkan-loader",
-        "vulkanscenegraph"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": [
-        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja",
+        "pkgconfig"
       ]
     }
   }
