@@ -1,26 +1,26 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '13'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nopenssl:\n- '3'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nopenssl:\n- '3.5'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "9c00e9c804b711663418895b93c0cf0d582816d0",
-  "feedstock_hash_ts": 1776872073,
+  "feedstock_hash": "6af6b9453c91d5bdbeb9a595e05688110d4b57c8",
+  "feedstock_hash_ts": 1779180770,
   "feedstock_name": "pixi-inject",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -33,7 +33,18 @@
       "summary": "Inject conda packages into an already existing conda prefix"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "export OPENSSL_DIR=\"$PREFIX\"",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -50,6 +61,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -60,6 +72,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -75,6 +95,7 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "pkg-config"
       ],
       "host": [
@@ -93,6 +114,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "pkg-config",
         "rust_compiler_stub"
@@ -123,7 +145,18 @@
       "summary": "Inject conda packages into an already existing conda prefix"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "export OPENSSL_DIR=\"$PREFIX\"",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -140,6 +173,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -150,6 +184,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -165,6 +207,7 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "pkg-config"
       ],
       "host": [
@@ -183,96 +226,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses",
-        "pkg-config",
-        "rust_compiler_stub"
-      ]
-    },
-    "host": {
-      "__set__": true,
-      "elements": [
-        "openssl"
-      ]
-    },
-    "run": {
-      "__set__": true,
-      "elements": []
-    },
-    "test": {
-      "__set__": true,
-      "elements": []
-    }
-  },
-  "linux_ppc64le_meta_yaml": {
-    "about": {
-      "dev_url": "https://github.com/pavelzw/pixi-inject",
-      "home": "https://github.com/pavelzw/pixi-inject",
-      "license": "BSD-3-Clause",
-      "license_family": "BSD-3-Clause",
-      "license_file": "LICENSE",
-      "summary": "Inject conda packages into an already existing conda prefix"
-    },
-    "build": {
-      "number": "0"
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "pavelzw"
-      ]
-    },
-    "outputs": [
-      {
-        "build": null,
-        "name": "pixi-inject",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub",
-            "cargo-bundle-licenses",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": "pixi-inject --help"
-          }
-        ],
-        "version": "0.1.1"
-      }
-    ],
-    "package": {
-      "name": "pixi-inject",
-      "version": "0.1.1"
-    },
-    "requirements": {
-      "build": [
-        "rust_compiler_stub",
-        "c_stdlib_stub",
-        "c_compiler_stub",
-        "cargo-bundle-licenses",
-        "pkg-config"
-      ],
-      "host": [
-        "openssl"
-      ]
-    },
-    "schema_version": 1,
-    "source": {
-      "sha256": "822267315e2f7a32abda0210a3730762dc9436d988a1a4329e7d29b1c8997189",
-      "url": "https://github.com/pavelzw/pixi-inject/archive/refs/tags/v0.1.1.tar.gz"
-    }
-  },
-  "linux_ppc64le_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": [
-        "c_compiler_stub",
-        "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "pkg-config",
         "rust_compiler_stub"
@@ -303,7 +257,18 @@
       "summary": "Inject conda packages into an already existing conda prefix"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "export OPENSSL_DIR=\"$PREFIX\"",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -320,6 +285,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -330,6 +296,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -343,6 +317,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -353,6 +328,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -366,6 +349,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -376,6 +360,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -389,6 +381,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -399,6 +392,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -412,6 +413,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -422,29 +424,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
-          }
-        ],
-        "version": "0.1.1"
-      },
-      {
-        "build": null,
-        "name": "pixi-inject",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub",
-            "cargo-bundle-licenses",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
+          },
           {
-            "script": "pixi-inject --help"
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -460,6 +447,7 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "pkg-config"
       ],
       "host": [
@@ -483,7 +471,18 @@
       "summary": "Inject conda packages into an already existing conda prefix"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "export OPENSSL_DIR=\"$PREFIX\"",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -500,6 +499,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -510,6 +510,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -525,6 +533,7 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "pkg-config"
       ],
       "host": [
@@ -543,6 +552,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "pkg-config",
         "rust_compiler_stub"
@@ -573,7 +583,18 @@
       "summary": "Inject conda packages into an already existing conda prefix"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "export OPENSSL_DIR=\"$PREFIX\"",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -590,6 +611,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -600,6 +622,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -615,6 +645,7 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "pkg-config"
       ],
       "host": [
@@ -633,6 +664,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "pkg-config",
         "rust_compiler_stub"
@@ -663,7 +695,6 @@
   "platforms": [
     "linux_64",
     "linux_aarch64",
-    "linux_ppc64le",
     "osx_64",
     "osx_arm64",
     "win_64"
@@ -671,12 +702,13 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pixi-inject.json"
   },
-  "raw_meta_yaml": "context:\n  name: pixi-inject\n  version: \"0.1.1\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/pavelzw/${{ name }}/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 822267315e2f7a32abda0210a3730762dc9436d988a1a4329e7d29b1c8997189\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - ${{ compiler('rust') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - cargo-bundle-licenses\n    - pkg-config\n  host:\n    - if: unix\n      then: openssl\n\ntests:\n  - script:\n      - pixi-inject --help\n\nabout:\n  homepage: https://github.com/pavelzw/pixi-inject\n  summary: Inject conda packages into an already existing conda prefix\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  repository: https://github.com/pavelzw/pixi-inject\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
+  "raw_meta_yaml": "context:\n  name: pixi-inject\n  version: \"0.1.1\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/pavelzw/${{ name }}/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 822267315e2f7a32abda0210a3730762dc9436d988a1a4329e7d29b1c8997189\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content:\n      - if: unix\n        then:\n          - export OPENSSL_DIR=\"$PREFIX\"\n          - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .\n        else:\n          - cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path .\n      - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ compiler('rust') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    - pkg-config\n  host:\n    - if: unix\n      then: openssl\n\ntests:\n  - script:\n      - pixi-inject --help\n  - package_contents:\n      bin:\n        - pixi-inject\n      strict: true\n\nabout:\n  homepage: https://github.com/pavelzw/pixi-inject\n  summary: Inject conda packages into an already existing conda prefix\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  repository: https://github.com/pavelzw/pixi-inject\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cargo-auditable",
       "cargo-bundle-licenses",
       "openssl",
       "pkg-config",
@@ -689,6 +721,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "pkg-config",
         "rust_compiler_stub"
@@ -721,6 +754,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "pkg-config",
         "rust_compiler_stub"
@@ -756,7 +790,18 @@
       "summary": "Inject conda packages into an already existing conda prefix"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "export OPENSSL_DIR=\"$PREFIX\"",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -773,6 +818,7 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "cargo-bundle-licenses",
+            "cargo-auditable",
             "pkg-config"
           ],
           "host": [
@@ -783,6 +829,14 @@
         "tests": [
           {
             "script": "pixi-inject --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "pixi-inject"
+              ],
+              "strict": true
+            }
           }
         ],
         "version": "0.1.1"
@@ -798,6 +852,7 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "pkg-config"
       ],
       "host": [
@@ -816,6 +871,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "pkg-config",
         "rust_compiler_stub"
