@@ -3,7 +3,7 @@ import os
 import tqdm
 import shutil
 
-NEW_LOC = "../cf-graph-countyfair"
+NEW_LOC = "../autotick-bot-graph"
 
 # make the new location
 os.makedirs(NEW_LOC, exist_ok=True)
