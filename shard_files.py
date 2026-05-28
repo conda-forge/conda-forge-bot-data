@@ -3,7 +3,7 @@ import os
 import tqdm
 import shutil
 
-NEW_LOC = "../autotick-bot-graph"
+NEW_LOC = "../conda-forge-bot-data"
 
 # make the new location
 os.makedirs(NEW_LOC, exist_ok=True)

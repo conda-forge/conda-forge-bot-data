@@ -9,7 +9,7 @@ git reflog expire --expire=now --all
 git gc --prune=now --aggressive
 
 echo -e "\nForce pushing upstream..."
-git remote add origin https://github.com/conda-forge/autotick-bot-graph.git
+git remote add origin https://github.com/conda-forge/conda-forge-bot-data.git
 git push origin --force --all
 git push origin --force --tags
 
