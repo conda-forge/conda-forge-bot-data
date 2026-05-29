@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_nodejs24.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nnodejs:\n- '24'\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -19,8 +19,8 @@
       "osx_arm64": "default"
     }
   },
-  "feedstock_hash": "eb8dec3f370ec9dc51e565ac83b968622ca281b7",
-  "feedstock_hash_ts": 1779884675,
+  "feedstock_hash": "a7b0963caa65e8483fb73afc367e59f7ee46a1ef",
+  "feedstock_hash_ts": 1779975717,
   "feedstock_name": "liteparse",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -30,10 +30,29 @@
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
       "license_file": "LICENSE",
-      "summary": "Open-source PDF parsing with spatial text extraction and OCR processing"
+      "summary": "Fast, lightweight document parsing CLI"
     },
     "build": {
-      "number": "1"
+      "number": "0",
+      "script": {
+        "content": [
+          "export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-linux-x64\"",
+          "export PDFIUM_DYLIB=\"libpdfium.so\"",
+          "export PDFIUM_LIB_PATH=\"${PDFIUM_ROOT}/lib\"",
+          "export PDFIUM_INCLUDE_PATH=\"${PDFIUM_ROOT}/include\"",
+          "cargo fetch",
+          "cargo update --workspace --offline",
+          "cargo auditable install --locked --no-default-features --path crates/liteparse --root ${{ PREFIX }} --no-track",
+          "cp \"${PDFIUM_LIB_PATH}/${PDFIUM_DYLIB}\" \"${PREFIX}/bin/${PDFIUM_DYLIB}\"",
+          "cp \"${PDFIUM_ROOT}/LICENSE\" PDFIUM-LICENSE",
+          "cp -R \"${PDFIUM_ROOT}/licenses\" pdfium-licenses",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -46,97 +65,233 @@
         "name": "liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
           ],
           "host": [],
-          "run": [
-            "nodejs"
-          ]
+          "run": []
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
               ]
-            },
-            "script": "liteparse --help"
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
       },
       {
         "build": null,
-        "name": "liteparse",
+        "name": "python-liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
           ],
-          "host": [],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
           "run": [
-            "nodejs"
+            "python"
           ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "python": {
+              "imports": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
       }
     ],
     "package": {
       "name": "liteparse",
-      "version": "1.5.3"
+      "version": "2.0.1"
     },
     "requirements": {
       "build": [
-        "pnpm",
-        "pnpm-licenses",
-        "nodejs"
-      ],
-      "run": [
-        "nodejs"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "50598ecdf8ec23ebb013b18e740d309e4d6c3eda55a18db2124cd1c53c12b4e4",
-      "url": "https://registry.npmjs.org/@llamaindex/liteparse/-/liteparse-1.5.3.tgz"
+      "sha256": "c036eae33edaa8da527e0e8f9b5449fe36eadb0b6dc48a2bf3136095f918c170",
+      "url": "https://pypi.org/packages/source/l/liteparse/liteparse-2.0.1.tar.gz"
     }
   },
   "linux_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "nodejs",
-        "pnpm",
-        "pnpm-licenses"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cxx_compiler_stub",
+        "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "maturin",
+        "pip",
+        "python"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "pip"
       ]
     }
   },
@@ -147,10 +302,29 @@
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
       "license_file": "LICENSE",
-      "summary": "Open-source PDF parsing with spatial text extraction and OCR processing"
+      "summary": "Fast, lightweight document parsing CLI"
     },
     "build": {
-      "number": "1"
+      "number": "0",
+      "script": {
+        "content": [
+          "export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-linux-x64\"",
+          "export PDFIUM_DYLIB=\"libpdfium.so\"",
+          "export PDFIUM_LIB_PATH=\"${PDFIUM_ROOT}/lib\"",
+          "export PDFIUM_INCLUDE_PATH=\"${PDFIUM_ROOT}/include\"",
+          "cargo fetch",
+          "cargo update --workspace --offline",
+          "cargo auditable install --locked --no-default-features --path crates/liteparse --root ${{ PREFIX }} --no-track",
+          "cp \"${PDFIUM_LIB_PATH}/${PDFIUM_DYLIB}\" \"${PREFIX}/bin/${PDFIUM_DYLIB}\"",
+          "cp \"${PDFIUM_ROOT}/LICENSE\" PDFIUM-LICENSE",
+          "cp -R \"${PDFIUM_ROOT}/licenses\" pdfium-licenses",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -163,176 +337,630 @@
         "name": "liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
           ],
           "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
           "run": [
-            "nodejs"
+            "python"
           ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "python": {
+              "imports": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
       },
       {
         "build": null,
         "name": "liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
           ],
           "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
           "run": [
-            "nodejs"
+            "python"
           ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "python": {
+              "imports": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
       },
       {
         "build": null,
         "name": "liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
           ],
           "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
           "run": [
-            "nodejs"
+            "python"
           ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "python": {
+              "imports": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
       },
       {
         "build": null,
         "name": "liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
           ],
           "host": [],
-          "run": [
-            "nodejs"
-          ]
+          "run": []
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
               ]
-            },
-            "script": "liteparse --help"
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
       },
       {
         "build": null,
-        "name": "liteparse",
+        "name": "python-liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
           ],
-          "host": [],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
           "run": [
-            "nodejs"
+            "python"
           ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "python": {
+              "imports": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
-          }
-        ],
-        "version": "1.5.3"
-      },
-      {
-        "build": null,
-        "name": "liteparse",
-        "requirements": {
-          "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
-          ],
-          "host": [],
-          "run": [
-            "nodejs"
-          ]
-        },
-        "tests": [
+            }
+          },
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
       }
     ],
     "package": {
       "name": "liteparse",
-      "version": "1.5.3"
+      "version": "2.0.1"
     },
     "requirements": {
       "build": [
-        "pnpm",
-        "pnpm-licenses",
-        "nodejs"
-      ],
-      "run": [
-        "nodejs"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "50598ecdf8ec23ebb013b18e740d309e4d6c3eda55a18db2124cd1c53c12b4e4",
-      "url": "https://registry.npmjs.org/@llamaindex/liteparse/-/liteparse-1.5.3.tgz"
+      "sha256": "c036eae33edaa8da527e0e8f9b5449fe36eadb0b6dc48a2bf3136095f918c170",
+      "url": "https://pypi.org/packages/source/l/liteparse/liteparse-2.0.1.tar.gz"
     }
   },
   "name": "liteparse",
@@ -343,10 +971,29 @@
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
       "license_file": "LICENSE",
-      "summary": "Open-source PDF parsing with spatial text extraction and OCR processing"
+      "summary": "Fast, lightweight document parsing CLI"
     },
     "build": {
-      "number": "1"
+      "number": "0",
+      "script": {
+        "content": [
+          "export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-linux-x64\"",
+          "export PDFIUM_DYLIB=\"libpdfium.so\"",
+          "export PDFIUM_LIB_PATH=\"${PDFIUM_ROOT}/lib\"",
+          "export PDFIUM_INCLUDE_PATH=\"${PDFIUM_ROOT}/include\"",
+          "cargo fetch",
+          "cargo update --workspace --offline",
+          "cargo auditable install --locked --no-default-features --path crates/liteparse --root ${{ PREFIX }} --no-track",
+          "cp \"${PDFIUM_LIB_PATH}/${PDFIUM_DYLIB}\" \"${PREFIX}/bin/${PDFIUM_DYLIB}\"",
+          "cp \"${PDFIUM_ROOT}/LICENSE\" PDFIUM-LICENSE",
+          "cp -R \"${PDFIUM_ROOT}/licenses\" pdfium-licenses",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -359,97 +1006,233 @@
         "name": "liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
           ],
           "host": [],
-          "run": [
-            "nodejs"
-          ]
+          "run": []
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
               ]
-            },
-            "script": "liteparse --help"
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
       },
       {
         "build": null,
-        "name": "liteparse",
+        "name": "python-liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
           ],
-          "host": [],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
           "run": [
-            "nodejs"
+            "python"
           ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "python": {
+              "imports": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
       }
     ],
     "package": {
       "name": "liteparse",
-      "version": "1.5.3"
+      "version": "2.0.1"
     },
     "requirements": {
       "build": [
-        "pnpm",
-        "pnpm-licenses",
-        "nodejs"
-      ],
-      "run": [
-        "nodejs"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "50598ecdf8ec23ebb013b18e740d309e4d6c3eda55a18db2124cd1c53c12b4e4",
-      "url": "https://registry.npmjs.org/@llamaindex/liteparse/-/liteparse-1.5.3.tgz"
+      "sha256": "c036eae33edaa8da527e0e8f9b5449fe36eadb0b6dc48a2bf3136095f918c170",
+      "url": "https://pypi.org/packages/source/l/liteparse/liteparse-2.0.1.tar.gz"
     }
   },
   "osx_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "nodejs",
-        "pnpm",
-        "pnpm-licenses"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cxx_compiler_stub",
+        "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "maturin",
+        "pip",
+        "python"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "pip"
       ]
     }
   },
@@ -460,10 +1243,29 @@
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
       "license_file": "LICENSE",
-      "summary": "Open-source PDF parsing with spatial text extraction and OCR processing"
+      "summary": "Fast, lightweight document parsing CLI"
     },
     "build": {
-      "number": "1"
+      "number": "0",
+      "script": {
+        "content": [
+          "export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-linux-x64\"",
+          "export PDFIUM_DYLIB=\"libpdfium.so\"",
+          "export PDFIUM_LIB_PATH=\"${PDFIUM_ROOT}/lib\"",
+          "export PDFIUM_INCLUDE_PATH=\"${PDFIUM_ROOT}/include\"",
+          "cargo fetch",
+          "cargo update --workspace --offline",
+          "cargo auditable install --locked --no-default-features --path crates/liteparse --root ${{ PREFIX }} --no-track",
+          "cp \"${PDFIUM_LIB_PATH}/${PDFIUM_DYLIB}\" \"${PREFIX}/bin/${PDFIUM_DYLIB}\"",
+          "cp \"${PDFIUM_ROOT}/LICENSE\" PDFIUM-LICENSE",
+          "cp -R \"${PDFIUM_ROOT}/licenses\" pdfium-licenses",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -476,147 +1278,304 @@
         "name": "liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
           ],
           "host": [],
-          "run": [
-            "nodejs"
-          ]
+          "run": []
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
               ]
-            },
-            "script": "liteparse --help"
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
       },
       {
         "build": null,
-        "name": "liteparse",
+        "name": "python-liteparse",
         "requirements": {
           "build": [
-            "pnpm",
-            "pnpm-licenses",
-            "nodejs"
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
           ],
-          "host": [],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
           "run": [
-            "nodejs"
+            "python"
           ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "nodejs"
+            "python": {
+              "imports": [
+                "liteparse"
               ]
-            },
-            "script": "liteparse --help"
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
           }
         ],
-        "version": "1.5.3"
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
       }
     ],
     "package": {
       "name": "liteparse",
-      "version": "1.5.3"
+      "version": "2.0.1"
     },
     "requirements": {
       "build": [
-        "pnpm",
-        "pnpm-licenses",
-        "nodejs"
-      ],
-      "run": [
-        "nodejs"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "50598ecdf8ec23ebb013b18e740d309e4d6c3eda55a18db2124cd1c53c12b4e4",
-      "url": "https://registry.npmjs.org/@llamaindex/liteparse/-/liteparse-1.5.3.tgz"
+      "sha256": "c036eae33edaa8da527e0e8f9b5449fe36eadb0b6dc48a2bf3136095f918c170",
+      "url": "https://pypi.org/packages/source/l/liteparse/liteparse-2.0.1.tar.gz"
     }
   },
   "osx_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "nodejs",
-        "pnpm",
-        "pnpm-licenses"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cxx_compiler_stub",
+        "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "maturin",
+        "pip",
+        "python"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "pip"
       ]
     }
   },
   "outputs_names": {
     "__set__": true,
     "elements": [
-      "liteparse"
+      "liteparse",
+      "python-liteparse"
     ]
   },
   "parsing_error": false,
   "platforms": [
     "linux_64",
     "osx_64",
-    "osx_arm64"
+    "osx_arm64",
+    "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/liteparse.json"
   },
-  "raw_meta_yaml": "context:\n  name: liteparse\n  version: \"1.5.3\"\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://registry.npmjs.org/@llamaindex/liteparse/-/liteparse-${{ version }}.tgz\n  sha256: 50598ecdf8ec23ebb013b18e740d309e4d6c3eda55a18db2124cd1c53c12b4e4\n\nbuild:\n  number: 1\n  skip:\n    - ppc64le\n    - win\n\nrequirements:\n  build:\n    - pnpm\n    - pnpm-licenses\n    - nodejs\n  run:\n    - nodejs\n\ntests:\n  - requirements:\n      run:\n        - nodejs\n    script:\n      - liteparse --help\n\nabout:\n  summary: Open-source PDF parsing with spatial text extraction and OCR processing\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - third-party-licenses.txt\n  homepage: https://github.com/run-llama/liteparse\n  repository: https://github.com/run-llama/liteparse\n\nextra:\n  recipe-maintainers:\n    - moritzwilksch\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  name: liteparse\n  version: \"2.0.1\"\n\nrecipe:\n  name: ${{ name }}-split\n  version: ${{ version }}\n\nsource:\n  - url: https://pypi.org/packages/source/l/liteparse/liteparse-${{ version }}.tar.gz\n    sha256: c036eae33edaa8da527e0e8f9b5449fe36eadb0b6dc48a2bf3136095f918c170\n  - url: https://raw.githubusercontent.com/run-llama/liteparse/ae1ae83f527b016d4f318ee27023381109702425/LICENSE\n    sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4\n    file_name: LICENSE\n  - url: https://github.com/run-llama/pdfium-binaries/releases/download/chromium%2F7847/pdfium-linux-x64.tgz\n    sha256: 3e8326bc517d071c569efc23f6e18d60a83c7b775c714bb571c609fffebd5320\n    target_directory: pdfium-linux-x64\n  - url: https://github.com/run-llama/pdfium-binaries/releases/download/chromium%2F7847/pdfium-mac-x64.tgz\n    sha256: f72f89d175c16cc692fa1218aa777270faaac054be351ce40185cbedb0c4280f\n    target_directory: pdfium-mac-x64\n  - url: https://github.com/run-llama/pdfium-binaries/releases/download/chromium%2F7847/pdfium-mac-arm64.tgz\n    sha256: 38f3c04decee8304283b0e779d520d7ff40d3ceafd93eaf4eb07cd73be34481a\n    target_directory: pdfium-mac-arm64\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: ${{ name }}\n      version: ${{ version }}\n\n    build:\n      skip: win or ppc64le\n      script:\n        env:\n          CARGO_PROFILE_RELEASE_STRIP: symbols\n          CARGO_PROFILE_RELEASE_LTO: fat\n        content:\n          - if: linux\n            then:\n              - export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-linux-x64\"\n              - export PDFIUM_DYLIB=\"libpdfium.so\"\n          - if: osx and x86_64\n            then:\n              - export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-mac-x64\"\n              - export PDFIUM_DYLIB=\"libpdfium.dylib\"\n          - if: osx and arm64\n            then:\n              - export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-mac-arm64\"\n              - export PDFIUM_DYLIB=\"libpdfium.dylib\"\n          - export PDFIUM_LIB_PATH=\"${PDFIUM_ROOT}/lib\"\n          - export PDFIUM_INCLUDE_PATH=\"${PDFIUM_ROOT}/include\"\n          - cargo fetch\n          - cargo update --workspace --offline\n          - cargo auditable install --locked --no-default-features --path crates/liteparse --root ${{ PREFIX }} --no-track\n          - cp \"${PDFIUM_LIB_PATH}/${PDFIUM_DYLIB}\" \"${PREFIX}/bin/${PDFIUM_DYLIB}\"\n          - cp \"${PDFIUM_ROOT}/LICENSE\" PDFIUM-LICENSE\n          - cp -R \"${PDFIUM_ROOT}/licenses\" pdfium-licenses\n          - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - ${{ compiler('rust') }}\n        - ${{ stdlib('c') }}\n        - cargo-auditable\n        - cargo-bundle-licenses\n\n    tests:\n      - script:\n          - lit --help\n      - package_contents:\n          bin:\n            - lit\n\n    about:\n      summary: Fast, lightweight document parsing CLI\n      license: Apache-2.0\n      license_file:\n        - LICENSE\n        - THIRDPARTY.yml\n        - PDFIUM-LICENSE\n        - pdfium-licenses/*.txt\n        - pdfium-licenses/*.md\n\n  - package:\n      name: python-${{ name }}\n      version: ${{ version }}\n\n    build:\n      skip: win or ppc64le\n      script:\n        env:\n          CARGO_PROFILE_RELEASE_STRIP: symbols\n          CARGO_PROFILE_RELEASE_LTO: fat\n        content:\n          - if: linux\n            then:\n              - export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-linux-x64\"\n              - export PDFIUM_DYLIB=\"libpdfium.so\"\n          - if: osx and x86_64\n            then:\n              - export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-mac-x64\"\n              - export PDFIUM_DYLIB=\"libpdfium.dylib\"\n          - if: osx and arm64\n            then:\n              - export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-mac-arm64\"\n              - export PDFIUM_DYLIB=\"libpdfium.dylib\"\n          - export PDFIUM_LIB_PATH=\"${PDFIUM_ROOT}/lib\"\n          - export PDFIUM_INCLUDE_PATH=\"${PDFIUM_ROOT}/include\"\n          - cp \"${PDFIUM_LIB_PATH}/${PDFIUM_DYLIB}\" \"liteparse/${PDFIUM_DYLIB}\"\n          - cargo fetch\n          - cargo update --workspace --offline\n          - maturin build --release --locked --no-default-features --interpreter ${{ PYTHON }} --out dist\n          - ${{ PYTHON }} -m pip install dist/*.whl -vv --no-deps --no-build-isolation\n          - rm -f \"${PREFIX}/bin/lit\"\n          - cp \"${PDFIUM_ROOT}/LICENSE\" PDFIUM-LICENSE\n          - cp -R \"${PDFIUM_ROOT}/licenses\" pdfium-licenses\n          - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - cross-python_${{ target_platform }}\n            - python\n            - maturin\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - ${{ compiler('rust') }}\n        - ${{ stdlib('c') }}\n        - cargo-bundle-licenses\n      host:\n        - python\n        - maturin\n        - pip\n      run:\n        - python\n\n    tests:\n      - python:\n          imports:\n            - liteparse\n          pip_check: true\n      - package_contents:\n          site_packages:\n            - liteparse\n\n    about:\n      summary: Python bindings for LiteParse document parsing\n      license: Apache-2.0\n      license_file:\n        - LICENSE\n        - THIRDPARTY.yml\n        - PDFIUM-LICENSE\n        - pdfium-licenses/*.txt\n        - pdfium-licenses/*.md\n\nabout:\n  summary: Open-source document parsing with spatial text extraction and OCR processing\n  license: Apache-2.0\n  license_file: LICENSE\n  homepage: https://github.com/run-llama/liteparse\n  repository: https://github.com/run-llama/liteparse\n\nextra:\n  recipe-maintainers:\n    - moritzwilksch\n",
   "req": {
     "__set__": true,
     "elements": [
-      "nodejs",
-      "pnpm",
-      "pnpm-licenses"
+      "c_compiler_stub",
+      "c_stdlib_stub",
+      "cargo-auditable",
+      "cargo-bundle-licenses",
+      "cxx_compiler_stub",
+      "maturin",
+      "pip",
+      "python",
+      "rust_compiler_stub"
     ]
   },
   "requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "nodejs",
-        "pnpm",
-        "pnpm-licenses"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cxx_compiler_stub",
+        "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "maturin",
+        "pip",
+        "python"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "pip"
       ]
     }
   },
@@ -625,31 +1584,196 @@
     "build": {
       "__set__": true,
       "elements": [
-        "nodejs",
-        "pnpm",
-        "pnpm-licenses"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cxx_compiler_stub",
+        "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "maturin",
+        "pip",
+        "python"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "nodejs"
+        "pip"
       ]
     }
   },
-  "url": "https://registry.npmjs.org/@llamaindex/liteparse/-/liteparse-1.5.3.tgz",
-  "version": "1.5.3",
+  "url": "https://pypi.org/packages/source/l/liteparse/liteparse-2.0.1.tar.gz",
+  "version": "2.0.1",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/liteparse.json"
+  },
+  "win_64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/run-llama/liteparse",
+      "home": "https://github.com/run-llama/liteparse",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "Fast, lightweight document parsing CLI"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "export PDFIUM_ROOT=\"${SRC_DIR}/pdfium-linux-x64\"",
+          "export PDFIUM_DYLIB=\"libpdfium.so\"",
+          "export PDFIUM_LIB_PATH=\"${PDFIUM_ROOT}/lib\"",
+          "export PDFIUM_INCLUDE_PATH=\"${PDFIUM_ROOT}/include\"",
+          "cargo fetch",
+          "cargo update --workspace --offline",
+          "cargo auditable install --locked --no-default-features --path crates/liteparse --root ${{ PREFIX }} --no-track",
+          "cp \"${PDFIUM_LIB_PATH}/${PDFIUM_DYLIB}\" \"${PREFIX}/bin/${PDFIUM_DYLIB}\"",
+          "cp \"${PDFIUM_ROOT}/LICENSE\" PDFIUM-LICENSE",
+          "cp -R \"${PDFIUM_ROOT}/licenses\" pdfium-licenses",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "moritzwilksch"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "lit --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "lit"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      },
+      {
+        "build": null,
+        "name": "python-liteparse",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "liteparse"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "liteparse"
+              ]
+            }
+          }
+        ],
+        "version": "2.0.1"
+      }
+    ],
+    "package": {
+      "name": "liteparse",
+      "version": "2.0.1"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "c036eae33edaa8da527e0e8f9b5449fe36eadb0b6dc48a2bf3136095f918c170",
+      "url": "https://pypi.org/packages/source/l/liteparse/liteparse-2.0.1.tar.gz"
+    }
+  },
+  "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cxx_compiler_stub",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "maturin",
+        "pip",
+        "python"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip"
+      ]
+    }
   }
 }
