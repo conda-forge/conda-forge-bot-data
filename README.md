@@ -6,7 +6,7 @@ Repo for holding the conda-forge dependency graph and its introspection.
 
 Note that this repos is mostly bot managed and operated.
 
-Please open issues in [cf-scripts](https://github.com/regro/cf-scripts/issues).
+Please open issues in [conda-forge-bot](https://github.com/conda-forge/conda-forge-bot/issues).
 
 ## code snippets to test building the graph
 
