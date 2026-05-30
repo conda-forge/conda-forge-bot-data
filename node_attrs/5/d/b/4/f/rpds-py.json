@@ -1,16 +1,13 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_python3.11.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "azure": {
       "free_disk_space": true
     },
     "bot": {
       "inspection": "hint-grayskull"
-    },
-    "build_platform": {
-      "osx_arm64": "osx_64"
     },
     "conda_build": {
       "error_overlinking": true
@@ -22,22 +19,23 @@
       "tooling_branch_name": "main"
     },
     "provider": {
-      "linux_aarch64": "azure",
-      "linux_ppc64le": "azure"
+      "linux_aarch64": "default",
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     },
     "shellcheck": {
       "enabled": true
-    },
-    "test": "native_and_emulated"
+    }
   },
-  "feedstock_hash": "1c6e1d9719c48214f9e1dc2120f63efb939770be",
-  "feedstock_hash_ts": 1776902011,
+  "feedstock_hash": "218b2e381a42b4bf4375396987ea7d51d2acc3f6",
+  "feedstock_hash_ts": 1779976913,
   "feedstock_name": "rpds-py",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/crate-py/rpds",
       "doc_url": "https://rpds.readthedocs.io/",
-      "home": "https://github.com/crate-py/rpds",
+      "home": "https://pypi.org/project/rpds-py",
       "license": "MIT",
       "license_family": "MIT",
       "license_file": "LICENSE",
@@ -46,7 +44,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-rpds-py"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -63,7 +73,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -100,7 +111,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -110,7 +121,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -147,7 +159,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -157,7 +169,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -194,7 +207,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -204,7 +217,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -241,7 +255,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -251,7 +265,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -288,66 +303,20 @@
             ]
           }
         ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       }
     ],
     "package": {
       "name": "rpds-py",
-      "version": "0.30.0"
+      "version": "2026.5.1"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.9,<2.0",
@@ -360,8 +329,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84",
-      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz"
+      "sha256": "07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256",
+      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -370,6 +339,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -399,8 +369,9 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/crate-py/rpds",
       "doc_url": "https://rpds.readthedocs.io/",
-      "home": "https://github.com/crate-py/rpds",
+      "home": "https://pypi.org/project/rpds-py",
       "license": "MIT",
       "license_family": "MIT",
       "license_file": "LICENSE",
@@ -409,7 +380,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-rpds-py"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -426,7 +409,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -463,7 +447,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -473,7 +457,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -510,7 +495,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -520,7 +505,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -557,7 +543,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -567,7 +553,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -604,7 +591,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -614,7 +601,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -651,66 +639,20 @@
             ]
           }
         ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       }
     ],
     "package": {
       "name": "rpds-py",
-      "version": "0.30.0"
+      "version": "2026.5.1"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.9,<2.0",
@@ -723,8 +665,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84",
-      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz"
+      "sha256": "07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256",
+      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -733,6 +675,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -762,8 +705,9 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/crate-py/rpds",
       "doc_url": "https://rpds.readthedocs.io/",
-      "home": "https://github.com/crate-py/rpds",
+      "home": "https://pypi.org/project/rpds-py",
       "license": "MIT",
       "license_family": "MIT",
       "license_file": "LICENSE",
@@ -772,7 +716,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-rpds-py"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -789,7 +745,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -826,7 +783,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -836,7 +793,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -873,7 +831,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -883,7 +841,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -920,7 +879,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -930,7 +889,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -967,7 +927,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -977,7 +937,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1014,66 +975,20 @@
             ]
           }
         ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       }
     ],
     "package": {
       "name": "rpds-py",
-      "version": "0.30.0"
+      "version": "2026.5.1"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.9,<2.0",
@@ -1086,8 +1001,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84",
-      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz"
+      "sha256": "07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256",
+      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -1096,6 +1011,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -1125,8 +1041,9 @@
   },
   "meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/crate-py/rpds",
       "doc_url": "https://rpds.readthedocs.io/",
-      "home": "https://github.com/crate-py/rpds",
+      "home": "https://pypi.org/project/rpds-py",
       "license": "MIT",
       "license_family": "MIT",
       "license_file": "LICENSE",
@@ -1135,7 +1052,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-rpds-py"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -1152,7 +1081,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1189,7 +1119,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1199,7 +1129,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1236,7 +1167,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1246,7 +1177,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1283,7 +1215,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1293,7 +1225,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1330,7 +1263,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1340,7 +1273,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1377,7 +1311,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1387,7 +1321,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1424,7 +1359,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1434,7 +1369,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1471,7 +1407,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1481,7 +1417,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1518,7 +1455,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1528,7 +1465,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1565,7 +1503,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1575,7 +1513,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1612,7 +1551,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1622,7 +1561,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1659,7 +1599,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1669,7 +1609,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1706,7 +1647,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1716,7 +1657,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1753,7 +1695,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1763,7 +1705,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1800,7 +1743,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1810,7 +1753,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1847,7 +1791,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1857,7 +1801,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1894,7 +1839,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1904,7 +1849,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1941,7 +1887,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1951,7 +1897,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -1988,7 +1935,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -1998,7 +1945,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2035,7 +1983,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2045,7 +1993,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2082,7 +2031,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2092,7 +2041,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2129,7 +2079,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2139,7 +2089,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2176,7 +2127,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2186,7 +2137,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2223,7 +2175,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2233,7 +2185,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2270,7 +2223,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2280,7 +2233,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2317,7 +2271,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2327,7 +2281,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2364,7 +2319,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2374,7 +2329,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2411,7 +2367,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2421,7 +2377,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2458,7 +2415,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2468,7 +2425,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2505,7 +2463,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2515,7 +2473,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2552,301 +2511,20 @@
             ]
           }
         ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       }
     ],
     "package": {
       "name": "rpds-py",
-      "version": "0.30.0"
+      "version": "2026.5.1"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.9,<2.0",
@@ -2859,15 +2537,16 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84",
-      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz"
+      "sha256": "07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256",
+      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz"
     }
   },
   "name": "rpds-py",
   "osx_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/crate-py/rpds",
       "doc_url": "https://rpds.readthedocs.io/",
-      "home": "https://github.com/crate-py/rpds",
+      "home": "https://pypi.org/project/rpds-py",
       "license": "MIT",
       "license_family": "MIT",
       "license_file": "LICENSE",
@@ -2876,7 +2555,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-rpds-py"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -2893,7 +2584,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2930,7 +2622,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2940,7 +2632,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -2977,7 +2670,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -2987,7 +2680,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3024,7 +2718,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3034,7 +2728,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3071,7 +2766,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3081,7 +2776,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3118,66 +2814,20 @@
             ]
           }
         ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       }
     ],
     "package": {
       "name": "rpds-py",
-      "version": "0.30.0"
+      "version": "2026.5.1"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.9,<2.0",
@@ -3190,8 +2840,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84",
-      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz"
+      "sha256": "07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256",
+      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -3200,6 +2850,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -3229,8 +2880,9 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/crate-py/rpds",
       "doc_url": "https://rpds.readthedocs.io/",
-      "home": "https://github.com/crate-py/rpds",
+      "home": "https://pypi.org/project/rpds-py",
       "license": "MIT",
       "license_family": "MIT",
       "license_file": "LICENSE",
@@ -3239,7 +2891,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-rpds-py"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -3256,7 +2920,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3293,7 +2958,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3303,7 +2968,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3340,7 +3006,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3350,7 +3016,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3387,7 +3054,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3397,7 +3064,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3434,7 +3102,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3444,7 +3112,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3481,66 +3150,20 @@
             ]
           }
         ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       }
     ],
     "package": {
       "name": "rpds-py",
-      "version": "0.30.0"
+      "version": "2026.5.1"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.9,<2.0",
@@ -3553,8 +3176,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84",
-      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz"
+      "sha256": "07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256",
+      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -3563,6 +3186,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -3608,12 +3232,13 @@
   "pr_info": {
     "__lazy_json__": "pr_info/rpds-py.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"0.30.0\"\n  maturin_min: \"1.9\"\n  maturin_max: \"2.0\"\n\npackage:\n  name: rpds-py\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/r/rpds-py/rpds_py-${{ version }}.tar.gz\n  sha256: dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84\n\nbuild:\n  number: 0\n  script:\n    file: build-rpds-py\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - if: build_platform != target_platform\n      then:\n        - cross-python_${{ target_platform }}\n        - maturin >=${{ maturin_min }},<${{ maturin_max }}\n        - python\n  host:\n    - maturin >=${{ maturin_min }},<${{ maturin_max }}\n    - pip\n    - python\n  run:\n    - python\n\ntests:\n  - python:\n      pip_check: true\n      imports: rpds\n  - files:\n      source:\n        - tests/\n    requirements:\n      run:\n        - coverage\n        - pytest\n    script:\n      - coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes\n      - coverage report --show-missing --skip-covered --fail-under=83\n\nabout:\n  summary: Python bindings to Rust's persistent data structures (rpds)\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/crate-py/rpds\n  documentation: https://rpds.readthedocs.io\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"2026.5.1\"\n  python_min: \"3.11\"\n\npackage:\n  name: rpds-py\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/r/rpds-py/rpds_py-${{ version }}.tar.gz\n  sha256: 07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256\n\nbuild:\n  number: 0\n  skip: match(python, \"<\" ~ python_min)\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO: cargo-auditable-wrapper${{ \".bat\" if win }}\n      PYTHONIOENCODING: utf-8\n      PYTHONLEGACYTEXTENCODING: utf-8\n    content:\n      - if: win\n        then:\n          # for `path too long` errors\n          - set CARGO_HOME=c:\\.cg\n          - md %CARGO_HOME%\n          - copy \"%RECIPE_DIR%\\cargo-auditable-wrapper.bat\" \"%BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\"\n        else:\n          - cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n          - chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n      - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check\n      - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n  host:\n    - maturin >=1.9,<2.0\n    - pip\n    - python\n  run:\n    - python\n\ntests:\n  - python:\n      pip_check: true\n      imports: rpds\n  - files:\n      source:\n        - tests/\n    requirements:\n      run:\n        - coverage\n        - pytest\n    script:\n      - coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes\n      - coverage report --show-missing --skip-covered --fail-under=83\n\nabout:\n  summary: Python bindings to Rust's persistent data structures (rpds)\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://pypi.org/project/rpds-py\n  repository: https://github.com/crate-py/rpds\n  documentation: https://rpds.readthedocs.io\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cargo-auditable",
       "cargo-bundle-licenses",
       "maturin",
       "pip",
@@ -3627,6 +3252,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -3665,6 +3291,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
@@ -3692,15 +3319,16 @@
       ]
     }
   },
-  "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz",
-  "version": "0.30.0",
+  "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz",
+  "version": "2026.5.1",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/rpds-py.json"
   },
   "win_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/crate-py/rpds",
       "doc_url": "https://rpds.readthedocs.io/",
-      "home": "https://github.com/crate-py/rpds",
+      "home": "https://pypi.org/project/rpds-py",
       "license": "MIT",
       "license_family": "MIT",
       "license_file": "LICENSE",
@@ -3709,7 +3337,19 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-rpds-py"
+        "content": [
+          "cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO": "cargo-auditable-wrapper",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PYTHONIOENCODING": "utf-8",
+          "PYTHONLEGACYTEXTENCODING": "utf-8"
+        }
       }
     },
     "extra": {
@@ -3726,7 +3366,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3763,7 +3404,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3773,7 +3414,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3810,7 +3452,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3820,7 +3462,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3857,7 +3500,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3867,7 +3510,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3904,7 +3548,7 @@
             ]
           }
         ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       },
       {
         "build": null,
@@ -3914,7 +3558,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
           "host": [
             "maturin >=1.9,<2.0",
@@ -3951,66 +3596,20 @@
             ]
           }
         ],
-        "version": "0.30.0"
-      },
-      {
-        "build": null,
-        "name": "rpds-py",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "maturin >=1.9,<2.0",
-            "pip",
-            "python"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "rpds"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "coverage",
-                "pytest"
-              ]
-            },
-            "script": [
-              "coverage run --source=rpds --branch -m pytest -vv --tb=long --color=yes",
-              "coverage report --show-missing --skip-covered --fail-under=83"
-            ]
-          }
-        ],
-        "version": "0.30.0"
+        "version": "2026.5.1"
       }
     ],
     "package": {
       "name": "rpds-py",
-      "version": "0.30.0"
+      "version": "2026.5.1"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ],
       "host": [
         "maturin >=1.9,<2.0",
@@ -4023,8 +3622,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "dd8ff7cf90014af0c0f787eea34794ebf6415242ee1d6fa91eaba725cc441e84",
-      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-0.30.0.tar.gz"
+      "sha256": "07b24fea40541e28570e5b795a4a38fbdcd12550c06bd0748005ecc8116ca256",
+      "url": "https://pypi.org/packages/source/r/rpds-py/rpds_py-2026.5.1.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -4033,6 +3632,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "rust_compiler_stub"
       ]
