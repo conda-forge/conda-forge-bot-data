@@ -5,7 +5,8 @@
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64"
+      "linux_ppc64le": "linux_64",
+      "win_arm64": "win_64"
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
@@ -19,8 +20,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "b98013603a73a81401e0bce3baa21631bb58eac2",
-  "feedstock_hash_ts": 1780325062,
+  "feedstock_hash": "eb196cf884b2439c79af0b746633136cdce91426",
+  "feedstock_hash_ts": 1780421952,
   "feedstock_name": "rattler-build",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -821,6 +822,56 @@
           }
         ],
         "version": "0.65.1"
+      },
+      {
+        "build": null,
+        "name": "rattler-build",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": [
+            "patchelf"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "rattler-build"
+              ],
+              "files": [
+                "etc/conda/test-files/rattler-build/0/test-recipe/check.yaml",
+                "share/zsh/site-functions/_rattler-build",
+                "share/bash-completion/completions/rattler-build",
+                "share/fish/vendor_completions.d/rattler-build.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test-recipe/"
+              ]
+            },
+            "script": [
+              "rattler-build --help",
+              "rattler-build build --recipe ./test-recipe/check.yaml"
+            ]
+          }
+        ],
+        "version": "0.65.1"
       }
     ],
     "package": {
@@ -1171,7 +1222,8 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/rattler-build.json"
@@ -1388,6 +1440,158 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cmake",
+        "cxx_compiler_stub",
+        "make",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "openssl"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "patchelf"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "The rattler-build tooling and library creates cross-platform relocatable binaries / packages\nfrom a simple recipe format.\nThe recipe format is heavily inspired by conda-build and boa, and the output of a regular\nrattler-build run is a package that can be installed using mamba, conda or rattler.",
+      "doc_url": "https://rattler.build/",
+      "home": "https://github.com/prefix-dev/rattler-build",
+      "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
+      "summary": "rattler-build is the universal conda package builder for Windows, macOS and Linux"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "set -x",
+          "export OPENSSL_DIR=\"$PREFIX\"",
+          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root ${PREFIX} --path . --no-track",
+          "cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions",
+          "$PREFIX/bin/rattler-build completion --shell zsh > $PREFIX/share/zsh/site-functions/_rattler-build",
+          "mkdir -p $PREFIX/share/bash-completion/completions",
+          "$PREFIX/bin/rattler-build completion --shell bash > $PREFIX/share/bash-completion/completions/rattler-build",
+          "mkdir -p $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/rattler-build completion --shell fish > $PREFIX/share/fish/vendor_completions.d/rattler-build.fish"
+        ],
+        "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "1",
+          "CARGO_PROFILE_RELEASE_LTO": "thin",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "Hofer-Julian",
+        "nichmor",
+        "wolfv",
+        "pavelzw",
+        "0xbe7a"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rattler-build",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": [
+            "patchelf"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "rattler-build"
+              ],
+              "files": [
+                "etc/conda/test-files/rattler-build/0/test-recipe/check.yaml",
+                "share/zsh/site-functions/_rattler-build",
+                "share/bash-completion/completions/rattler-build",
+                "share/fish/vendor_completions.d/rattler-build.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test-recipe/"
+              ]
+            },
+            "script": [
+              "rattler-build --help",
+              "rattler-build build --recipe ./test-recipe/check.yaml"
+            ]
+          }
+        ],
+        "version": "0.65.1"
+      }
+    ],
+    "package": {
+      "name": "rattler-build",
+      "version": "0.65.1"
+    },
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "cmake",
+        "make",
+        "cargo-auditable",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "openssl"
+      ],
+      "run": [
+        "patchelf"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "d4d7f52d588eed34cdb6cdb2caa68125eb0010b6df9291e3acacecca820a9f4b",
+      "url": "https://github.com/prefix-dev/rattler-build/archive/refs/tags/v0.65.1.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
