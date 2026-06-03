@@ -1,38 +1,32 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '13'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '13'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.9'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "pkg_format": "2"
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "provider": {
-      "win": "azure"
-    },
-    "shellcheck": {
-      "enabled": true
-    },
-    "test": "native_and_emulated"
+      "osx_arm64": "default"
+    }
   },
-  "feedstock_hash": "bf5aa806bce88efcf9bb4f176ec3f22d535f4b7c",
-  "feedstock_hash_ts": 1777023024,
+  "feedstock_hash": "389ad6c94afda9410268a9ff16366e4df32eb760",
+  "feedstock_hash_ts": 1780500180,
   "feedstock_name": "geckodriver",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "description": "This program provides the HTTP API described by the WebDriver protocol to\ncommunicate with Gecko browsers, such as Firefox. It translates calls into\nthe Marionette remote protocol by acting as a proxy between the local- and\nremote ends.",
-      "dev_url": "https://searchfox.org/mozilla-central/source/testing/geckodriver",
+      "dev_url": "https://github.com/mozilla/geckodriver",
       "doc_url": "https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver",
-      "home": "https://github.com/mozilla/geckodriver",
+      "home": "https://crates.io/crates/geckodriver",
       "license": "MPL-2.0",
       "license_family": "MPL-2.0",
       "license_file": "THIRDPARTY.yml",
@@ -41,7 +35,15 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-geckodriver"
+        "content": [
+          "export RUSTFLAGS=\"-C link-arg=-Wl,-rpath-link,${PREFIX}/lib -L${PREFIX}/lib\"",
+          "cargo auditable install --no-track --bins --locked --profile=release --path=. --root \"${{ PREFIX }}\"",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
       }
     },
     "extra": {
@@ -60,7 +62,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -75,7 +77,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -84,7 +86,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -93,12 +95,12 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       }
     ],
     "package": {
       "name": "geckodriver",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     "requirements": {
       "build": [
@@ -107,14 +109,13 @@
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
-        "unzip"
+        "cargo-auditable"
       ]
     },
     "schema_version": 1,
     "source": {
-      "fn": "license.zip",
-      "sha256": "985c5be428fbf09068f7e08ee393b0a3ff0985559db2c4f480461cd7a16e4f60",
-      "url": "https://hg.mozilla.org/mozilla-central/archive/a3d508507022.zip/toolkit/content/license.html"
+      "sha256": "713f2b3029b6b7af485450528164c6571df273d72de6009352c5c3c0c3211d8c",
+      "url": "https://github.com/mozilla/geckodriver/archive/refs/tags/v0.37.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -123,10 +124,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "cxx_compiler_stub",
-        "rust_compiler_stub",
-        "unzip"
+        "rust_compiler_stub"
       ]
     },
     "host": {
@@ -150,9 +151,9 @@
   "meta_yaml": {
     "about": {
       "description": "This program provides the HTTP API described by the WebDriver protocol to\ncommunicate with Gecko browsers, such as Firefox. It translates calls into\nthe Marionette remote protocol by acting as a proxy between the local- and\nremote ends.",
-      "dev_url": "https://searchfox.org/mozilla-central/source/testing/geckodriver",
+      "dev_url": "https://github.com/mozilla/geckodriver",
       "doc_url": "https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver",
-      "home": "https://github.com/mozilla/geckodriver",
+      "home": "https://crates.io/crates/geckodriver",
       "license": "MPL-2.0",
       "license_family": "MPL-2.0",
       "license_file": "THIRDPARTY.yml",
@@ -161,7 +162,15 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-geckodriver"
+        "content": [
+          "export RUSTFLAGS=\"-C link-arg=-Wl,-rpath-link,${PREFIX}/lib -L${PREFIX}/lib\"",
+          "cargo auditable install --no-track --bins --locked --profile=release --path=. --root \"${{ PREFIX }}\"",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
       }
     },
     "extra": {
@@ -180,7 +189,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -195,7 +204,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -204,7 +213,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -213,7 +222,7 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       {
         "build": null,
@@ -225,7 +234,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -240,7 +249,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -249,7 +258,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -258,7 +267,7 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       {
         "build": null,
@@ -270,7 +279,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -285,7 +294,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -294,7 +303,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -303,7 +312,7 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       },
       {
         "build": null,
@@ -315,7 +324,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -330,7 +339,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -339,7 +348,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -348,12 +357,12 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       }
     ],
     "package": {
       "name": "geckodriver",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     "requirements": {
       "build": [
@@ -362,23 +371,22 @@
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
-        "unzip"
+        "cargo-auditable"
       ]
     },
     "schema_version": 1,
     "source": {
-      "fn": "license.zip",
-      "sha256": "985c5be428fbf09068f7e08ee393b0a3ff0985559db2c4f480461cd7a16e4f60",
-      "url": "https://hg.mozilla.org/mozilla-central/archive/a3d508507022.zip/toolkit/content/license.html"
+      "sha256": "713f2b3029b6b7af485450528164c6571df273d72de6009352c5c3c0c3211d8c",
+      "url": "https://github.com/mozilla/geckodriver/archive/refs/tags/v0.37.0.tar.gz"
     }
   },
   "name": "geckodriver",
   "osx_64_meta_yaml": {
     "about": {
       "description": "This program provides the HTTP API described by the WebDriver protocol to\ncommunicate with Gecko browsers, such as Firefox. It translates calls into\nthe Marionette remote protocol by acting as a proxy between the local- and\nremote ends.",
-      "dev_url": "https://searchfox.org/mozilla-central/source/testing/geckodriver",
+      "dev_url": "https://github.com/mozilla/geckodriver",
       "doc_url": "https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver",
-      "home": "https://github.com/mozilla/geckodriver",
+      "home": "https://crates.io/crates/geckodriver",
       "license": "MPL-2.0",
       "license_family": "MPL-2.0",
       "license_file": "THIRDPARTY.yml",
@@ -387,7 +395,15 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-geckodriver"
+        "content": [
+          "export RUSTFLAGS=\"-C link-arg=-Wl,-rpath-link,${PREFIX}/lib -L${PREFIX}/lib\"",
+          "cargo auditable install --no-track --bins --locked --profile=release --path=. --root \"${{ PREFIX }}\"",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
       }
     },
     "extra": {
@@ -406,7 +422,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -421,7 +437,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -430,7 +446,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -439,12 +455,12 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       }
     ],
     "package": {
       "name": "geckodriver",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     "requirements": {
       "build": [
@@ -453,14 +469,13 @@
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
-        "unzip"
+        "cargo-auditable"
       ]
     },
     "schema_version": 1,
     "source": {
-      "fn": "license.zip",
-      "sha256": "985c5be428fbf09068f7e08ee393b0a3ff0985559db2c4f480461cd7a16e4f60",
-      "url": "https://hg.mozilla.org/mozilla-central/archive/a3d508507022.zip/toolkit/content/license.html"
+      "sha256": "713f2b3029b6b7af485450528164c6571df273d72de6009352c5c3c0c3211d8c",
+      "url": "https://github.com/mozilla/geckodriver/archive/refs/tags/v0.37.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -469,10 +484,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "cxx_compiler_stub",
-        "rust_compiler_stub",
-        "unzip"
+        "rust_compiler_stub"
       ]
     },
     "host": {
@@ -496,9 +511,9 @@
   "osx_arm64_meta_yaml": {
     "about": {
       "description": "This program provides the HTTP API described by the WebDriver protocol to\ncommunicate with Gecko browsers, such as Firefox. It translates calls into\nthe Marionette remote protocol by acting as a proxy between the local- and\nremote ends.",
-      "dev_url": "https://searchfox.org/mozilla-central/source/testing/geckodriver",
+      "dev_url": "https://github.com/mozilla/geckodriver",
       "doc_url": "https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver",
-      "home": "https://github.com/mozilla/geckodriver",
+      "home": "https://crates.io/crates/geckodriver",
       "license": "MPL-2.0",
       "license_family": "MPL-2.0",
       "license_file": "THIRDPARTY.yml",
@@ -507,7 +522,15 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-geckodriver"
+        "content": [
+          "export RUSTFLAGS=\"-C link-arg=-Wl,-rpath-link,${PREFIX}/lib -L${PREFIX}/lib\"",
+          "cargo auditable install --no-track --bins --locked --profile=release --path=. --root \"${{ PREFIX }}\"",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
       }
     },
     "extra": {
@@ -526,7 +549,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -541,7 +564,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -550,7 +573,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -559,12 +582,12 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       }
     ],
     "package": {
       "name": "geckodriver",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     "requirements": {
       "build": [
@@ -573,14 +596,13 @@
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
-        "unzip"
+        "cargo-auditable"
       ]
     },
     "schema_version": 1,
     "source": {
-      "fn": "license.zip",
-      "sha256": "985c5be428fbf09068f7e08ee393b0a3ff0985559db2c4f480461cd7a16e4f60",
-      "url": "https://hg.mozilla.org/mozilla-central/archive/a3d508507022.zip/toolkit/content/license.html"
+      "sha256": "713f2b3029b6b7af485450528164c6571df273d72de6009352c5c3c0c3211d8c",
+      "url": "https://github.com/mozilla/geckodriver/archive/refs/tags/v0.37.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -589,10 +611,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "cxx_compiler_stub",
-        "rust_compiler_stub",
-        "unzip"
+        "rust_compiler_stub"
       ]
     },
     "host": {
@@ -629,16 +651,16 @@
   "pr_info": {
     "__lazy_json__": "pr_info/geckodriver.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  # sourced from: https://github.com/mozilla/geckodriver/releases\n  version: 0.36.0\n  changeset: a3d508507022\n  # sourced from: https://firefox-source-docs.mozilla.org/testing/geckodriver/Support.html\n  firefox_min: \"115\"\n\npackage:\n  name: geckodriver\n  version: ${{ version }}\n\nsource:\n  - url: https://hg.mozilla.org/mozilla-central/archive/${{ changeset }}.zip/toolkit/content/license.html\n    sha256: 985c5be428fbf09068f7e08ee393b0a3ff0985559db2c4f480461cd7a16e4f60\n    file_name: license.zip\n  # all of /testing because of other unpublished crates\n  - url: https://hg.mozilla.org/mozilla-central/archive/${{ changeset }}.zip/testing\n    sha256: e43825225081bc2abb5c684e9c9f5f13b300232c3e6b491fb39eb7098f940afe\n    file_name: testing.zip\n\nbuild:\n  number: 0\n  skip: win and vc<14\n  script:\n    file: build-geckodriver\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - if: win\n      then:\n        - m2-unzip\n      else:\n        - unzip\n\ntests:\n  - files:\n      recipe:\n        - test_selenium.py\n    requirements:\n      run:\n        - firefox >=${{ firefox_min }}\n        - python >=${{ python_min }}\n        - selenium\n        - pytest\n        - if: win\n          then:\n            - m2-grep\n    script:\n      env:\n        MOZ_HEADLESS: \"1\"\n      content:\n        - geckodriver --version\n        - geckodriver --help\n        - geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"\n        - pytest test_selenium.py\n\nabout:\n  license: MPL-2.0\n  license_file:\n    - THIRDPARTY.yml\n    - license.html\n  summary: |\n    geckodriver is a proxy for using W3C WebDriver-compatible clients to\n    interact with Gecko-based browsers.\n  description: |\n    This program provides the HTTP API described by the WebDriver protocol to\n    communicate with Gecko browsers, such as Firefox. It translates calls into\n    the Marionette remote protocol by acting as a proxy between the local- and\n    remote ends.\n  homepage: https://github.com/mozilla/geckodriver\n  repository: https://searchfox.org/mozilla-central/source/testing/geckodriver\n  documentation: https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: 0.37.0\n  # sourced from: https://firefox-source-docs.mozilla.org/testing/geckodriver/Support.html\n  firefox_min: \"115\"\n  grep: ${{ \"grep -iE\" if unix else \"findstr\" }}\n\npackage:\n  name: geckodriver\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/mozilla/geckodriver/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 713f2b3029b6b7af485450528164c6571df273d72de6009352c5c3c0c3211d8c\n\nbuild:\n  number: 0\n  skip: win and vc<14\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content:\n      - if: osx\n        then:\n          - export RUSTFLAGS=\"-C link-args=-Wl,-rpath,${PREFIX}/lib\"\n      - if: linux\n        then:\n          - export RUSTFLAGS=\"-C link-arg=-Wl,-rpath-link,${PREFIX}/lib -L${PREFIX}/lib\"\n      - cargo auditable install --no-track --bins --locked --profile=release --path=. --root \"${{ PREFIX }}\"\n      - cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml\n      - if: win\n        then:\n          # Scripts used for historical reasons\n          - md \"%PREFIX%\\Scripts\"\n          - move \"%PREFIX%\\bin\\geckodriver.exe\" \"%PREFIX%\\Scripts\"\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n\ntests:\n  - files:\n      recipe:\n        - test_selenium.py\n    requirements:\n      run:\n        - firefox >=${{ firefox_min }}\n        - python >=${{ python_min }}\n        - selenium\n        - pytest\n        - if: win\n          then:\n            - m2-grep\n    script:\n      env:\n        MOZ_HEADLESS: \"1\"\n      content:\n        - geckodriver --version\n        - geckodriver --help\n        - geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"\n        - pytest test_selenium.py\n\nabout:\n  license: MPL-2.0\n  license_file:\n    - THIRDPARTY.yml\n    - LICENSE\n  summary: |\n    geckodriver is a proxy for using W3C WebDriver-compatible clients to\n    interact with Gecko-based browsers.\n  description: |\n    This program provides the HTTP API described by the WebDriver protocol to\n    communicate with Gecko browsers, such as Firefox. It translates calls into\n    the Marionette remote protocol by acting as a proxy between the local- and\n    remote ends.\n  homepage: https://crates.io/crates/geckodriver\n  repository: https://github.com/mozilla/geckodriver\n  documentation: https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cargo-auditable",
       "cargo-bundle-licenses",
       "cxx_compiler_stub",
-      "rust_compiler_stub",
-      "unzip"
+      "rust_compiler_stub"
     ]
   },
   "requirements": {
@@ -647,10 +669,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "cxx_compiler_stub",
-        "rust_compiler_stub",
-        "unzip"
+        "rust_compiler_stub"
       ]
     },
     "host": {
@@ -686,10 +708,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "cxx_compiler_stub",
-        "rust_compiler_stub",
-        "unzip"
+        "rust_compiler_stub"
       ]
     },
     "host": {
@@ -705,22 +727,22 @@
       "elements": [
         "firefox >=115",
         "pytest",
-        "python >=3.9",
+        "python >=3.10",
         "selenium"
       ]
     }
   },
-  "url": "https://hg.mozilla.org/mozilla-central/archive/a3d508507022.zip/toolkit/content/license.html",
-  "version": "0.36.0",
+  "url": "https://github.com/mozilla/geckodriver/archive/refs/tags/v0.37.0.tar.gz",
+  "version": "0.37.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/geckodriver.json"
   },
   "win_64_meta_yaml": {
     "about": {
       "description": "This program provides the HTTP API described by the WebDriver protocol to\ncommunicate with Gecko browsers, such as Firefox. It translates calls into\nthe Marionette remote protocol by acting as a proxy between the local- and\nremote ends.",
-      "dev_url": "https://searchfox.org/mozilla-central/source/testing/geckodriver",
+      "dev_url": "https://github.com/mozilla/geckodriver",
       "doc_url": "https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver",
-      "home": "https://github.com/mozilla/geckodriver",
+      "home": "https://crates.io/crates/geckodriver",
       "license": "MPL-2.0",
       "license_family": "MPL-2.0",
       "license_file": "THIRDPARTY.yml",
@@ -729,7 +751,15 @@
     "build": {
       "number": "0",
       "script": {
-        "file": "build-geckodriver"
+        "content": [
+          "export RUSTFLAGS=\"-C link-arg=-Wl,-rpath-link,${PREFIX}/lib -L${PREFIX}/lib\"",
+          "cargo auditable install --no-track --bins --locked --profile=release --path=. --root \"${{ PREFIX }}\"",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
       }
     },
     "extra": {
@@ -748,7 +778,7 @@
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
-            "unzip"
+            "cargo-auditable"
           ],
           "host": [],
           "run": []
@@ -763,7 +793,7 @@
             "requirements": {
               "run": [
                 "firefox >=115",
-                "python >=3.9",
+                "python >=3.10",
                 "selenium",
                 "pytest"
               ]
@@ -772,7 +802,7 @@
               "content": [
                 "geckodriver --version",
                 "geckodriver --help",
-                "geckodriver --version | grep -iE \"${{ version | replace('.', '\\\\.') }}\"",
+                "geckodriver --version | ${{ grep }} \"${{ version | replace('.', '\\\\.') }}\"",
                 "pytest test_selenium.py"
               ],
               "env": {
@@ -781,12 +811,12 @@
             }
           }
         ],
-        "version": "0.36.0"
+        "version": "0.37.0"
       }
     ],
     "package": {
       "name": "geckodriver",
-      "version": "0.36.0"
+      "version": "0.37.0"
     },
     "requirements": {
       "build": [
@@ -795,14 +825,13 @@
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
-        "unzip"
+        "cargo-auditable"
       ]
     },
     "schema_version": 1,
     "source": {
-      "fn": "license.zip",
-      "sha256": "985c5be428fbf09068f7e08ee393b0a3ff0985559db2c4f480461cd7a16e4f60",
-      "url": "https://hg.mozilla.org/mozilla-central/archive/a3d508507022.zip/toolkit/content/license.html"
+      "sha256": "713f2b3029b6b7af485450528164c6571df273d72de6009352c5c3c0c3211d8c",
+      "url": "https://github.com/mozilla/geckodriver/archive/refs/tags/v0.37.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -811,10 +840,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "cxx_compiler_stub",
-        "rust_compiler_stub",
-        "unzip"
+        "rust_compiler_stub"
       ]
     },
     "host": {
