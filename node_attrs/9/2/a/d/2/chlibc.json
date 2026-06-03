@@ -1,11 +1,12 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- clang\nc_compiler_version:\n- '>=18'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- clang\nc_compiler_version:\n- '>=18'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64"
+      "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64"
     },
     "conda_build": {
       "error_overlinking": true
@@ -16,14 +17,17 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "os_version": {
+      "linux_64": "alma10"
+    },
     "provider": {
       "linux": "github_actions",
       "osx": "None",
       "win": "None"
     }
   },
-  "feedstock_hash": "b71d2a9d1452c0317df6e4981e71edf5993dbcc1",
-  "feedstock_hash_ts": 1780022814,
+  "feedstock_hash": "2682f9d4edcb202a5d41baaaafadb8550bc62fc3",
+  "feedstock_hash_ts": 1780472407,
   "feedstock_name": "chlibc",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -37,7 +41,7 @@
     "build": {
       "number": "0",
       "script": {
-        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
+        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\n{% if target_platform == \"linux-riscv64\" %}\nexport HOST=riscv64-conda-linux-gnu\nexport CC=riscv64-conda-linux-gnu-cc\nexport CMAKE_ARGS=\"-DCMAKE_BUILD_TYPE=Release -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH=$PREFIX;$BUILD_PREFIX/riscv64-conda-linux-gnu/sysroot -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=riscv64\"\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
       }
     },
     "extra": {
@@ -88,19 +92,70 @@
             },
             "script": [
               "echo Verifying the binary checksum",
-              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
               "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
               "echo \"Expected hash $EXPECTED_HASH\"",
               "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
             ]
           }
         ],
-        "version": "0.1.6"
+        "version": "0.1.7"
+      },
+      {
+        "build": null,
+        "name": "chlibc",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=4.2",
+            "ninja",
+            "compiler-rt_linux-64",
+            "lld",
+            "llvm-tools",
+            "clang-tools"
+          ],
+          "host": [],
+          "run": [
+            "__glibc"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "build": [
+                "file",
+                "coreutils",
+                "zstd"
+              ]
+            },
+            "script": [
+              "file $PREFIX/bin/chlibc",
+              "sha256sum $PREFIX/bin/chlibc",
+              "$PREFIX/bin/chlibc"
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "checksum.txt"
+              ]
+            },
+            "script": [
+              "echo Verifying the binary checksum",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
+              "echo \"Expected hash $EXPECTED_HASH\"",
+              "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
+            ]
+          }
+        ],
+        "version": "0.1.7"
       }
     ],
     "package": {
       "name": "chlibc",
-      "version": "0.1.6"
+      "version": "0.1.7"
     },
     "requirements": {
       "build": [
@@ -119,8 +174,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ed86a942ee86ba26ec33e8e0cc4dd4f7563674d9df7ce632651425499c7a0d93",
-      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.6/source.tar.gz"
+      "sha256": "f24ff5f949f2451b35ebca4536745202c79dc36c1614cbf23c4cd579b383fb29",
+      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.7/source.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -167,7 +222,7 @@
     "build": {
       "number": "0",
       "script": {
-        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
+        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\n{% if target_platform == \"linux-riscv64\" %}\nexport HOST=riscv64-conda-linux-gnu\nexport CC=riscv64-conda-linux-gnu-cc\nexport CMAKE_ARGS=\"-DCMAKE_BUILD_TYPE=Release -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH=$PREFIX;$BUILD_PREFIX/riscv64-conda-linux-gnu/sysroot -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=riscv64\"\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
       }
     },
     "extra": {
@@ -218,19 +273,19 @@
             },
             "script": [
               "echo Verifying the binary checksum",
-              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
               "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
               "echo \"Expected hash $EXPECTED_HASH\"",
               "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
             ]
           }
         ],
-        "version": "0.1.6"
+        "version": "0.1.7"
       }
     ],
     "package": {
       "name": "chlibc",
-      "version": "0.1.6"
+      "version": "0.1.7"
     },
     "requirements": {
       "build": [
@@ -249,8 +304,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ed86a942ee86ba26ec33e8e0cc4dd4f7563674d9df7ce632651425499c7a0d93",
-      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.6/source.tar.gz"
+      "sha256": "f24ff5f949f2451b35ebca4536745202c79dc36c1614cbf23c4cd579b383fb29",
+      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.7/source.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -297,7 +352,7 @@
     "build": {
       "number": "0",
       "script": {
-        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
+        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\n{% if target_platform == \"linux-riscv64\" %}\nexport HOST=riscv64-conda-linux-gnu\nexport CC=riscv64-conda-linux-gnu-cc\nexport CMAKE_ARGS=\"-DCMAKE_BUILD_TYPE=Release -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH=$PREFIX;$BUILD_PREFIX/riscv64-conda-linux-gnu/sysroot -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=riscv64\"\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
       }
     },
     "extra": {
@@ -348,19 +403,19 @@
             },
             "script": [
               "echo Verifying the binary checksum",
-              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
               "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
               "echo \"Expected hash $EXPECTED_HASH\"",
               "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
             ]
           }
         ],
-        "version": "0.1.6"
+        "version": "0.1.7"
       }
     ],
     "package": {
       "name": "chlibc",
-      "version": "0.1.6"
+      "version": "0.1.7"
     },
     "requirements": {
       "build": [
@@ -379,8 +434,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ed86a942ee86ba26ec33e8e0cc4dd4f7563674d9df7ce632651425499c7a0d93",
-      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.6/source.tar.gz"
+      "sha256": "f24ff5f949f2451b35ebca4536745202c79dc36c1614cbf23c4cd579b383fb29",
+      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.7/source.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -427,7 +482,7 @@
     "build": {
       "number": "0",
       "script": {
-        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
+        "content": "{% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\nunset CFLAGS\nunset LDFLAGS\n{% endif %}\n\n{% if target_platform == \"linux-riscv64\" %}\nexport HOST=riscv64-conda-linux-gnu\nexport CC=riscv64-conda-linux-gnu-cc\nexport CMAKE_ARGS=\"-DCMAKE_BUILD_TYPE=Release -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH=$PREFIX;$BUILD_PREFIX/riscv64-conda-linux-gnu/sysroot -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=riscv64\"\n{% endif %}\n\nunset LD_RUN_PATH\nenv\n\ncmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\ncmake --build --preset conda-build --parallel ${CPU_COUNT}\ncmake --install build/conda-build\n"
       }
     },
     "extra": {
@@ -478,14 +533,14 @@
             },
             "script": [
               "echo Verifying the binary checksum",
-              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
               "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
               "echo \"Expected hash $EXPECTED_HASH\"",
               "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
             ]
           }
         ],
-        "version": "0.1.6"
+        "version": "0.1.7"
       },
       {
         "build": null,
@@ -529,14 +584,14 @@
             },
             "script": [
               "echo Verifying the binary checksum",
-              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
               "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
               "echo \"Expected hash $EXPECTED_HASH\"",
               "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
             ]
           }
         ],
-        "version": "0.1.6"
+        "version": "0.1.7"
       },
       {
         "build": null,
@@ -580,19 +635,70 @@
             },
             "script": [
               "echo Verifying the binary checksum",
-              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
               "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
               "echo \"Expected hash $EXPECTED_HASH\"",
               "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
             ]
           }
         ],
-        "version": "0.1.6"
+        "version": "0.1.7"
+      },
+      {
+        "build": null,
+        "name": "chlibc",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=4.2",
+            "ninja",
+            "compiler-rt_linux-64",
+            "lld",
+            "llvm-tools",
+            "clang-tools"
+          ],
+          "host": [],
+          "run": [
+            "__glibc"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "build": [
+                "file",
+                "coreutils",
+                "zstd"
+              ]
+            },
+            "script": [
+              "file $PREFIX/bin/chlibc",
+              "sha256sum $PREFIX/bin/chlibc",
+              "$PREFIX/bin/chlibc"
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "checksum.txt"
+              ]
+            },
+            "script": [
+              "echo Verifying the binary checksum",
+              "case ${{ target_platform }} in\n  linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n  linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n  linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n  linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n  *)             NATIVE_ARCH=\"unknown\" ;;\nesac\n",
+              "EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')",
+              "echo \"Expected hash $EXPECTED_HASH\"",
+              "echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c"
+            ]
+          }
+        ],
+        "version": "0.1.7"
       }
     ],
     "package": {
       "name": "chlibc",
-      "version": "0.1.6"
+      "version": "0.1.7"
     },
     "requirements": {
       "build": [
@@ -611,8 +717,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ed86a942ee86ba26ec33e8e0cc4dd4f7563674d9df7ce632651425499c7a0d93",
-      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.6/source.tar.gz"
+      "sha256": "f24ff5f949f2451b35ebca4536745202c79dc36c1614cbf23c4cd579b383fb29",
+      "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.7/source.tar.gz"
     }
   },
   "name": "chlibc",
@@ -631,7 +737,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/chlibc.json"
   },
-  "raw_meta_yaml": "---\nschema_version: 1\n\ncontext:\n  version: \"0.1.6\"\n  release_hash: \"ed86a942ee86ba26ec33e8e0cc4dd4f7563674d9df7ce632651425499c7a0d93\"\n  dev_version: ${{ env.get('PIXI_PROJECT_VERSION') if env.exists('PIXI_PROJECT_VERSION') else '0.0.0.dev' }}\n  is_dev: ${{ env.exists('_CONDA_BUILD_LOCAL') }}\n\npackage:\n  name: \"chlibc\"\n  version: ${{ version }}\n\nsource:\n  - if: is_dev\n    then:\n      path: ..\n  - if: not is_dev\n    then:\n      # use the source archive with checksum.txt\n      url: https://github.com/gzm55/chlibc/releases/download/v${{ version }}/source.tar.gz\n      sha256: ${{ release_hash }}\n\nbuild:\n  skip: ${{ target_platform not in [\"linux-64\", \"linux-aarch64\", \"linux-ppc64le\"] }}\n  number: 0\n  dynamic_linking:\n    binary_relocation: false\n    rpath_allowlist: []\n  script:\n    content: |\n      {% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\n      unset CFLAGS\n      unset LDFLAGS\n      {% endif %}\n\n      unset LD_RUN_PATH\n      env\n\n      cmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\n      cmake --build --preset conda-build --parallel ${CPU_COUNT}\n      cmake --install build/conda-build\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n\n    - cmake >=4.2\n    - ninja\n\n    - if: target_platform in [\"linux-64\", \"linux-aarch64\"]\n      then: compiler-rt_${{ target_platform }}\n    - if: target_platform in [\"linux-64\", \"linux-aarch64\"]\n      then: lld\n    - if: target_platform in [\"linux-64\", \"linux-aarch64\"]\n      then: llvm-tools\n    - if: target_platform in [\"linux-64\", \"linux-aarch64\"]\n      then: clang-tools\n  host:\n  run:\n    - __glibc\n\n  ignore_run_exports:\n    from_package:\n      - ${{ compiler('c') }}  # do not depend on libgcc\n      - ${{ stdlib('c') }}  # do not introduce __glibc version limit\n\ntests:\n  - script:\n      - file $PREFIX/bin/chlibc\n      - sha256sum $PREFIX/bin/chlibc\n      - if: build_platform == target_platform\n        then: $PREFIX/bin/chlibc\n    requirements:\n      build:\n        - file\n        - coreutils\n        - zstd\n\n  - if: not is_dev\n    then:\n      script:\n        - echo Verifying the binary checksum\n        - |\n          case ${{ target_platform }} in\n            linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n            linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n            linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n            *)             NATIVE_ARCH=\"unknown\" ;;\n          esac\n        - EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')\n        - echo \"Expected hash $EXPECTED_HASH\"\n        - echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c\n      files:\n        source:\n          - checksum.txt\n\nabout:\n  summary: 'A userspace transparent ld-linux interpreter and glibc swapper.'\n  license: MIT\n  license_file: LICENSE\n  homepage: https://github.com/gzm55/chlibc\n\nextra:\n  recipe-maintainers:\n    - gzm55\n",
+  "raw_meta_yaml": "---\nschema_version: 1\n\ncontext:\n  version: \"0.1.7\"\n  release_hash: \"f24ff5f949f2451b35ebca4536745202c79dc36c1614cbf23c4cd579b383fb29\"\n  dev_version: ${{ env.get('PIXI_PROJECT_VERSION') if env.exists('PIXI_PROJECT_VERSION') else '0.0.0.dev' }}\n  is_dev: ${{ env.exists('_CONDA_BUILD_LOCAL') }}\n\npackage:\n  name: \"chlibc\"\n  version: ${{ version }}\n\nsource:\n  - if: is_dev\n    then:\n      path: ..\n    else:\n      # use the source archive with checksum.txt\n      url: https://github.com/gzm55/chlibc/releases/download/v${{ version }}/source.tar.gz\n      sha256: ${{ release_hash }}\n\nbuild:\n  skip: ${{ target_platform not in [\"linux-64\", \"linux-aarch64\", \"linux-ppc64le\", \"linux-riscv64\"] }}\n  number: 0\n  dynamic_linking:\n    binary_relocation: false\n    rpath_allowlist: []\n  script:\n    content: |\n      {% if target_platform in [\"linux-64\", \"linux-aarch64\"] %}\n      unset CFLAGS\n      unset LDFLAGS\n      {% endif %}\n\n      {% if target_platform == \"linux-riscv64\" %}\n      export HOST=riscv64-conda-linux-gnu\n      export CC=riscv64-conda-linux-gnu-cc\n      export CMAKE_ARGS=\"-DCMAKE_BUILD_TYPE=Release -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH=$PREFIX;$BUILD_PREFIX/riscv64-conda-linux-gnu/sysroot -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=riscv64\"\n      {% endif %}\n\n      unset LD_RUN_PATH\n      env\n\n      cmake --fresh --preset conda-build ${CMAKE_ARGS} -U CMAKE_LINKER -U CMAKE_STRIP\n      cmake --build --preset conda-build --parallel ${CPU_COUNT}\n      cmake --install build/conda-build\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n\n    - cmake >=4.2\n    - ninja\n\n    - if: target_platform in [\"linux-64\", \"linux-aarch64\"]\n      then:\n        - compiler-rt_${{ target_platform }}\n        - lld\n        - llvm-tools\n        - clang-tools\n  host:\n  run:\n    - __glibc\n\n  ignore_run_exports:\n    from_package:\n      - ${{ compiler('c') }}  # do not depend on libgcc\n      - ${{ stdlib('c') }}  # do not introduce __glibc version limit\n\ntests:\n  - script:\n      - file $PREFIX/bin/chlibc\n      - sha256sum $PREFIX/bin/chlibc\n      - if: build_platform == target_platform\n        then: $PREFIX/bin/chlibc\n    requirements:\n      build:\n        - file\n        - coreutils\n        - zstd\n\n  - if: not is_dev\n    then:\n      script:\n        - echo Verifying the binary checksum\n        - |\n          case ${{ target_platform }} in\n            linux-64)      NATIVE_ARCH=\"x86_64\" ;;\n            linux-aarch64) NATIVE_ARCH=\"aarch64\" ;;\n            linux-ppc64le) NATIVE_ARCH=\"ppc64le\" ;;\n            linux-riscv64) NATIVE_ARCH=\"riscv64\" ;;\n            *)             NATIVE_ARCH=\"unknown\" ;;\n          esac\n        - EXPECTED_HASH=$(grep \"chlibc-$NATIVE_ARCH\" checksum.txt | awk '{print $1}')\n        - echo \"Expected hash $EXPECTED_HASH\"\n        - echo \"$EXPECTED_HASH  $PREFIX/bin/chlibc\" | sha256sum -c\n      files:\n        source:\n          - checksum.txt\n\nabout:\n  summary: 'A userspace transparent ld-linux interpreter and glibc swapper.'\n  license: MIT\n  license_file: LICENSE\n  homepage: https://github.com/gzm55/chlibc\n\nextra:\n  recipe-maintainers:\n    - gzm55\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -718,8 +824,8 @@
       ]
     }
   },
-  "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.6/source.tar.gz",
-  "version": "0.1.6",
+  "url": "https://github.com/gzm55/chlibc/releases/download/v0.1.7/source.tar.gz",
+  "version": "0.1.7",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/chlibc.json"
   }
