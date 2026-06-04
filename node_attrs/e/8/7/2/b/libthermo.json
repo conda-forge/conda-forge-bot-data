@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "6f0cf75e74b313cc8f0cbe8ecdab63c6de0d0585",
-  "feedstock_hash_ts": 1780579760,
+  "feedstock_hash": "700ede961cf5dac0cd2a002bf621ef30155628a5",
+  "feedstock_hash_ts": 1780587104,
   "feedstock_name": "libthermo",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -28,7 +28,7 @@
       "summary": "A fast C++/Python thermodynamical library"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "file": "build"
       }
@@ -80,8 +80,7 @@
             "libboost-devel"
           ],
           "host": [
-            "python-abi3",
-            "python >=3.12",
+            "python 3.12.*",
             "pip",
             "nanobind",
             "scikit-build-core"
@@ -145,7 +144,6 @@
         "nanobind",
         "pip",
         "python",
-        "python-abi3",
         "scikit-build-core"
       ]
     },
@@ -173,7 +171,7 @@
       "summary": "A fast C++/Python thermodynamical library"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "file": "build"
       }
@@ -225,8 +223,7 @@
             "libboost-devel"
           ],
           "host": [
-            "python-abi3",
-            "python >=3.12",
+            "python 3.12.*",
             "pip",
             "nanobind",
             "scikit-build-core"
@@ -293,8 +290,7 @@
             "libboost-devel"
           ],
           "host": [
-            "python-abi3",
-            "python >=3.12",
+            "python 3.12.*",
             "pip",
             "nanobind",
             "scikit-build-core"
@@ -356,7 +352,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libthermo.json"
   },
-  "raw_meta_yaml": "context:\n  name: libthermo\n  version: \"0.4.0\"\n  python_min: \"3.12\"\n  # major_version: \"${{ version.split('.')[0] }}\"\n  # minor_version: ${{ version.split('.')[1] }}\n  # patch_version: ${{ version.split('.')[2] }}\n\nrecipe:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/twiinIT/libthermo/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 01388272ae03ecd295c083be012543a9a82b7a22db2dec5a5dc898ccb486771c\n\nbuild:\n  number: 0\n  skip: [\"osx\"]\n\noutputs:\n  - package:\n      name: libthermo\n    build:\n      script:\n        file: build\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - libboost-devel\n      host: []\n    tests:\n      - package_contents:\n          include:\n            exists:\n              - libthermo/version.hpp\n      - script:\n        - if: unix\n          then:\n          - test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake\n        - if: win\n          then:\n          -  if not exist %LIBRARY_PREFIX%\\lib/cmake/libthermo/libthermoConfig.cmake (exit 1)\n\n      # - script:\n      #   - if: unix\n      #     then:\n      #     - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MAJOR ${{ major_version }}\"\n      #     - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MINOR ${{ minor_version }}\"\n      #     - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_PATCH ${{ patch_version }}\"\n\n  - package:\n      name: pythermo\n    build:\n      script: python -m pip install ./pythermo --no-deps --ignore-installed --no-build-isolation --no-cache-dir -vvv\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - libthermo\n        - libboost-devel\n      host:\n        - python-abi3\n        - python>=3.12\n        - pip\n        - nanobind\n        - scikit-build-core\n      run:\n        - python>=3.12\n    tests:\n      - python:\n          imports:\n            - pythermo.pythermo_core\n      - script:\n            interpreter: python\n            content: |\n              import pythermo._version\n              assert pythermo._version.__version__ == '${{ version }}'\n\nabout:\n  homepage: https://github.com/twiinIT/libthermo\n  repository: https://github.com/twiinIT/libthermo\n  summary: 'A fast C++/Python thermodynamical library'\n  description: |\n    libthermo is a fast C++ thermodynamical library\n    Python bindings are provided in pythermo.\n  license: BSD-3-Clause\n  license_file: LICENSE\n  license_family: BSD\n\nextra:\n  recipe-maintainers:\n    - adriendelsalle\n",
+  "raw_meta_yaml": "context:\n  name: libthermo\n  version: \"0.4.0\"\n  python_min: \"3.12\"\n\nrecipe:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/twiinIT/libthermo/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 01388272ae03ecd295c083be012543a9a82b7a22db2dec5a5dc898ccb486771c\n\nbuild:\n  number: 1\n  skip: [\"osx\"]\n\noutputs:\n  - package:\n      name: libthermo\n    build:\n      script:\n        file: build\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - libboost-devel\n      host: []\n    tests:\n      - package_contents:\n          include:\n            exists:\n              - libthermo/version.hpp\n      - script:\n        - if: unix\n          then:\n          - test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake\n        - if: win\n          then:\n          -  if not exist %LIBRARY_PREFIX%\\lib/cmake/libthermo/libthermoConfig.cmake (exit 1)\n\n  - package:\n      name: pythermo\n    build:\n      script: python -m pip install ./pythermo --no-deps --ignore-installed --no-build-isolation --no-cache-dir -vvv\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - libthermo\n        - libboost-devel\n      host:\n        - python=${{ python_min }}\n        - pip\n        - nanobind\n        - scikit-build-core\n      run:\n        - python>=${{ python_min }}\n    tests:\n      - python:\n          imports:\n            - pythermo.pythermo_core\n      - script:\n            interpreter: python\n            content: |\n              import pythermo._version\n              assert pythermo._version.__version__ == '${{ version }}'\n\nabout:\n  homepage: https://github.com/twiinIT/libthermo\n  repository: https://github.com/twiinIT/libthermo\n  summary: 'A fast C++/Python thermodynamical library'\n  description: |\n    libthermo is a fast C++ thermodynamical library\n    Python bindings are provided in pythermo.\n  license: BSD-3-Clause\n  license_file: LICENSE\n  license_family: BSD\n\nextra:\n  recipe-maintainers:\n    - adriendelsalle\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -369,7 +365,6 @@
       "ninja",
       "pip",
       "python",
-      "python-abi3",
       "scikit-build-core"
     ]
   },
@@ -393,7 +388,6 @@
         "nanobind",
         "pip",
         "python",
-        "python-abi3",
         "scikit-build-core"
       ]
     },
@@ -430,8 +424,7 @@
       "elements": [
         "nanobind",
         "pip",
-        "python >=3.12",
-        "python-abi3",
+        "python 3.12.*",
         "scikit-build-core"
       ]
     },
@@ -464,7 +457,7 @@
       "summary": "A fast C++/Python thermodynamical library"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "file": "build"
       }
@@ -516,8 +509,7 @@
             "libboost-devel"
           ],
           "host": [
-            "python-abi3",
-            "python >=3.12",
+            "python 3.12.*",
             "pip",
             "nanobind",
             "scikit-build-core"
@@ -581,7 +573,6 @@
         "nanobind",
         "pip",
         "python",
-        "python-abi3",
         "scikit-build-core"
       ]
     },
