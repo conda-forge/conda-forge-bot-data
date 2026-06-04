@@ -1,33 +1,37 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.12'\ncdt_name:\n- cos6\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '12'\ndocker_image:\n- quay.io/condaforge/linux-anvil-cos7-x86_64\nlibboost_python_devel:\n- '1.84'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npybind11_abi:\n- '4'\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.8.* *_cpython\n- 3.9.* *_cpython\ntarget_platform:\n- linux-64\ntbb_devel:\n- '2021'\nzip_keys:\n- - c_stdlib_version\n  - cdt_name\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibboost_devel:\n- '1.88'\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "fd118b5d4ca82541ec0c76b2a593d37fe9d3199e",
-  "feedstock_hash_ts": 1776827446,
+  "feedstock_hash": "6f0cf75e74b313cc8f0cbe8ecdab63c6de0d0585",
+  "feedstock_hash_ts": 1780579760,
   "feedstock_name": "libthermo",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "libthermo is a fast C++ thermodynamical library\nPython bindings are provided in pythermo.\n",
+      "description": "libthermo is a fast C++ thermodynamical library\nPython bindings are provided in pythermo.",
       "dev_url": "https://github.com/twiinIT/libthermo",
       "home": "https://github.com/twiinIT/libthermo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "A fast C++/Python thermodynamical library"
     },
     "build": {
-      "number": "1"
+      "number": "0",
+      "script": {
+        "file": "build"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -36,6 +40,7 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "libthermo",
         "requirements": {
           "build": [
@@ -43,73 +48,83 @@
             "c_stdlib_stub",
             "cmake",
             "ninja",
-            "xtensor>=0.24",
-            "libboost-python-devel",
-            "xsimd=9.*",
-            "tbb-devel"
+            "libboost-devel"
           ],
-          "host": []
+          "host": [],
+          "run": []
         },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "test -d ${PREFIX}/include/libthermo",
-            "test -f ${PREFIX}/include/libthermo/version.hpp",
-            "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MAJOR 0\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MINOR 3\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_PATCH 1\""
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "libthermo/version.hpp"
+              ]
+            }
+          },
+          {
+            "script": "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake"
+          }
+        ],
+        "version": "0.4.0"
       },
       {
+        "build": null,
         "name": "pythermo",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "ninja"
+            "ninja",
+            "libthermo",
+            "libboost-devel"
           ],
           "host": [
-            "python",
-            "pybind11-abi",
+            "python-abi3",
+            "python >=3.12",
             "pip",
-            "xtensor>=0.24,<0.24.6",
-            "xsimd=9.*",
-            "xtensor-python",
-            "xtensor",
-            "tbb-devel",
-            "libboost-python-devel",
-            "pybind11",
-            "numpy>=1.20"
+            "nanobind",
+            "scikit-build-core"
           ],
           "run": [
-            "xtensor-python",
-            "numpy"
+            "python >=3.12"
           ]
         },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "python -c \"import pythermo._version; assert pythermo._version.__version__ == '0.3.1'\""
-          ],
-          "imports": [
-            "pythermo.pythermo_core"
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "pythermo.pythermo_core"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import pythermo._version\nassert pythermo._version.__version__ == '${{ version }}'\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "0.4.0"
       }
     ],
     "package": {
       "name": "libthermo",
-      "version": "0.3.1"
+      "version": "0.4.0"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "ninja",
+        "libboost-devel"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "sha256": "5cf2b2eb3922150bc07b7f1ac36e7422420c797fea13e77887b090de242bbf07",
-      "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.3.1.tar.gz"
+      "sha256": "01388272ae03ecd295c083be012543a9a82b7a22db2dec5a5dc898ccb486771c",
+      "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.4.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -119,52 +134,49 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "libboost-python-devel",
-        "ninja",
-        "tbb-devel",
-        "xsimd",
-        "xtensor"
+        "libboost-devel",
+        "libthermo",
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
-        "libboost-python-devel",
-        "numpy",
+        "nanobind",
         "pip",
-        "pybind11",
-        "pybind11-abi",
         "python",
-        "tbb-devel",
-        "xsimd",
-        "xtensor",
-        "xtensor-python"
+        "python-abi3",
+        "scikit-build-core"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "numpy",
-        "xtensor-python"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   },
   "meta_yaml": {
     "about": {
-      "description": "libthermo is a fast C++ thermodynamical library\nPython bindings are provided in pythermo.\n",
+      "description": "libthermo is a fast C++ thermodynamical library\nPython bindings are provided in pythermo.",
       "dev_url": "https://github.com/twiinIT/libthermo",
       "home": "https://github.com/twiinIT/libthermo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "A fast C++/Python thermodynamical library"
     },
     "build": {
-      "number": "1"
+      "number": "0",
+      "script": {
+        "file": "build"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -173,6 +185,7 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "libthermo",
         "requirements": {
           "build": [
@@ -180,65 +193,67 @@
             "c_stdlib_stub",
             "cmake",
             "ninja",
-            "xtensor>=0.24",
-            "libboost-python-devel",
-            "xsimd=9.*",
-            "tbb-devel"
+            "libboost-devel"
           ],
-          "host": []
+          "host": [],
+          "run": []
         },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "test -d ${PREFIX}/include/libthermo",
-            "test -f ${PREFIX}/include/libthermo/version.hpp",
-            "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MAJOR 0\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MINOR 3\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_PATCH 1\""
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "libthermo/version.hpp"
+              ]
+            }
+          },
+          {
+            "script": "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake"
+          }
+        ],
+        "version": "0.4.0"
       },
       {
+        "build": null,
         "name": "pythermo",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "ninja"
+            "ninja",
+            "libthermo",
+            "libboost-devel"
           ],
           "host": [
-            "python",
-            "pybind11-abi",
+            "python-abi3",
+            "python >=3.12",
             "pip",
-            "xtensor>=0.24,<0.24.6",
-            "xsimd=9.*",
-            "xtensor-python",
-            "xtensor",
-            "tbb-devel",
-            "libboost-python-devel",
-            "pybind11",
-            "numpy>=1.20"
+            "nanobind",
+            "scikit-build-core"
           ],
           "run": [
-            "xtensor-python",
-            "numpy"
+            "python >=3.12"
           ]
         },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "python -c \"import pythermo._version; assert pythermo._version.__version__ == '0.3.1'\""
-          ],
-          "imports": [
-            "pythermo.pythermo_core"
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "pythermo.pythermo_core"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import pythermo._version\nassert pythermo._version.__version__ == '${{ version }}'\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "0.4.0"
       },
       {
+        "build": null,
         "name": "libthermo",
         "requirements": {
           "build": [
@@ -246,275 +261,86 @@
             "c_stdlib_stub",
             "cmake",
             "ninja",
-            "xtensor>=0.24",
-            "libboost-python-devel",
-            "xsimd=9.*",
-            "tbb-devel"
+            "libboost-devel"
           ],
-          "host": []
+          "host": [],
+          "run": []
         },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "test -d ${PREFIX}/include/libthermo",
-            "test -f ${PREFIX}/include/libthermo/version.hpp",
-            "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MAJOR 0\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MINOR 3\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_PATCH 1\""
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "libthermo/version.hpp"
+              ]
+            }
+          },
+          {
+            "script": "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake"
+          }
+        ],
+        "version": "0.4.0"
       },
       {
+        "build": null,
         "name": "pythermo",
-        "requirements": {
-          "build": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja"
-          ],
-          "host": [
-            "python",
-            "pybind11-abi",
-            "pip",
-            "xtensor>=0.24,<0.24.6",
-            "xsimd=9.*",
-            "xtensor-python",
-            "xtensor",
-            "tbb-devel",
-            "libboost-python-devel",
-            "pybind11",
-            "numpy>=1.20"
-          ],
-          "run": [
-            "xtensor-python",
-            "numpy"
-          ]
-        },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "python -c \"import pythermo._version; assert pythermo._version.__version__ == '0.3.1'\""
-          ],
-          "imports": [
-            "pythermo.pythermo_core"
-          ]
-        },
-        "version": "0.3.1"
-      },
-      {
-        "name": "libthermo",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
             "ninja",
-            "xtensor>=0.24",
-            "libboost-python-devel",
-            "xsimd=9.*",
-            "tbb-devel"
-          ],
-          "host": []
-        },
-        "script": "build_libthermo.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_PREFIX%\\include\\libthermo\\version.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\libthermo\\libthermoConfig.cmake (exit 1)"
-          ]
-        },
-        "version": "0.3.1"
-      },
-      {
-        "name": "pythermo",
-        "requirements": {
-          "build": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja"
+            "libthermo",
+            "libboost-devel"
           ],
           "host": [
-            "python",
-            "pybind11-abi",
+            "python-abi3",
+            "python >=3.12",
             "pip",
-            "xtensor>=0.24,<0.24.6",
-            "xsimd=9.*",
-            "xtensor-python",
-            "xtensor",
-            "tbb-devel",
-            "libboost-python-devel",
-            "pybind11",
-            "numpy>=1.20"
+            "nanobind",
+            "scikit-build-core"
           ],
           "run": [
-            "xtensor-python",
-            "numpy"
+            "python >=3.12"
           ]
         },
-        "script": "build_libthermo.bat",
-        "test": {
-          "commands": [
-            "python -c \"import pythermo._version; assert pythermo._version.__version__ == '0.3.1'\""
-          ],
-          "imports": [
-            "pythermo.pythermo_core"
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "pythermo.pythermo_core"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import pythermo._version\nassert pythermo._version.__version__ == '${{ version }}'\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "0.4.0"
       }
     ],
     "package": {
       "name": "libthermo",
-      "version": "0.3.1"
+      "version": "0.4.0"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "ninja",
+        "libboost-devel"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "sha256": "5cf2b2eb3922150bc07b7f1ac36e7422420c797fea13e77887b090de242bbf07",
-      "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.3.1.tar.gz"
+      "sha256": "01388272ae03ecd295c083be012543a9a82b7a22db2dec5a5dc898ccb486771c",
+      "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.4.0.tar.gz"
     }
   },
   "name": "libthermo",
-  "osx_64_meta_yaml": {
-    "about": {
-      "description": "libthermo is a fast C++ thermodynamical library\nPython bindings are provided in pythermo.\n",
-      "dev_url": "https://github.com/twiinIT/libthermo",
-      "home": "https://github.com/twiinIT/libthermo",
-      "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": "LICENSE",
-      "summary": "A fast C++/Python thermodynamical library"
-    },
-    "build": {
-      "number": "1"
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "adriendelsalle"
-      ]
-    },
-    "outputs": [
-      {
-        "name": "libthermo",
-        "requirements": {
-          "build": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "xtensor>=0.24",
-            "libboost-python-devel",
-            "xsimd=9.*",
-            "tbb-devel"
-          ],
-          "host": []
-        },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "test -d ${PREFIX}/include/libthermo",
-            "test -f ${PREFIX}/include/libthermo/version.hpp",
-            "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MAJOR 0\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MINOR 3\"",
-            "cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_PATCH 1\""
-          ]
-        },
-        "version": "0.3.1"
-      },
-      {
-        "name": "pythermo",
-        "requirements": {
-          "build": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja"
-          ],
-          "host": [
-            "python",
-            "pybind11-abi",
-            "pip",
-            "xtensor>=0.24,<0.24.6",
-            "xsimd=9.*",
-            "xtensor-python",
-            "xtensor",
-            "tbb-devel",
-            "libboost-python-devel",
-            "pybind11",
-            "numpy>=1.20"
-          ],
-          "run": [
-            "xtensor-python",
-            "numpy"
-          ]
-        },
-        "script": "build_libthermo.sh",
-        "test": {
-          "commands": [
-            "python -c \"import pythermo._version; assert pythermo._version.__version__ == '0.3.1'\""
-          ],
-          "imports": [
-            "pythermo.pythermo_core"
-          ]
-        },
-        "version": "0.3.1"
-      }
-    ],
-    "package": {
-      "name": "libthermo",
-      "version": "0.3.1"
-    },
-    "schema_version": 0,
-    "source": {
-      "sha256": "5cf2b2eb3922150bc07b7f1ac36e7422420c797fea13e77887b090de242bbf07",
-      "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.3.1.tar.gz"
-    }
-  },
-  "osx_64_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": [
-        "c_stdlib_stub",
-        "cmake",
-        "cxx_compiler_stub",
-        "libboost-python-devel",
-        "ninja",
-        "tbb-devel",
-        "xsimd",
-        "xtensor"
-      ]
-    },
-    "host": {
-      "__set__": true,
-      "elements": [
-        "libboost-python-devel",
-        "numpy",
-        "pip",
-        "pybind11",
-        "pybind11-abi",
-        "python",
-        "tbb-devel",
-        "xsimd",
-        "xtensor",
-        "xtensor-python"
-      ]
-    },
-    "run": {
-      "__set__": true,
-      "elements": [
-        "numpy",
-        "xtensor-python"
-      ]
-    },
-    "test": {
-      "__set__": true,
-      "elements": []
-    }
-  },
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -525,30 +351,26 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64",
     "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/libthermo.json"
   },
-  "raw_meta_yaml": "{% set name = \"libthermo\" %}\n{% set version = \"0.3.1\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/twiinIT/libthermo/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 5cf2b2eb3922150bc07b7f1ac36e7422420c797fea13e77887b090de242bbf07\n\nbuild:\n  number: 1\n\noutputs:\n  - name: libthermo\n    version: {{ version }}\n    script: build_libthermo.sh                       # [unix]\n    script: build_libthermo.bat                      # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - xtensor>=0.24\n        - libboost-python-devel\n        - xsimd=9.*\n        - tbb-devel\n      host: []  # Empty host dependency section\n\n    test:\n      commands:\n        - test -d ${PREFIX}/include/libthermo  # [unix]\n        - test -f ${PREFIX}/include/libthermo/version.hpp  # [unix]\n        - test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake  # [unix]\n        - if not exist %LIBRARY_PREFIX%\\include\\libthermo\\version.hpp (exit 1)  # [win]\n        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\libthermo\\libthermoConfig.cmake (exit 1)  # [win]\n        {% set version_split = version.split('.') %}\n        - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MAJOR {{ version_split[0] }}\"  # [unix]\n        - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MINOR {{ version_split[1] }}\"  # [unix]\n        - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_PATCH {{ version_split[2] }}\"  # [unix]\n\n  - name: pythermo\n    version: {{ version }}\n    script: build_libthermo.sh                       # [unix]\n    script: build_libthermo.bat                      # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n      host:\n        - python\n        - pybind11-abi\n        - pip\n        - xtensor>=0.24,<0.24.6\n        - xsimd=9.*\n        - xtensor-python\n        - xtensor\n        - tbb-devel\n        - libboost-python-devel\n        - pybind11\n        - numpy>=1.20\n      run:\n        - xtensor-python\n        - numpy\n\n    test:\n      imports:\n        - pythermo.pythermo_core\n      commands:\n        - python -c \"import pythermo._version; assert pythermo._version.__version__ == '{{ version }}'\"\n\nabout:\n  home: https://github.com/twiinIT/libthermo\n  summary: 'A fast C++/Python thermodynamical library'\n  description: |\n    libthermo is a fast C++ thermodynamical library\n    Python bindings are provided in pythermo.\n  license: BSD-3-Clause\n  license_file: LICENSE\n  license_family: BSD\n  dev_url: https://github.com/twiinIT/libthermo\n\nextra:\n  recipe-maintainers:\n    - adriendelsalle\n",
+  "raw_meta_yaml": "context:\n  name: libthermo\n  version: \"0.4.0\"\n  python_min: \"3.12\"\n  # major_version: \"${{ version.split('.')[0] }}\"\n  # minor_version: ${{ version.split('.')[1] }}\n  # patch_version: ${{ version.split('.')[2] }}\n\nrecipe:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/twiinIT/libthermo/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 01388272ae03ecd295c083be012543a9a82b7a22db2dec5a5dc898ccb486771c\n\nbuild:\n  number: 0\n  skip: [\"osx\"]\n\noutputs:\n  - package:\n      name: libthermo\n    build:\n      script:\n        file: build\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - libboost-devel\n      host: []\n    tests:\n      - package_contents:\n          include:\n            exists:\n              - libthermo/version.hpp\n      - script:\n        - if: unix\n          then:\n          - test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake\n        - if: win\n          then:\n          -  if not exist %LIBRARY_PREFIX%\\lib/cmake/libthermo/libthermoConfig.cmake (exit 1)\n\n      # - script:\n      #   - if: unix\n      #     then:\n      #     - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MAJOR ${{ major_version }}\"\n      #     - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_MINOR ${{ minor_version }}\"\n      #     - cat $PREFIX/include/libthermo/version.hpp | grep \"LIBTHERMO_VERSION_PATCH ${{ patch_version }}\"\n\n  - package:\n      name: pythermo\n    build:\n      script: python -m pip install ./pythermo --no-deps --ignore-installed --no-build-isolation --no-cache-dir -vvv\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - libthermo\n        - libboost-devel\n      host:\n        - python-abi3\n        - python>=3.12\n        - pip\n        - nanobind\n        - scikit-build-core\n      run:\n        - python>=3.12\n    tests:\n      - python:\n          imports:\n            - pythermo.pythermo_core\n      - script:\n            interpreter: python\n            content: |\n              import pythermo._version\n              assert pythermo._version.__version__ == '${{ version }}'\n\nabout:\n  homepage: https://github.com/twiinIT/libthermo\n  repository: https://github.com/twiinIT/libthermo\n  summary: 'A fast C++/Python thermodynamical library'\n  description: |\n    libthermo is a fast C++ thermodynamical library\n    Python bindings are provided in pythermo.\n  license: BSD-3-Clause\n  license_file: LICENSE\n  license_family: BSD\n\nextra:\n  recipe-maintainers:\n    - adriendelsalle\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_stdlib_stub",
       "cmake",
       "cxx_compiler_stub",
-      "libboost-python-devel",
+      "libboost-devel",
+      "libthermo",
+      "nanobind",
       "ninja",
-      "numpy",
       "pip",
-      "pybind11",
-      "pybind11-abi",
       "python",
-      "tbb-devel",
-      "xsimd",
-      "xtensor",
-      "xtensor-python"
+      "python-abi3",
+      "scikit-build-core"
     ]
   },
   "requirements": {
@@ -558,11 +380,9 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "libboost-python-devel",
-        "ninja",
-        "tbb-devel",
-        "xsimd",
-        "xtensor"
+        "libboost-devel",
+        "libthermo",
+        "ninja"
       ]
     },
     "host": {
@@ -570,16 +390,11 @@
       "elements": [
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "libboost-python-devel",
-        "numpy",
+        "nanobind",
         "pip",
-        "pybind11",
-        "pybind11-abi",
         "python",
-        "tbb-devel",
-        "xsimd",
-        "xtensor",
-        "xtensor-python"
+        "python-abi3",
+        "scikit-build-core"
       ]
     },
     "run": {
@@ -587,13 +402,14 @@
       "elements": [
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "numpy",
-        "xtensor-python"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   },
   "strong_exports": false,
@@ -604,58 +420,54 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "libboost-python-devel",
-        "ninja",
-        "tbb-devel",
-        "xsimd=9.*",
-        "xtensor>=0.24"
+        "libboost-devel",
+        "libthermo",
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
-        "libboost-python-devel",
-        "numpy>=1.20",
+        "nanobind",
         "pip",
-        "pybind11",
-        "pybind11-abi",
-        "python",
-        "tbb-devel",
-        "xsimd=9.*",
-        "xtensor",
-        "xtensor-python",
-        "xtensor>=0.24,<0.24.6"
+        "python >=3.12",
+        "python-abi3",
+        "scikit-build-core"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "numpy",
-        "xtensor-python"
+        "python >=3.12"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   },
-  "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.3.1.tar.gz",
-  "version": "0.3.1",
+  "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.4.0.tar.gz",
+  "version": "0.4.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/libthermo.json"
   },
   "win_64_meta_yaml": {
     "about": {
-      "description": "libthermo is a fast C++ thermodynamical library\nPython bindings are provided in pythermo.\n",
+      "description": "libthermo is a fast C++ thermodynamical library\nPython bindings are provided in pythermo.",
       "dev_url": "https://github.com/twiinIT/libthermo",
       "home": "https://github.com/twiinIT/libthermo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "A fast C++/Python thermodynamical library"
     },
     "build": {
-      "number": "1"
+      "number": "0",
+      "script": {
+        "file": "build"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -664,6 +476,7 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "libthermo",
         "requirements": {
           "build": [
@@ -671,69 +484,83 @@
             "c_stdlib_stub",
             "cmake",
             "ninja",
-            "xtensor>=0.24",
-            "libboost-python-devel",
-            "xsimd=9.*",
-            "tbb-devel"
+            "libboost-devel"
           ],
-          "host": []
+          "host": [],
+          "run": []
         },
-        "script": "build_libthermo.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_PREFIX%\\include\\libthermo\\version.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\libthermo\\libthermoConfig.cmake (exit 1)"
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "libthermo/version.hpp"
+              ]
+            }
+          },
+          {
+            "script": "test -f ${PREFIX}/lib/cmake/libthermo/libthermoConfig.cmake"
+          }
+        ],
+        "version": "0.4.0"
       },
       {
+        "build": null,
         "name": "pythermo",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "ninja"
+            "ninja",
+            "libthermo",
+            "libboost-devel"
           ],
           "host": [
-            "python",
-            "pybind11-abi",
+            "python-abi3",
+            "python >=3.12",
             "pip",
-            "xtensor>=0.24,<0.24.6",
-            "xsimd=9.*",
-            "xtensor-python",
-            "xtensor",
-            "tbb-devel",
-            "libboost-python-devel",
-            "pybind11",
-            "numpy>=1.20"
+            "nanobind",
+            "scikit-build-core"
           ],
           "run": [
-            "xtensor-python",
-            "numpy"
+            "python >=3.12"
           ]
         },
-        "script": "build_libthermo.bat",
-        "test": {
-          "commands": [
-            "python -c \"import pythermo._version; assert pythermo._version.__version__ == '0.3.1'\""
-          ],
-          "imports": [
-            "pythermo.pythermo_core"
-          ]
-        },
-        "version": "0.3.1"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "pythermo.pythermo_core"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import pythermo._version\nassert pythermo._version.__version__ == '${{ version }}'\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "0.4.0"
       }
     ],
     "package": {
       "name": "libthermo",
-      "version": "0.3.1"
+      "version": "0.4.0"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "ninja",
+        "libboost-devel"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "sha256": "5cf2b2eb3922150bc07b7f1ac36e7422420c797fea13e77887b090de242bbf07",
-      "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.3.1.tar.gz"
+      "sha256": "01388272ae03ecd295c083be012543a9a82b7a22db2dec5a5dc898ccb486771c",
+      "url": "https://github.com/twiinIT/libthermo/archive/refs/tags/0.4.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -743,38 +570,32 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "libboost-python-devel",
-        "ninja",
-        "tbb-devel",
-        "xsimd",
-        "xtensor"
+        "libboost-devel",
+        "libthermo",
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
-        "libboost-python-devel",
-        "numpy",
+        "nanobind",
         "pip",
-        "pybind11",
-        "pybind11-abi",
         "python",
-        "tbb-devel",
-        "xsimd",
-        "xtensor",
-        "xtensor-python"
+        "python-abi3",
+        "scikit-build-core"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "numpy",
-        "xtensor-python"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   }
 }
