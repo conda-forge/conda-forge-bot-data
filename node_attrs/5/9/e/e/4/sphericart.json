@@ -29,8 +29,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "02ff9c3dc788d409b2dd411a2f0df9f08fd4c15a",
-  "feedstock_hash_ts": 1778890004,
+  "feedstock_hash": "7c0d858430231372fad283ba74ee21c5220e6349",
+  "feedstock_hash_ts": 1780689831,
   "feedstock_name": "sphericart",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -42,7 +42,7 @@
       "summary": "Multi-language library for the calculation of spherical harmonics in Cartesian coordinates"
     },
     "build": {
-      "number": "3",
+      "number": "4",
       "script": {
         "file": "build.sh",
         "interpreter": "bash"
@@ -1116,7 +1116,7 @@
       "summary": "Multi-language library for the calculation of spherical harmonics in Cartesian coordinates"
     },
     "build": {
-      "number": "3",
+      "number": "4",
       "script": {
         "file": "build.sh",
         "interpreter": "bash"
@@ -1667,7 +1667,7 @@
       "summary": "Multi-language library for the calculation of spherical harmonics in Cartesian coordinates"
     },
     "build": {
-      "number": "3",
+      "number": "4",
       "script": {
         "file": "build.sh",
         "interpreter": "bash"
@@ -2218,7 +2218,7 @@
       "summary": "Multi-language library for the calculation of spherical harmonics in Cartesian coordinates"
     },
     "build": {
-      "number": "3",
+      "number": "4",
       "script": {
         "file": "build.sh",
         "interpreter": "bash"
@@ -5524,7 +5524,7 @@
       "summary": "Multi-language library for the calculation of spherical harmonics in Cartesian coordinates"
     },
     "build": {
-      "number": "3",
+      "number": "4",
       "script": {
         "file": "build.sh",
         "interpreter": "bash"
@@ -6075,7 +6075,7 @@
       "summary": "Multi-language library for the calculation of spherical harmonics in Cartesian coordinates"
     },
     "build": {
-      "number": "3",
+      "number": "4",
       "script": {
         "file": "build.sh",
         "interpreter": "bash"
@@ -6636,7 +6636,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/sphericart.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: sphericart\n  version: \"1.0.9\"\n  build_number: 3\n\nrecipe:\n  name: ${{ name|lower }}-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/lab-cosmo/sphericart/archive/v${{ version }}.tar.gz\n    sha256: 327f6617c529f5b7dab66b352aa2bfc653b627c95feaf1626b041fae4aabe959\n\nbuild:\n  # Secondary Linux arches are enabled for CPU builds first.\n  number: ${{ build_number }}\n  skip:\n    - cuda_compiler_version == \"11.8\"\n    - cuda_compiler_version != \"None\" and (ppc64le or aarch64 or win)\n\noutputs:\n  - package:\n      name: sphericart\n    build:\n      script:\n        file: ${{ \"build.bat\" if win else \"build.sh\" }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - if: build_platform != target_platform\n          then:\n            - cross-python_${{ target_platform }}\n            - pip\n            - pybind11\n            - python\n            - setuptools\n        - if: linux\n          then: libgomp\n        - if: osx\n          then: llvm-openmp\n        - if: unix\n          then: make\n        - ninja\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n            - cuda-nvcc\n            - cuda-toolkit\n      host:\n        - if: linux\n          then: libgomp\n        - if: osx\n          then: llvm-openmp\n        - pip\n        - python\n        - setuptools\n        - if: win\n          then: vcomp14\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n            - cuda-nvcc\n            - cuda-toolkit\n      run:\n        - numpy\n        - python\n        - if: win\n          then: vcomp14\n    tests:\n      - python:\n          imports:\n            - sphericart\n          pip_check: true\n      - files:\n          recipe:\n            - run_test.py\n        requirements:\n          run:\n            - pip\n        script:\n          - python run_test.py\n\n  - package:\n      name: sphericart-torch\n    build:\n      # Cross-building PyTorch extensions links against build-platform\n      # libtorch, so keep the torch output on native platforms only.\n      # Current PyTorch pins make the torch output non-final on osx-arm64.\n      # Keep the base sphericart output enabled there.\n      # PyTorch does not provide Python 3.14 builds yet. Keep the base\n      # sphericart output enabled for py314 and skip only the torch output.\n      skip:\n        - ppc64le or aarch64\n        - osx and arm64\n        - win\n        - match(python, \">=3.14\")\n      script:\n        file: build_torch.sh\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - if: build_platform != target_platform\n          then:\n            - cross-python_${{ target_platform }}\n            - pip\n            - pybind11\n            - python\n            - setuptools\n        - if: build_platform != target_platform and cuda_compiler_version == \"None\"\n          then: pytorch * cpu*\n        - if: build_platform != target_platform and cuda_compiler_version != \"None\"\n          then: pytorch * cuda*\n        - if: linux\n          then: libgomp\n        - if: linux\n          then: llvm-openmp\n        - if: osx\n          then: llvm-openmp\n        - if: unix\n          then: make\n        - ninja\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n            - cuda-nvcc\n            - cuda-toolkit\n      host:\n        - if: linux\n          then: libgomp\n        - if: linux\n          then: llvm-openmp\n        - if: osx\n          then: llvm-openmp\n        - pip\n        - python\n        - if: cuda_compiler_version == \"None\"\n          then: pytorch * cpu*\n        - if: cuda_compiler_version != \"None\"\n          then: pytorch * cuda*\n        - setuptools\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - cuda-version ==${{ cuda_compiler_version }}\n            - cuda-nvcc\n            - cuda-toolkit\n      run:\n        - ${{ pin_subpackage(\"sphericart\", exact=True) }}\n        - numpy\n        - python\n        - if: linux\n          then: llvm-openmp\n        - if: cuda_compiler_version == \"None\"\n          then: pytorch * cpu*\n        - if: cuda_compiler_version != \"None\"\n          then: pytorch * cuda*\n    tests:\n      - python:\n          imports:\n            - sphericart.torch\n          pip_check: true\n      - files:\n          recipe:\n            - run_test_torch.py\n        requirements:\n          run:\n            - pip\n        script:\n          - python run_test_torch.py\n\nabout:\n  homepage: https://github.com/lab-cosmo/sphericart\n  summary: Multi-language library for the calculation of spherical harmonics in Cartesian coordinates\n  license: MIT\n  license_file: LICENSE.md\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: sphericart\n  version: \"1.0.9\"\n  build_number: 4\n\nrecipe:\n  name: ${{ name|lower }}-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/lab-cosmo/sphericart/archive/v${{ version }}.tar.gz\n    sha256: 327f6617c529f5b7dab66b352aa2bfc653b627c95feaf1626b041fae4aabe959\n\nbuild:\n  # Secondary Linux arches are enabled for CPU builds first.\n  number: ${{ build_number }}\n  skip:\n    - cuda_compiler_version == \"11.8\"\n    - cuda_compiler_version != \"None\" and (ppc64le or aarch64 or win)\n\noutputs:\n  - package:\n      name: sphericart\n    build:\n      script:\n        file: ${{ \"build.bat\" if win else \"build.sh\" }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - if: build_platform != target_platform\n          then:\n            - cross-python_${{ target_platform }}\n            - pip\n            - pybind11\n            - python\n            - setuptools\n        - if: linux\n          then: libgomp\n        - if: osx\n          then: llvm-openmp\n        - if: unix\n          then: make\n        - ninja\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n            - cuda-nvcc\n            - cuda-toolkit\n      host:\n        - if: linux\n          then: libgomp\n        - if: osx\n          then: llvm-openmp\n        - pip\n        - python\n        - setuptools\n        - if: win\n          then: vcomp14\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n            - cuda-nvcc\n            - cuda-toolkit\n      run:\n        - numpy\n        - python\n        - if: win\n          then: vcomp14\n    tests:\n      - python:\n          imports:\n            - sphericart\n          pip_check: true\n      - files:\n          recipe:\n            - run_test.py\n        requirements:\n          run:\n            - pip\n        script:\n          - python run_test.py\n\n  - package:\n      name: sphericart-torch\n    build:\n      # Cross-building PyTorch extensions links against build-platform\n      # libtorch, so keep the torch output on native platforms only.\n      # Current PyTorch pins make the torch output non-final on osx-arm64.\n      # Keep the base sphericart output enabled there.\n      # PyTorch does not provide Python 3.14 builds yet. Keep the base\n      # sphericart output enabled for py314 and skip only the torch output.\n      skip:\n        - ppc64le or aarch64\n        - osx and arm64\n        - win\n        - match(python, \">=3.14\")\n      script:\n        file: build_torch.sh\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - if: build_platform != target_platform\n          then:\n            - cross-python_${{ target_platform }}\n            - pip\n            - pybind11\n            - python\n            - setuptools\n            - if: cuda_compiler_version == \"None\"\n              then: pytorch * cpu*\n        - if: build_platform != target_platform and cuda_compiler_version != \"None\"\n          then: pytorch * cuda*\n        - if: linux\n          then:\n            - libgomp\n            - llvm-openmp\n        - if: osx\n          then: llvm-openmp\n        - if: unix\n          then: make\n        - ninja\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n            - cuda-nvcc\n            - cuda-toolkit\n      host:\n        - if: linux\n          then:\n            - libgomp\n            - llvm-openmp\n        - if: osx\n          then: llvm-openmp\n        - pip\n        - python\n        - if: cuda_compiler_version == \"None\"\n          then: pytorch * cpu*\n          else: pytorch * cuda*\n        - setuptools\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - cuda-version ==${{ cuda_compiler_version }}\n            - cuda-nvcc\n            - cuda-toolkit\n      run:\n        - ${{ pin_subpackage(\"sphericart\", exact=True) }}\n        - numpy\n        - python\n        - if: linux\n          then: llvm-openmp\n        - if: cuda_compiler_version == \"None\"\n          then: pytorch * cpu*\n          else: pytorch * cuda*\n    tests:\n      - python:\n          imports:\n            - sphericart.torch\n          pip_check: true\n      - files:\n          recipe:\n            - run_test_torch.py\n        requirements:\n          run:\n            - pip\n        script:\n          - python run_test_torch.py\n\nabout:\n  homepage: https://github.com/lab-cosmo/sphericart\n  summary: Multi-language library for the calculation of spherical harmonics in Cartesian coordinates\n  license: MIT\n  license_file: LICENSE.md\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -6786,7 +6786,7 @@
       "summary": "Multi-language library for the calculation of spherical harmonics in Cartesian coordinates"
     },
     "build": {
-      "number": "3",
+      "number": "4",
       "script": {
         "file": "build.sh",
         "interpreter": "bash"
