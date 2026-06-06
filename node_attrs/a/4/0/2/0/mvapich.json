@@ -9,6 +9,7 @@
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
@@ -21,34 +22,109 @@
       "store_build_artifacts": true
     }
   },
-  "feedstock_hash": "f5993de5128f668cb4c644555bd3e8c3be7e0d69",
-  "feedstock_hash_ts": 1780694260,
+  "feedstock_hash": "39f2fba2f1ccbbc3e57085bf0f715f6eaf7ebe14",
+  "feedstock_hash_ts": 1780732927,
   "feedstock_name": "mvapich",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard\nwith support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI).\n\nThe `_shs` variant comes with the CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\nIn case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.\n",
+      "description": "MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard\nwith support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI),\nincluding CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\nIn case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.",
       "home": "https://mvapich.cse.ohio-state.edu/",
       "license": "BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)",
-      "license_family": "BSD",
-      "license_file": [
-        "mvapich/COPYRIGHT",
-        "shs-libfabric/COPYING"
-      ],
+      "license_family": "BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)",
+      "license_file": "mvapich/COPYRIGHT",
       "summary": "MVAPICH, a high-performance MPI library by The Ohio State University."
     },
     "build": {
-      "number": "18",
-      "run_exports": [
-        "mvapich"
-      ],
-      "string": "shs_h1234567_18"
+      "number": "19",
+      "run_exports": {
+        "weak": [
+          "mvapich"
+        ]
+      },
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "j34ni"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mvapich"
+          ]
+        },
+        "name": "mvapich",
+        "requirements": {
+          "build": [
+            "autoconf",
+            "automake",
+            "bison",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "c_stdlib_stub",
+            "libtool",
+            "make",
+            "patchelf",
+            "pkg-config"
+          ],
+          "host": [
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libgomp",
+            "libhwloc",
+            "libnl",
+            "rdma-core",
+            "shs-cassini-headers",
+            "shs-cxi-drivers",
+            "shs-libcxi",
+            "xpmem"
+          ],
+          "run": [
+            "_openmp_mutex",
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libfuse",
+            "libhwloc",
+            "libnl",
+            "mpi 1.0.* mvapich",
+            "rdma-core",
+            "shs-libcxi",
+            "xpmem"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "hello.c"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "test -f $PREFIX/lib/libmpi.so",
+              "test -f $PREFIX/lib/libmpifort.so",
+              "test -f $PREFIX/bin/mpicc",
+              "test -f $PREFIX/bin/mpifort",
+              "test -f $PREFIX/bin/mpiexec",
+              "$PREFIX/bin/mpicc -o hello_mpi hello.c",
+              "$PREFIX/bin/mpiexec -np 2 ./hello_mpi"
+            ]
+          }
+        ],
+        "version": "4.1"
+      }
+    ],
     "package": {
       "name": "mvapich",
       "version": "4.1"
@@ -94,47 +170,13 @@
         "xpmem"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "mvapich",
-        "patches": [
-          "fix_ucr_domain.patch"
-        ],
-        "sha256": "25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee",
-        "url": "https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-4.1.tar.gz"
-      },
-      {
-        "folder": "shs-libfabric",
-        "patches": [
-          "fix_reallocarray.patch",
-          "define_map_huge_shift.patch"
-        ],
-        "sha256": "734aa46fc1a5c69c59514aade3e8f17037506fbb08013f4be63d669e546570b0",
-        "url": "https://github.com/HewlettPackard/shs-libfabric/archive/refs/tags/v2.2.0.tar.gz"
-      },
-      {
-        "folder": "ucx",
-        "sha256": "7c8a6093cada179aa1d851b83625e3b25ed5658966e309de5118c27a038c7ef9",
-        "url": "https://github.com/openucx/ucx/releases/download/v1.20.0/ucx-1.20.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $CONDA_PREFIX/lib/libmpi.so",
-        "test -f $CONDA_PREFIX/lib/libmpifort.so",
-        "test -f $CONDA_PREFIX/bin/mpicc",
-        "test -f $CONDA_PREFIX/bin/mpifort",
-        "test -f $CONDA_PREFIX/bin/mpiexec",
-        "$CONDA_PREFIX/bin/mpicc -o hello_mpi hello.c",
-        "$CONDA_PREFIX/bin/mpiexec -np 2 ./hello_mpi"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "fix_ucr_domain.patch"
       ],
-      "files": [
-        "hello.c"
-      ],
-      "requires": [
-        "c_compiler_stub"
-      ]
+      "sha256": "25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee",
+      "url": "https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-4.1.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -195,28 +237,103 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard\nwith support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI).\n\nThe `_shs` variant comes with the CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\nIn case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.\n",
+      "description": "MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard\nwith support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI),\nincluding CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\nIn case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.",
       "home": "https://mvapich.cse.ohio-state.edu/",
       "license": "BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)",
-      "license_family": "BSD",
-      "license_file": [
-        "mvapich/COPYRIGHT",
-        "shs-libfabric/COPYING"
-      ],
+      "license_family": "BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)",
+      "license_file": "mvapich/COPYRIGHT",
       "summary": "MVAPICH, a high-performance MPI library by The Ohio State University."
     },
     "build": {
-      "number": "18",
-      "run_exports": [
-        "mvapich"
-      ],
-      "string": "shs_h1234567_18"
+      "number": "19",
+      "run_exports": {
+        "weak": [
+          "mvapich"
+        ]
+      },
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "j34ni"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mvapich"
+          ]
+        },
+        "name": "mvapich",
+        "requirements": {
+          "build": [
+            "autoconf",
+            "automake",
+            "bison",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "c_stdlib_stub",
+            "libtool",
+            "make",
+            "patchelf",
+            "pkg-config"
+          ],
+          "host": [
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libgomp",
+            "libhwloc",
+            "libnl",
+            "rdma-core",
+            "shs-cassini-headers",
+            "shs-cxi-drivers",
+            "shs-libcxi",
+            "xpmem"
+          ],
+          "run": [
+            "_openmp_mutex",
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libfuse",
+            "libhwloc",
+            "libnl",
+            "mpi 1.0.* mvapich",
+            "rdma-core",
+            "shs-libcxi",
+            "xpmem"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "hello.c"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "test -f $PREFIX/lib/libmpi.so",
+              "test -f $PREFIX/lib/libmpifort.so",
+              "test -f $PREFIX/bin/mpicc",
+              "test -f $PREFIX/bin/mpifort",
+              "test -f $PREFIX/bin/mpiexec",
+              "$PREFIX/bin/mpicc -o hello_mpi hello.c",
+              "$PREFIX/bin/mpiexec -np 2 ./hello_mpi"
+            ]
+          }
+        ],
+        "version": "4.1"
+      }
+    ],
     "package": {
       "name": "mvapich",
       "version": "4.1"
@@ -262,47 +379,13 @@
         "xpmem"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "mvapich",
-        "patches": [
-          "fix_ucr_domain.patch"
-        ],
-        "sha256": "25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee",
-        "url": "https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-4.1.tar.gz"
-      },
-      {
-        "folder": "shs-libfabric",
-        "patches": [
-          "fix_reallocarray.patch",
-          "define_map_huge_shift.patch"
-        ],
-        "sha256": "734aa46fc1a5c69c59514aade3e8f17037506fbb08013f4be63d669e546570b0",
-        "url": "https://github.com/HewlettPackard/shs-libfabric/archive/refs/tags/v2.2.0.tar.gz"
-      },
-      {
-        "folder": "ucx",
-        "sha256": "7c8a6093cada179aa1d851b83625e3b25ed5658966e309de5118c27a038c7ef9",
-        "url": "https://github.com/openucx/ucx/releases/download/v1.20.0/ucx-1.20.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $CONDA_PREFIX/lib/libmpi.so",
-        "test -f $CONDA_PREFIX/lib/libmpifort.so",
-        "test -f $CONDA_PREFIX/bin/mpicc",
-        "test -f $CONDA_PREFIX/bin/mpifort",
-        "test -f $CONDA_PREFIX/bin/mpiexec",
-        "$CONDA_PREFIX/bin/mpicc -o hello_mpi hello.c",
-        "$CONDA_PREFIX/bin/mpiexec -np 2 ./hello_mpi"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "fix_ucr_domain.patch"
       ],
-      "files": [
-        "hello.c"
-      ],
-      "requires": [
-        "c_compiler_stub"
-      ]
+      "sha256": "25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee",
+      "url": "https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-4.1.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -363,28 +446,177 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard\nwith support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI).\n\nThe `_shs` variant comes with the CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\nIn case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.\n",
+      "description": "MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard\nwith support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI),\nincluding CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\nIn case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.",
       "home": "https://mvapich.cse.ohio-state.edu/",
       "license": "BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)",
-      "license_family": "BSD",
-      "license_file": [
-        "mvapich/COPYRIGHT",
-        "shs-libfabric/COPYING"
-      ],
+      "license_family": "BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)",
+      "license_file": "mvapich/COPYRIGHT",
       "summary": "MVAPICH, a high-performance MPI library by The Ohio State University."
     },
     "build": {
-      "number": "18",
-      "run_exports": [
-        "mvapich"
-      ],
-      "string": "shs_h1234567_18"
+      "number": "19",
+      "run_exports": {
+        "weak": [
+          "mvapich"
+        ]
+      },
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "j34ni"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mvapich"
+          ]
+        },
+        "name": "mvapich",
+        "requirements": {
+          "build": [
+            "autoconf",
+            "automake",
+            "bison",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "c_stdlib_stub",
+            "libtool",
+            "make",
+            "patchelf",
+            "pkg-config"
+          ],
+          "host": [
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libgomp",
+            "libhwloc",
+            "libnl",
+            "rdma-core",
+            "shs-cassini-headers",
+            "shs-cxi-drivers",
+            "shs-libcxi",
+            "xpmem"
+          ],
+          "run": [
+            "_openmp_mutex",
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libfuse",
+            "libhwloc",
+            "libnl",
+            "mpi 1.0.* mvapich",
+            "rdma-core",
+            "shs-libcxi",
+            "xpmem"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "hello.c"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "test -f $PREFIX/lib/libmpi.so",
+              "test -f $PREFIX/lib/libmpifort.so",
+              "test -f $PREFIX/bin/mpicc",
+              "test -f $PREFIX/bin/mpifort",
+              "test -f $PREFIX/bin/mpiexec",
+              "$PREFIX/bin/mpicc -o hello_mpi hello.c",
+              "$PREFIX/bin/mpiexec -np 2 ./hello_mpi"
+            ]
+          }
+        ],
+        "version": "4.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mvapich"
+          ]
+        },
+        "name": "mvapich",
+        "requirements": {
+          "build": [
+            "autoconf",
+            "automake",
+            "bison",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "c_stdlib_stub",
+            "libtool",
+            "make",
+            "patchelf",
+            "pkg-config"
+          ],
+          "host": [
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libgomp",
+            "libhwloc",
+            "libnl",
+            "rdma-core",
+            "shs-cassini-headers",
+            "shs-cxi-drivers",
+            "shs-libcxi",
+            "xpmem"
+          ],
+          "run": [
+            "_openmp_mutex",
+            "knem-headers",
+            "json-c",
+            "libcurl",
+            "libfuse",
+            "libhwloc",
+            "libnl",
+            "mpi 1.0.* mvapich",
+            "rdma-core",
+            "shs-libcxi",
+            "xpmem"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "hello.c"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "test -f $PREFIX/lib/libmpi.so",
+              "test -f $PREFIX/lib/libmpifort.so",
+              "test -f $PREFIX/bin/mpicc",
+              "test -f $PREFIX/bin/mpifort",
+              "test -f $PREFIX/bin/mpiexec",
+              "$PREFIX/bin/mpicc -o hello_mpi hello.c",
+              "$PREFIX/bin/mpiexec -np 2 ./hello_mpi"
+            ]
+          }
+        ],
+        "version": "4.1"
+      }
+    ],
     "package": {
       "name": "mvapich",
       "version": "4.1"
@@ -430,69 +662,13 @@
         "xpmem"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "mvapich",
-        "patches": [
-          "fix_ucr_domain.patch"
-        ],
-        "sha256": "25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee",
-        "url": "https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-4.1.tar.gz"
-      },
-      {
-        "folder": "shs-libfabric",
-        "patches": [
-          "fix_reallocarray.patch",
-          "define_map_huge_shift.patch"
-        ],
-        "sha256": "734aa46fc1a5c69c59514aade3e8f17037506fbb08013f4be63d669e546570b0",
-        "url": "https://github.com/HewlettPackard/shs-libfabric/archive/refs/tags/v2.2.0.tar.gz"
-      },
-      {
-        "folder": "ucx",
-        "sha256": "7c8a6093cada179aa1d851b83625e3b25ed5658966e309de5118c27a038c7ef9",
-        "url": "https://github.com/openucx/ucx/releases/download/v1.20.0/ucx-1.20.0.tar.gz"
-      },
-      {
-        "folder": "mvapich",
-        "patches": [
-          "fix_ucr_domain.patch"
-        ],
-        "sha256": "25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee",
-        "url": "https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-4.1.tar.gz"
-      },
-      {
-        "folder": "shs-libfabric",
-        "patches": [
-          "fix_reallocarray.patch",
-          "define_map_huge_shift.patch"
-        ],
-        "sha256": "734aa46fc1a5c69c59514aade3e8f17037506fbb08013f4be63d669e546570b0",
-        "url": "https://github.com/HewlettPackard/shs-libfabric/archive/refs/tags/v2.2.0.tar.gz"
-      },
-      {
-        "folder": "ucx",
-        "sha256": "7c8a6093cada179aa1d851b83625e3b25ed5658966e309de5118c27a038c7ef9",
-        "url": "https://github.com/openucx/ucx/releases/download/v1.20.0/ucx-1.20.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "test -f $CONDA_PREFIX/lib/libmpi.so",
-        "test -f $CONDA_PREFIX/lib/libmpifort.so",
-        "test -f $CONDA_PREFIX/bin/mpicc",
-        "test -f $CONDA_PREFIX/bin/mpifort",
-        "test -f $CONDA_PREFIX/bin/mpiexec",
-        "$CONDA_PREFIX/bin/mpicc -o hello_mpi hello.c",
-        "$CONDA_PREFIX/bin/mpiexec -np 2 ./hello_mpi"
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "fix_ucr_domain.patch"
       ],
-      "files": [
-        "hello.c"
-      ],
-      "requires": [
-        "c_compiler_stub"
-      ]
+      "sha256": "25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee",
+      "url": "https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-4.1.tar.gz"
     }
   },
   "name": "mvapich",
@@ -510,7 +686,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/mvapich.json"
   },
-  "raw_meta_yaml": "{% set mvapich_version = \"4.1\" %}\n{% set shs_libfabric_version = \"2.2.0\" %}\n{% set ucx_version = \"1.20.0\" %}\n{% set build = 18 %}\n\npackage:\n  name: mvapich\n  version: \"{{ mvapich_version }}\"\n\nsource:\n  - url: https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-{{ mvapich_version }}.tar.gz\n    sha256: 25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee\n    folder: mvapich\n    patches:\n      - fix_ucr_domain.patch\n  - url: https://github.com/HewlettPackard/shs-libfabric/archive/refs/tags/v{{ shs_libfabric_version }}.tar.gz\n    sha256: 734aa46fc1a5c69c59514aade3e8f17037506fbb08013f4be63d669e546570b0 \n    folder: shs-libfabric\n    patches:\n      - fix_reallocarray.patch \n      - define_map_huge_shift.patch\n  - url: https://github.com/openucx/ucx/releases/download/v{{ ucx_version }}/ucx-{{ ucx_version }}.tar.gz\n    sha256: 7c8a6093cada179aa1d851b83625e3b25ed5658966e309de5118c27a038c7ef9\n    folder: ucx\n\nbuild:\n  number: {{ build }}\n  string: shs_h{{ PKG_HASH }}_{{ build }}\n  skip: true  # [win or osx] \n  run_exports:\n    - {{ pin_subpackage('mvapich', max_pin='x.y') }}\n\nrequirements:\n  build:\n    - autoconf\n    - automake\n    - bison\n    - {{ compiler('c') }} \n    - {{ compiler('cxx') }} \n    - {{ compiler('fortran') }} \n    - {{ stdlib(\"c\") }}\n    - libtool\n    - make\n    - patchelf\n    - pkg-config\n  host:\n    - knem-headers\n    - json-c\n    - libcurl\n    - libgomp\n    - libhwloc\n    - libnl\n    - rdma-core \n    - shs-cassini-headers\n    - shs-cxi-drivers\n    - shs-libcxi\n    - xpmem\n  run:\n    - _openmp_mutex\n    - knem-headers\n    - json-c\n    - libcurl\n    - libfuse\n    - libhwloc\n    - libnl\n    - mpi 1.0.* mvapich\n    - rdma-core\n    - shs-libcxi\n    - xpmem\n\ntest:\n  requires:\n    - {{ compiler('c') }}\n  files:\n    - hello.c\n  commands:\n    - test -f $CONDA_PREFIX/lib/libmpi.so\n    - test -f $CONDA_PREFIX/lib/libmpifort.so\n    - test -f $CONDA_PREFIX/bin/mpicc\n    - test -f $CONDA_PREFIX/bin/mpifort\n    - test -f $CONDA_PREFIX/bin/mpiexec\n    - $CONDA_PREFIX/bin/mpicc -o hello_mpi hello.c\n    - $CONDA_PREFIX/bin/mpiexec -np 2 ./hello_mpi\n\nabout:\n  home: https://mvapich.cse.ohio-state.edu/\n  license: BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)\n  license_family: BSD\n  license_file:\n    - mvapich/COPYRIGHT\n    - shs-libfabric/COPYING\n  summary: MVAPICH, a high-performance MPI library by The Ohio State University.\n  description: |\n    MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard \n    with support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI).\n\n    The `_shs` variant comes with the CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\n    In case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.\n\nextra:\n  recipe-maintainers:\n    \n    - j34ni\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  mvapich_version: \"4.1\"\n  shs_libfabric_version: \"2.2.0\"\n  ucx_version: \"1.20.0\"\n  build: 19\n\npackage:\n  name: mvapich\n  version: ${{ mvapich_version }}\n\nsource:\n  - url: https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich-${{ mvapich_version }}.tar.gz\n    sha256: 25a53d3725b669e2c648158fb7c9fc5b1388953f3a2f949748586c447d0e43ee\n    target_directory: mvapich\n    patches:\n      - fix_ucr_domain.patch\n  - url: https://github.com/HewlettPackard/shs-libfabric/archive/refs/tags/v${{ shs_libfabric_version }}.tar.gz\n    sha256: 734aa46fc1a5c69c59514aade3e8f17037506fbb08013f4be63d669e546570b0\n    target_directory: shs-libfabric\n    patches:\n      - fix_reallocarray.patch\n      - define_map_huge_shift.patch\n  - url: https://github.com/openucx/ucx/releases/download/v${{ ucx_version }}/ucx-${{ ucx_version }}.tar.gz\n    sha256: 7c8a6093cada179aa1d851b83625e3b25ed5658966e309de5118c27a038c7ef9\n    target_directory: ucx\n\nbuild:\n  number: ${{ build }}\n  skip:\n    - if: win or osx\n      then: true\n  script: build.sh\n\nrequirements:\n  build:\n    - autoconf\n    - automake\n    - bison\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('fortran') }}\n    - ${{ stdlib(\"c\") }}\n    - libtool\n    - make\n    - patchelf\n    - pkg-config\n  host:\n    - knem-headers\n    - json-c\n    - libcurl\n    - libgomp\n    - libhwloc\n    - libnl\n    - rdma-core\n    - shs-cassini-headers\n    - shs-cxi-drivers\n    - shs-libcxi\n    - xpmem\n  run:\n    - _openmp_mutex\n    - knem-headers\n    - json-c\n    - libcurl\n    - libfuse\n    - libhwloc\n    - libnl\n    - mpi 1.0.* mvapich\n    - rdma-core\n    - shs-libcxi\n    - xpmem\n  run_exports:\n    - ${{ pin_subpackage('mvapich', upper_bound='x.y') }}\n\ntests:\n  - script:\n      - test -f $PREFIX/lib/libmpi.so\n      - test -f $PREFIX/lib/libmpifort.so\n      - test -f $PREFIX/bin/mpicc\n      - test -f $PREFIX/bin/mpifort\n      - test -f $PREFIX/bin/mpiexec\n      - $PREFIX/bin/mpicc -o hello_mpi hello.c\n      - $PREFIX/bin/mpiexec -np 2 ./hello_mpi\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n    files:\n      recipe:\n        - hello.c\n\nabout:\n  homepage: https://mvapich.cse.ohio-state.edu/\n  license: BSD-3-Clause AND (BSD-2-Clause OR GPL-2.0-only)\n  license_file:\n    - mvapich/COPYRIGHT\n    - shs-libfabric/COPYING\n  summary: MVAPICH, a high-performance MPI library by The Ohio State University.\n  description: |\n    MVAPICH is a high-performance implementation of the MPI (Message Passing Interface) standard\n    with support for **both** Unified Communication X (UCX) and Open Fabric Interfaces (OFI),\n    including CXI provider support for Slingshot Host Systems (use `export FI_PROVIDER=cxi` to *enable* it).\n\n    In case the actual *netmod* is not correctly recognized at run time, activate it using either `MPICH_CH4_NETMOD=ucx` or `MPICH_CH4_NETMOD=ofi`.\n\nextra:\n  recipe-maintainers:\n    - j34ni\n",
   "req": {
     "__set__": true,
     "elements": [
