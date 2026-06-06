@@ -1,23 +1,26 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '13'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibabseil:\n- '20250512'\nopenssl:\n- '3'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\n- 3.9.* *_cpython\ns2geometry:\n- 0.11.1\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibabseil:\n- '20260107'\nopenssl:\n- '3.5'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\n- 3.14.* *_cp314\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "4050375288ec7037b5c4ce0c51436220a84747fe",
-  "feedstock_hash_ts": 1776904139,
+  "feedstock_hash": "42f2c718aae7dcdbe760e06988a98611c86309bd",
+  "feedstock_hash_ts": 1780744827,
   "feedstock_name": "s2geometry",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -25,27 +28,66 @@
       "dev_url": "https://github.com/google/s2geometry",
       "home": "https://s2geometry.io/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
       "summary": "Computational geometry and spatial indexing on the sphere."
     },
     "build": {
-      "number": "3",
-      "run_exports": [
-        "s2geometry"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "s2geometry"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
         "zklaus",
         "benbovy",
-        "hobu"
+        "hobu",
+        "h-vetinari"
       ]
     },
     "outputs": [
       {
-        "name": "s2geometry"
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
@@ -58,7 +100,8 @@
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -68,30 +111,237 @@
             "openssl"
           ]
         },
-        "script": "install_python.sh",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
           ],
-          "imports": [
-            "s2geometry"
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
           ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
+          "run": [
+            "libabseil",
+            "openssl"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       }
     ],
     "package": {
       "name": "s2geometry",
-      "version": "0.12.0"
+      "version": "0.14.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake >=3.25,<4",
-        "make"
+        "ninja"
       ],
       "host": [
         "openssl",
@@ -101,17 +351,15 @@
         "libabseil"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "dllexport.patch",
-        "python-setup.patch"
+        "patches/0001-dllexport.patch",
+        "patches/0002-S2PointArray-replace-alignof-expression-with-alignof.patch",
+        "patches/0003-fix-issues-with-MSVC.patch"
       ],
-      "sha256": "c09ec751c3043965a0d441e046a73c456c995e6063439a72290f661c1054d611",
-      "url": "https://github.com/google/s2geometry/archive/v0.12.0.tar.gz"
-    },
-    "test": {
-      "files": "run_test.bat run_test.sh"
+      "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b",
+      "url": "https://github.com/google/s2geometry/archive/v0.14.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -122,6 +370,7 @@
         "cmake",
         "cxx_compiler_stub",
         "make",
+        "ninja",
         "swig"
       ]
     },
@@ -133,7 +382,8 @@
         "openssl",
         "pip",
         "python",
-        "setuptools"
+        "setuptools",
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -145,35 +395,77 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   },
-  "meta_yaml": {
+  "linux_aarch64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/google/s2geometry",
       "home": "https://s2geometry.io/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
       "summary": "Computational geometry and spatial indexing on the sphere."
     },
     "build": {
-      "number": "3",
-      "run_exports": [
-        "s2geometry"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "s2geometry"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
         "zklaus",
         "benbovy",
-        "hobu"
+        "hobu",
+        "h-vetinari"
       ]
     },
     "outputs": [
       {
-        "name": "s2geometry"
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
@@ -186,7 +478,8 @@
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -196,23 +489,32 @@
             "openssl"
           ]
         },
-        "script": "install_python.sh",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
-          ],
-          "imports": [
-            "s2geometry"
-          ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
-        "name": "s2geometry"
-      },
-      {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
@@ -225,7 +527,8 @@
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -235,23 +538,32 @@
             "openssl"
           ]
         },
-        "script": "install_python.sh",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
-          ],
-          "imports": [
-            "s2geometry"
-          ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
-        "name": "s2geometry"
-      },
-      {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
@@ -264,7 +576,8 @@
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -274,36 +587,46 @@
             "openssl"
           ]
         },
-        "script": "install_python.sh",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
-          ],
-          "imports": [
-            "s2geometry"
-          ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
-        "name": "s2geometry"
-      },
-      {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "cxx_compiler_stub",
             "cmake",
-            "ninja",
+            "make",
             "swig"
           ],
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -313,30 +636,90 @@
             "openssl"
           ]
         },
-        "script": "install_python.bat",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
           ],
-          "imports": [
-            "s2geometry"
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
           ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
+          "run": [
+            "libabseil",
+            "openssl"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       }
     ],
     "package": {
       "name": "s2geometry",
-      "version": "0.12.0"
+      "version": "0.14.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake >=3.25,<4",
-        "make"
+        "ninja"
       ],
       "host": [
         "openssl",
@@ -346,17 +729,1517 @@
         "libabseil"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "dllexport.patch",
-        "python-setup.patch"
+        "patches/0001-dllexport.patch",
+        "patches/0002-S2PointArray-replace-alignof-expression-with-alignof.patch",
+        "patches/0003-fix-issues-with-MSVC.patch"
       ],
-      "sha256": "c09ec751c3043965a0d441e046a73c456c995e6063439a72290f661c1054d611",
-      "url": "https://github.com/google/s2geometry/archive/v0.12.0.tar.gz"
+      "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b",
+      "url": "https://github.com/google/s2geometry/archive/v0.14.0.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "make",
+        "ninja",
+        "swig"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "cmake-build-extension",
+        "libabseil",
+        "openssl",
+        "pip",
+        "python",
+        "setuptools",
+        "setuptools-scm"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libabseil",
+        "openssl"
+      ]
     },
     "test": {
-      "files": "run_test.bat run_test.sh"
+      "__set__": true,
+      "elements": [
+        "pip",
+        "python"
+      ]
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/google/s2geometry",
+      "home": "https://s2geometry.io/",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "Computational geometry and spatial indexing on the sphere."
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "s2geometry"
+        ]
+      },
+      "script": "build"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "zklaus",
+        "benbovy",
+        "hobu",
+        "h-vetinari"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      }
+    ],
+    "package": {
+      "name": "s2geometry",
+      "version": "0.14.0"
+    },
+    "requirements": {
+      "build": [
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake >=3.25,<4",
+        "ninja"
+      ],
+      "host": [
+        "openssl",
+        "libabseil"
+      ],
+      "run": [
+        "libabseil"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-dllexport.patch",
+        "patches/0002-S2PointArray-replace-alignof-expression-with-alignof.patch",
+        "patches/0003-fix-issues-with-MSVC.patch"
+      ],
+      "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b",
+      "url": "https://github.com/google/s2geometry/archive/v0.14.0.tar.gz"
     }
   },
   "name": "s2geometry",
@@ -365,27 +2248,66 @@
       "dev_url": "https://github.com/google/s2geometry",
       "home": "https://s2geometry.io/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
       "summary": "Computational geometry and spatial indexing on the sphere."
     },
     "build": {
-      "number": "3",
-      "run_exports": [
-        "s2geometry"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "s2geometry"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
         "zklaus",
         "benbovy",
-        "hobu"
+        "hobu",
+        "h-vetinari"
       ]
     },
     "outputs": [
       {
-        "name": "s2geometry"
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
@@ -398,7 +2320,8 @@
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -408,30 +2331,237 @@
             "openssl"
           ]
         },
-        "script": "install_python.sh",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
           ],
-          "imports": [
-            "s2geometry"
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
           ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
+          "run": [
+            "libabseil",
+            "openssl"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       }
     ],
     "package": {
       "name": "s2geometry",
-      "version": "0.12.0"
+      "version": "0.14.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake >=3.25,<4",
-        "make"
+        "ninja"
       ],
       "host": [
         "openssl",
@@ -441,17 +2571,15 @@
         "libabseil"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "dllexport.patch",
-        "python-setup.patch"
+        "patches/0001-dllexport.patch",
+        "patches/0002-S2PointArray-replace-alignof-expression-with-alignof.patch",
+        "patches/0003-fix-issues-with-MSVC.patch"
       ],
-      "sha256": "c09ec751c3043965a0d441e046a73c456c995e6063439a72290f661c1054d611",
-      "url": "https://github.com/google/s2geometry/archive/v0.12.0.tar.gz"
-    },
-    "test": {
-      "files": "run_test.bat run_test.sh"
+      "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b",
+      "url": "https://github.com/google/s2geometry/archive/v0.14.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -462,6 +2590,7 @@
         "cmake",
         "cxx_compiler_stub",
         "make",
+        "ninja",
         "swig"
       ]
     },
@@ -473,7 +2602,8 @@
         "openssl",
         "pip",
         "python",
-        "setuptools"
+        "setuptools",
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -485,7 +2615,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   },
   "osx_arm64_meta_yaml": {
@@ -493,27 +2626,66 @@
       "dev_url": "https://github.com/google/s2geometry",
       "home": "https://s2geometry.io/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
       "summary": "Computational geometry and spatial indexing on the sphere."
     },
     "build": {
-      "number": "3",
-      "run_exports": [
-        "s2geometry"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "s2geometry"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
         "zklaus",
         "benbovy",
-        "hobu"
+        "hobu",
+        "h-vetinari"
       ]
     },
     "outputs": [
       {
-        "name": "s2geometry"
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
@@ -526,7 +2698,8 @@
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -536,30 +2709,237 @@
             "openssl"
           ]
         },
-        "script": "install_python.sh",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
           ],
-          "imports": [
-            "s2geometry"
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
           ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
+          "run": [
+            "libabseil",
+            "openssl"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       }
     ],
     "package": {
       "name": "s2geometry",
-      "version": "0.12.0"
+      "version": "0.14.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake >=3.25,<4",
-        "make"
+        "ninja"
       ],
       "host": [
         "openssl",
@@ -569,17 +2949,15 @@
         "libabseil"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "dllexport.patch",
-        "python-setup.patch"
+        "patches/0001-dllexport.patch",
+        "patches/0002-S2PointArray-replace-alignof-expression-with-alignof.patch",
+        "patches/0003-fix-issues-with-MSVC.patch"
       ],
-      "sha256": "c09ec751c3043965a0d441e046a73c456c995e6063439a72290f661c1054d611",
-      "url": "https://github.com/google/s2geometry/archive/v0.12.0.tar.gz"
-    },
-    "test": {
-      "files": "run_test.bat run_test.sh"
+      "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b",
+      "url": "https://github.com/google/s2geometry/archive/v0.14.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -590,6 +2968,7 @@
         "cmake",
         "cxx_compiler_stub",
         "make",
+        "ninja",
         "swig"
       ]
     },
@@ -601,7 +2980,8 @@
         "openssl",
         "pip",
         "python",
-        "setuptools"
+        "setuptools",
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -613,7 +2993,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   },
   "outputs_names": {
@@ -626,6 +3009,7 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
     "osx_64",
     "osx_arm64",
     "win_64"
@@ -633,7 +3017,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/s2geometry.json"
   },
-  "raw_meta_yaml": "{% set name = \"s2geometry\" %}\n{% set version = \"0.12.0\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/google/s2geometry/archive/v{{ version }}.tar.gz\n  sha256: c09ec751c3043965a0d441e046a73c456c995e6063439a72290f661c1054d611\n  patches:\n    # missing DLL exports on windows (data)\n    - dllexport.patch\n    - python-setup.patch\n\nbuild:\n  number: 3\n  run_exports:\n    # breaking changes are expected in minor 0.x releases\n    - {{ pin_subpackage('s2geometry', max_pin='x.x') }}\n\nrequirements:\n  build:\n    - {{ compiler(\"cxx\") }}\n    - {{ stdlib(\"c\") }}\n    - cmake >=3.25,<4\n    - make  # [unix]\n\n  host:\n    - openssl\n    - libabseil\n  run:\n    - libabseil\n\ntest:\n  files:\n    run_test.bat\n    run_test.sh\n\noutputs:\n\n  - name: s2geometry\n\n  - name: s2geometry-python\n    script: install_python.sh  # [unix]\n    script: install_python.bat  # [win]\n    requirements:\n      build:\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cxx') }}\n        - cmake\n        - make  # [unix]\n        - ninja  # [win]\n        - python                                 # [build_platform != target_platform]\n        - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n        - cmake-build-extension                  # [build_platform != target_platform]\n        - swig\n      host:\n        - python\n        - pip\n        - setuptools\n        - libabseil\n        - cmake-build-extension\n        - openssl\n\n      run:\n        - libabseil\n        - openssl\n    test:\n      source_files:\n        - src/python/s2geometry_test.py\n      commands:\n        - python ./src/python/s2geometry_test.py > /dev/null\n      imports:\n        - s2geometry\n\n\nabout:\n  home: https://s2geometry.io/\n  license: Apache-2.0\n  license_file: LICENSE\n  summary: Computational geometry and spatial indexing on the sphere.\n\n  dev_url: https://github.com/google/s2geometry\n\nextra:\n  recipe-maintainers:\n    - zklaus\n    - benbovy\n    - hobu\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: s2geometry\n  version: \"0.14.0\"\n\nrecipe:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/google/s2geometry/archive/v${{ version }}.tar.gz\n  sha256: 8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b\n  patches:\n    # missing DLL exports on windows (data)\n    - patches/0001-dllexport.patch\n    # backport https://github.com/google/s2geometry/pull/609\n    - patches/0002-S2PointArray-replace-alignof-expression-with-alignof.patch\n    # backport https://github.com/google/s2geometry/pull/637\n    - patches/0003-fix-issues-with-MSVC.patch\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: s2geometry\n    build:\n      script: build\n    requirements:\n      build:\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake >=3.25,<4\n        - ninja\n      host:\n        - openssl\n        - libabseil\n      run:\n        - libabseil\n      run_exports:\n        - ${{ pin_subpackage('s2geometry', upper_bound='x.x') }}\n    tests:\n      - files:\n          recipe:\n            - run_test.bat\n            - run_test.sh\n        script:\n          - if: unix\n            then: bash run_test.sh\n          - if: win\n            then: run_test.bat\n\n  - package:\n      name: s2geometry-python\n    build:\n      script: install_python\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - cmake\n        - if: unix\n          then: make\n        - if: win\n          then: ninja\n        - if: build_platform != target_platform\n          then: python\n        - if: build_platform != target_platform\n          then: cross-python_${{ target_platform }}\n        - if: build_platform != target_platform\n          then: cmake-build-extension\n        - swig\n      host:\n        - python\n        - pip\n        - setuptools >=80\n        - setuptools-scm >=8\n        - libabseil\n        - cmake-build-extension\n        - openssl\n      run:\n        - libabseil\n        - openssl\n    tests:\n      - python:\n          imports:\n            - s2geometry\n      - files:\n          source:\n            - src/python/s2geometry_test.py\n        script:\n          - python ./src/python/s2geometry_test.py\n        requirements:\n          run:\n            - python\n\nabout:\n  license: Apache-2.0\n  license_file: LICENSE\n  summary: Computational geometry and spatial indexing on the sphere.\n  homepage: https://s2geometry.io/\n  repository: https://github.com/google/s2geometry\n\nextra:\n  recipe-maintainers:\n    - zklaus\n    - benbovy\n    - hobu\n    - h-vetinari\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -648,6 +3032,7 @@
       "pip",
       "python",
       "setuptools",
+      "setuptools-scm",
       "swig"
     ]
   },
@@ -673,7 +3058,8 @@
         "openssl",
         "pip",
         "python",
-        "setuptools"
+        "setuptools",
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -687,7 +3073,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   },
   "strong_exports": false,
@@ -712,7 +3101,8 @@
         "openssl",
         "pip",
         "python",
-        "setuptools"
+        "setuptools >=80",
+        "setuptools-scm >=8"
       ]
     },
     "run": {
@@ -724,11 +3114,14 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   },
-  "url": "https://github.com/google/s2geometry/archive/v0.12.0.tar.gz",
-  "version": "0.12.0",
+  "url": "https://github.com/google/s2geometry/archive/v0.14.0.tar.gz",
+  "version": "0.14.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/s2geometry.json"
   },
@@ -737,40 +3130,80 @@
       "dev_url": "https://github.com/google/s2geometry",
       "home": "https://s2geometry.io/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
       "summary": "Computational geometry and spatial indexing on the sphere."
     },
     "build": {
-      "number": "3",
-      "run_exports": [
-        "s2geometry"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "s2geometry"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
         "zklaus",
         "benbovy",
-        "hobu"
+        "hobu",
+        "h-vetinari"
       ]
     },
     "outputs": [
       {
-        "name": "s2geometry"
+        "build": {
+          "strong": [],
+          "weak": [
+            "s2geometry"
+          ]
+        },
+        "name": "s2geometry",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.25,<4",
+            "ninja"
+          ],
+          "host": [
+            "openssl",
+            "libabseil"
+          ],
+          "run": [
+            "libabseil"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.bat",
+                "run_test.sh"
+              ]
+            },
+            "script": "bash run_test.sh"
+          }
+        ],
+        "version": "0.14.0"
       },
       {
+        "build": null,
         "name": "s2geometry-python",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "cxx_compiler_stub",
             "cmake",
-            "ninja",
+            "make",
             "swig"
           ],
           "host": [
             "python",
             "pip",
-            "setuptools",
+            "setuptools >=80",
+            "setuptools-scm >=8",
             "libabseil",
             "cmake-build-extension",
             "openssl"
@@ -780,29 +3213,237 @@
             "openssl"
           ]
         },
-        "script": "install_python.bat",
-        "test": {
-          "commands": [
-            "python ./src/python/s2geometry_test.py > /dev/null"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
           ],
-          "imports": [
-            "s2geometry"
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
           ],
-          "source_files": [
-            "src/python/s2geometry_test.py"
+          "run": [
+            "libabseil",
+            "openssl"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
+      },
+      {
+        "build": null,
+        "name": "s2geometry-python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "make",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools >=80",
+            "setuptools-scm >=8",
+            "libabseil",
+            "cmake-build-extension",
+            "openssl"
+          ],
+          "run": [
+            "libabseil",
+            "openssl"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "s2geometry"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "src/python/s2geometry_test.py"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "python"
+              ]
+            },
+            "script": "python ./src/python/s2geometry_test.py"
+          }
+        ],
+        "version": "0.14.0"
       }
     ],
     "package": {
       "name": "s2geometry",
-      "version": "0.12.0"
+      "version": "0.14.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "cmake >=3.25,<4"
+        "cmake >=3.25,<4",
+        "ninja"
       ],
       "host": [
         "openssl",
@@ -812,17 +3453,15 @@
         "libabseil"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "dllexport.patch",
-        "python-setup.patch"
+        "patches/0001-dllexport.patch",
+        "patches/0002-S2PointArray-replace-alignof-expression-with-alignof.patch",
+        "patches/0003-fix-issues-with-MSVC.patch"
       ],
-      "sha256": "c09ec751c3043965a0d441e046a73c456c995e6063439a72290f661c1054d611",
-      "url": "https://github.com/google/s2geometry/archive/v0.12.0.tar.gz"
-    },
-    "test": {
-      "files": "run_test.bat run_test.sh"
+      "sha256": "8c1f0a4b98472ed9df9807f5ec10ee57928cca388e16c13f430b652790d3ad8b",
+      "url": "https://github.com/google/s2geometry/archive/v0.14.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -832,6 +3471,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
+        "make",
         "ninja",
         "swig"
       ]
@@ -844,7 +3484,8 @@
         "openssl",
         "pip",
         "python",
-        "setuptools"
+        "setuptools",
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -856,7 +3497,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   }
 }
