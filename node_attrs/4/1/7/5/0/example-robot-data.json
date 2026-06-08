@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nnumpy:\n- '2'\npython_min:\n- '3.10'\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -19,8 +19,8 @@
       "win_64"
     ]
   },
-  "feedstock_hash": "f91448a5dd3d0c7d11c8f2e34752386ead1c49e7",
-  "feedstock_hash_ts": 1780716714,
+  "feedstock_hash": "e6f8c00b55953cddc4b80737eb10b978248589b2",
+  "feedstock_hash_ts": 1780925678,
   "feedstock_name": "example-robot-data",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -33,7 +33,11 @@
       "summary": "Set of robot URDFs for benchmarking and developed examples"
     },
     "build": {
-      "number": "0"
+      "ignore_run_exports_from": [
+        "libpinocchio",
+        "eigenpy"
+      ],
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -82,16 +86,16 @@
             "ninja"
           ],
           "host": [
-            "python 3.10",
+            "python 3.10.*",
             "eigenpy",
             "libpinocchio",
-            "numpy",
             "example-robot-data"
           ],
           "run": [
             "python >=3.10",
             "numpy",
             "pinocchio-python",
+            "coal-python",
             "example-robot-data"
           ]
         },
@@ -132,7 +136,6 @@
         "eigenpy",
         "example-robot-data",
         "libpinocchio",
-        "numpy",
         "python"
       ]
     },
@@ -140,6 +143,7 @@
       "__set__": true,
       "elements": [
         "__unix",
+        "coal-python",
         "example-robot-data",
         "numpy",
         "pinocchio-python",
@@ -164,7 +168,11 @@
       "summary": "Set of robot URDFs for benchmarking and developed examples"
     },
     "build": {
-      "number": "0"
+      "ignore_run_exports_from": [
+        "libpinocchio",
+        "eigenpy"
+      ],
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -213,16 +221,16 @@
             "ninja"
           ],
           "host": [
-            "python 3.10",
+            "python 3.10.*",
             "eigenpy",
             "libpinocchio",
-            "numpy",
             "example-robot-data"
           ],
           "run": [
             "python >=3.10",
             "numpy",
             "pinocchio-python",
+            "coal-python",
             "example-robot-data"
           ]
         },
@@ -276,16 +284,16 @@
             "ninja"
           ],
           "host": [
-            "python 3.10",
+            "python 3.10.*",
             "eigenpy",
             "libpinocchio",
-            "numpy",
             "example-robot-data"
           ],
           "run": [
             "python >=3.10",
             "numpy",
             "pinocchio-python",
+            "coal-python",
             "example-robot-data"
           ]
         },
@@ -326,7 +334,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/example-robot-data.json"
   },
-  "raw_meta_yaml": "{% set name = \"example-robot-data\" %}\n{% set pythonname = \"example-robot-data-loaders\" %}\n{% set version = \"5.0.0\" %}\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/Gepetto/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: 961db1b713173aad39335d5ad99804da0e394d23eac2a8e101d6295152b1088c\n\nbuild:\n  number: 0\n\noutputs:\n  - name: {{ name }}\n    build:\n      noarch: generic\n    script: build_resources.sh  # [not win]\n    script: build_resources.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      run:\n        - __unix  # [unix]\n        - __win   # [win]\n    test:\n      requires:\n        - pkg-config\n      commands:\n        - pkg-config --modversion {{ name }}\n        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\example-robot-data\\example-robot-dataConfig.cmake exit 1  # [win]\n        - test -f $PREFIX/lib/cmake/example-robot-data/example-robot-dataConfig.cmake  # [unix]\n  - name: {{ pythonname }}\n    script: build_python.sh  # [not win]\n    script: build_python.bat  # [win]\n    build:\n      noarch: python\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      host:\n        - python {{ python_min }}\n        - eigenpy\n        - libpinocchio\n        - numpy\n        - {{ pin_subpackage(name, exact=true) }}\n      run:\n        - python >={{ python_min }}\n        - numpy\n        - pinocchio-python\n        - {{ pin_subpackage(name, exact=true) }}\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - example_robot_data\n\nabout:\n  home: http://github.com/Gepetto/example-robot-data\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: Set of robot URDFs for benchmarking and developed examples\n  dev_url: https://github.com/Gepetto/example-robot-data\n\nextra:\n  recipe-maintainers:\n    - jorisv\n    - jcarpent\n",
+  "raw_meta_yaml": "{% set name = \"example-robot-data\" %}\n{% set pythonname = \"example-robot-data-loaders\" %}\n{% set version = \"5.0.0\" %}\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/Gepetto/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: 961db1b713173aad39335d5ad99804da0e394d23eac2a8e101d6295152b1088c\n\nbuild:\n  number: 1\n  ignore_run_exports_from:\n    - libpinocchio\n    - eigenpy\n\noutputs:\n  - name: {{ name }}\n    build:\n      noarch: generic\n    script: build_resources.sh  # [not win]\n    script: build_resources.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      run:\n        - __unix  # [unix]\n        - __win   # [win]\n    test:\n      requires:\n        - pkg-config\n      commands:\n        - pkg-config --modversion {{ name }}\n        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\example-robot-data\\example-robot-dataConfig.cmake exit 1  # [win]\n        - test -f $PREFIX/lib/cmake/example-robot-data/example-robot-dataConfig.cmake  # [unix]\n  - name: {{ pythonname }}\n    script: build_python.sh  # [not win]\n    script: build_python.bat  # [win]\n    build:\n      noarch: python\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      host:\n        - python {{ python_min }}.*\n        - eigenpy\n        - libpinocchio\n        - {{ pin_subpackage(name, exact=true) }}\n      run:\n        - python >={{ python_min }}\n        - numpy\n        - pinocchio-python\n        - coal-python\n        - {{ pin_subpackage(name, exact=true) }}\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - example_robot_data\n\nabout:\n  home: http://github.com/Gepetto/example-robot-data\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: Set of robot URDFs for benchmarking and developed examples\n  dev_url: https://github.com/Gepetto/example-robot-data\n\nextra:\n  recipe-maintainers:\n    - jorisv\n    - jcarpent\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -334,6 +342,7 @@
       "__win",
       "c_stdlib_stub",
       "cmake",
+      "coal-python",
       "cxx_compiler_stub",
       "eigenpy",
       "example-robot-data",
@@ -362,7 +371,6 @@
         "eigenpy",
         "example-robot-data",
         "libpinocchio",
-        "numpy",
         "python"
       ]
     },
@@ -372,6 +380,7 @@
         "__unix",
         "__win",
         "c_stdlib_stub",
+        "coal-python",
         "cxx_compiler_stub",
         "example-robot-data",
         "numpy",
@@ -404,8 +413,7 @@
         "eigenpy",
         "example-robot-data",
         "libpinocchio",
-        "numpy",
-        "python 3.10"
+        "python 3.10.*"
       ]
     },
     "run": {
@@ -413,6 +421,7 @@
       "elements": [
         "__unix",
         "__win",
+        "coal-python",
         "example-robot-data",
         "numpy",
         "pinocchio-python",
@@ -442,7 +451,11 @@
       "summary": "Set of robot URDFs for benchmarking and developed examples"
     },
     "build": {
-      "number": "0"
+      "ignore_run_exports_from": [
+        "libpinocchio",
+        "eigenpy"
+      ],
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -491,16 +504,16 @@
             "ninja"
           ],
           "host": [
-            "python 3.10",
+            "python 3.10.*",
             "eigenpy",
             "libpinocchio",
-            "numpy",
             "example-robot-data"
           ],
           "run": [
             "python >=3.10",
             "numpy",
             "pinocchio-python",
+            "coal-python",
             "example-robot-data"
           ]
         },
@@ -541,7 +554,6 @@
         "eigenpy",
         "example-robot-data",
         "libpinocchio",
-        "numpy",
         "python"
       ]
     },
@@ -549,6 +561,7 @@
       "__set__": true,
       "elements": [
         "__win",
+        "coal-python",
         "example-robot-data",
         "numpy",
         "pinocchio-python",
