@@ -1,8 +1,13 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nlibblas:\n- 3.9.* *netlib\nliblapack:\n- 3.9.* *netlib\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - fortran_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nlibblas:\n- 3.9.* *netlib\nliblapack:\n- 3.9.* *netlib\nmodule_abi:\n- gfortran\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - fortran_compiler_version\n",
   "conda-forge.yml": {
+    "build_platform": {
+      "linux_aarch64": "linux_64",
+      "linux_ppc64le": "linux_64",
+      "osx_arm64": "osx_64"
+    },
     "conda_build": {
       "error_overlinking": true
     },
@@ -10,10 +15,15 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "linux_ppc64le": "default"
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "c5bf893023b1ab54ed7164b6114983c0e7d9325b",
-  "feedstock_hash_ts": 1776923477,
+  "feedstock_hash": "bd0fb377a574a040d13484efbddce57948203716",
+  "feedstock_hash_ts": 1781022201,
   "feedstock_name": "cpcm-x",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -26,52 +36,89 @@
       "summary": "Extended conductor-like polarizable continuum solvation model"
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "cpcm-x"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "cpcm-x",
       "recipe-maintainers": [
         "awvwgk"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "cpcm-x",
+      "name": "cpcm-x-pkg",
       "version": "1.1.0"
-    },
-    "requirements": {
-      "build": [
-        "c_stdlib_stub",
-        "c_compiler_stub",
-        "fortran_compiler_stub",
-        "meson",
-        "ninja",
-        "pkg-config"
-      ],
-      "host": [
-        "libblas",
-        "liblapack",
-        "libgomp",
-        "mctc-lib",
-        "numsa",
-        "toml-f"
-      ]
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "gh61.patch"
+      ],
       "sha256": "255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1",
       "url": "https://github.com/grimme-lab/CPCM-X/releases/download/v1.1.0/cpx-1.1.0.tar.xz"
-    },
-    "test": {
-      "commands": [
-        "cpx --help",
-        "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
-        "pkg-config cpx --exact-version 1.1.0"
-      ],
-      "requires": [
-        "pkg-config"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -92,14 +139,278 @@
         "libblas",
         "libgomp",
         "liblapack",
-        "mctc-lib",
-        "numsa",
-        "toml-f"
+        "mctc-lib-devel",
+        "numsa-devel",
+        "toml-f-devel"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cpcm-x"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pkg-config"
+      ]
+    }
+  },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/grimme-lab/cpcm-x",
+      "license": "LGPL-3.0-or-later",
+      "license_file": [
+        "LICENSE"
+      ],
+      "summary": "Extended conductor-like polarizable continuum solvation model"
+    },
+    "build": {
+      "number": "1"
+    },
+    "extra": {
+      "feedstock-name": "cpcm-x",
+      "recipe-maintainers": [
+        "awvwgk"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      }
+    ],
+    "package": {
+      "name": "cpcm-x-pkg",
+      "version": "1.1.0"
+    },
+    "schema_version": 0,
+    "source": {
+      "patches": [
+        "gh61.patch"
+      ],
+      "sha256": "255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1",
+      "url": "https://github.com/grimme-lab/CPCM-X/releases/download/v1.1.0/cpx-1.1.0.tar.xz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "fortran_compiler_stub",
+        "meson",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libblas",
+        "libgomp",
+        "liblapack",
+        "mctc-lib-devel",
+        "numsa-devel",
+        "toml-f-devel"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "cpcm-x"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pkg-config"
+      ]
+    }
+  },
+  "linux_ppc64le_meta_yaml": {
+    "about": {
+      "home": "https://github.com/grimme-lab/cpcm-x",
+      "license": "LGPL-3.0-or-later",
+      "license_file": [
+        "LICENSE"
+      ],
+      "summary": "Extended conductor-like polarizable continuum solvation model"
+    },
+    "build": {
+      "number": "1"
+    },
+    "extra": {
+      "feedstock-name": "cpcm-x",
+      "recipe-maintainers": [
+        "awvwgk"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      }
+    ],
+    "package": {
+      "name": "cpcm-x-pkg",
+      "version": "1.1.0"
+    },
+    "schema_version": 0,
+    "source": {
+      "patches": [
+        "gh61.patch"
+      ],
+      "sha256": "255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1",
+      "url": "https://github.com/grimme-lab/CPCM-X/releases/download/v1.1.0/cpx-1.1.0.tar.xz"
+    }
+  },
+  "linux_ppc64le_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "fortran_compiler_stub",
+        "meson",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libblas",
+        "libgomp",
+        "liblapack",
+        "mctc-lib-devel",
+        "numsa-devel",
+        "toml-f-devel"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "cpcm-x"
+      ]
     },
     "test": {
       "__set__": true,
@@ -118,55 +429,400 @@
       "summary": "Extended conductor-like polarizable continuum solvation model"
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "cpcm-x"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "cpcm-x",
       "recipe-maintainers": [
         "awvwgk"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "m2w64_c_stdlib_stub",
+            "m2w64_c_compiler_stub",
+            "m2w64_fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.bat",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "if not exist \"%LIBRARY_PREFIX%\\bin\\libcpx-1.dll\" exit /b 1",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "if not exist \"%LIBRARY_PREFIX%\\bin\\libcpx-1.dll\" exit /b 1",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "cpcm-x",
+      "name": "cpcm-x-pkg",
       "version": "1.1.0"
-    },
-    "requirements": {
-      "build": [
-        "c_stdlib_stub",
-        "c_compiler_stub",
-        "fortran_compiler_stub",
-        "meson",
-        "ninja",
-        "pkg-config"
-      ],
-      "host": [
-        "libblas",
-        "liblapack",
-        "libgomp",
-        "mctc-lib",
-        "numsa",
-        "toml-f"
-      ]
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "gh61.patch"
+      ],
       "sha256": "255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1",
       "url": "https://github.com/grimme-lab/CPCM-X/releases/download/v1.1.0/cpx-1.1.0.tar.xz"
-    },
-    "test": {
-      "commands": [
-        "cpx --help",
-        "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
-        "pkg-config cpx --exact-version 1.1.0"
-      ],
-      "requires": [
-        "pkg-config"
-      ]
     }
   },
-  "name": "cpcm-x",
+  "name": "cpcm-x-pkg",
   "osx_64_meta_yaml": {
     "about": {
       "home": "https://github.com/grimme-lab/cpcm-x",
@@ -177,51 +833,88 @@
       "summary": "Extended conductor-like polarizable continuum solvation model"
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "cpcm-x"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "cpcm-x",
       "recipe-maintainers": [
         "awvwgk"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "cpcm-x",
+      "name": "cpcm-x-pkg",
       "version": "1.1.0"
-    },
-    "requirements": {
-      "build": [
-        "c_stdlib_stub",
-        "c_compiler_stub",
-        "fortran_compiler_stub",
-        "meson",
-        "ninja",
-        "pkg-config"
-      ],
-      "host": [
-        "libblas",
-        "liblapack",
-        "mctc-lib",
-        "numsa",
-        "toml-f"
-      ]
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "gh61.patch"
+      ],
       "sha256": "255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1",
       "url": "https://github.com/grimme-lab/CPCM-X/releases/download/v1.1.0/cpx-1.1.0.tar.xz"
-    },
-    "test": {
-      "commands": [
-        "cpx --help",
-        "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
-        "pkg-config cpx --exact-version 1.1.0"
-      ],
-      "requires": [
-        "pkg-config"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -241,14 +934,145 @@
       "elements": [
         "libblas",
         "liblapack",
-        "mctc-lib",
-        "numsa",
-        "toml-f"
+        "mctc-lib-devel",
+        "numsa-devel",
+        "toml-f-devel"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cpcm-x"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pkg-config"
+      ]
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/grimme-lab/cpcm-x",
+      "license": "LGPL-3.0-or-later",
+      "license_file": [
+        "LICENSE"
+      ],
+      "summary": "Extended conductor-like polarizable continuum solvation model"
+    },
+    "build": {
+      "number": "1"
+    },
+    "extra": {
+      "feedstock-name": "cpcm-x",
+      "recipe-maintainers": [
+        "awvwgk"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.sh",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "test -f $PREFIX/lib/libcpx$SHLIB_EXT",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      }
+    ],
+    "package": {
+      "name": "cpcm-x-pkg",
+      "version": "1.1.0"
+    },
+    "schema_version": 0,
+    "source": {
+      "patches": [
+        "gh61.patch"
+      ],
+      "sha256": "255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1",
+      "url": "https://github.com/grimme-lab/CPCM-X/releases/download/v1.1.0/cpx-1.1.0.tar.xz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "fortran_compiler_stub",
+        "meson",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libblas",
+        "liblapack",
+        "mctc-lib-devel",
+        "numsa-devel",
+        "toml-f-devel"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "cpcm-x"
+      ]
     },
     "test": {
       "__set__": true,
@@ -260,33 +1084,42 @@
   "outputs_names": {
     "__set__": true,
     "elements": [
-      "cpcm-x"
+      "cpcm-x",
+      "cpcm-x-devel"
     ]
   },
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64"
+    "linux_aarch64",
+    "linux_ppc64le",
+    "osx_64",
+    "osx_arm64",
+    "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/cpcm-x.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.1.0\" %}\n\npackage:\n  name: cpcm-x\n  version: {{ version }}\n\nsource:\n  url: https://github.com/grimme-lab/CPCM-X/releases/download/v{{ version }}/cpx-{{ version }}.tar.xz\n  sha256: 255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1\n\nbuild:\n  number: 0\n  skip: true  # [win]\n\n  run_exports:\n    - {{ pin_subpackage(\"cpcm-x\", max_pin='x.x') }}\n\nrequirements:\n  build:\n    - {{ stdlib('c') }}    # [unix]\n    - {{ compiler('c') }}  # [unix]\n    - {{ compiler('fortran') }}  # [unix]\n    - {{ stdlib('m2w64_c') }}    # [win]\n    - {{ compiler('m2w64_c') }}  # [win]\n    - {{ compiler('m2w64_fortran') }}  # [win]\n    - meson\n    - ninja\n    - pkg-config\n  host:\n    - libblas\n    - liblapack\n    - libgomp  # [not osx]\n    - mctc-lib\n    - numsa\n    - toml-f\n\ntest:\n  requires:\n    - pkg-config\n  commands:\n    - cpx --help\n    - test -f $PREFIX/lib/libcpx$SHLIB_EXT  # [unix]\n    - if not exist \"%LIBRARY_PREFIX%\\lib\\cpx.lib\" exit /b 1  # [win]\n    - if not exist \"%LIBRARY_PREFIX%\\bin\\cpx.dll\" exit /b 1  # [win]\n    - pkg-config cpx --exact-version {{ version }}\n\nabout:\n  home: https://github.com/grimme-lab/cpcm-x\n  license: LGPL-3.0-or-later\n  license_file:\n    - LICENSE\n  summary: Extended conductor-like polarizable continuum solvation model\n\nextra:\n  recipe-maintainers:\n    - awvwgk\n",
+  "raw_meta_yaml": "{% set name = \"cpcm-x\" %}\n{% set version = \"1.1.0\" %}\n\npackage:\n  name: {{ name }}-pkg\n  version: {{ version }}\n\nsource:\n  url: https://github.com/grimme-lab/CPCM-X/releases/download/v{{ version }}/cpx-{{ version }}.tar.xz\n  sha256: 255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1\n  patches:\n    - gh61.patch\n\nbuild:\n  number: 1\n\noutputs:\n  - name: {{ name }}\n    script: build_pkg.sh   # [unix]\n    script: build_pkg.bat  # [win]\n    build:\n      string: {{ module_abi }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n      run_exports:\n        - {{ pin_subpackage(name, max_pin='x.x') }}\n    requirements:\n      build:\n        - {{ stdlib('c') }}    # [unix]\n        - {{ compiler('c') }}  # [unix]\n        - {{ compiler('fortran') }}  # [unix]\n        - {{ stdlib('m2w64_c') }}    # [win]\n        - {{ compiler('m2w64_c') }}  # [win]\n        - {{ compiler('m2w64_fortran') }}  # [win]\n        - meson\n        - ninja\n        - pkg-config\n      host:\n        - libblas\n        - liblapack\n        - libgomp  # [not osx]\n        - mctc-lib-devel * {{ module_abi }}_*\n        - numsa-devel * {{ module_abi }}_*\n        - toml-f-devel * {{ module_abi }}_*\n\n    test:\n      requires:\n        - pkg-config\n      commands:\n        - cpx --help  # [build_platform == target_platform]\n        - test -f $PREFIX/lib/libcpx$SHLIB_EXT  # [unix]\n        - if not exist \"%LIBRARY_PREFIX%\\bin\\libcpx-1.dll\" exit /b 1  # [win]\n        - pkg-config cpx --exact-version {{ version }}\n\n  - name: {{ name }}-devel\n    build:\n      string: {{ module_abi }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n      run_exports:\n        - {{ pin_subpackage(name, max_pin='x.x') }} {{ module_abi }}_*\n\n    requirements:\n      run:\n        - {{ pin_subpackage(name, max_pin='x.x') }} {{ module_abi }}_*\n\n    test:\n      requires:\n        - pkg-config\n      commands:\n        - cpx --help  # [build_platform == target_platform]\n        - test -f $PREFIX/lib/libcpx$SHLIB_EXT  # [unix]\n        - if not exist \"%LIBRARY_PREFIX%\\bin\\libcpx-1.dll\" exit /b 1  # [win]\n        - pkg-config cpx --exact-version {{ version }}\n\nabout:\n  home: https://github.com/grimme-lab/cpcm-x\n  license: LGPL-3.0-or-later\n  license_file:\n    - LICENSE\n  summary: Extended conductor-like polarizable continuum solvation model\n\nextra:\n  recipe-maintainers:\n    - awvwgk\n  feedstock-name: {{ name }}\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cpcm-x",
       "fortran_compiler_stub",
       "libblas",
       "libgomp",
       "liblapack",
-      "mctc-lib",
+      "m2w64_c_compiler_stub",
+      "m2w64_c_stdlib_stub",
+      "m2w64_fortran_compiler_stub",
+      "mctc-lib-devel",
       "meson",
       "ninja",
-      "numsa",
+      "numsa-devel",
       "pkg-config",
-      "toml-f"
+      "toml-f-devel"
     ]
   },
   "requirements": {
@@ -296,6 +1129,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "fortran_compiler_stub",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub",
+        "m2w64_fortran_compiler_stub",
         "meson",
         "ninja",
         "pkg-config"
@@ -311,9 +1147,9 @@
         "libblas",
         "libgomp",
         "liblapack",
-        "mctc-lib",
-        "numsa",
-        "toml-f"
+        "mctc-lib-devel",
+        "numsa-devel",
+        "toml-f-devel"
       ]
     },
     "run": {
@@ -321,6 +1157,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cpcm-x",
         "ctng-compilers",
         "fortran_compiler_stub"
       ]
@@ -340,6 +1177,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "fortran_compiler_stub",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub",
+        "m2w64_fortran_compiler_stub",
         "meson",
         "ninja",
         "pkg-config"
@@ -351,14 +1191,16 @@
         "libblas",
         "libgomp",
         "liblapack",
-        "mctc-lib",
-        "numsa",
-        "toml-f"
+        "mctc-lib-devel * gfortran_*",
+        "numsa-devel * gfortran_*",
+        "toml-f-devel * gfortran_*"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cpcm-x gfortran_*"
+      ]
     },
     "test": {
       "__set__": true,
@@ -371,5 +1213,136 @@
   "version": "1.1.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/cpcm-x.json"
+  },
+  "win_64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/grimme-lab/cpcm-x",
+      "license": "LGPL-3.0-or-later",
+      "license_file": [
+        "LICENSE"
+      ],
+      "summary": "Extended conductor-like polarizable continuum solvation model"
+    },
+    "build": {
+      "number": "1"
+    },
+    "extra": {
+      "feedstock-name": "cpcm-x",
+      "recipe-maintainers": [
+        "awvwgk"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x",
+        "requirements": {
+          "build": [
+            "m2w64_c_stdlib_stub",
+            "m2w64_c_compiler_stub",
+            "m2w64_fortran_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "libblas",
+            "liblapack",
+            "libgomp",
+            "mctc-lib-devel * gfortran_*",
+            "numsa-devel * gfortran_*",
+            "toml-f-devel * gfortran_*"
+          ]
+        },
+        "script": "build_pkg.bat",
+        "test": {
+          "commands": [
+            "cpx --help",
+            "if not exist \"%LIBRARY_PREFIX%\\bin\\libcpx-1.dll\" exit /b 1",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "cpcm-x gfortran_*"
+          ],
+          "string": "gfortran_h1234567_1"
+        },
+        "name": "cpcm-x-devel",
+        "requirements": {
+          "run": [
+            "cpcm-x gfortran_*"
+          ]
+        },
+        "test": {
+          "commands": [
+            "cpx --help",
+            "if not exist \"%LIBRARY_PREFIX%\\bin\\libcpx-1.dll\" exit /b 1",
+            "pkg-config cpx --exact-version 1.1.0"
+          ],
+          "requires": [
+            "pkg-config"
+          ]
+        }
+      }
+    ],
+    "package": {
+      "name": "cpcm-x-pkg",
+      "version": "1.1.0"
+    },
+    "schema_version": 0,
+    "source": {
+      "patches": [
+        "gh61.patch"
+      ],
+      "sha256": "255dfa9b70c41580163fa3636125a0103c3b553c52fc8558d3a63f4654cc41c1",
+      "url": "https://github.com/grimme-lab/CPCM-X/releases/download/v1.1.0/cpx-1.1.0.tar.xz"
+    }
+  },
+  "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub",
+        "m2w64_fortran_compiler_stub",
+        "meson",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libblas",
+        "libgomp",
+        "liblapack",
+        "mctc-lib-devel",
+        "numsa-devel",
+        "toml-f-devel"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "cpcm-x"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pkg-config"
+      ]
+    }
   }
 }
