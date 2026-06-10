@@ -1,123 +1,346 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nlibblas:\n- 3.9.* *netlib\nliblapack:\n- 3.9.* *netlib\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - fortran_compiler_version\n- - python\n  - channel_sources\n",
+  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nlibblas:\n- 3.9.* *netlib\nliblapack:\n- 3.9.* *netlib\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - fortran_compiler_version\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "c2135ba54ec7656fdb00c816f8489347a3d82c04",
-  "feedstock_hash_ts": 1776865968,
+  "feedstock_hash": "da10c5f68cec44279dcc76257de81b655794d8b1",
+  "feedstock_hash_ts": 1781113465,
   "feedstock_name": "pfapack",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.\n",
+      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.",
       "dev_url": "https://github.com/basnijholt/pfapack",
       "doc_url": "https://pfapack.readthedocs.io/",
       "home": "https://github.com/basnijholt/pfapack",
       "license": "MIT",
       "license_family": "MIT",
-      "license_file": "python/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "6"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
-        "basnijholt"
+        "basnijholt",
+        "akhmerov"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      }
+    ],
     "package": {
       "name": "pfapack",
-      "version": "0.3.1"
+      "version": "1.0.2"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "fortran_compiler_stub",
-        "make"
+        "pkg-config"
       ],
       "host": [
         "python",
-        "liblapack",
-        "libopenblas",
-        "libblas",
         "pip",
-        "setuptools"
+        "meson >=1.1",
+        "meson-python",
+        "ninja",
+        "setuptools-scm",
+        "liblapack",
+        "libblas"
       ],
       "run": [
         "python",
-        "setuptools",
         "scipy",
         "numpy"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      }
-    ],
-    "test": {
-      "imports": [
-        "pfapack"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39",
+      "url": "https://pypi.org/packages/source/p/pfapack/pfapack-1.0.2.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -127,7 +350,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "fortran_compiler_stub",
-        "make"
+        "pkg-config"
       ]
     },
     "host": {
@@ -135,10 +358,12 @@
       "elements": [
         "libblas",
         "liblapack",
-        "libopenblas",
+        "meson",
+        "meson-python",
+        "ninja",
         "pip",
         "python",
-        "setuptools"
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -146,321 +371,1205 @@
       "elements": [
         "numpy",
         "python",
-        "scipy",
-        "setuptools"
+        "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   },
   "meta_yaml": {
     "about": {
-      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.\n",
+      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.",
       "dev_url": "https://github.com/basnijholt/pfapack",
       "doc_url": "https://pfapack.readthedocs.io/",
       "home": "https://github.com/basnijholt/pfapack",
       "license": "MIT",
       "license_family": "MIT",
-      "license_file": "python/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "6"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
-        "basnijholt"
+        "basnijholt",
+        "akhmerov"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      }
+    ],
     "package": {
       "name": "pfapack",
-      "version": "0.3.1"
+      "version": "1.0.2"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "fortran_compiler_stub",
-        "make"
+        "pkg-config"
       ],
       "host": [
         "python",
-        "liblapack",
-        "libopenblas",
-        "libblas",
         "pip",
-        "setuptools"
+        "meson >=1.1",
+        "meson-python",
+        "ninja",
+        "setuptools-scm",
+        "liblapack",
+        "libblas"
       ],
       "run": [
         "python",
-        "setuptools",
         "scipy",
         "numpy"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      }
-    ],
-    "test": {
-      "imports": [
-        "pfapack"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39",
+      "url": "https://pypi.org/packages/source/p/pfapack/pfapack-1.0.2.tar.gz"
     }
   },
   "name": "pfapack",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.\n",
+      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.",
       "dev_url": "https://github.com/basnijholt/pfapack",
       "doc_url": "https://pfapack.readthedocs.io/",
       "home": "https://github.com/basnijholt/pfapack",
       "license": "MIT",
       "license_family": "MIT",
-      "license_file": "python/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "6"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
-        "basnijholt"
+        "basnijholt",
+        "akhmerov"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      }
+    ],
     "package": {
       "name": "pfapack",
-      "version": "0.3.1"
+      "version": "1.0.2"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "fortran_compiler_stub"
+        "fortran_compiler_stub",
+        "pkg-config"
       ],
       "host": [
         "python",
-        "liblapack",
-        "libopenblas",
-        "libblas",
         "pip",
-        "setuptools"
+        "meson >=1.1",
+        "meson-python",
+        "ninja",
+        "setuptools-scm",
+        "liblapack",
+        "libblas"
       ],
       "run": [
         "python",
-        "setuptools",
         "scipy",
         "numpy"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      }
-    ],
-    "test": {
-      "imports": [
-        "pfapack"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39",
+      "url": "https://pypi.org/packages/source/p/pfapack/pfapack-1.0.2.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -469,7 +1578,8 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "fortran_compiler_stub"
+        "fortran_compiler_stub",
+        "pkg-config"
       ]
     },
     "host": {
@@ -477,10 +1587,12 @@
       "elements": [
         "libblas",
         "liblapack",
-        "libopenblas",
+        "meson",
+        "meson-python",
+        "ninja",
         "pip",
         "python",
-        "setuptools"
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -488,13 +1600,14 @@
       "elements": [
         "numpy",
         "python",
-        "scipy",
-        "setuptools"
+        "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   },
   "outputs_names": {
@@ -512,7 +1625,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pfapack.json"
   },
-  "raw_meta_yaml": "{% set name = \"pfapack\" %}\n{% set version = \"0.3.1\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz\n    sha256: 7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51\n    folder: python\n  - url: https://michaelwimmer.org/pfapack.tgz\n    sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07\n    folder: pfapack\n\nbuild:\n  number: 6\n  skip: true  # [py<37]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}  # [not win]\n    - {{ stdlib(\"c\") }}    # [not win]\n    - {{ compiler(\"fortran\") }}\n    - make  # [linux]\n  host:\n    - python\n    - liblapack  # [not win]\n    - libopenblas  # [not win]\n    - libblas  # [not win]\n    - pip\n    - setuptools\n  run:\n    - python\n    - setuptools\n    - scipy\n    - numpy\n\ntest:\n  imports:\n    - pfapack\n\nabout:\n  home: https://github.com/basnijholt/pfapack\n  license: MIT\n  license_family: MIT\n  license_file: python/LICENSE\n  summary: Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices\n  description: |\n    Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\n    Both computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\n    under unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\n    skew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\n    form based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\n    or based on unitary transformations, using block Householder transformations and Givens rotations,\n    that are applicable to dense and banded matrices, respectively. We also give a complete and fully\n    optimized implementation of these algorithms in Python.\n\n  doc_url: https://pfapack.readthedocs.io/\n  dev_url: https://github.com/basnijholt/pfapack\n\nextra:\n  recipe-maintainers:\n    - basnijholt\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: pfapack\n  version: 1.0.2\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  - url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz\n    sha256: 43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39\n\nbuild:\n  number: 0\n  skip: match(python, \"<3.10\")\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - if: not win\n      then: ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"fortran\") }}\n    # On Windows we bypass Meson and use recipe/build.bat directly because\n    # Meson's llvm-flang support still runs into unresolved upstream issues,\n    # including probing flang with `--print-search-dirs`; track\n    # https://github.com/mesonbuild/meson/issues/12306\n    - if: not win\n      then: pkg-config\n  host:\n    - python\n    - if: not win\n      then: pip\n    - if: not win\n      then: meson >=1.1\n    - if: not win\n      then: meson-python\n    - if: not win\n      then: ninja\n    - if: not win\n      then: setuptools-scm\n    - liblapack\n    - libblas\n  run:\n    - python\n    - scipy\n    - numpy\n\ntests:\n  - if: win\n    then:\n      package_contents:\n        files:\n          - Lib/site-packages/pfapack/*cpfapack*.*\n        site_packages:\n          - pfapack.ctypes\n    else:\n      package_contents:\n        files:\n          - lib/python*/site-packages/pfapack/*cpfapack*.*\n        site_packages:\n          - pfapack.ctypes\n  - python:\n      imports:\n        - pfapack\n        - pfapack.ctypes\n  - script:\n      interpreter: python\n      content: |\n        import numpy as np\n        from pfapack import pfaffian as pf\n        from pfapack.ctypes import pfaffian as cpfaffian\n\n        matrix = np.array(\n            [\n                [0.0, 1.0, 2.0, 3.0],\n                [-1.0, 0.0, 4.0, 5.0],\n                [-2.0, -4.0, 0.0, 6.0],\n                [-3.0, -5.0, -6.0, 0.0],\n            ],\n            dtype=np.float64,\n        )\n\n        expected = 8.0\n\n        assert np.allclose(pf.pfaffian(matrix), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n\nabout:\n  license: MIT\n  license_file: LICENSE\n  summary: Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices\n  description: |\n    Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\n    Both computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\n    under unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\n    skew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\n    form based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\n    or based on unitary transformations, using block Householder transformations and Givens rotations,\n    that are applicable to dense and banded matrices, respectively. We also give a complete and fully\n    optimized implementation of these algorithms in Python.\n\n  homepage: https://github.com/basnijholt/pfapack\n  repository: https://github.com/basnijholt/pfapack\n  documentation: https://pfapack.readthedocs.io/\n\nextra:\n  recipe-maintainers:\n    - basnijholt\n    - akhmerov\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -521,13 +1634,15 @@
       "fortran_compiler_stub",
       "libblas",
       "liblapack",
-      "libopenblas",
-      "make",
+      "meson",
+      "meson-python",
+      "ninja",
       "numpy",
       "pip",
+      "pkg-config",
       "python",
       "scipy",
-      "setuptools"
+      "setuptools-scm"
     ]
   },
   "requirements": {
@@ -537,7 +1652,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "fortran_compiler_stub",
-        "make"
+        "pkg-config"
       ]
     },
     "host": {
@@ -548,10 +1663,12 @@
         "fortran_compiler_stub",
         "libblas",
         "liblapack",
-        "libopenblas",
+        "meson",
+        "meson-python",
+        "ninja",
         "pip",
         "python",
-        "setuptools"
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -562,13 +1679,14 @@
         "fortran_compiler_stub",
         "numpy",
         "python",
-        "scipy",
-        "setuptools"
+        "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   },
   "strong_exports": false,
@@ -579,7 +1697,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "fortran_compiler_stub",
-        "make"
+        "pkg-config"
       ]
     },
     "host": {
@@ -587,10 +1705,12 @@
       "elements": [
         "libblas",
         "liblapack",
-        "libopenblas",
+        "meson >=1.1",
+        "meson-python",
+        "ninja",
         "pip",
         "python",
-        "setuptools"
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -598,131 +1718,367 @@
       "elements": [
         "numpy",
         "python",
-        "scipy",
-        "setuptools"
+        "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   },
-  "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz",
-  "version": "0.3.1",
+  "url": "https://pypi.org/packages/source/p/pfapack/pfapack-1.0.2.tar.gz",
+  "version": "1.0.2",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/pfapack.json"
   },
   "win_64_meta_yaml": {
     "about": {
-      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.\n",
+      "description": "Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\nBoth computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\nunder unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\nskew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\nform based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\nor based on unitary transformations, using block Householder transformations and Givens rotations,\nthat are applicable to dense and banded matrices, respectively. We also give a complete and fully\noptimized implementation of these algorithms in Python.",
       "dev_url": "https://github.com/basnijholt/pfapack",
       "doc_url": "https://pfapack.readthedocs.io/",
       "home": "https://github.com/basnijholt/pfapack",
       "license": "MIT",
       "license_family": "MIT",
-      "license_file": "python/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "6"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
-        "basnijholt"
+        "basnijholt",
+        "akhmerov"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      },
+      {
+        "build": null,
+        "name": "pfapack",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "fortran_compiler_stub",
+            "pkg-config"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "meson >=1.1",
+            "meson-python",
+            "ninja",
+            "setuptools-scm",
+            "liblapack",
+            "libblas"
+          ],
+          "run": [
+            "python",
+            "scipy",
+            "numpy"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/python*/site-packages/pfapack/*cpfapack*.*"
+              ],
+              "site_packages": [
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "pfapack",
+                "pfapack.ctypes"
+              ]
+            }
+          },
+          {
+            "script": {
+              "content": "import numpy as np\nfrom pfapack import pfaffian as pf\nfrom pfapack.ctypes import pfaffian as cpfaffian\n\nmatrix = np.array(\n    [\n        [0.0, 1.0, 2.0, 3.0],\n        [-1.0, 0.0, 4.0, 5.0],\n        [-2.0, -4.0, 0.0, 6.0],\n        [-3.0, -5.0, -6.0, 0.0],\n    ],\n    dtype=np.float64,\n)\n\nexpected = 8.0\n\nassert np.allclose(pf.pfaffian(matrix), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\nassert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "1.0.2"
+      }
+    ],
     "package": {
       "name": "pfapack",
-      "version": "0.3.1"
+      "version": "1.0.2"
     },
     "requirements": {
       "build": [
-        "fortran_compiler_stub"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "fortran_compiler_stub",
+        "pkg-config"
       ],
       "host": [
         "python",
         "pip",
-        "setuptools"
+        "meson >=1.1",
+        "meson-python",
+        "ninja",
+        "setuptools-scm",
+        "liblapack",
+        "libblas"
       ],
       "run": [
         "python",
-        "setuptools",
         "scipy",
         "numpy"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      },
-      {
-        "folder": "python",
-        "sha256": "7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51",
-        "url": "https://pypi.org/packages/source/p/pfapack/pfapack-0.3.1.tar.gz"
-      },
-      {
-        "folder": "pfapack",
-        "sha256": "b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07",
-        "url": "https://michaelwimmer.org/pfapack.tgz"
-      }
-    ],
-    "test": {
-      "imports": [
-        "pfapack"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39",
+      "url": "https://pypi.org/packages/source/p/pfapack/pfapack-1.0.2.tar.gz"
     }
   },
   "win_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "fortran_compiler_stub"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "fortran_compiler_stub",
+        "pkg-config"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libblas",
+        "liblapack",
+        "meson",
+        "meson-python",
+        "ninja",
         "pip",
         "python",
-        "setuptools"
+        "setuptools-scm"
       ]
     },
     "run": {
@@ -730,13 +2086,14 @@
       "elements": [
         "numpy",
         "python",
-        "scipy",
-        "setuptools"
+        "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip"
+      ]
     }
   }
 }
