@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibboost_devel:\n- '1.90'\nnlopt:\n- '2.10'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nvtk:\n- 9.6.1\n",
+  "ci_support_linux_64_python3.10.____cpython.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibboost_devel:\n- '1.90'\nnlopt:\n- '2.11'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nvtk:\n- 9.6.1\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "caaa8cf188d6698d8b899f5435ca38a0dae0b65c",
-  "feedstock_hash_ts": 1778744446,
+  "feedstock_hash": "3f942705047b12d6062107b361df9b8f092a258a",
+  "feedstock_hash_ts": 1781186155,
   "feedstock_name": "gbs",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -26,8 +26,8 @@
       "summary": "Geometry BSplines - A C++ header library for BSplines curves and surfaces"
     },
     "build": {
-      "number": "1",
-      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D USE_OCCT_UTILS:BOOL=FALSE \\\n  -D USE_CUDA:BOOL=FALSE \\\n  -D GBS_BUILD_TESTS:BOOL=FALSE \\\n  -D USE_RENDER:BOOL=TRUE \\\n  -D USE_PYTHON_BINDINGS=TRUE \\\n  -D BUILD_DOC=FALSE \\\n  -D USE_CUDA=FALSE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n"
+      "number": "0",
+      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE \\\n  -D GBS_USE_CUDA:BOOL=FALSE \\\n  -D GBS_USE_MODULES:BOOL=FALSE \\\n  -D GBS_BUILD_DOC:BOOL=FALSE \\\n  -D GBS_BUILD_STUBS:BOOL=FALSE \\\n  -D GBS_USE_RENDER:BOOL=TRUE \\\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE \\\n  -D GBS_BUILD_TESTS:BOOL=TRUE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n# C++ tests (ctest). gbs-render is a SHARED lib installed in $PREFIX/lib;\n# expose it (and vtk/nlopt/...) at run time. No display needed: gbs' CI\n# runs ctest without xvfb on every OS.\nexport LD_LIBRARY_PATH=\"$PREFIX/lib:${LD_LIBRARY_PATH:-}\"\nexport DYLD_FALLBACK_LIBRARY_PATH=\"$PREFIX/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}\"\nctest --test-dir _build --output-on-failure -C Release\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -54,7 +54,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -74,9 +75,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -96,7 +111,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -116,9 +132,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -138,7 +168,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -158,9 +189,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -180,7 +225,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -200,9 +246,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -222,7 +282,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -242,14 +303,28 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       }
     ],
     "package": {
       "name": "gbs",
-      "version": "0.4.5"
+      "version": "0.4.5.4"
     },
     "requirements": {
       "build": [
@@ -266,7 +341,8 @@
         "eigen-abi-devel >=3.3.9",
         "libboost-devel",
         "rapidjson",
-        "libiges >=1.0.2"
+        "libiges >=1.0.2",
+        "gtest"
       ],
       "run": [
         "python",
@@ -281,8 +357,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "a0c69c19fa430afb3e857e3202fcd58f5b437945e0a31af210366ae43254364c",
-      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.tar.gz"
+      "sha256": "7232cd09a9a0319b0af2989edcf134e72c93eddf74c550775fe73a2a1eac1525",
+      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.4.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -299,6 +375,7 @@
       "__set__": true,
       "elements": [
         "eigen-abi-devel",
+        "gtest",
         "libboost-devel",
         "libiges",
         "nlopt",
@@ -324,7 +401,9 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "pytest-timeout"
       ]
     }
   },
@@ -337,8 +416,8 @@
       "summary": "Geometry BSplines - A C++ header library for BSplines curves and surfaces"
     },
     "build": {
-      "number": "1",
-      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D USE_OCCT_UTILS:BOOL=FALSE \\\n  -D USE_CUDA:BOOL=FALSE \\\n  -D GBS_BUILD_TESTS:BOOL=FALSE \\\n  -D USE_RENDER:BOOL=TRUE \\\n  -D USE_PYTHON_BINDINGS=TRUE \\\n  -D BUILD_DOC=FALSE \\\n  -D USE_CUDA=FALSE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n"
+      "number": "0",
+      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE \\\n  -D GBS_USE_CUDA:BOOL=FALSE \\\n  -D GBS_USE_MODULES:BOOL=FALSE \\\n  -D GBS_BUILD_DOC:BOOL=FALSE \\\n  -D GBS_BUILD_STUBS:BOOL=FALSE \\\n  -D GBS_USE_RENDER:BOOL=TRUE \\\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE \\\n  -D GBS_BUILD_TESTS:BOOL=TRUE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n# C++ tests (ctest). gbs-render is a SHARED lib installed in $PREFIX/lib;\n# expose it (and vtk/nlopt/...) at run time. No display needed: gbs' CI\n# runs ctest without xvfb on every OS.\nexport LD_LIBRARY_PATH=\"$PREFIX/lib:${LD_LIBRARY_PATH:-}\"\nexport DYLD_FALLBACK_LIBRARY_PATH=\"$PREFIX/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}\"\nctest --test-dir _build --output-on-failure -C Release\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -365,7 +444,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -385,9 +465,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -407,7 +501,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -427,9 +522,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -449,7 +558,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -469,9 +579,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -491,7 +615,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -511,9 +636,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -533,7 +672,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -553,9 +693,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -575,7 +729,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -595,9 +750,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -617,7 +786,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -637,9 +807,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -659,7 +843,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -679,9 +864,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -701,7 +900,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -721,9 +921,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -743,7 +957,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -763,9 +978,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -785,7 +1014,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -805,9 +1035,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -827,7 +1071,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -847,9 +1092,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -869,7 +1128,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -889,9 +1149,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -911,7 +1185,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -931,9 +1206,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -953,7 +1242,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -973,14 +1263,28 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       }
     ],
     "package": {
       "name": "gbs",
-      "version": "0.4.5"
+      "version": "0.4.5.4"
     },
     "requirements": {
       "build": [
@@ -997,7 +1301,8 @@
         "eigen-abi-devel >=3.3.9",
         "libboost-devel",
         "rapidjson",
-        "libiges >=1.0.2"
+        "libiges >=1.0.2",
+        "gtest"
       ],
       "run": [
         "python",
@@ -1012,8 +1317,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "a0c69c19fa430afb3e857e3202fcd58f5b437945e0a31af210366ae43254364c",
-      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.tar.gz"
+      "sha256": "7232cd09a9a0319b0af2989edcf134e72c93eddf74c550775fe73a2a1eac1525",
+      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.4.tar.gz"
     }
   },
   "name": "gbs",
@@ -1026,8 +1331,8 @@
       "summary": "Geometry BSplines - A C++ header library for BSplines curves and surfaces"
     },
     "build": {
-      "number": "1",
-      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D USE_OCCT_UTILS:BOOL=FALSE \\\n  -D USE_CUDA:BOOL=FALSE \\\n  -D GBS_BUILD_TESTS:BOOL=FALSE \\\n  -D USE_RENDER:BOOL=TRUE \\\n  -D USE_PYTHON_BINDINGS=TRUE \\\n  -D BUILD_DOC=FALSE \\\n  -D USE_CUDA=FALSE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n"
+      "number": "0",
+      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE \\\n  -D GBS_USE_CUDA:BOOL=FALSE \\\n  -D GBS_USE_MODULES:BOOL=FALSE \\\n  -D GBS_BUILD_DOC:BOOL=FALSE \\\n  -D GBS_BUILD_STUBS:BOOL=FALSE \\\n  -D GBS_USE_RENDER:BOOL=TRUE \\\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE \\\n  -D GBS_BUILD_TESTS:BOOL=TRUE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n# C++ tests (ctest). gbs-render is a SHARED lib installed in $PREFIX/lib;\n# expose it (and vtk/nlopt/...) at run time. No display needed: gbs' CI\n# runs ctest without xvfb on every OS.\nexport LD_LIBRARY_PATH=\"$PREFIX/lib:${LD_LIBRARY_PATH:-}\"\nexport DYLD_FALLBACK_LIBRARY_PATH=\"$PREFIX/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}\"\nctest --test-dir _build --output-on-failure -C Release\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1054,7 +1359,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1074,9 +1380,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1096,7 +1416,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1116,9 +1437,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1138,7 +1473,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1158,9 +1494,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1180,7 +1530,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1200,9 +1551,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1222,7 +1587,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1242,14 +1608,28 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       }
     ],
     "package": {
       "name": "gbs",
-      "version": "0.4.5"
+      "version": "0.4.5.4"
     },
     "requirements": {
       "build": [
@@ -1266,7 +1646,8 @@
         "eigen-abi-devel >=3.3.9",
         "libboost-devel",
         "rapidjson",
-        "libiges >=1.0.2"
+        "libiges >=1.0.2",
+        "gtest"
       ],
       "run": [
         "python",
@@ -1281,8 +1662,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "a0c69c19fa430afb3e857e3202fcd58f5b437945e0a31af210366ae43254364c",
-      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.tar.gz"
+      "sha256": "7232cd09a9a0319b0af2989edcf134e72c93eddf74c550775fe73a2a1eac1525",
+      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.4.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -1299,6 +1680,7 @@
       "__set__": true,
       "elements": [
         "eigen-abi-devel",
+        "gtest",
         "libboost-devel",
         "libiges",
         "nlopt",
@@ -1324,7 +1706,9 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "pytest-timeout"
       ]
     }
   },
@@ -1343,7 +1727,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/gbs.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\ncontext:\n  version: \"0.4.5\"\npackage:\n  name: gbs\n  version: ${{ version }}\nsource:\n  url: https://github.com/ssg-aero/gbs/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: a0c69c19fa430afb3e857e3202fcd58f5b437945e0a31af210366ae43254364c\nbuild:\n  number: 1\n  script:\n    - if: unix\n      then: |\n        cmake ${CMAKE_ARGS} -GNinja \\\n          -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n          -D USE_OCCT_UTILS:BOOL=FALSE \\\n          -D USE_CUDA:BOOL=FALSE \\\n          -D GBS_BUILD_TESTS:BOOL=FALSE \\\n          -D USE_RENDER:BOOL=TRUE \\\n          -D USE_PYTHON_BINDINGS=TRUE \\\n          -D BUILD_DOC=FALSE \\\n          -D USE_CUDA=FALSE \\\n          -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n          . -B _build\n        cmake --build _build --parallel ${CPU_COUNT}\n        cmake --install _build\n    - if: win\n      then: |\n        cmake %CMAKE_ARGS% -GNinja ^\n          -D CMAKE_BUILD_TYPE:STRING=\"Release\" ^\n          -D USE_OCCT_UTILS:BOOL=FALSE ^\n          -D USE_CUDA:BOOL=FALSE ^\n          -D GBS_BUILD_TESTS:BOOL=FALSE ^\n          -D USE_RENDER:BOOL=TRUE ^\n          -D USE_PYTHON_BINDINGS=TRUE ^\n          -D BUILD_DOC=FALSE ^\n          -D USE_CUDA=FALSE ^\n          -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^\n          . -B _build\n        cmake --build _build --parallel %CPU_COUNT%\n        cmake --install _build\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib(\"c\") }}\n    - ninja\n    - cmake >=3.28\n  host:\n    - python\n    - pybind11\n    - nlopt\n    - vtk\n    - eigen-abi-devel >=3.3.9 # turns c+20 warning off\n    - libboost-devel\n    - rapidjson\n    - libiges >=1.0.2\n  run:\n    - python\n    - numpy\n    - libboost-headers\n    - libiges >=1.0.2\n    - jupyterlab\n    - pythreejs\n    - pyvista\n    - plotly\ntests:\n  - python:\n      imports:\n        - pygbs.gbs\nabout:\n  homepage: http://github.com/ssg-aero/gbs\n  summary: Geometry BSplines - A C++ header library for BSplines curves and surfaces\n  license: LGPL-3.0-or-later\n  license_file: LICENSE.LGPLv3\n\nextra:\n  recipe-maintainers:\n    - szebos\n    - ssg-aero\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\ncontext:\n  version: \"0.4.5.4\"\npackage:\n  name: gbs\n  version: ${{ version }}\nsource:\n  url: https://github.com/ssg-aero/gbs/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 7232cd09a9a0319b0af2989edcf134e72c93eddf74c550775fe73a2a1eac1525\nbuild:\n  number: 0\n  script:\n    # NOTE: the real CMake options are GBS_-prefixed (see gbs/CMakeLists.txt).\n    # The previously used USE_RENDER / USE_PYTHON_BINDINGS names matched no\n    # option and only worked through the defaults; they are fixed here.\n    # GBS_BUILD_TESTS=TRUE builds the C++ test suite and we run it with ctest\n    # (like gbs' own CI) so the package is actually exercised against the\n    # current nlopt/vtk/... — an import-only test would not catch a numerical\n    # regression in the nlopt-driven approximation/interpolation code.\n    - if: unix\n      then: |\n        cmake ${CMAKE_ARGS} -GNinja \\\n          -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n          -D GBS_USE_OCCT_UTILS:BOOL=FALSE \\\n          -D GBS_USE_CUDA:BOOL=FALSE \\\n          -D GBS_USE_MODULES:BOOL=FALSE \\\n          -D GBS_BUILD_DOC:BOOL=FALSE \\\n          -D GBS_BUILD_STUBS:BOOL=FALSE \\\n          -D GBS_USE_RENDER:BOOL=TRUE \\\n          -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE \\\n          -D GBS_BUILD_TESTS:BOOL=TRUE \\\n          -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n          . -B _build\n        cmake --build _build --parallel ${CPU_COUNT}\n        cmake --install _build\n        # C++ tests (ctest). gbs-render is a SHARED lib installed in $PREFIX/lib;\n        # expose it (and vtk/nlopt/...) at run time. No display needed: gbs' CI\n        # runs ctest without xvfb on every OS.\n        export LD_LIBRARY_PATH=\"$PREFIX/lib:${LD_LIBRARY_PATH:-}\"\n        export DYLD_FALLBACK_LIBRARY_PATH=\"$PREFIX/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}\"\n        ctest --test-dir _build --output-on-failure -C Release\n    - if: win\n      then: |\n        cmake %CMAKE_ARGS% -GNinja ^\n          -D CMAKE_BUILD_TYPE:STRING=\"Release\" ^\n          -D GBS_USE_OCCT_UTILS:BOOL=FALSE ^\n          -D GBS_USE_CUDA:BOOL=FALSE ^\n          -D GBS_USE_MODULES:BOOL=FALSE ^\n          -D GBS_BUILD_DOC:BOOL=FALSE ^\n          -D GBS_BUILD_STUBS:BOOL=FALSE ^\n          -D GBS_USE_RENDER:BOOL=TRUE ^\n          -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE ^\n          -D GBS_BUILD_TESTS:BOOL=TRUE ^\n          -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^\n          -D CMAKE_RUNTIME_OUTPUT_DIRECTORY=%SRC_DIR%\\_build\\bin ^\n          . -B _build\n        if errorlevel 1 exit 1\n        cmake --build _build --parallel %CPU_COUNT%\n        if errorlevel 1 exit 1\n        cmake --install _build\n        if errorlevel 1 exit 1\n        :: C++ tests (ctest). Test exes + gbs-render.dll are co-located in\n        :: _build\\bin (CMAKE_RUNTIME_OUTPUT_DIRECTORY) so gtest_discover_tests\n        :: finds gbs-render.dll at build time; the other DLLs (vtk/nlopt/tbb)\n        :: are in %LIBRARY_PREFIX%\\bin, already on PATH in the build env.\n        ctest --test-dir _build --output-on-failure -C Release\n        if errorlevel 1 exit 1\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib(\"c\") }}\n    - ninja\n    - cmake >=3.28\n  host:\n    - python\n    - pybind11\n    - nlopt\n    - vtk\n    - eigen-abi-devel >=3.3.9 # turns c+20 warning off\n    - libboost-devel\n    - rapidjson\n    - libiges >=1.0.2\n    - gtest   # C++ tests: gbs picks up GTest via find_package in a conda build\n  run:\n    - python\n    - numpy\n    - libboost-headers\n    - libiges >=1.0.2\n    - jupyterlab\n    - pythreejs\n    - pyvista\n    - plotly\ntests:\n  - python:\n      imports:\n        - pygbs.gbs\n  # Python test suite (pytest), like gbs' CI. conftest.py forces off-screen\n  # rendering and neutralizes the blocking plot_* / render_actors helpers when\n  # PYVISTA_OFF_SCREEN is set, so the numerical assertions run without a window.\n  # The three test_json / test_mesh / test_shaping modules instead build a real\n  # pyvista/VTK render window directly, which needs a live GL context and\n  # segfaults on a headless conda runner (no display). They exercise rendering,\n  # not the nlopt-driven numerics, and are covered by gbs' own CI (which runs\n  # with a display) -- so they are skipped here to keep the package test robust.\n  - script:\n      - if: unix\n        then: |\n          export PYVISTA_OFF_SCREEN=true\n          pytest python/tests/ -v --timeout=120 -ra \\\n            --ignore=python/tests/test_json.py \\\n            --ignore=python/tests/test_mesh.py \\\n            --ignore=python/tests/test_shaping.py\n      - if: win\n        then: |\n          set PYVISTA_OFF_SCREEN=true\n          pytest python\\tests\\ -v --timeout=120 -ra ^\n            --ignore=python/tests/test_json.py ^\n            --ignore=python/tests/test_mesh.py ^\n            --ignore=python/tests/test_shaping.py\n    requirements:\n      run:\n        - pytest\n        - pytest-timeout\n    files:\n      source:\n        - python/tests/\nabout:\n  homepage: http://github.com/ssg-aero/gbs\n  summary: Geometry BSplines - A C++ header library for BSplines curves and surfaces\n  license: LGPL-3.0-or-later\n  license_file: LICENSE.LGPLv3\n\nextra:\n  recipe-maintainers:\n    - szebos\n    - ssg-aero\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1351,6 +1735,7 @@
       "cmake",
       "cxx_compiler_stub",
       "eigen-abi-devel",
+      "gtest",
       "jupyterlab",
       "libboost-devel",
       "libboost-headers",
@@ -1383,6 +1768,7 @@
         "c_stdlib_stub",
         "cxx_compiler_stub",
         "eigen-abi-devel",
+        "gtest",
         "libboost-devel",
         "libiges",
         "nlopt",
@@ -1410,7 +1796,9 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "pytest-timeout"
       ]
     }
   },
@@ -1429,6 +1817,7 @@
       "__set__": true,
       "elements": [
         "eigen-abi-devel >=3.3.9",
+        "gtest",
         "libboost-devel",
         "libiges >=1.0.2",
         "nlopt",
@@ -1454,12 +1843,14 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "pytest-timeout"
       ]
     }
   },
-  "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.tar.gz",
-  "version": "0.4.5",
+  "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.4.tar.gz",
+  "version": "0.4.5.4",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/gbs.json"
   },
@@ -1472,8 +1863,8 @@
       "summary": "Geometry BSplines - A C++ header library for BSplines curves and surfaces"
     },
     "build": {
-      "number": "1",
-      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D USE_OCCT_UTILS:BOOL=FALSE \\\n  -D USE_CUDA:BOOL=FALSE \\\n  -D GBS_BUILD_TESTS:BOOL=FALSE \\\n  -D USE_RENDER:BOOL=TRUE \\\n  -D USE_PYTHON_BINDINGS=TRUE \\\n  -D BUILD_DOC=FALSE \\\n  -D USE_CUDA=FALSE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n"
+      "number": "0",
+      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE \\\n  -D GBS_USE_CUDA:BOOL=FALSE \\\n  -D GBS_USE_MODULES:BOOL=FALSE \\\n  -D GBS_BUILD_DOC:BOOL=FALSE \\\n  -D GBS_BUILD_STUBS:BOOL=FALSE \\\n  -D GBS_USE_RENDER:BOOL=TRUE \\\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE \\\n  -D GBS_BUILD_TESTS:BOOL=TRUE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n# C++ tests (ctest). gbs-render is a SHARED lib installed in $PREFIX/lib;\n# expose it (and vtk/nlopt/...) at run time. No display needed: gbs' CI\n# runs ctest without xvfb on every OS.\nexport LD_LIBRARY_PATH=\"$PREFIX/lib:${LD_LIBRARY_PATH:-}\"\nexport DYLD_FALLBACK_LIBRARY_PATH=\"$PREFIX/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}\"\nctest --test-dir _build --output-on-failure -C Release\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1500,7 +1891,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1520,9 +1912,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1542,7 +1948,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1562,9 +1969,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1584,7 +2005,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1604,9 +2026,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1626,7 +2062,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1646,9 +2083,23 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       },
       {
         "build": null,
@@ -1668,7 +2119,8 @@
             "eigen-abi-devel >=3.3.9",
             "libboost-devel",
             "rapidjson",
-            "libiges >=1.0.2"
+            "libiges >=1.0.2",
+            "gtest"
           ],
           "run": [
             "python",
@@ -1688,14 +2140,28 @@
                 "pygbs.gbs"
               ]
             }
+          },
+          {
+            "files": {
+              "source": [
+                "python/tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest",
+                "pytest-timeout"
+              ]
+            },
+            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
-        "version": "0.4.5"
+        "version": "0.4.5.4"
       }
     ],
     "package": {
       "name": "gbs",
-      "version": "0.4.5"
+      "version": "0.4.5.4"
     },
     "requirements": {
       "build": [
@@ -1712,7 +2178,8 @@
         "eigen-abi-devel >=3.3.9",
         "libboost-devel",
         "rapidjson",
-        "libiges >=1.0.2"
+        "libiges >=1.0.2",
+        "gtest"
       ],
       "run": [
         "python",
@@ -1727,8 +2194,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "a0c69c19fa430afb3e857e3202fcd58f5b437945e0a31af210366ae43254364c",
-      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.tar.gz"
+      "sha256": "7232cd09a9a0319b0af2989edcf134e72c93eddf74c550775fe73a2a1eac1525",
+      "url": "https://github.com/ssg-aero/gbs/archive/refs/tags/v0.4.5.4.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -1745,6 +2212,7 @@
       "__set__": true,
       "elements": [
         "eigen-abi-devel",
+        "gtest",
         "libboost-devel",
         "libiges",
         "nlopt",
@@ -1770,7 +2238,9 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "pytest-timeout"
       ]
     }
   }
