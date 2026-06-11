@@ -14,8 +14,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "da10c5f68cec44279dcc76257de81b655794d8b1",
-  "feedstock_hash_ts": 1781113465,
+  "feedstock_hash": "c8e885afffe422a5d01cecdc8f2fcbd52211c2e9",
+  "feedstock_hash_ts": 1781169195,
   "feedstock_name": "pfapack",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -30,7 +30,7 @@
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -393,7 +393,7 @@
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1259,7 +1259,7 @@
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1625,7 +1625,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pfapack.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: pfapack\n  version: 1.0.2\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  - url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz\n    sha256: 43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39\n\nbuild:\n  number: 0\n  skip: match(python, \"<3.10\")\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - if: not win\n      then: ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"fortran\") }}\n    # On Windows we bypass Meson and use recipe/build.bat directly because\n    # Meson's llvm-flang support still runs into unresolved upstream issues,\n    # including probing flang with `--print-search-dirs`; track\n    # https://github.com/mesonbuild/meson/issues/12306\n    - if: not win\n      then: pkg-config\n  host:\n    - python\n    - if: not win\n      then: pip\n    - if: not win\n      then: meson >=1.1\n    - if: not win\n      then: meson-python\n    - if: not win\n      then: ninja\n    - if: not win\n      then: setuptools-scm\n    - liblapack\n    - libblas\n  run:\n    - python\n    - scipy\n    - numpy\n\ntests:\n  - if: win\n    then:\n      package_contents:\n        files:\n          - Lib/site-packages/pfapack/*cpfapack*.*\n        site_packages:\n          - pfapack.ctypes\n    else:\n      package_contents:\n        files:\n          - lib/python*/site-packages/pfapack/*cpfapack*.*\n        site_packages:\n          - pfapack.ctypes\n  - python:\n      imports:\n        - pfapack\n        - pfapack.ctypes\n  - script:\n      interpreter: python\n      content: |\n        import numpy as np\n        from pfapack import pfaffian as pf\n        from pfapack.ctypes import pfaffian as cpfaffian\n\n        matrix = np.array(\n            [\n                [0.0, 1.0, 2.0, 3.0],\n                [-1.0, 0.0, 4.0, 5.0],\n                [-2.0, -4.0, 0.0, 6.0],\n                [-3.0, -5.0, -6.0, 0.0],\n            ],\n            dtype=np.float64,\n        )\n\n        expected = 8.0\n\n        assert np.allclose(pf.pfaffian(matrix), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n\nabout:\n  license: MIT\n  license_file: LICENSE\n  summary: Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices\n  description: |\n    Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\n    Both computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\n    under unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\n    skew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\n    form based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\n    or based on unitary transformations, using block Householder transformations and Givens rotations,\n    that are applicable to dense and banded matrices, respectively. We also give a complete and fully\n    optimized implementation of these algorithms in Python.\n\n  homepage: https://github.com/basnijholt/pfapack\n  repository: https://github.com/basnijholt/pfapack\n  documentation: https://pfapack.readthedocs.io/\n\nextra:\n  recipe-maintainers:\n    - basnijholt\n    - akhmerov\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: pfapack\n  version: 1.0.2\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  - url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz\n    sha256: 43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39\n\nbuild:\n  number: 1\n  skip: match(python, \"<3.10\")\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - if: not win\n      then: ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"fortran\") }}\n    # On Windows we bypass Meson and use recipe/build.bat directly because\n    # Meson's llvm-flang support still runs into unresolved upstream issues,\n    # including probing flang with `--print-search-dirs`; track\n    # https://github.com/mesonbuild/meson/issues/12306\n    - if: not win\n      then: pkg-config\n  host:\n    - python\n    - if: not win\n      then:\n        - pip\n        - meson >=1.1\n        - meson-python\n        - ninja\n        - setuptools-scm\n    - liblapack\n    - libblas\n  run:\n    - python\n    - scipy\n    - numpy\n\ntests:\n  - if: win\n    then:\n      package_contents:\n        files:\n          - Lib/site-packages/pfapack/*cpfapack*.*\n        site_packages:\n          - pfapack.ctypes\n    else:\n      package_contents:\n        files:\n          - lib/python*/site-packages/pfapack/*cpfapack*.*\n        site_packages:\n          - pfapack.ctypes\n  - python:\n      imports:\n        - pfapack\n        - pfapack.ctypes\n  - script:\n      interpreter: python\n      content: |\n        import numpy as np\n        from pfapack import pfaffian as pf\n        from pfapack.ctypes import pfaffian as cpfaffian\n\n        matrix = np.array(\n            [\n                [0.0, 1.0, 2.0, 3.0],\n                [-1.0, 0.0, 4.0, 5.0],\n                [-2.0, -4.0, 0.0, 6.0],\n                [-3.0, -5.0, -6.0, 0.0],\n            ],\n            dtype=np.float64,\n        )\n\n        expected = 8.0\n\n        assert np.allclose(pf.pfaffian(matrix), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\"), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"H\"), expected)\n        assert np.allclose(cpfaffian(matrix, uplo=\"L\", method=\"P\", avoid_overflow=True), expected)\n\nabout:\n  license: MIT\n  license_file: LICENSE\n  summary: Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices\n  description: |\n    Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.\n    Both computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix\n    under unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to\n    skew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal\n    form based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,\n    or based on unitary transformations, using block Householder transformations and Givens rotations,\n    that are applicable to dense and banded matrices, respectively. We also give a complete and fully\n    optimized implementation of these algorithms in Python.\n\n  homepage: https://github.com/basnijholt/pfapack\n  repository: https://github.com/basnijholt/pfapack\n  documentation: https://pfapack.readthedocs.io/\n\nextra:\n  recipe-maintainers:\n    - basnijholt\n    - akhmerov\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1745,7 +1745,7 @@
       "summary": "Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
