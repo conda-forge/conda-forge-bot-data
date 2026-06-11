@@ -1,44 +1,47 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nhdf5:\n- 1.14.6\nlibmatio:\n- 1.5.30\nnumpy:\n- '2'\nopenblas:\n- 0.3.*\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - cxx_compiler_version\n  - fortran_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_is_python_mintruepython3.10.____cpython.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nis_abi3:\n- true\nis_python_min:\n- true\nlibmatio:\n- 1.5.30\nnumpy:\n- '2'\nopenblas:\n- 0.3.*\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npython_min:\n- '3.10'\ntarget_platform:\n- linux-64\nzip_keys:\n- - python\n  - is_python_min\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
     },
     "build_platform": {
       "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "linux_ppc64le": "linux_64"
     },
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "provider": {
+      "linux_64": "default",
       "linux_aarch64": "default",
       "linux_ppc64le": "default",
-      "win": "azure"
+      "osx_arm64": "default",
+      "win": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "b7f948e63097265690ca2f7abdeeb48a740d6832",
-  "feedstock_hash_ts": 1776858617,
+  "feedstock_hash": "46acf1c074f2675e02b1a1b3526fa33642f62e8b",
+  "feedstock_hash_ts": 1781188460,
   "feedstock_name": "openmeeg",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "home": "https://openmeeg.github.io/",
       "license": "CECILL-B",
+      "license_family": "CECILL-B",
       "license_file": "LICENSE.txt",
-      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG).\n"
+      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG)."
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -46,6 +49,69 @@
         "larsoner"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      }
+    ],
     "package": {
       "name": "openmeeg",
       "version": "2.5.16"
@@ -56,17 +122,14 @@
         "make",
         "ninja",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
         "c_stdlib_stub",
-        "libgomp",
         "swig"
       ],
       "host": [
         "python",
+        "python-abi3",
         "numpy",
-        "hdf5",
         "openblas",
-        "zlib",
         "libmatio",
         "setuptools >=68.0.0",
         "setuptools_scm >=6.2",
@@ -75,33 +138,16 @@
       "run": [
         "python",
         "libopenblas",
-        "zlib",
         "libmatio"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
+      "patches": [
+        "sabi.patch"
+      ],
       "sha256": "29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884",
       "url": "https://github.com/openmeeg/openmeeg/archive/2.5.16.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "om_minverser --help",
-        "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('2.5.16'), openmeeg.__version__\"",
-        "pip check",
-        "pip show openmeeg"
-      ],
-      "imports": [
-        "openmeeg"
-      ],
-      "requires": [
-        "pytest",
-        "packaging",
-        "pip"
-      ],
-      "source_files": [
-        "data"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -111,8 +157,6 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
-        "libgomp",
         "make",
         "ninja",
         "swig"
@@ -121,15 +165,14 @@
     "host": {
       "__set__": true,
       "elements": [
-        "hdf5",
         "libmatio",
         "numpy",
         "openblas",
         "python",
+        "python-abi3",
         "setuptools",
         "setuptools_scm",
-        "wheel",
-        "zlib"
+        "wheel"
       ]
     },
     "run": {
@@ -137,13 +180,335 @@
       "elements": [
         "libmatio",
         "libopenblas",
-        "python",
-        "zlib"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
+        "packaging",
+        "pip",
+        "pytest"
+      ]
+    }
+  },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "home": "https://openmeeg.github.io/",
+      "license": "CECILL-B",
+      "license_family": "CECILL-B",
+      "license_file": "LICENSE.txt",
+      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG)."
+    },
+    "build": {
+      "number": "2"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "agramfort",
+        "larsoner"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      }
+    ],
+    "package": {
+      "name": "openmeeg",
+      "version": "2.5.16"
+    },
+    "requirements": {
+      "build": [
+        "cmake >=3.19",
+        "make",
+        "ninja",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "swig"
+      ],
+      "host": [
+        "python",
+        "python-abi3",
+        "numpy",
+        "openblas",
+        "libmatio",
+        "setuptools >=68.0.0",
+        "setuptools_scm >=6.2",
+        "wheel >=0.37.0"
+      ],
+      "run": [
+        "python",
+        "libopenblas",
+        "libmatio"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "sabi.patch"
+      ],
+      "sha256": "29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884",
+      "url": "https://github.com/openmeeg/openmeeg/archive/2.5.16.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "make",
+        "ninja",
+        "swig"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libmatio",
+        "numpy",
+        "openblas",
+        "python",
+        "python-abi3",
+        "setuptools",
+        "setuptools_scm",
+        "wheel"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libmatio",
+        "libopenblas",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
+        "packaging",
+        "pip",
+        "pytest"
+      ]
+    }
+  },
+  "linux_ppc64le_meta_yaml": {
+    "about": {
+      "home": "https://openmeeg.github.io/",
+      "license": "CECILL-B",
+      "license_family": "CECILL-B",
+      "license_file": "LICENSE.txt",
+      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG)."
+    },
+    "build": {
+      "number": "2"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "agramfort",
+        "larsoner"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      }
+    ],
+    "package": {
+      "name": "openmeeg",
+      "version": "2.5.16"
+    },
+    "requirements": {
+      "build": [
+        "cmake >=3.19",
+        "make",
+        "ninja",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "swig"
+      ],
+      "host": [
+        "python",
+        "python-abi3",
+        "numpy",
+        "openblas",
+        "libmatio",
+        "setuptools >=68.0.0",
+        "setuptools_scm >=6.2",
+        "wheel >=0.37.0"
+      ],
+      "run": [
+        "python",
+        "libopenblas",
+        "libmatio"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "sabi.patch"
+      ],
+      "sha256": "29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884",
+      "url": "https://github.com/openmeeg/openmeeg/archive/2.5.16.tar.gz"
+    }
+  },
+  "linux_ppc64le_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "make",
+        "ninja",
+        "swig"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libmatio",
+        "numpy",
+        "openblas",
+        "python",
+        "python-abi3",
+        "setuptools",
+        "setuptools_scm",
+        "wheel"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libmatio",
+        "libopenblas",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
         "packaging",
         "pip",
         "pytest"
@@ -154,11 +519,12 @@
     "about": {
       "home": "https://openmeeg.github.io/",
       "license": "CECILL-B",
+      "license_family": "CECILL-B",
       "license_file": "LICENSE.txt",
-      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG).\n"
+      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG)."
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -166,6 +532,374 @@
         "larsoner"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      },
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      },
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      },
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      },
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      },
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      }
+    ],
     "package": {
       "name": "openmeeg",
       "version": "2.5.16"
@@ -176,19 +910,14 @@
         "make",
         "ninja",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
         "c_stdlib_stub",
-        "libgomp",
-        "swig",
-        "llvm-openmp",
-        "pthread-stubs"
+        "swig"
       ],
       "host": [
         "python",
+        "python-abi3",
         "numpy",
-        "hdf5",
         "openblas",
-        "zlib",
         "libmatio",
         "setuptools >=68.0.0",
         "setuptools_scm >=6.2",
@@ -197,35 +926,16 @@
       "run": [
         "python",
         "libopenblas",
-        "zlib",
-        "libmatio",
-        "ucrt"
+        "libmatio"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
+      "patches": [
+        "sabi.patch"
+      ],
       "sha256": "29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884",
       "url": "https://github.com/openmeeg/openmeeg/archive/2.5.16.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "om_minverser --help",
-        "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('2.5.16'), openmeeg.__version__\"",
-        "pip check",
-        "pip show openmeeg"
-      ],
-      "imports": [
-        "openmeeg"
-      ],
-      "requires": [
-        "pytest",
-        "packaging",
-        "pip",
-        "pytest <8"
-      ],
-      "source_files": [
-        "data"
-      ]
     }
   },
   "name": "openmeeg",
@@ -233,11 +943,12 @@
     "about": {
       "home": "https://openmeeg.github.io/",
       "license": "CECILL-B",
+      "license_family": "CECILL-B",
       "license_file": "LICENSE.txt",
-      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG).\n"
+      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG)."
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -245,6 +956,69 @@
         "larsoner"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      }
+    ],
     "package": {
       "name": "openmeeg",
       "version": "2.5.16"
@@ -255,17 +1029,14 @@
         "make",
         "ninja",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
         "c_stdlib_stub",
-        "llvm-openmp",
         "swig"
       ],
       "host": [
         "python",
+        "python-abi3",
         "numpy",
-        "hdf5",
         "openblas",
-        "zlib",
         "libmatio",
         "setuptools >=68.0.0",
         "setuptools_scm >=6.2",
@@ -274,33 +1045,16 @@
       "run": [
         "python",
         "libopenblas",
-        "zlib",
         "libmatio"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
+      "patches": [
+        "sabi.patch"
+      ],
       "sha256": "29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884",
       "url": "https://github.com/openmeeg/openmeeg/archive/2.5.16.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "om_minverser --help",
-        "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('2.5.16'), openmeeg.__version__\"",
-        "pip check",
-        "pip show openmeeg"
-      ],
-      "imports": [
-        "openmeeg"
-      ],
-      "requires": [
-        "pytest",
-        "packaging",
-        "pip"
-      ],
-      "source_files": [
-        "data"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -310,8 +1064,6 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
-        "llvm-openmp",
         "make",
         "ninja",
         "swig"
@@ -320,15 +1072,14 @@
     "host": {
       "__set__": true,
       "elements": [
-        "hdf5",
         "libmatio",
         "numpy",
         "openblas",
         "python",
+        "python-abi3",
         "setuptools",
         "setuptools_scm",
-        "wheel",
-        "zlib"
+        "wheel"
       ]
     },
     "run": {
@@ -336,13 +1087,13 @@
       "elements": [
         "libmatio",
         "libopenblas",
-        "python",
-        "zlib"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "packaging",
         "pip",
         "pytest"
@@ -353,11 +1104,12 @@
     "about": {
       "home": "https://openmeeg.github.io/",
       "license": "CECILL-B",
+      "license_family": "CECILL-B",
       "license_file": "LICENSE.txt",
-      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG).\n"
+      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG)."
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -365,6 +1117,69 @@
         "larsoner"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      }
+    ],
     "package": {
       "name": "openmeeg",
       "version": "2.5.16"
@@ -375,17 +1190,14 @@
         "make",
         "ninja",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
         "c_stdlib_stub",
-        "llvm-openmp",
         "swig"
       ],
       "host": [
         "python",
+        "python-abi3",
         "numpy",
-        "hdf5",
         "openblas",
-        "zlib",
         "libmatio",
         "setuptools >=68.0.0",
         "setuptools_scm >=6.2",
@@ -394,33 +1206,16 @@
       "run": [
         "python",
         "libopenblas",
-        "zlib",
         "libmatio"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
+      "patches": [
+        "sabi.patch"
+      ],
       "sha256": "29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884",
       "url": "https://github.com/openmeeg/openmeeg/archive/2.5.16.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "om_minverser --help",
-        "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('2.5.16'), openmeeg.__version__\"",
-        "pip check",
-        "pip show openmeeg"
-      ],
-      "imports": [
-        "openmeeg"
-      ],
-      "requires": [
-        "pytest",
-        "packaging",
-        "pip"
-      ],
-      "source_files": [
-        "data"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -430,8 +1225,6 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
-        "llvm-openmp",
         "make",
         "ninja",
         "swig"
@@ -440,15 +1233,14 @@
     "host": {
       "__set__": true,
       "elements": [
-        "hdf5",
         "libmatio",
         "numpy",
         "openblas",
         "python",
+        "python-abi3",
         "setuptools",
         "setuptools_scm",
-        "wheel",
-        "zlib"
+        "wheel"
       ]
     },
     "run": {
@@ -456,13 +1248,13 @@
       "elements": [
         "libmatio",
         "libopenblas",
-        "python",
-        "zlib"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "packaging",
         "pip",
         "pytest"
@@ -478,6 +1270,8 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
+    "linux_ppc64le",
     "osx_64",
     "osx_arm64",
     "win_64"
@@ -485,31 +1279,25 @@
   "pr_info": {
     "__lazy_json__": "pr_info/openmeeg.json"
   },
-  "raw_meta_yaml": "{% set name = \"openmeeg\" %}\n{% set version = \"2.5.16\" %}\n{% set build_number = 1 %}\n{% set sha256 = \"29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/{{ name }}/{{ name }}/archive/{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n\n# https://conda-forge.org/docs/maintainer/knowledge_base.html\nbuild:\n  number: {{ build_number }}\n  # Could NOT find Python3 (missing: Python3_INCLUDE_DIRS ... so skip ppc64le for now\n  skip: true  # [py<39 or ppc64le or aarch64]]\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n    - cmake >=3.19\n    - make\n    - ninja  # [not win]\n    - {{ compiler('cxx') }}\n    - {{ compiler('fortran') }}  # just for OpenBLAS to link properly\n    - {{ stdlib(\"c\") }}\n    - llvm-openmp  # [osx]\n    - libgomp      # [linux]\n    - pthread-stubs  # [win]\n    - swig\n\n  host:\n    - python\n    - numpy\n    - hdf5\n    - openblas\n    - zlib\n    - libmatio\n    - setuptools >=68.0.0\n    - setuptools_scm >=6.2\n    - wheel >=0.37.0\n\n  run:\n    - python\n    - ucrt  # [win]\n    - libopenblas\n    - zlib\n    - libmatio\n\ntest:\n  imports:\n    - openmeeg\n  requires:\n    - pytest  # [not win]\n    - pytest <8  # [win]\n    - packaging\n    - pip\n  source_files:\n    - data\n  commands:\n    - om_minverser --help\n    - python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('{{ version }}'), openmeeg.__version__\"\n    - pip check\n    - pip show openmeeg\n\nabout:\n  home: https://openmeeg.github.io/\n  license: CECILL-B\n  license_file: LICENSE.txt\n  summary: >\n    A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG).\n\nextra:\n  recipe-maintainers:\n    - agramfort\n    - larsoner\n",
+  "raw_meta_yaml": "schema_version: 1\ncontext:\n  name: \"openmeeg\"\n  version: \"2.5.16\"\n  build_number: 2\n  sha256: 29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/${{ name }}/${{ name }}/archive/${{ version }}.tar.gz\n  sha256: ${{ sha256 }}\n  patches:\n    - sabi.patch\n\n# https://conda-forge.org/docs/maintainer/knowledge_base.html\nbuild:\n  number: ${{ build_number }}\n  python:\n    version_independent: ${{ is_abi3 }}\n  skip: is_abi3 and not is_python_min\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - numpy\n    - cmake >=3.19\n    - make\n    - if: not win\n      then: ninja\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib(\"c\") }}\n    - if: osx\n      then: llvm-openmp\n    - if: win\n      then: pthread-stubs\n    - swig\n\n  host:\n    - python\n    - if: is_abi3\n      then: python-abi3\n    - numpy\n    - openblas\n    - libmatio\n    - setuptools >=68.0.0\n    - setuptools_scm >=6.2\n    - wheel >=0.37.0\n\n  run:\n    - python\n    - if: win\n      then: ucrt\n    - libopenblas\n    - libmatio\n\ntests:\n  - python:\n      imports:\n        - openmeeg\n      python_version:\n        - if: is_abi3\n          then: ${{ python_min }}.*\n        - \"*\"\n  - requirements:\n      run:\n        - if: not win\n          then: pytest\n          else: pytest <8\n        - packaging\n        - pip\n        - if: is_abi3\n          then: abi3audit\n    script:\n      - om_minverser --help\n      - if: unix and is_abi3\n        then:\n          - ls $SP_DIR/openmeeg/_openmeeg.*\n          - abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n      - if: win and is_abi3\n        then:\n          - dir %SP_DIR%\\openmeeg\\_openmeeg.*\n          - abi3audit %SP_DIR%/openmeeg/_openmeeg.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n          # In case we run into problems in the future:\n          # curl -LO https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release.zip\n          # powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('Dependencies_x64_Release.zip', 'Dependencies'); }\"\n          # .\\Dependencies\\Dependencies.exe -modules %SP_DIR%\\openmeeg\\_openmeeg.pyd\n      - python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"\n      - pip check\n      - pip show openmeeg\n\nabout:\n  homepage: https://openmeeg.github.io/\n  license: CECILL-B\n  license_file: LICENSE.txt\n  summary: >\n    A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG).\n\nextra:\n  recipe-maintainers:\n    - agramfort\n    - larsoner\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_stdlib_stub",
       "cmake",
       "cxx_compiler_stub",
-      "fortran_compiler_stub",
-      "hdf5",
-      "libgomp",
       "libmatio",
       "libopenblas",
-      "llvm-openmp",
       "make",
       "ninja",
       "numpy",
       "openblas",
-      "pthread-stubs",
       "python",
+      "python-abi3",
       "setuptools",
       "setuptools_scm",
       "swig",
-      "ucrt",
-      "wheel",
-      "zlib"
+      "wheel"
     ]
   },
   "requirements": {
@@ -519,12 +1307,8 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
-        "libgomp",
-        "llvm-openmp",
         "make",
         "ninja",
-        "pthread-stubs",
         "swig"
       ]
     },
@@ -532,39 +1316,31 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
-        "ctng-compilers",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
-        "hdf5",
         "libmatio",
         "numpy",
         "openblas",
-        "openmp",
         "python",
+        "python-abi3",
         "setuptools",
         "setuptools_scm",
-        "wheel",
-        "zlib"
+        "wheel"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
-        "ctng-compilers",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
         "libmatio",
         "libopenblas",
-        "openmp",
-        "python",
-        "ucrt",
-        "zlib"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "packaging",
         "pip",
         "pytest"
@@ -579,27 +1355,22 @@
         "c_stdlib_stub",
         "cmake >=3.19",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
-        "libgomp",
-        "llvm-openmp",
         "make",
         "ninja",
-        "pthread-stubs",
         "swig"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
-        "hdf5",
         "libmatio",
         "numpy",
         "openblas",
         "python",
+        "python-abi3",
         "setuptools >=68.0.0",
         "setuptools_scm >=6.2",
-        "wheel >=0.37.0",
-        "zlib"
+        "wheel >=0.37.0"
       ]
     },
     "run": {
@@ -607,18 +1378,16 @@
       "elements": [
         "libmatio",
         "libopenblas",
-        "python",
-        "ucrt",
-        "zlib"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "packaging",
         "pip",
-        "pytest",
-        "pytest <8"
+        "pytest"
       ]
     }
   },
@@ -631,11 +1400,12 @@
     "about": {
       "home": "https://openmeeg.github.io/",
       "license": "CECILL-B",
+      "license_family": "CECILL-B",
       "license_file": "LICENSE.txt",
-      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG).\n"
+      "summary": "A C++ package for solving the forward problems of electroencephalography (EEG) and magnetoencephalography (MEG)."
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -643,6 +1413,69 @@
         "larsoner"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "openmeeg",
+        "requirements": {
+          "build": [
+            "cmake >=3.19",
+            "make",
+            "ninja",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "swig"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "numpy",
+            "openblas",
+            "libmatio",
+            "setuptools >=68.0.0",
+            "setuptools_scm >=6.2",
+            "wheel >=0.37.0"
+          ],
+          "run": [
+            "python",
+            "libopenblas",
+            "libmatio"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "openmeeg"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pytest",
+                "packaging",
+                "pip",
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "om_minverser --help",
+              "ls $SP_DIR/openmeeg/_openmeeg.*",
+              "abi3audit $SP_DIR/openmeeg/_openmeeg.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}",
+              "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('${{ version }}'), openmeeg.__version__\"",
+              "pip check",
+              "pip show openmeeg"
+            ]
+          }
+        ],
+        "version": "2.5.16"
+      }
+    ],
     "package": {
       "name": "openmeeg",
       "version": "2.5.16"
@@ -651,18 +1484,16 @@
       "build": [
         "cmake >=3.19",
         "make",
+        "ninja",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
         "c_stdlib_stub",
-        "pthread-stubs",
         "swig"
       ],
       "host": [
         "python",
+        "python-abi3",
         "numpy",
-        "hdf5",
         "openblas",
-        "zlib",
         "libmatio",
         "setuptools >=68.0.0",
         "setuptools_scm >=6.2",
@@ -670,35 +1501,17 @@
       ],
       "run": [
         "python",
-        "ucrt",
         "libopenblas",
-        "zlib",
         "libmatio"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
+      "patches": [
+        "sabi.patch"
+      ],
       "sha256": "29485a732e3555425889cfd28474fccd2b3e76b51bb694fc83d86ca052e70884",
       "url": "https://github.com/openmeeg/openmeeg/archive/2.5.16.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "om_minverser --help",
-        "python -c \"import faulthandler; faulthandler.enable(); import warnings; warnings.simplefilter('error'); from packaging.version import parse; import openmeeg; print(openmeeg.__version__); assert parse(openmeeg.__version__) == parse('2.5.16'), openmeeg.__version__\"",
-        "pip check",
-        "pip show openmeeg"
-      ],
-      "imports": [
-        "openmeeg"
-      ],
-      "requires": [
-        "pytest <8",
-        "packaging",
-        "pip"
-      ],
-      "source_files": [
-        "data"
-      ]
     }
   },
   "win_64_requirements": {
@@ -708,24 +1521,22 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "fortran_compiler_stub",
         "make",
-        "pthread-stubs",
+        "ninja",
         "swig"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
-        "hdf5",
         "libmatio",
         "numpy",
         "openblas",
         "python",
+        "python-abi3",
         "setuptools",
         "setuptools_scm",
-        "wheel",
-        "zlib"
+        "wheel"
       ]
     },
     "run": {
@@ -733,14 +1544,13 @@
       "elements": [
         "libmatio",
         "libopenblas",
-        "python",
-        "ucrt",
-        "zlib"
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "packaging",
         "pip",
         "pytest"
