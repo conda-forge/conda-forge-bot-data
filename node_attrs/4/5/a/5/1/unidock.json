@@ -12,8 +12,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "52a2a76005d4c3bb3afda1d55ccbdda0a4448286",
-  "feedstock_hash_ts": 1781238692,
+  "feedstock_hash": "4aa1c6bf645e0e78aa30c6f83acc57b30eabea52",
+  "feedstock_hash_ts": 1781241125,
   "feedstock_name": "unidock",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -28,9 +28,9 @@
       "summary": "A GPU-accelerated molecular docking program"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "cd unidock_tools\npip install . -vv\ncd ..\ncd unidock\nmkdir conda_build\ncd conda_build\ncmake ${CMAKE_ARGS} ${SRC_DIR}/unidock\nmake unidock -j$CPU_COUNT\nmake install\n",
-      "string": "cuda129_h1234567_0"
+      "string": "cuda129_h1234567_1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -71,7 +71,8 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "0001-fix-boost-math-quaternion-nvcc.patch"
+        "0001-fix-boost-math-quaternion-nvcc.patch",
+        "0002-widen-requires-python.patch"
       ],
       "sha256": "f625819c0c102eb2fd6bb7fd8ef81437ff1bdd13db87eefe210904b329934c3f",
       "url": "https://github.com/dptech-corp/Uni-Dock/archive/refs/tags/1.2.0.tar.gz"
@@ -135,9 +136,9 @@
       "summary": "A GPU-accelerated molecular docking program"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": "cd unidock_tools\npip install . -vv\ncd ..\ncd unidock\nmkdir conda_build\ncd conda_build\ncmake ${CMAKE_ARGS} ${SRC_DIR}/unidock\nmake unidock -j$CPU_COUNT\nmake install\n",
-      "string": "cuda129_h1234567_0"
+      "string": "cuda129_h1234567_1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -178,7 +179,8 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "0001-fix-boost-math-quaternion-nvcc.patch"
+        "0001-fix-boost-math-quaternion-nvcc.patch",
+        "0002-widen-requires-python.patch"
       ],
       "sha256": "f625819c0c102eb2fd6bb7fd8ef81437ff1bdd13db87eefe210904b329934c3f",
       "url": "https://github.com/dptech-corp/Uni-Dock/archive/refs/tags/1.2.0.tar.gz"
@@ -204,7 +206,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/unidock.json"
   },
-  "raw_meta_yaml": "{% set name = \"unidock\" %}\n{% set version = \"1.2.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/dptech-corp/Uni-Dock/archive/refs/tags/{{ version }}.tar.gz\n  sha256: f625819c0c102eb2fd6bb7fd8ef81437ff1bdd13db87eefe210904b329934c3f\n  patches:\n    # nvcc cannot compile Boost.Math's GPU headers (Boost >= 1.87); replace\n    # boost::math::quaternion with an in-tree type. Upstream: dptech-corp/Uni-Dock#200\n    - 0001-fix-boost-math-quaternion-nvcc.patch\n\nbuild:\n  skip: true  # [not linux]\n  skip: true  # [cuda_compiler_version == \"None\"]\n  # unidock_tools declares requires-python >=3.10,<3.13; skip newer interpreters\n  # until upstream widens support (dptech-corp/Uni-Dock).\n  skip: true  # [py>=313]\n  script: |\n    cd unidock_tools\n    pip install . -vv\n    cd ..\n    cd unidock\n    mkdir conda_build\n    cd conda_build\n    cmake ${CMAKE_ARGS} ${SRC_DIR}/unidock\n    make unidock -j$CPU_COUNT\n    make install\n  string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n  number: 0\n\nrequirements:\n  build:\n    - {{ compiler('cxx') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cuda') }}\n    - cmake\n    - make\n    - libgomp\n  host:\n    - python\n    - pip\n    - setuptools\n    - libboost-devel\n    - libcurand-dev  # [(cuda_compiler_version or \"\").startswith(\"12\")]\n  run:\n    - python\n    - MDAnalysis\n    - networkx\n    - numpy\n    - openmm\n    - pandas\n    - pathos\n    - rdkit\n\ntest:\n  commands:\n    # Dry run to verify dynamic libs are present.\n    - unidock --version\n    - unidocktools --help\n\nabout:\n  home: https://github.com/dptech-corp/Uni-Dock\n  doc_url: https://github.com/dptech-corp/Uni-Dock\n  dev_url: https://github.com/dptech-corp/Uni-Dock\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE\n  summary: A GPU-accelerated molecular docking program\n  description: >\n    Uni-Dock is a GPU-accelerated molecular docking program developed by DP Technology. It supports various scoring functions including vina, vinardo, and ad4. Uni-Dock achieves more than 1000-fold speed-up on V100 GPU with high-accuracy, compared with the AutoDock Vina running in single CPU core. The paper has been accepted\n    by JCTC (doi: 10.1021/acs.jctc.2c01145).\n\nextra:\n  recipe-maintainers:\n    - caic99\n",
+  "raw_meta_yaml": "{% set name = \"unidock\" %}\n{% set version = \"1.2.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/dptech-corp/Uni-Dock/archive/refs/tags/{{ version }}.tar.gz\n  sha256: f625819c0c102eb2fd6bb7fd8ef81437ff1bdd13db87eefe210904b329934c3f\n  patches:\n    # nvcc cannot compile Boost.Math's GPU headers (Boost >= 1.87); replace\n    # boost::math::quaternion with an in-tree type. Upstream: dptech-corp/Uni-Dock#200\n    - 0001-fix-boost-math-quaternion-nvcc.patch\n    # widen unidock_tools requires-python to >=3.10 (build py3.13/3.14).\n    # Upstream: dptech-corp/Uni-Dock#201\n    - 0002-widen-requires-python.patch\n\nbuild:\n  skip: true  # [not linux]\n  skip: true  # [cuda_compiler_version == \"None\"]\n  script: |\n    cd unidock_tools\n    pip install . -vv\n    cd ..\n    cd unidock\n    mkdir conda_build\n    cd conda_build\n    cmake ${CMAKE_ARGS} ${SRC_DIR}/unidock\n    make unidock -j$CPU_COUNT\n    make install\n  string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n  number: 1\n\nrequirements:\n  build:\n    - {{ compiler('cxx') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cuda') }}\n    - cmake\n    - make\n    - libgomp\n  host:\n    - python\n    - pip\n    - setuptools\n    - libboost-devel\n    - libcurand-dev  # [(cuda_compiler_version or \"\").startswith(\"12\")]\n  run:\n    - python\n    - MDAnalysis\n    - networkx\n    - numpy\n    - openmm\n    - pandas\n    - pathos\n    - rdkit\n\ntest:\n  commands:\n    # Dry run to verify dynamic libs are present.\n    - unidock --version\n    - unidocktools --help\n\nabout:\n  home: https://github.com/dptech-corp/Uni-Dock\n  doc_url: https://github.com/dptech-corp/Uni-Dock\n  dev_url: https://github.com/dptech-corp/Uni-Dock\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE\n  summary: A GPU-accelerated molecular docking program\n  description: >\n    Uni-Dock is a GPU-accelerated molecular docking program developed by DP Technology. It supports various scoring functions including vina, vinardo, and ad4. Uni-Dock achieves more than 1000-fold speed-up on V100 GPU with high-accuracy, compared with the AutoDock Vina running in single CPU core. The paper has been accepted\n    by JCTC (doi: 10.1021/acs.jctc.2c01145).\n\nextra:\n  recipe-maintainers:\n    - caic99\n",
   "req": {
     "__set__": true,
     "elements": [
