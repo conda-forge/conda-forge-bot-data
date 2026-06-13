@@ -21,8 +21,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "6dcd0a6782e3121203de11ed4f117c66f8cebe15",
-  "feedstock_hash_ts": 1781221404,
+  "feedstock_hash": "3f3877b786a99da77c604c70e4f5f258d4d1102c",
+  "feedstock_hash_ts": 1781313577,
   "feedstock_name": "yarr",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -50,6 +50,7 @@
     },
     "extra": {
       "recipe-maintainers": [
+        "lime86",
         "kratsg"
       ]
     },
@@ -169,6 +170,7 @@
     },
     "extra": {
       "recipe-maintainers": [
+        "lime86",
         "kratsg"
       ]
     },
@@ -293,6 +295,7 @@
     },
     "extra": {
       "recipe-maintainers": [
+        "lime86",
         "kratsg"
       ]
     },
@@ -401,7 +404,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/yarr.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: yarr\n  version: \"1.6.0\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://gitlab.cern.ch/yarr/${{ name }}/-/archive/v${{ version }}/${{ name }}-v${{ version }}.tar.gz\n  sha256: ec9d22b025928bb17e127e9100c63895f835fc6961e4c9a3cc1edaa62b93296f\n  patches:\n    - patches/0002-patch-strip-debug.patch\n    - patches/0003-patch-dependency-resolution-for-osx.patch\n    - patches/0004-patch-use-invoke-result-for-cxx20.patch\n\nbuild:\n  number: 0\n  script:\n    - if: osx\n      then: CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\" cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -S \"${SRC_DIR}\" -B build\n    - if: linux\n      then: CXXFLAGS=\"${CXXFLAGS}\" cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -S \"${SRC_DIR}\" -B build\n    - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n    - cmake --install build\n    - mkdir -p $PREFIX/share/yarr\n    - rsync -ravz $SRC_DIR/configs $PREFIX/share/yarr\n    - find $PREFIX/share/yarr/configs -name '*.json' -type f -print -exec sed -i \"s@\\\"configs/@\\\"$PREFIX/share/yarr/configs/@g\" {} +\n    - cat $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json\n  skip:\n    - win\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - make\n    - rsync\n    - sed\n  run:\n    - gnuplot\n    - fmt\n\ntests:\n  - script:\n      - test -f $PREFIX/bin/scanConsole\n      - test -f $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json\n      - cat $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json\n\n      - scanConsole -h\n      - scanConsole -k\n      - if: linux\n        then: scanConsole -r $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json -c $PREFIX/share/yarr/configs/connectivity/example_rd53a_setup.json -s $PREFIX/share/yarr/configs/scans/rd53a/std_digitalscan.json -p\n\nabout:\n  license: GPL-2.0-or-later\n  license_file: LICENSE.txt\n  summary: 'Yet Another Rapid Readout'\n  description: |\n    YARR is a readout system based around the concept of moving intelligence\n    from the FPGA firmware into the host computer software. The role of the FPGA is\n    the one of a reconfigurable I/O interface and not anymore the one of a hardware\n    accelerator. YARR supports multiple types of FPGA platforms and readout chips.\n  homepage: https://gitlab.cern.ch/YARR/YARR\n  repository: https://gitlab.cern.ch/YARR/YARR\n  documentation: https://yarr.web.cern.ch/yarr/\n\nextra:\n  recipe-maintainers:\n    - kratsg\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: yarr\n  version: \"1.6.0\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://gitlab.cern.ch/yarr/${{ name }}/-/archive/v${{ version }}/${{ name }}-v${{ version }}.tar.gz\n  sha256: ec9d22b025928bb17e127e9100c63895f835fc6961e4c9a3cc1edaa62b93296f\n  patches:\n    - patches/0002-patch-strip-debug.patch\n    - patches/0003-patch-dependency-resolution-for-osx.patch\n    - patches/0004-patch-use-invoke-result-for-cxx20.patch\n\nbuild:\n  number: 0\n  script:\n    - if: osx\n      then: CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\" cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -S \"${SRC_DIR}\" -B build\n    - if: linux\n      then: CXXFLAGS=\"${CXXFLAGS}\" cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -S \"${SRC_DIR}\" -B build\n    - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n    - cmake --install build\n    - mkdir -p $PREFIX/share/yarr\n    - rsync -ravz $SRC_DIR/configs $PREFIX/share/yarr\n    - find $PREFIX/share/yarr/configs -name '*.json' -type f -print -exec sed -i \"s@\\\"configs/@\\\"$PREFIX/share/yarr/configs/@g\" {} +\n    - cat $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json\n  skip:\n    - win\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - make\n    - rsync\n    - sed\n  run:\n    - gnuplot\n    - fmt\n\ntests:\n  - script:\n      - test -f $PREFIX/bin/scanConsole\n      - test -f $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json\n      - cat $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json\n\n      - scanConsole -h\n      - scanConsole -k\n      - if: linux\n        then: scanConsole -r $PREFIX/share/yarr/configs/controller/emuCfg_rd53a.json -c $PREFIX/share/yarr/configs/connectivity/example_rd53a_setup.json -s $PREFIX/share/yarr/configs/scans/rd53a/std_digitalscan.json -p\n\nabout:\n  license: GPL-2.0-or-later\n  license_file: LICENSE.txt\n  summary: 'Yet Another Rapid Readout'\n  description: |\n    YARR is a readout system based around the concept of moving intelligence\n    from the FPGA firmware into the host computer software. The role of the FPGA is\n    the one of a reconfigurable I/O interface and not anymore the one of a hardware\n    accelerator. YARR supports multiple types of FPGA platforms and readout chips.\n  homepage: https://gitlab.cern.ch/YARR/YARR\n  repository: https://gitlab.cern.ch/YARR/YARR\n  documentation: https://yarr.web.cern.ch/yarr/\n\nextra:\n  recipe-maintainers:\n    - lime86\n    - kratsg\n",
   "req": {
     "__set__": true,
     "elements": [
