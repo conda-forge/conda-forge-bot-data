@@ -21,8 +21,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "4d29d5ecd1ebc8af7771be13df0e37d9d2bbb2c0",
-  "feedstock_hash_ts": 1777043238,
+  "feedstock_hash": "7524e196517be97c53b932708ebd10e8c6346ff3",
+  "feedstock_hash_ts": 1781446082,
   "feedstock_name": "xgrammar",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -34,10 +34,11 @@
       "summary": "XGrammar is an open-source library for efficient, flexible, and portable structured generation."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
-        "export CMAKE_BUILD_TYPE=Release\nexport CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include\"\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO - nanobind's stub compilation model is incompatible with LTO\n  export CXXFLAGS=\"$CXXFLAGS -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\n  export CMAKE_ARGS=\"$CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fno-lto -DCMAKE_C_FLAGS=-fno-lto\"\nfi\n",
-        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+        "export CMAKE_BUILD_TYPE=Release\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO to avoid linker issues with tvm_ffi shared library\n  export CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\nfi\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  # Cross-compilation fixes for tvm_ffi:\n  # 1. Write a custom cmake config that hardcodes host env paths (the upstream config\n  #    uses Python_EXECUTABLE to discover paths, which picks up build-arch libs).\n  export TVM_FFI_DIR=$PREFIX/lib/python${PY_VER}/site-packages/tvm_ffi\n  TVM_FFI_CMAKE=$SRC_DIR/tvm_ffi_override\n  mkdir -p $TVM_FFI_CMAKE\n  sed -e \"s|\\${TVM_FFI_DIR}|${TVM_FFI_DIR}|g\" -e \"s|\\${SHLIB_EXT}|${SHLIB_EXT}|g\" \\\n    $RECIPE_DIR/tvm_ffi-cross.cmake.in > $TVM_FFI_CMAKE/tvm_ffi-config.cmake\n  export CMAKE_ARGS=\"$CMAKE_ARGS -Dtvm_ffi_ROOT=$TVM_FFI_CMAKE\"\n  # 2. Disable stub generation post-build step (it uses ctypes.CDLL to load the\n  #    cross-compiled library which fails: arm64 lib on x86_64 host).\n  sed 's/STUB_DIR.*STUB_INIT ON//' cpp/tvm_ffi/CMakeLists.txt > cpp/tvm_ffi/CMakeLists.txt.tmp\n  mv cpp/tvm_ffi/CMakeLists.txt.tmp cpp/tvm_ffi/CMakeLists.txt\nfi\n",
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+        "if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  bash $RECIPE_DIR/create_ffi_stubs.sh\nfi\n"
       ]
     },
     "extra": {
@@ -64,12 +65,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -77,6 +77,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -111,7 +112,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -129,12 +130,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -142,6 +142,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -176,7 +177,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -194,12 +195,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -207,6 +207,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -241,7 +242,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -259,12 +260,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -272,6 +272,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -306,7 +307,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -324,12 +325,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -337,6 +337,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -371,12 +372,12 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       }
     ],
     "package": {
       "name": "xgrammar",
-      "version": "0.1.33"
+      "version": "0.1.34"
     },
     "requirements": {
       "build": [
@@ -391,12 +392,11 @@
         "python",
         "scikit-build-core >=0.10.0",
         "pip",
-        "dlpack",
-        "pytest",
-        "nanobind"
+        "apache-tvm-ffi >=0.1.9"
       ],
       "run": [
         "python",
+        "apache-tvm-ffi >=0.1.9",
         "numpy >=1.26.0",
         "ninja",
         "pydantic",
@@ -404,13 +404,14 @@
         "tiktoken",
         "pytorch >=1.10.0",
         "transformers >=4.38.0",
+        "typing_extensions >=4.9.0",
         "triton"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "8dbe5fc3d76651ab1fac7a68fc2a118b885fa0ec7189927fb6e0dce0081aea99",
-      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.33.tar.gz"
+      "sha256": "ac72a4c3fdb56654bf904fce11cd7135d7cdba696e5d03039f90e1655b97ede4",
+      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.34.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -428,10 +429,8 @@
     "host": {
       "__set__": true,
       "elements": [
-        "dlpack",
-        "nanobind",
+        "apache-tvm-ffi",
         "pip",
-        "pytest",
         "python",
         "scikit-build-core"
       ]
@@ -439,6 +438,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "apache-tvm-ffi",
         "ninja",
         "numpy",
         "pydantic",
@@ -447,7 +447,8 @@
         "sentencepiece",
         "tiktoken",
         "transformers",
-        "triton"
+        "triton",
+        "typing_extensions"
       ]
     },
     "test": {
@@ -476,10 +477,11 @@
       "summary": "XGrammar is an open-source library for efficient, flexible, and portable structured generation."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
-        "export CMAKE_BUILD_TYPE=Release\nexport CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include\"\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO - nanobind's stub compilation model is incompatible with LTO\n  export CXXFLAGS=\"$CXXFLAGS -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\n  export CMAKE_ARGS=\"$CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fno-lto -DCMAKE_C_FLAGS=-fno-lto\"\nfi\n",
-        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+        "export CMAKE_BUILD_TYPE=Release\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO to avoid linker issues with tvm_ffi shared library\n  export CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\nfi\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  # Cross-compilation fixes for tvm_ffi:\n  # 1. Write a custom cmake config that hardcodes host env paths (the upstream config\n  #    uses Python_EXECUTABLE to discover paths, which picks up build-arch libs).\n  export TVM_FFI_DIR=$PREFIX/lib/python${PY_VER}/site-packages/tvm_ffi\n  TVM_FFI_CMAKE=$SRC_DIR/tvm_ffi_override\n  mkdir -p $TVM_FFI_CMAKE\n  sed -e \"s|\\${TVM_FFI_DIR}|${TVM_FFI_DIR}|g\" -e \"s|\\${SHLIB_EXT}|${SHLIB_EXT}|g\" \\\n    $RECIPE_DIR/tvm_ffi-cross.cmake.in > $TVM_FFI_CMAKE/tvm_ffi-config.cmake\n  export CMAKE_ARGS=\"$CMAKE_ARGS -Dtvm_ffi_ROOT=$TVM_FFI_CMAKE\"\n  # 2. Disable stub generation post-build step (it uses ctypes.CDLL to load the\n  #    cross-compiled library which fails: arm64 lib on x86_64 host).\n  sed 's/STUB_DIR.*STUB_INIT ON//' cpp/tvm_ffi/CMakeLists.txt > cpp/tvm_ffi/CMakeLists.txt.tmp\n  mv cpp/tvm_ffi/CMakeLists.txt.tmp cpp/tvm_ffi/CMakeLists.txt\nfi\n",
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+        "if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  bash $RECIPE_DIR/create_ffi_stubs.sh\nfi\n"
       ]
     },
     "extra": {
@@ -506,12 +508,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -519,6 +520,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -553,7 +555,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -571,12 +573,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -584,6 +585,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -618,7 +620,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -636,12 +638,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -649,6 +650,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -683,7 +685,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -701,12 +703,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -714,6 +715,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -748,7 +750,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -766,12 +768,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -779,6 +780,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -813,12 +815,12 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       }
     ],
     "package": {
       "name": "xgrammar",
-      "version": "0.1.33"
+      "version": "0.1.34"
     },
     "requirements": {
       "build": [
@@ -833,12 +835,11 @@
         "python",
         "scikit-build-core >=0.10.0",
         "pip",
-        "dlpack",
-        "pytest",
-        "nanobind"
+        "apache-tvm-ffi >=0.1.9"
       ],
       "run": [
         "python",
+        "apache-tvm-ffi >=0.1.9",
         "numpy >=1.26.0",
         "ninja",
         "pydantic",
@@ -846,13 +847,14 @@
         "tiktoken",
         "pytorch >=1.10.0",
         "transformers >=4.38.0",
+        "typing_extensions >=4.9.0",
         "triton"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "8dbe5fc3d76651ab1fac7a68fc2a118b885fa0ec7189927fb6e0dce0081aea99",
-      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.33.tar.gz"
+      "sha256": "ac72a4c3fdb56654bf904fce11cd7135d7cdba696e5d03039f90e1655b97ede4",
+      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.34.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -870,10 +872,8 @@
     "host": {
       "__set__": true,
       "elements": [
-        "dlpack",
-        "nanobind",
+        "apache-tvm-ffi",
         "pip",
-        "pytest",
         "python",
         "scikit-build-core"
       ]
@@ -881,6 +881,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "apache-tvm-ffi",
         "ninja",
         "numpy",
         "pydantic",
@@ -889,7 +890,8 @@
         "sentencepiece",
         "tiktoken",
         "transformers",
-        "triton"
+        "triton",
+        "typing_extensions"
       ]
     },
     "test": {
@@ -918,10 +920,11 @@
       "summary": "XGrammar is an open-source library for efficient, flexible, and portable structured generation."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
-        "export CMAKE_BUILD_TYPE=Release\nexport CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include\"\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO - nanobind's stub compilation model is incompatible with LTO\n  export CXXFLAGS=\"$CXXFLAGS -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\n  export CMAKE_ARGS=\"$CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fno-lto -DCMAKE_C_FLAGS=-fno-lto\"\nfi\n",
-        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+        "export CMAKE_BUILD_TYPE=Release\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO to avoid linker issues with tvm_ffi shared library\n  export CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\nfi\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  # Cross-compilation fixes for tvm_ffi:\n  # 1. Write a custom cmake config that hardcodes host env paths (the upstream config\n  #    uses Python_EXECUTABLE to discover paths, which picks up build-arch libs).\n  export TVM_FFI_DIR=$PREFIX/lib/python${PY_VER}/site-packages/tvm_ffi\n  TVM_FFI_CMAKE=$SRC_DIR/tvm_ffi_override\n  mkdir -p $TVM_FFI_CMAKE\n  sed -e \"s|\\${TVM_FFI_DIR}|${TVM_FFI_DIR}|g\" -e \"s|\\${SHLIB_EXT}|${SHLIB_EXT}|g\" \\\n    $RECIPE_DIR/tvm_ffi-cross.cmake.in > $TVM_FFI_CMAKE/tvm_ffi-config.cmake\n  export CMAKE_ARGS=\"$CMAKE_ARGS -Dtvm_ffi_ROOT=$TVM_FFI_CMAKE\"\n  # 2. Disable stub generation post-build step (it uses ctypes.CDLL to load the\n  #    cross-compiled library which fails: arm64 lib on x86_64 host).\n  sed 's/STUB_DIR.*STUB_INIT ON//' cpp/tvm_ffi/CMakeLists.txt > cpp/tvm_ffi/CMakeLists.txt.tmp\n  mv cpp/tvm_ffi/CMakeLists.txt.tmp cpp/tvm_ffi/CMakeLists.txt\nfi\n",
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+        "if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  bash $RECIPE_DIR/create_ffi_stubs.sh\nfi\n"
       ]
     },
     "extra": {
@@ -948,12 +951,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -961,6 +963,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -995,7 +998,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1013,12 +1016,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1026,6 +1028,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1060,7 +1063,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1078,12 +1081,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1091,6 +1093,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1125,7 +1128,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1143,12 +1146,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1156,6 +1158,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1190,7 +1193,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1208,12 +1211,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1221,6 +1223,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1255,7 +1258,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1273,12 +1276,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1286,6 +1288,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1320,7 +1323,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1338,12 +1341,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1351,6 +1353,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1385,7 +1388,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1403,12 +1406,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1416,6 +1418,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1450,7 +1453,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1468,12 +1471,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1481,6 +1483,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1515,7 +1518,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1533,12 +1536,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1546,6 +1548,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1580,7 +1583,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1598,12 +1601,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1611,6 +1613,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1645,7 +1648,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1663,12 +1666,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1676,6 +1678,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1710,7 +1713,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1728,12 +1731,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1741,6 +1743,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1775,7 +1778,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1793,12 +1796,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1806,6 +1808,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1840,7 +1843,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1858,12 +1861,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1871,6 +1873,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1905,7 +1908,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1923,12 +1926,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -1936,6 +1938,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -1970,7 +1973,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -1988,12 +1991,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2001,6 +2003,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2035,7 +2038,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -2053,12 +2056,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2066,6 +2068,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2100,7 +2103,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -2118,12 +2121,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2131,6 +2133,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2165,7 +2168,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -2183,12 +2186,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2196,6 +2198,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2230,337 +2233,12 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       }
     ],
     "package": {
       "name": "xgrammar",
-      "version": "0.1.33"
+      "version": "0.1.34"
     },
     "requirements": {
       "build": [
@@ -2575,12 +2253,11 @@
         "python",
         "scikit-build-core >=0.10.0",
         "pip",
-        "dlpack",
-        "pytest",
-        "nanobind"
+        "apache-tvm-ffi >=0.1.9"
       ],
       "run": [
         "python",
+        "apache-tvm-ffi >=0.1.9",
         "numpy >=1.26.0",
         "ninja",
         "pydantic",
@@ -2588,13 +2265,14 @@
         "tiktoken",
         "pytorch >=1.10.0",
         "transformers >=4.38.0",
+        "typing_extensions >=4.9.0",
         "triton"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "8dbe5fc3d76651ab1fac7a68fc2a118b885fa0ec7189927fb6e0dce0081aea99",
-      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.33.tar.gz"
+      "sha256": "ac72a4c3fdb56654bf904fce11cd7135d7cdba696e5d03039f90e1655b97ede4",
+      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.34.tar.gz"
     }
   },
   "name": "xgrammar",
@@ -2607,10 +2285,11 @@
       "summary": "XGrammar is an open-source library for efficient, flexible, and portable structured generation."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
-        "export CMAKE_BUILD_TYPE=Release\nexport CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include\"\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO - nanobind's stub compilation model is incompatible with LTO\n  export CXXFLAGS=\"$CXXFLAGS -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\n  export CMAKE_ARGS=\"$CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fno-lto -DCMAKE_C_FLAGS=-fno-lto\"\nfi\n",
-        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+        "export CMAKE_BUILD_TYPE=Release\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO to avoid linker issues with tvm_ffi shared library\n  export CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\nfi\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  # Cross-compilation fixes for tvm_ffi:\n  # 1. Write a custom cmake config that hardcodes host env paths (the upstream config\n  #    uses Python_EXECUTABLE to discover paths, which picks up build-arch libs).\n  export TVM_FFI_DIR=$PREFIX/lib/python${PY_VER}/site-packages/tvm_ffi\n  TVM_FFI_CMAKE=$SRC_DIR/tvm_ffi_override\n  mkdir -p $TVM_FFI_CMAKE\n  sed -e \"s|\\${TVM_FFI_DIR}|${TVM_FFI_DIR}|g\" -e \"s|\\${SHLIB_EXT}|${SHLIB_EXT}|g\" \\\n    $RECIPE_DIR/tvm_ffi-cross.cmake.in > $TVM_FFI_CMAKE/tvm_ffi-config.cmake\n  export CMAKE_ARGS=\"$CMAKE_ARGS -Dtvm_ffi_ROOT=$TVM_FFI_CMAKE\"\n  # 2. Disable stub generation post-build step (it uses ctypes.CDLL to load the\n  #    cross-compiled library which fails: arm64 lib on x86_64 host).\n  sed 's/STUB_DIR.*STUB_INIT ON//' cpp/tvm_ffi/CMakeLists.txt > cpp/tvm_ffi/CMakeLists.txt.tmp\n  mv cpp/tvm_ffi/CMakeLists.txt.tmp cpp/tvm_ffi/CMakeLists.txt\nfi\n",
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+        "if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  bash $RECIPE_DIR/create_ffi_stubs.sh\nfi\n"
       ]
     },
     "extra": {
@@ -2637,12 +2316,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2650,6 +2328,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2684,7 +2363,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -2702,12 +2381,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2715,6 +2393,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2749,7 +2428,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -2767,12 +2446,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2780,6 +2458,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2814,7 +2493,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -2832,12 +2511,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2845,6 +2523,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2879,7 +2558,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -2897,12 +2576,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -2910,6 +2588,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -2944,12 +2623,12 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       }
     ],
     "package": {
       "name": "xgrammar",
-      "version": "0.1.33"
+      "version": "0.1.34"
     },
     "requirements": {
       "build": [
@@ -2964,12 +2643,11 @@
         "python",
         "scikit-build-core >=0.10.0",
         "pip",
-        "dlpack",
-        "pytest",
-        "nanobind"
+        "apache-tvm-ffi >=0.1.9"
       ],
       "run": [
         "python",
+        "apache-tvm-ffi >=0.1.9",
         "numpy >=1.26.0",
         "ninja",
         "pydantic",
@@ -2977,13 +2655,14 @@
         "tiktoken",
         "pytorch >=1.10.0",
         "transformers >=4.38.0",
+        "typing_extensions >=4.9.0",
         "triton"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "8dbe5fc3d76651ab1fac7a68fc2a118b885fa0ec7189927fb6e0dce0081aea99",
-      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.33.tar.gz"
+      "sha256": "ac72a4c3fdb56654bf904fce11cd7135d7cdba696e5d03039f90e1655b97ede4",
+      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.34.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -3001,10 +2680,8 @@
     "host": {
       "__set__": true,
       "elements": [
-        "dlpack",
-        "nanobind",
+        "apache-tvm-ffi",
         "pip",
-        "pytest",
         "python",
         "scikit-build-core"
       ]
@@ -3012,6 +2689,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "apache-tvm-ffi",
         "ninja",
         "numpy",
         "pydantic",
@@ -3020,7 +2698,8 @@
         "sentencepiece",
         "tiktoken",
         "transformers",
-        "triton"
+        "triton",
+        "typing_extensions"
       ]
     },
     "test": {
@@ -3049,10 +2728,11 @@
       "summary": "XGrammar is an open-source library for efficient, flexible, and portable structured generation."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
-        "export CMAKE_BUILD_TYPE=Release\nexport CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include\"\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO - nanobind's stub compilation model is incompatible with LTO\n  export CXXFLAGS=\"$CXXFLAGS -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\n  export CMAKE_ARGS=\"$CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fno-lto -DCMAKE_C_FLAGS=-fno-lto\"\nfi\n",
-        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+        "export CMAKE_BUILD_TYPE=Release\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO to avoid linker issues with tvm_ffi shared library\n  export CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\nfi\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  # Cross-compilation fixes for tvm_ffi:\n  # 1. Write a custom cmake config that hardcodes host env paths (the upstream config\n  #    uses Python_EXECUTABLE to discover paths, which picks up build-arch libs).\n  export TVM_FFI_DIR=$PREFIX/lib/python${PY_VER}/site-packages/tvm_ffi\n  TVM_FFI_CMAKE=$SRC_DIR/tvm_ffi_override\n  mkdir -p $TVM_FFI_CMAKE\n  sed -e \"s|\\${TVM_FFI_DIR}|${TVM_FFI_DIR}|g\" -e \"s|\\${SHLIB_EXT}|${SHLIB_EXT}|g\" \\\n    $RECIPE_DIR/tvm_ffi-cross.cmake.in > $TVM_FFI_CMAKE/tvm_ffi-config.cmake\n  export CMAKE_ARGS=\"$CMAKE_ARGS -Dtvm_ffi_ROOT=$TVM_FFI_CMAKE\"\n  # 2. Disable stub generation post-build step (it uses ctypes.CDLL to load the\n  #    cross-compiled library which fails: arm64 lib on x86_64 host).\n  sed 's/STUB_DIR.*STUB_INIT ON//' cpp/tvm_ffi/CMakeLists.txt > cpp/tvm_ffi/CMakeLists.txt.tmp\n  mv cpp/tvm_ffi/CMakeLists.txt.tmp cpp/tvm_ffi/CMakeLists.txt\nfi\n",
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+        "if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n  bash $RECIPE_DIR/create_ffi_stubs.sh\nfi\n"
       ]
     },
     "extra": {
@@ -3079,12 +2759,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -3092,6 +2771,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -3126,7 +2806,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -3144,12 +2824,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -3157,6 +2836,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -3191,7 +2871,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -3209,12 +2889,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -3222,6 +2901,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -3256,7 +2936,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -3274,12 +2954,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -3287,6 +2966,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -3321,7 +3001,7 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       },
       {
         "build": null,
@@ -3339,12 +3019,11 @@
             "python",
             "scikit-build-core >=0.10.0",
             "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
+            "apache-tvm-ffi >=0.1.9"
           ],
           "run": [
             "python",
+            "apache-tvm-ffi >=0.1.9",
             "numpy >=1.26.0",
             "ninja",
             "pydantic",
@@ -3352,6 +3031,7 @@
             "tiktoken",
             "pytorch >=1.10.0",
             "transformers >=4.38.0",
+            "typing_extensions >=4.9.0",
             "triton"
           ]
         },
@@ -3386,12 +3066,12 @@
             "script": "python -m pytest tests/ -m \"not hf_token_required\""
           }
         ],
-        "version": "0.1.33"
+        "version": "0.1.34"
       }
     ],
     "package": {
       "name": "xgrammar",
-      "version": "0.1.33"
+      "version": "0.1.34"
     },
     "requirements": {
       "build": [
@@ -3406,12 +3086,11 @@
         "python",
         "scikit-build-core >=0.10.0",
         "pip",
-        "dlpack",
-        "pytest",
-        "nanobind"
+        "apache-tvm-ffi >=0.1.9"
       ],
       "run": [
         "python",
+        "apache-tvm-ffi >=0.1.9",
         "numpy >=1.26.0",
         "ninja",
         "pydantic",
@@ -3419,13 +3098,14 @@
         "tiktoken",
         "pytorch >=1.10.0",
         "transformers >=4.38.0",
+        "typing_extensions >=4.9.0",
         "triton"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "8dbe5fc3d76651ab1fac7a68fc2a118b885fa0ec7189927fb6e0dce0081aea99",
-      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.33.tar.gz"
+      "sha256": "ac72a4c3fdb56654bf904fce11cd7135d7cdba696e5d03039f90e1655b97ede4",
+      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.34.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -3443,10 +3123,8 @@
     "host": {
       "__set__": true,
       "elements": [
-        "dlpack",
-        "nanobind",
+        "apache-tvm-ffi",
         "pip",
-        "pytest",
         "python",
         "scikit-build-core"
       ]
@@ -3454,6 +3132,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "apache-tvm-ffi",
         "ninja",
         "numpy",
         "pydantic",
@@ -3462,7 +3141,8 @@
         "sentencepiece",
         "tiktoken",
         "transformers",
-        "triton"
+        "triton",
+        "typing_extensions"
       ]
     },
     "test": {
@@ -3493,35 +3173,33 @@
     "linux_64",
     "linux_aarch64",
     "osx_64",
-    "osx_arm64",
-    "win_64"
+    "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/xgrammar.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: xgrammar\n  version: \"0.1.33\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/xgrammar-${{ version }}.tar.gz\n  sha256: 8dbe5fc3d76651ab1fac7a68fc2a118b885fa0ec7189927fb6e0dce0081aea99\n\nbuild:\n  number: 1\n  script:\n    - if: unix\n      then: |\n        export CMAKE_BUILD_TYPE=Release\n        export CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include\"\n        if [[ $(uname) == \"Linux\" ]]; then\n          export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n          # Disable LTO - nanobind's stub compilation model is incompatible with LTO\n          export CXXFLAGS=\"$CXXFLAGS -fno-lto\"\n          export LDFLAGS=\"$LDFLAGS -fno-lto\"\n          export CMAKE_ARGS=\"$CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fno-lto -DCMAKE_C_FLAGS=-fno-lto\"\n        fi\n    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - scikit-build-core >=0.10.0\n        - dlpack\n        - pytest\n        - nanobind\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - if: unix\n      then:\n        - make\n  host:\n    - python\n    - scikit-build-core >=0.10.0\n    - pip\n    - dlpack\n    - pytest\n    - nanobind\n  run:\n    - python\n    - numpy >=1.26.0\n    - ninja\n    - pydantic\n    - sentencepiece\n    - tiktoken\n    - pytorch >=1.10.0\n    - transformers >=4.38.0\n    - if: linux and x86_64\n      then: triton\n    - if: osx and arm64\n      then: mlx-lm\n\ntests:\n  - python:\n      imports:\n        - xgrammar\n      pip_check: true\n\n  - script:\n      - python -m pytest tests/ -m \"not hf_token_required\"\n    files:\n      source:\n        - tests/\n    requirements:\n      run:\n        - ninja\n        - protobuf\n        - pytest\n        - huggingface_hub\n        - numpy >=1.26.0\n        - pydantic\n        - sentencepiece\n        - tiktoken\n        - pytorch >=1.10.0\n        - transformers >=4.38.0\n\nabout:\n  homepage: https://github.com/mlc-ai/xgrammar\n  summary: XGrammar is an open-source library for efficient, flexible, and portable structured generation.\n  license: Apache-2.0 AND BSD-4-Clause\n  license_file:\n    - LICENSE\n    - NOTICE\n\nextra:\n  recipe-maintainers:\n    - zbowling\n    - Ubospica\n    - LeeNethertonQC\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: xgrammar\n  version: \"0.1.34\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/xgrammar-${{ version }}.tar.gz\n  sha256: ac72a4c3fdb56654bf904fce11cd7135d7cdba696e5d03039f90e1655b97ede4\n\nbuild:\n  number: 0\n  skip:\n    - win\n  script:\n    - if: unix\n      then: |\n        export CMAKE_BUILD_TYPE=Release\n        if [[ $(uname) == \"Linux\" ]]; then\n          export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n          # Disable LTO to avoid linker issues with tvm_ffi shared library\n          export CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include -fno-lto\"\n          export LDFLAGS=\"$LDFLAGS -fno-lto\"\n        fi\n        if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n          # Cross-compilation fixes for tvm_ffi:\n          # 1. Write a custom cmake config that hardcodes host env paths (the upstream config\n          #    uses Python_EXECUTABLE to discover paths, which picks up build-arch libs).\n          export TVM_FFI_DIR=$PREFIX/lib/python${PY_VER}/site-packages/tvm_ffi\n          TVM_FFI_CMAKE=$SRC_DIR/tvm_ffi_override\n          mkdir -p $TVM_FFI_CMAKE\n          sed -e \"s|\\${TVM_FFI_DIR}|${TVM_FFI_DIR}|g\" -e \"s|\\${SHLIB_EXT}|${SHLIB_EXT}|g\" \\\n            $RECIPE_DIR/tvm_ffi-cross.cmake.in > $TVM_FFI_CMAKE/tvm_ffi-config.cmake\n          export CMAKE_ARGS=\"$CMAKE_ARGS -Dtvm_ffi_ROOT=$TVM_FFI_CMAKE\"\n          # 2. Disable stub generation post-build step (it uses ctypes.CDLL to load the\n          #    cross-compiled library which fails: arm64 lib on x86_64 host).\n          sed 's/STUB_DIR.*STUB_INIT ON//' cpp/tvm_ffi/CMakeLists.txt > cpp/tvm_ffi/CMakeLists.txt.tmp\n          mv cpp/tvm_ffi/CMakeLists.txt.tmp cpp/tvm_ffi/CMakeLists.txt\n        fi\n    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n    - if: unix\n      then: |\n        if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" == \"1\" ]]; then\n          bash $RECIPE_DIR/create_ffi_stubs.sh\n        fi\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - scikit-build-core >=0.10.0\n        - apache-tvm-ffi >=0.1.9\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - if: unix\n      then:\n        - make\n  host:\n    - python\n    - scikit-build-core >=0.10.0\n    - pip\n    - apache-tvm-ffi >=0.1.9\n  run:\n    - python\n    - apache-tvm-ffi >=0.1.9\n    - numpy >=1.26.0\n    - ninja\n    - pydantic\n    - sentencepiece\n    - tiktoken\n    - pytorch >=1.10.0\n    - transformers >=4.38.0\n    - typing_extensions >=4.9.0\n    - if: linux and x86_64\n      then: triton\n    - if: osx and arm64\n      then: mlx-lm\n\ntests:\n  - python:\n      imports:\n        - xgrammar\n      pip_check: true\n\n  - script:\n      - python -m pytest tests/ -m \"not hf_token_required\"\n    files:\n      source:\n        - tests/\n    requirements:\n      run:\n        - ninja\n        - protobuf\n        - pytest\n        - huggingface_hub\n        - numpy >=1.26.0\n        - pydantic\n        - sentencepiece\n        - tiktoken\n        - pytorch >=1.10.0\n        - transformers >=4.38.0\n\nabout:\n  homepage: https://github.com/mlc-ai/xgrammar\n  summary: XGrammar is an open-source library for efficient, flexible, and portable structured generation.\n  license: Apache-2.0 AND BSD-4-Clause\n  license_file:\n    - LICENSE\n    - NOTICE\n\nextra:\n  recipe-maintainers:\n    - zbowling\n    - Ubospica\n    - LeeNethertonQC\n",
   "req": {
     "__set__": true,
     "elements": [
+      "apache-tvm-ffi",
       "c_compiler_stub",
       "c_stdlib_stub",
       "cmake",
       "cxx_compiler_stub",
-      "dlpack",
       "make",
-      "nanobind",
       "ninja",
       "numpy",
       "pip",
       "pydantic",
-      "pytest",
       "python",
       "pytorch",
       "scikit-build-core",
       "sentencepiece",
       "tiktoken",
       "transformers",
-      "triton"
+      "triton",
+      "typing_extensions"
     ]
   },
   "requirements": {
@@ -3539,13 +3217,11 @@
     "host": {
       "__set__": true,
       "elements": [
+        "apache-tvm-ffi",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "dlpack",
-        "nanobind",
         "pip",
-        "pytest",
         "python",
         "scikit-build-core"
       ]
@@ -3553,6 +3229,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "apache-tvm-ffi",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
@@ -3564,7 +3241,8 @@
         "sentencepiece",
         "tiktoken",
         "transformers",
-        "triton"
+        "triton",
+        "typing_extensions"
       ]
     },
     "test": {
@@ -3600,10 +3278,8 @@
     "host": {
       "__set__": true,
       "elements": [
-        "dlpack",
-        "nanobind",
+        "apache-tvm-ffi >=0.1.9",
         "pip",
-        "pytest",
         "python",
         "scikit-build-core >=0.10.0"
       ]
@@ -3611,6 +3287,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "apache-tvm-ffi >=0.1.9",
         "ninja",
         "numpy >=1.26.0",
         "pydantic",
@@ -3619,7 +3296,8 @@
         "sentencepiece",
         "tiktoken",
         "transformers >=4.38.0",
-        "triton"
+        "triton",
+        "typing_extensions >=4.9.0"
       ]
     },
     "test": {
@@ -3639,451 +3317,9 @@
       ]
     }
   },
-  "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.33.tar.gz",
-  "version": "0.1.33",
+  "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.34.tar.gz",
+  "version": "0.1.34",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/xgrammar.json"
-  },
-  "win_64_meta_yaml": {
-    "about": {
-      "home": "https://github.com/mlc-ai/xgrammar",
-      "license": "Apache-2.0 AND BSD-4-Clause",
-      "license_family": "Apache-2.0 AND BSD-4-Clause",
-      "license_file": "LICENSE",
-      "summary": "XGrammar is an open-source library for efficient, flexible, and portable structured generation."
-    },
-    "build": {
-      "number": "1",
-      "script": [
-        "export CMAKE_BUILD_TYPE=Release\nexport CXXFLAGS=\"$CXXFLAGS -isystem $PREFIX/include\"\nif [[ $(uname) == \"Linux\" ]]; then\n  export CXXFLAGS=\"$CXXFLAGS -Wno-dangling-reference\"\n  # Disable LTO - nanobind's stub compilation model is incompatible with LTO\n  export CXXFLAGS=\"$CXXFLAGS -fno-lto\"\n  export LDFLAGS=\"$LDFLAGS -fno-lto\"\n  export CMAKE_ARGS=\"$CMAKE_ARGS -DCMAKE_CXX_FLAGS=-fno-lto -DCMAKE_C_FLAGS=-fno-lto\"\nfi\n",
-        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
-      ]
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "zbowling",
-        "Ubospica",
-        "LeeNethertonQC"
-      ]
-    },
-    "outputs": [
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      },
-      {
-        "build": null,
-        "name": "xgrammar",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "make"
-          ],
-          "host": [
-            "python",
-            "scikit-build-core >=0.10.0",
-            "pip",
-            "dlpack",
-            "pytest",
-            "nanobind"
-          ],
-          "run": [
-            "python",
-            "numpy >=1.26.0",
-            "ninja",
-            "pydantic",
-            "sentencepiece",
-            "tiktoken",
-            "pytorch >=1.10.0",
-            "transformers >=4.38.0",
-            "triton"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "xgrammar"
-              ]
-            }
-          },
-          {
-            "files": {
-              "source": [
-                "tests/"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "ninja",
-                "protobuf",
-                "pytest",
-                "huggingface_hub",
-                "numpy >=1.26.0",
-                "pydantic",
-                "sentencepiece",
-                "tiktoken",
-                "pytorch >=1.10.0",
-                "transformers >=4.38.0"
-              ]
-            },
-            "script": "python -m pytest tests/ -m \"not hf_token_required\""
-          }
-        ],
-        "version": "0.1.33"
-      }
-    ],
-    "package": {
-      "name": "xgrammar",
-      "version": "0.1.33"
-    },
-    "requirements": {
-      "build": [
-        "c_compiler_stub",
-        "cxx_compiler_stub",
-        "c_stdlib_stub",
-        "cmake",
-        "ninja",
-        "make"
-      ],
-      "host": [
-        "python",
-        "scikit-build-core >=0.10.0",
-        "pip",
-        "dlpack",
-        "pytest",
-        "nanobind"
-      ],
-      "run": [
-        "python",
-        "numpy >=1.26.0",
-        "ninja",
-        "pydantic",
-        "sentencepiece",
-        "tiktoken",
-        "pytorch >=1.10.0",
-        "transformers >=4.38.0",
-        "triton"
-      ]
-    },
-    "schema_version": 1,
-    "source": {
-      "sha256": "8dbe5fc3d76651ab1fac7a68fc2a118b885fa0ec7189927fb6e0dce0081aea99",
-      "url": "https://pypi.org/packages/source/x/xgrammar/xgrammar-0.1.33.tar.gz"
-    }
-  },
-  "win_64_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": [
-        "c_compiler_stub",
-        "c_stdlib_stub",
-        "cmake",
-        "cxx_compiler_stub",
-        "make",
-        "ninja"
-      ]
-    },
-    "host": {
-      "__set__": true,
-      "elements": [
-        "dlpack",
-        "nanobind",
-        "pip",
-        "pytest",
-        "python",
-        "scikit-build-core"
-      ]
-    },
-    "run": {
-      "__set__": true,
-      "elements": [
-        "ninja",
-        "numpy",
-        "pydantic",
-        "python",
-        "pytorch",
-        "sentencepiece",
-        "tiktoken",
-        "transformers",
-        "triton"
-      ]
-    },
-    "test": {
-      "__set__": true,
-      "elements": [
-        "huggingface_hub",
-        "ninja",
-        "numpy",
-        "pip",
-        "protobuf",
-        "pydantic",
-        "pytest",
-        "pytorch",
-        "sentencepiece",
-        "tiktoken",
-        "transformers"
-      ]
-    }
   }
 }
