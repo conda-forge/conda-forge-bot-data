@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_.yaml": "channel_sources:\n- conda-forge,defaults\nchannel_targets:\n- conda-forge main\ndocker_image:\n- condaforge/linux-anvil-comp7\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
@@ -12,25 +12,28 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "5a1b057ed00a4a9bde089ab7ea11f2ad85e7ef5e",
-  "feedstock_hash_ts": 1781474172,
+  "feedstock_hash": "d510cda84cdf3c1731fb0a877239f4b3a743ee98",
+  "feedstock_hash_ts": 1781515019,
   "feedstock_name": "conda-exec",
+  "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "conda-exec activates the program's conda environment before executing it.\n",
-      "dev_url": "https://github.com/conda-forge/conda-exec-feedstock",
-      "home": "https://github.com/conda-forge/conda-exec-feedstock",
+      "description": "conda-exec lets you run conda packages without installing them permanently.\nIt creates cached, isolated environments on demand and also supports\nPEP 723 script metadata workflows.\n",
+      "dev_url": "https://github.com/conda-incubator/conda-exec",
+      "doc_url": "https://conda-incubator.github.io/conda-exec",
+      "home": "https://github.com/conda-incubator/conda-exec",
       "license": "BSD-3-Clause",
       "license_family": "BSD",
       "license_file": "LICENSE",
-      "summary": "Executes a command inside a conda environment"
+      "summary": "Ephemeral package execution for conda"
     },
     "build": {
+      "entry_points": [
+        "ce = conda_exec.main:main"
+      ],
+      "noarch": "python",
       "number": "0",
-      "script": [
-        "mkdir ${PREFIX}/bin",
-        "cp conda-exec ${PREFIX}/bin/conda-exec"
-      ]
+      "script": "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
     },
     "extra": {
       "recipe-maintainers": [
@@ -40,33 +43,39 @@
     },
     "package": {
       "name": "conda-exec",
-      "version": "0.2.1"
+      "version": "0.3.0"
     },
     "requirements": {
+      "host": [
+        "python 3.10.*",
+        "pip",
+        "hatchling >=1.12.2",
+        "hatch-vcs >=0.2.0"
+      ],
       "run": [
-        "conda"
+        "python >=3.10",
+        "conda >=25.1",
+        "packaging >=22.0",
+        "tomli >=1.0"
       ]
     },
     "schema_version": 0,
     "source": {
-      "path": "."
+      "sha256": "2669a204c55b1c9a70305dd3fb5b69da7e868dcdf676a503014d6000c4a3cf0f",
+      "url": "https://pypi.org/packages/source/c/conda-exec/conda_exec-0.3.0.tar.gz"
     },
     "test": {
       "commands": [
-        "conda-exec -h",
-        "install tests/num-args.sh $PREFIX/bin/num-args",
-        "num-args 0",
-        "set -x",
-        "conda-exec -- $PREFIX num-args 0",
-        "num-args 1 one",
-        "conda-exec -- $PREFIX num-args 1 one",
-        "num-args 2 one two",
-        "conda-exec -- $PREFIX num-args 2 one two",
-        "num-args 1 \"one two\"",
-        "conda-exec -- $PREFIX num-args 1 \\\"one two\\\""
+        "ce --help",
+        "conda exec --help",
+        "pip check"
       ],
-      "files": [
-        "tests"
+      "imports": [
+        "conda_exec"
+      ],
+      "requires": [
+        "python 3.10",
+        "pip"
       ]
     }
   },
@@ -77,35 +86,48 @@
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "hatch-vcs",
+        "hatchling",
+        "pip",
+        "python"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "conda"
+        "conda",
+        "packaging",
+        "python",
+        "tomli"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   },
   "meta_yaml": {
     "about": {
-      "description": "conda-exec activates the program's conda environment before executing it.\n",
-      "dev_url": "https://github.com/conda-forge/conda-exec-feedstock",
-      "home": "https://github.com/conda-forge/conda-exec-feedstock",
+      "description": "conda-exec lets you run conda packages without installing them permanently.\nIt creates cached, isolated environments on demand and also supports\nPEP 723 script metadata workflows.\n",
+      "dev_url": "https://github.com/conda-incubator/conda-exec",
+      "doc_url": "https://conda-incubator.github.io/conda-exec",
+      "home": "https://github.com/conda-incubator/conda-exec",
       "license": "BSD-3-Clause",
       "license_family": "BSD",
       "license_file": "LICENSE",
-      "summary": "Executes a command inside a conda environment"
+      "summary": "Ephemeral package execution for conda"
     },
     "build": {
+      "entry_points": [
+        "ce = conda_exec.main:main"
+      ],
+      "noarch": "python",
       "number": "0",
-      "script": [
-        "mkdir ${PREFIX}/bin",
-        "cp conda-exec ${PREFIX}/bin/conda-exec"
-      ]
+      "script": "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
     },
     "extra": {
       "recipe-maintainers": [
@@ -115,112 +137,43 @@
     },
     "package": {
       "name": "conda-exec",
-      "version": "0.2.1"
+      "version": "0.3.0"
     },
     "requirements": {
+      "host": [
+        "python 3.10.*",
+        "pip",
+        "hatchling >=1.12.2",
+        "hatch-vcs >=0.2.0"
+      ],
       "run": [
-        "conda"
+        "python >=3.10",
+        "conda >=25.1",
+        "packaging >=22.0",
+        "tomli >=1.0"
       ]
     },
     "schema_version": 0,
     "source": {
-      "path": "."
+      "sha256": "2669a204c55b1c9a70305dd3fb5b69da7e868dcdf676a503014d6000c4a3cf0f",
+      "url": "https://pypi.org/packages/source/c/conda-exec/conda_exec-0.3.0.tar.gz"
     },
     "test": {
       "commands": [
-        "conda-exec -h",
-        "install tests/num-args.sh $PREFIX/bin/num-args",
-        "num-args 0",
-        "set -x",
-        "conda-exec -- $PREFIX num-args 0",
-        "num-args 1 one",
-        "conda-exec -- $PREFIX num-args 1 one",
-        "num-args 2 one two",
-        "conda-exec -- $PREFIX num-args 2 one two",
-        "num-args 1 \"one two\"",
-        "conda-exec -- $PREFIX num-args 1 \\\"one two\\\""
+        "ce --help",
+        "conda exec --help",
+        "pip check"
       ],
-      "files": [
-        "tests"
+      "imports": [
+        "conda_exec"
+      ],
+      "requires": [
+        "python 3.10",
+        "pip"
       ]
     }
   },
   "name": "conda-exec",
-  "osx_64_meta_yaml": {
-    "about": {
-      "description": "conda-exec activates the program's conda environment before executing it.\n",
-      "dev_url": "https://github.com/conda-forge/conda-exec-feedstock",
-      "home": "https://github.com/conda-forge/conda-exec-feedstock",
-      "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": "LICENSE",
-      "summary": "Executes a command inside a conda environment"
-    },
-    "build": {
-      "number": "0",
-      "script": [
-        "mkdir ${PREFIX}/bin",
-        "cp conda-exec ${PREFIX}/bin/conda-exec"
-      ]
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "jezdez",
-        "sodre"
-      ]
-    },
-    "package": {
-      "name": "conda-exec",
-      "version": "0.2.1"
-    },
-    "requirements": {
-      "run": [
-        "conda"
-      ]
-    },
-    "schema_version": 0,
-    "source": {
-      "path": "."
-    },
-    "test": {
-      "commands": [
-        "conda-exec -h",
-        "install tests/num-args.sh $PREFIX/bin/num-args",
-        "num-args 0",
-        "set -x",
-        "conda-exec -- $PREFIX num-args 0",
-        "num-args 1 one",
-        "conda-exec -- $PREFIX num-args 1 one",
-        "num-args 2 one two",
-        "conda-exec -- $PREFIX num-args 2 one two",
-        "num-args 1 \"one two\"",
-        "conda-exec -- $PREFIX num-args 1 \\\"one two\\\""
-      ],
-      "files": [
-        "tests"
-      ]
-    }
-  },
-  "osx_64_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": []
-    },
-    "host": {
-      "__set__": true,
-      "elements": []
-    },
-    "run": {
-      "__set__": true,
-      "elements": [
-        "conda"
-      ]
-    },
-    "test": {
-      "__set__": true,
-      "elements": []
-    }
-  },
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -229,17 +182,22 @@
   },
   "parsing_error": false,
   "platforms": [
-    "linux_64",
-    "osx_64"
+    "linux_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/conda-exec.json"
   },
-  "raw_meta_yaml": "{% set version = \"0.2.1\" %}\n\npackage:\n    name: conda-exec\n    version: {{ version }}\n\nsource:\n    path: .\n\nbuild:\n    number: 0\n    skip: True  # [win]\n    script:\n        - mkdir ${PREFIX}/bin\n        - cp conda-exec ${PREFIX}/bin/conda-exec\n\nrequirements:\n    run:\n        - conda\n\ntest:\n    files:\n        - tests\n    commands:\n        - conda-exec -h\n        - install tests/num-args.sh $PREFIX/bin/num-args\n        - num-args 0\n        - set -x\n        - conda-exec -- $PREFIX num-args 0\n        - num-args 1 one\n        - conda-exec -- $PREFIX num-args 1 one\n        - num-args 2 one two\n        - conda-exec -- $PREFIX num-args 2 one two\n        - num-args 1 \"one two\"\n        - conda-exec -- $PREFIX num-args 1 \\\"one two\\\"\n\n\nabout:\n    home: https://github.com/conda-forge/conda-exec-feedstock\n    license: BSD-3-Clause\n    license_family: BSD\n    license_file: LICENSE\n    summary: Executes a command inside a conda environment\n\n    description: |\n      conda-exec activates the program's conda environment before executing it.\n\n    dev_url: https://github.com/conda-forge/conda-exec-feedstock\n\nextra:\n    recipe-maintainers:\n        - jezdez\n        - sodre\n",
+  "raw_meta_yaml": "{% set name = \"conda-exec\" %}\n{% set version = \"0.3.0\" %}\n{% set python_min = \"3.10\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/c/conda-exec/conda_exec-{{ version }}.tar.gz\n  sha256: 2669a204c55b1c9a70305dd3fb5b69da7e868dcdf676a503014d6000c4a3cf0f\n\nbuild:\n  noarch: python\n  number: 0\n  entry_points:\n    - ce = conda_exec.main:main\n  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  host:\n    - python {{ python_min }}.*\n    - pip\n    - hatchling >=1.12.2\n    - hatch-vcs >=0.2.0\n  run:\n    - python >={{ python_min }}\n    - conda >=25.1\n    - packaging >=22.0\n    - tomli >=1.0\n\ntest:\n  imports:\n    - conda_exec\n  commands:\n    - ce --help\n    - conda exec --help\n    - pip check\n  requires:\n    - python {{ python_min }}\n    - pip\n\nabout:\n  home: https://github.com/conda-incubator/conda-exec\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: Ephemeral package execution for conda\n  description: |\n    conda-exec lets you run conda packages without installing them permanently.\n    It creates cached, isolated environments on demand and also supports\n    PEP 723 script metadata workflows.\n  dev_url: https://github.com/conda-incubator/conda-exec\n  doc_url: https://conda-incubator.github.io/conda-exec\n\nextra:\n  recipe-maintainers:\n    - jezdez\n    - sodre\n",
   "req": {
     "__set__": true,
     "elements": [
-      "conda"
+      "conda",
+      "hatch-vcs",
+      "hatchling",
+      "packaging",
+      "pip",
+      "python",
+      "tomli"
     ]
   },
   "requirements": {
@@ -249,17 +207,28 @@
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "hatch-vcs",
+        "hatchling",
+        "pip",
+        "python"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "conda"
+        "conda",
+        "packaging",
+        "python",
+        "tomli"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python"
+      ]
     }
   },
   "strong_exports": false,
@@ -271,21 +240,32 @@
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "hatch-vcs >=0.2.0",
+        "hatchling >=1.12.2",
+        "pip",
+        "python 3.10.*"
+      ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "conda"
+        "conda >=25.1",
+        "packaging >=22.0",
+        "python >=3.10",
+        "tomli >=1.0"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "pip",
+        "python 3.10"
+      ]
     }
   },
-  "url": null,
-  "version": "0.2.1",
+  "url": "https://pypi.org/packages/source/c/conda-exec/conda_exec-0.3.0.tar.gz",
+  "version": "0.3.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/conda-exec.json"
   }
