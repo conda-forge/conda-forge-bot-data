@@ -1,46 +1,53 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '13'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64",
       "win_arm64": "win_64"
     },
     "conda_build": {
       "error_overlinking": true,
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "osx_arm64": "default"
+    },
     "test": "native"
   },
-  "feedstock_hash": "5fa26f5945ad6c3c3a8d4918377b8cf558f7e42b",
-  "feedstock_hash_ts": 1776901477,
+  "feedstock_hash": "e693713a8dec8bd554aab77bb88e152bc208dfad",
+  "feedstock_hash_ts": 1781528255,
   "feedstock_name": "resolvo-cpp",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -49,9 +56,73 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -60,33 +131,26 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "test -d ${PREFIX}/include/resolvo",
-        "test -f ${PREFIX}/include/resolvo/resolvo.h",
-        "test -f ${PREFIX}/include/resolvo/resolvo_internal.h",
-        "test -e ${PREFIX}/lib/libresolvo_cpp${SHLIB_EXT}",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoTargets.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfig.cmake"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "linux_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -102,26 +166,35 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -130,9 +203,73 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -141,33 +278,26 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "test -d ${PREFIX}/include/resolvo",
-        "test -f ${PREFIX}/include/resolvo/resolvo.h",
-        "test -f ${PREFIX}/include/resolvo/resolvo_internal.h",
-        "test -e ${PREFIX}/lib/libresolvo_cpp${SHLIB_EXT}",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoTargets.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfig.cmake"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "linux_aarch64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -183,26 +313,35 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -211,9 +350,73 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -222,33 +425,26 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "test -d ${PREFIX}/include/resolvo",
-        "test -f ${PREFIX}/include/resolvo/resolvo.h",
-        "test -f ${PREFIX}/include/resolvo/resolvo_internal.h",
-        "test -e ${PREFIX}/lib/libresolvo_cpp${SHLIB_EXT}",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoTargets.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfig.cmake"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "linux_ppc64le_requirements": {
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -264,26 +460,35 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
   "meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -292,9 +497,445 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -303,51 +944,38 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "test -d ${PREFIX}/include/resolvo",
-        "test -f ${PREFIX}/include/resolvo/resolvo.h",
-        "test -f ${PREFIX}/include/resolvo/resolvo_internal.h",
-        "test -e ${PREFIX}/lib/libresolvo_cpp${SHLIB_EXT}",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoTargets.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfig.cmake",
-        "if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo.h (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo_internal.h (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll.lib (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoTargets.cmake (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfigVersion.cmake (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfig.cmake (exit 1)"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "name": "resolvo-cpp",
   "osx_64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -356,9 +984,73 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -367,33 +1059,26 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "test -d ${PREFIX}/include/resolvo",
-        "test -f ${PREFIX}/include/resolvo/resolvo.h",
-        "test -f ${PREFIX}/include/resolvo/resolvo_internal.h",
-        "test -e ${PREFIX}/lib/libresolvo_cpp${SHLIB_EXT}",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoTargets.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfig.cmake"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "osx_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -409,26 +1094,35 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -437,9 +1131,73 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -448,33 +1206,26 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "test -d ${PREFIX}/include/resolvo",
-        "test -f ${PREFIX}/include/resolvo/resolvo.h",
-        "test -f ${PREFIX}/include/resolvo/resolvo_internal.h",
-        "test -e ${PREFIX}/lib/libresolvo_cpp${SHLIB_EXT}",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoTargets.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
-        "test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfig.cmake"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "osx_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -490,7 +1241,13 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
   "outputs_names": {
@@ -512,13 +1269,15 @@
   "pr_info": {
     "__lazy_json__": "pr_info/resolvo-cpp.json"
   },
-  "raw_meta_yaml": "{% set name = \"resolvo-cpp\" %}\n{% set version = \"0.2.0\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v{{ version }}.zip\n  sha256: d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d\n\nbuild:\n  number: 0\n  run_exports:\n    - {{ pin_subpackage('resolvo-cpp', max_pin='x.x') }}\n\nrequirements:\n  build:\n    - {{ stdlib('c') }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('rust') }}\n    - cmake\n    - ninja\n    - cargo-bundle-licenses\n\ntest:\n  commands:\n    - test -d ${PREFIX}/include/resolvo  # [unix]\n    - test -f ${PREFIX}/include/resolvo/resolvo.h  # [unix]\n    - test -f ${PREFIX}/include/resolvo/resolvo_internal.h  # [unix]\n    - test -e ${PREFIX}/lib/libresolvo_cpp${SHLIB_EXT}  # [unix]\n    - test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoTargets.cmake  # [unix]\n    - test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfigVersion.cmake  # [unix]\n    - test -e ${PREFIX}/lib/cmake/Resolvo/ResolvoConfig.cmake  # [unix]\n    - if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo.h (exit 1)  # [win]\n    - if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo_internal.h (exit 1)  # [win]\n    - if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll (exit 1)  # [win]\n    - if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll.lib (exit 1)  # [win]\n    - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoTargets.cmake (exit 1)  # [win]\n    - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfigVersion.cmake (exit 1)  # [win]\n    - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfig.cmake (exit 1)  # [win]\n\nabout:\n  home: https://github.com/mamba-org/resolvo\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  summary: C++ bindings for resolvo, a universal package resolver.\n  dev_url: https://github.com/mamba-org/resolvo\n\nextra:\n  feedstock-name: resolvo-cpp\n  recipe-maintainers:\n    - baszalmstra\n    - jjerphan\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: resolvo-cpp\n  version: 0.4.0\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v${{ version }}.zip\n  sha256: 897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680\n\nbuild:\n  number: 0\n  script:\n    interpreter: brush\n    content: |\n      set -ex\n      cmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n        ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\n      cmake --build . --target install\n      cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cmake\n    - ninja\n    - cargo-bundle-licenses\n    - corrosion\n    - brush\n  run_exports:\n    - ${{ pin_subpackage('resolvo-cpp', upper_bound='x.x') }}\n\ntests:\n  - package_contents:\n      include:\n        - resolvo/resolvo.h\n        - resolvo/resolvo_internal.h\n      lib:\n        # On Windows the import library keeps its natural name\n        # (resolvo_cpp.dll.lib), so name the DLL and import lib explicitly.\n        - if: win\n          then:\n            - resolvo_cpp.dll\n            - resolvo_cpp.dll.lib\n          else:\n            - resolvo_cpp\n      files:\n        - if: win\n          then:\n            - Library/lib/cmake/Resolvo/ResolvoTargets.cmake\n            - Library/lib/cmake/Resolvo/ResolvoConfigVersion.cmake\n            - Library/lib/cmake/Resolvo/ResolvoConfig.cmake\n          else:\n            - lib/cmake/Resolvo/ResolvoTargets.cmake\n            - lib/cmake/Resolvo/ResolvoConfigVersion.cmake\n            - lib/cmake/Resolvo/ResolvoConfig.cmake\n  # Build and run the bundled sudoku example against the installed package to\n  # verify that the headers, shared library and CMake config work together.\n  - script:\n      interpreter: brush\n      content: |\n        set -ex\n        cmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\n        cmake --build build-sudoku\n        ./build-sudoku/sudoku\n    files:\n      source:\n        - cpp/examples/sudoku\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - ninja\n        - brush\n\nabout:\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  summary: C++ bindings for resolvo, a universal package resolver.\n  homepage: https://github.com/prefix-dev/resolvo\n  repository: https://github.com/prefix-dev/resolvo\n\nextra:\n  feedstock-name: resolvo-cpp\n  recipe-maintainers:\n    - baszalmstra\n    - jjerphan\n",
   "req": {
     "__set__": true,
     "elements": [
+      "brush",
       "c_stdlib_stub",
       "cargo-bundle-licenses",
       "cmake",
+      "corrosion",
       "cxx_compiler_stub",
       "ninja",
       "rust_compiler_stub"
@@ -528,9 +1287,11 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -552,7 +1313,13 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
   "strong_exports": false,
@@ -560,9 +1327,11 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -578,31 +1347,40 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
-  "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip",
-  "version": "0.2.0",
+  "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip",
+  "version": "0.4.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/resolvo-cpp.json"
   },
   "win_64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -611,9 +1389,73 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -622,33 +1464,26 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo.h (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo_internal.h (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll.lib (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoTargets.cmake (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfigVersion.cmake (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfig.cmake (exit 1)"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "win_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -664,26 +1499,35 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   },
   "win_arm64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/mamba-org/resolvo",
-      "home": "https://github.com/mamba-org/resolvo",
+      "dev_url": "https://github.com/prefix-dev/resolvo",
+      "home": "https://github.com/prefix-dev/resolvo",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
       "summary": "C++ bindings for resolvo, a universal package resolver."
     },
     "build": {
       "number": "0",
-      "run_exports": [
-        "resolvo-cpp"
-      ]
+      "run_exports": {
+        "weak": [
+          "resolvo-cpp"
+        ]
+      },
+      "script": {
+        "content": "set -ex\ncmake ${CMAKE_ARGS} -GNinja \"$SRC_DIR\" \\\n  ${CARGO_BUILD_TARGET:+-DRust_CARGO_TARGET=$CARGO_BUILD_TARGET}\ncmake --build . --target install\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "resolvo-cpp",
@@ -692,9 +1536,73 @@
         "jjerphan"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "resolvo-cpp"
+          ]
+        },
+        "name": "resolvo-cpp",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cmake",
+            "ninja",
+            "cargo-bundle-licenses",
+            "corrosion",
+            "brush"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/Resolvo/ResolvoTargets.cmake",
+                "lib/cmake/Resolvo/ResolvoConfigVersion.cmake",
+                "lib/cmake/Resolvo/ResolvoConfig.cmake"
+              ],
+              "include": [
+                "resolvo/resolvo.h",
+                "resolvo/resolvo_internal.h"
+              ],
+              "lib": [
+                "resolvo_cpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "cpp/examples/sudoku"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "brush"
+              ]
+            },
+            "script": {
+              "content": "set -ex\ncmake -G Ninja -S cpp/examples/sudoku -B build-sudoku ${CMAKE_ARGS}\ncmake --build build-sudoku\n./build-sudoku/sudoku\n",
+              "interpreter": "brush"
+            }
+          }
+        ],
+        "version": "0.4.0"
+      }
+    ],
     "package": {
       "name": "resolvo-cpp",
-      "version": "0.2.0"
+      "version": "0.4.0"
     },
     "requirements": {
       "build": [
@@ -703,33 +1611,26 @@
         "rust_compiler_stub",
         "cmake",
         "ninja",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "corrosion",
+        "brush"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "d3e722d60898ebfeaae990cc9e9780fbfa4e07de390b51ae5c1c73746eae450d",
-      "url": "https://github.com/mamba-org/resolvo/archive/refs/tags/resolvo_cpp-v0.2.0.zip"
-    },
-    "test": {
-      "commands": [
-        "if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo.h (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\include\\resolvo\\resolvo_internal.h (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\resolvo_cpp.dll.lib (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoTargets.cmake (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfigVersion.cmake (exit 1)",
-        "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\Resolvo\\ResolvoConfig.cmake (exit 1)"
-      ]
+      "sha256": "897efde3dd3be52cb0bc3c90a271b8bcfd9f1b9ff6b51477b7bbe1735c781680",
+      "url": "https://github.com/prefix-dev/resolvo/archive/refs/tags/resolvo_cpp-v0.4.0.zip"
     }
   },
   "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "corrosion",
         "cxx_compiler_stub",
         "ninja",
         "rust_compiler_stub"
@@ -745,7 +1646,13 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "brush",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     }
   }
 }
