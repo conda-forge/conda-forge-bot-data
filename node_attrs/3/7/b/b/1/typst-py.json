@@ -1,38 +1,51 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_is_python_mintruepython3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nis_abi3:\n- true\nis_python_min:\n- true\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npython_min:\n- '3.10'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - python\n  - is_python_min\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "linux_aarch64": "linux_64",
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "696e49e05ba8fe3888afd4bd307962f9748a307d",
-  "feedstock_hash_ts": 1778740429,
+  "feedstock_hash": "344b7f68e3d97f920c55d817ef989b99d7f4ea4b",
+  "feedstock_hash_ts": 1781544733,
   "feedstock_name": "typst-py",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "home": "https://github.com/messense/typst-py",
       "license": "Apache-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
       "summary": "Python binding to typst"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "mkdir -p ${BUILD_PREFIX}/bin",
+          "cp ${RECIPE_DIR}/cargo-auditable-wrapper.sh ${BUILD_PREFIX}/bin/cargo-auditable-wrapper",
+          "export CARGO=\"cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -40,6 +53,56 @@
         "pavelzw"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      }
+    ],
     "package": {
       "name": "typst-py",
       "version": "0.14.9"
@@ -50,32 +113,23 @@
         "c_stdlib_stub",
         "rust_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "make"
       ],
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc",
       "url": "https://pypi.org/packages/source/t/typst/typst-0.14.9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
-      ],
-      "imports": [
-        "typst"
-      ],
-      "requires": [
-        "pip"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -84,6 +138,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -94,7 +149,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -106,6 +162,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -114,14 +171,25 @@
     "about": {
       "home": "https://github.com/messense/typst-py",
       "license": "Apache-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
       "summary": "Python binding to typst"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "mkdir -p ${BUILD_PREFIX}/bin",
+          "cp ${RECIPE_DIR}/cargo-auditable-wrapper.sh ${BUILD_PREFIX}/bin/cargo-auditable-wrapper",
+          "export CARGO=\"cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -129,6 +197,56 @@
         "pavelzw"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      }
+    ],
     "package": {
       "name": "typst-py",
       "version": "0.14.9"
@@ -139,32 +257,23 @@
         "c_stdlib_stub",
         "rust_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "make"
       ],
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc",
       "url": "https://pypi.org/packages/source/t/typst/typst-0.14.9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
-      ],
-      "imports": [
-        "typst"
-      ],
-      "requires": [
-        "pip"
-      ]
     }
   },
   "linux_aarch64_requirements": {
@@ -173,6 +282,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -183,7 +293,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -195,6 +306,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -203,14 +315,25 @@
     "about": {
       "home": "https://github.com/messense/typst-py",
       "license": "Apache-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
       "summary": "Python binding to typst"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "mkdir -p ${BUILD_PREFIX}/bin",
+          "cp ${RECIPE_DIR}/cargo-auditable-wrapper.sh ${BUILD_PREFIX}/bin/cargo-auditable-wrapper",
+          "export CARGO=\"cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -218,6 +341,248 @@
         "pavelzw"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      },
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      },
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      },
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      },
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      }
+    ],
     "package": {
       "name": "typst-py",
       "version": "0.14.9"
@@ -228,32 +593,23 @@
         "c_stdlib_stub",
         "rust_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "make"
       ],
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc",
       "url": "https://pypi.org/packages/source/t/typst/typst-0.14.9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
-      ],
-      "imports": [
-        "typst"
-      ],
-      "requires": [
-        "pip"
-      ]
     }
   },
   "name": "typst-py",
@@ -261,14 +617,25 @@
     "about": {
       "home": "https://github.com/messense/typst-py",
       "license": "Apache-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
       "summary": "Python binding to typst"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "mkdir -p ${BUILD_PREFIX}/bin",
+          "cp ${RECIPE_DIR}/cargo-auditable-wrapper.sh ${BUILD_PREFIX}/bin/cargo-auditable-wrapper",
+          "export CARGO=\"cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -276,6 +643,56 @@
         "pavelzw"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      }
+    ],
     "package": {
       "name": "typst-py",
       "version": "0.14.9"
@@ -286,32 +703,23 @@
         "c_stdlib_stub",
         "rust_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "make"
       ],
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc",
       "url": "https://pypi.org/packages/source/t/typst/typst-0.14.9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
-      ],
-      "imports": [
-        "typst"
-      ],
-      "requires": [
-        "pip"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -320,6 +728,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -330,7 +739,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -342,6 +752,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -350,14 +761,25 @@
     "about": {
       "home": "https://github.com/messense/typst-py",
       "license": "Apache-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
       "summary": "Python binding to typst"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "mkdir -p ${BUILD_PREFIX}/bin",
+          "cp ${RECIPE_DIR}/cargo-auditable-wrapper.sh ${BUILD_PREFIX}/bin/cargo-auditable-wrapper",
+          "export CARGO=\"cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -365,6 +787,56 @@
         "pavelzw"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      }
+    ],
     "package": {
       "name": "typst-py",
       "version": "0.14.9"
@@ -375,32 +847,23 @@
         "c_stdlib_stub",
         "rust_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "make"
       ],
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc",
       "url": "https://pypi.org/packages/source/t/typst/typst-0.14.9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
-      ],
-      "imports": [
-        "typst"
-      ],
-      "requires": [
-        "pip"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -409,6 +872,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -419,7 +883,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -431,6 +896,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -452,17 +918,19 @@
   "pr_info": {
     "__lazy_json__": "pr_info/typst-py.json"
   },
-  "raw_meta_yaml": "{% set name = \"typst-py\" %}\n{% set pypi_name = \"typst\" %}\n{% set version = \"0.14.9\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/{{ pypi_name[0] }}/{{ pypi_name }}/typst-{{ version }}.tar.gz\n  sha256: 53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - python                              # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - maturin                             # [build_platform != target_platform]\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - make\n  host:\n    - python\n    - maturin >=1.0,<2.0\n    - pip\n  run:\n    - python\n\ntest:\n  imports:\n    - typst\n  commands:\n    - pip check\n  requires:\n    - pip\n\nabout:\n  home: https://github.com/messense/typst-py\n  summary: Python binding to typst\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n\nextra:\n  recipe-maintainers:\n    - freundTech\n    - pavelzw\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: typst-py\n  version: \"0.14.9\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/t/typst/typst-${{ version }}.tar.gz\n  sha256: 53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc\n\nbuild:\n  number: 1\n  # only build for the minimal python version\n  skip: is_abi3 and not is_python_min\n  python:\n    version_independent: true\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content:\n      # Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\n      - if: unix\n        then:\n          - mkdir -p ${BUILD_PREFIX}/bin\n          - cp ${RECIPE_DIR}/cargo-auditable-wrapper.sh ${BUILD_PREFIX}/bin/cargo-auditable-wrapper\n          - export CARGO=\"cargo-auditable-wrapper\"\n        else:\n          - copy %RECIPE_DIR%\\cargo-auditable-wrapper.bat %BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\n          - set \"CARGO=cargo-auditable-wrapper.bat\"\n      - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n      - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - maturin\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    - make\n  host:\n    - python\n    - maturin >=1.0,<2.0\n    - pip\n    - if: is_abi3\n      then: python-abi3\n\n  run:\n    - python\n\ntests:\n  - python:\n      imports:\n        - typst\n      pip_check: true\n      python_version:\n        - \"*\"\n        - ${{ python_min }}\n  - if: is_abi3\n    then:\n      script:\n        - if: win\n          then: abi3audit %PREFIX%/Lib/site-packages/typst/_typst.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n          else:\n            - export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")\n            - abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n      requirements:\n        run:\n          - abi3audit\n\n\nabout:\n  summary: Python binding to typst\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/messense/typst-py\n\nextra:\n  recipe-maintainers:\n    - freundTech\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cargo-auditable",
       "cargo-bundle-licenses",
       "make",
       "maturin",
       "pip",
       "python",
+      "python-abi3",
       "rust_compiler_stub"
     ]
   },
@@ -472,6 +940,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -484,7 +953,8 @@
         "c_stdlib_stub",
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -498,6 +968,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -509,6 +980,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -519,7 +991,8 @@
       "elements": [
         "maturin >=1.0,<2.0",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -531,6 +1004,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -544,14 +1018,25 @@
     "about": {
       "home": "https://github.com/messense/typst-py",
       "license": "Apache-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
       "summary": "Python binding to typst"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "mkdir -p ${BUILD_PREFIX}/bin",
+          "cp ${RECIPE_DIR}/cargo-auditable-wrapper.sh ${BUILD_PREFIX}/bin/cargo-auditable-wrapper",
+          "export CARGO=\"cargo-auditable-wrapper\"",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -559,6 +1044,56 @@
         "pavelzw"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "typst-py",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "typst"
+              ],
+              "python_version": [
+                "*",
+                "3.10"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": [
+              "export SP_DIR=$(python -c \"import site; print(site.getsitepackages()[0])\")",
+              "abi3audit $SP_DIR/typst/_typst.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "0.14.9"
+      }
+    ],
     "package": {
       "name": "typst-py",
       "version": "0.14.9"
@@ -569,32 +1104,23 @@
         "c_stdlib_stub",
         "rust_compiler_stub",
         "cargo-bundle-licenses",
+        "cargo-auditable",
         "make"
       ],
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "53a7ee0825c127c100023685eeb8fb911226d7ad9ae861a370c11bb0f5c160cc",
       "url": "https://pypi.org/packages/source/t/typst/typst-0.14.9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
-      ],
-      "imports": [
-        "typst"
-      ],
-      "requires": [
-        "pip"
-      ]
     }
   },
   "win_64_requirements": {
@@ -603,6 +1129,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -613,7 +1140,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -625,6 +1153,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
