@@ -3,41 +3,43 @@
   "branch": "main",
   "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\ntarget_platform:\n- linux-64\nzip_keys:\n- - cxx_compiler_version\n  - fortran_compiler_version\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "816c52f8a5052640fb91c68c23167630200b46db",
-  "feedstock_hash_ts": 1776922797,
+  "feedstock_hash": "d0bf6bb978e2c10c0a84847187d0a6ce0a7e14c2",
+  "feedstock_hash_ts": 1781859621,
   "feedstock_name": "collier",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\n  regularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\n  singularities\n* complex internal masses (for unstable particles) fully supported\n  (external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\n  determinants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\n  for internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).\n",
+      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\nregularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\nsingularities\n* complex internal masses (for unstable particles) fully supported\n(external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\ndeterminants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\nfor internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).",
       "doc_url": "https://collier.hepforge.org/documentation.html",
       "home": "https://collier.hepforge.org/",
       "license": "GPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "GPL-3.0-only",
       "license_file": "source/COPYING",
       "summary": "COLLIER: A Complex One-Loop LIbrary with Extended Regularizations"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "collier"
+        ]
+      }
     },
     "extra": {
       "feedstock-name": "collier",
@@ -50,19 +52,9 @@
     "outputs": [
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -74,42 +66,91 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
+        "build": null,
+        "name": "collier-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
             "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "cmake",
+            "make",
             "sed"
           ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
+          "host": [],
+          "run": [
+            "collier"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
+      },
+      {
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -119,36 +160,65 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       }
     ],
     "package": {
-      "name": "collier-split",
+      "name": "collier",
       "version": "1.2.9"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "cmake",
+        "make",
+        "sed"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "folder": "source",
       "sha256": "98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54",
       "url": "https://collier.hepforge.org/downloads/?f=collier-1.2.9.tar.gz"
     }
@@ -171,7 +241,9 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "collier"
+      ]
     },
     "test": {
       "__set__": true,
@@ -182,16 +254,21 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\n  regularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\n  singularities\n* complex internal masses (for unstable particles) fully supported\n  (external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\n  determinants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\n  for internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).\n",
+      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\nregularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\nsingularities\n* complex internal masses (for unstable particles) fully supported\n(external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\ndeterminants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\nfor internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).",
       "doc_url": "https://collier.hepforge.org/documentation.html",
       "home": "https://collier.hepforge.org/",
       "license": "GPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "GPL-3.0-only",
       "license_file": "source/COPYING",
       "summary": "COLLIER: A Complex One-Loop LIbrary with Extended Regularizations"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "collier"
+        ]
+      }
     },
     "extra": {
       "feedstock-name": "collier",
@@ -204,19 +281,9 @@
     "outputs": [
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -228,42 +295,91 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
+        "build": null,
+        "name": "collier-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
             "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "cmake",
+            "make",
             "sed"
           ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
+          "host": [],
+          "run": [
+            "collier"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
+      },
+      {
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -273,36 +389,65 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       }
     ],
     "package": {
-      "name": "collier-split",
+      "name": "collier",
       "version": "1.2.9"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "cmake",
+        "make",
+        "sed"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "folder": "source",
       "sha256": "98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54",
       "url": "https://collier.hepforge.org/downloads/?f=collier-1.2.9.tar.gz"
     }
@@ -325,161 +470,9 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
-    },
-    "test": {
-      "__set__": true,
       "elements": [
-        "fortran_compiler_stub"
+        "collier"
       ]
-    }
-  },
-  "linux_ppc64le_meta_yaml": {
-    "about": {
-      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\n  regularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\n  singularities\n* complex internal masses (for unstable particles) fully supported\n  (external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\n  determinants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\n  for internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).\n",
-      "doc_url": "https://collier.hepforge.org/documentation.html",
-      "home": "https://collier.hepforge.org/",
-      "license": "GPL-3.0-only",
-      "license_family": "GPL",
-      "license_file": "source/COPYING",
-      "summary": "COLLIER: A Complex One-Loop LIbrary with Extended Regularizations"
-    },
-    "build": {
-      "number": "0"
-    },
-    "extra": {
-      "feedstock-name": "collier",
-      "recipe-maintainers": [
-        "matthewfeickert",
-        "ansgardenner",
-        "dittmaier"
-      ]
-    },
-    "outputs": [
-      {
-        "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
-            "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
-          ]
-        },
-        "name": "collier",
-        "requirements": {
-          "build": [
-            "c_stdlib_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub",
-            "cmake",
-            "make",
-            "sed"
-          ]
-        },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
-      },
-      {
-        "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
-          ]
-        },
-        "name": "collier-static",
-        "requirements": {
-          "build": [
-            "c_stdlib_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub",
-            "cmake",
-            "make",
-            "sed"
-          ]
-        },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
-      }
-    ],
-    "package": {
-      "name": "collier-split",
-      "version": "1.2.9"
-    },
-    "schema_version": 0,
-    "source": {
-      "folder": "source",
-      "sha256": "98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54",
-      "url": "https://collier.hepforge.org/downloads/?f=collier-1.2.9.tar.gz"
-    }
-  },
-  "linux_ppc64le_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": [
-        "c_stdlib_stub",
-        "cmake",
-        "cxx_compiler_stub",
-        "fortran_compiler_stub",
-        "make",
-        "sed"
-      ]
-    },
-    "host": {
-      "__set__": true,
-      "elements": []
-    },
-    "run": {
-      "__set__": true,
-      "elements": []
     },
     "test": {
       "__set__": true,
@@ -490,16 +483,21 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\n  regularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\n  singularities\n* complex internal masses (for unstable particles) fully supported\n  (external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\n  determinants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\n  for internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).\n",
+      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\nregularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\nsingularities\n* complex internal masses (for unstable particles) fully supported\n(external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\ndeterminants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\nfor internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).",
       "doc_url": "https://collier.hepforge.org/documentation.html",
       "home": "https://collier.hepforge.org/",
       "license": "GPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "GPL-3.0-only",
       "license_file": "source/COPYING",
       "summary": "COLLIER: A Complex One-Loop LIbrary with Extended Regularizations"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "collier"
+        ]
+      }
     },
     "extra": {
       "feedstock-name": "collier",
@@ -512,19 +510,9 @@
     "outputs": [
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -536,42 +524,91 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
+        "build": null,
+        "name": "collier-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
             "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "cmake",
+            "make",
             "sed"
           ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
+          "host": [],
+          "run": [
+            "collier"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
+      },
+      {
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -581,43 +618,53 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -629,42 +676,91 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
+        "build": null,
+        "name": "collier-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
             "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "cmake",
+            "make",
             "sed"
           ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
+          "host": [],
+          "run": [
+            "collier"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
+      },
+      {
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -674,43 +770,53 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -722,42 +828,91 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
+        "build": null,
+        "name": "collier-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
             "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "cmake",
+            "make",
             "sed"
           ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
+          "host": [],
+          "run": [
+            "collier"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
+      },
+      {
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -767,43 +922,53 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -815,43 +980,51 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
-          ]
-        },
-        "name": "collier-static",
+        "build": null,
+        "name": "collier-devel",
         "requirements": {
           "build": [
             "c_stdlib_stub",
@@ -860,90 +1033,38 @@
             "cmake",
             "make",
             "sed"
-          ]
-        },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
           ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
-      },
-      {
-        "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "host": [],
+          "run": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
-        "name": "collier",
-        "requirements": {
-          "build": [
-            "c_stdlib_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub",
-            "cmake",
-            "make",
-            "sed"
-          ]
-        },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
-          ]
-        },
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -953,53 +1074,87 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       }
     ],
     "package": {
-      "name": "collier-split",
+      "name": "collier",
       "version": "1.2.9"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "cmake",
+        "make",
+        "sed"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "folder": "source",
       "sha256": "98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54",
       "url": "https://collier.hepforge.org/downloads/?f=collier-1.2.9.tar.gz"
     }
   },
-  "name": "collier-split",
+  "name": "collier",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\n  regularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\n  singularities\n* complex internal masses (for unstable particles) fully supported\n  (external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\n  determinants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\n  for internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).\n",
+      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\nregularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\nsingularities\n* complex internal masses (for unstable particles) fully supported\n(external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\ndeterminants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\nfor internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).",
       "doc_url": "https://collier.hepforge.org/documentation.html",
       "home": "https://collier.hepforge.org/",
       "license": "GPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "GPL-3.0-only",
       "license_file": "source/COPYING",
       "summary": "COLLIER: A Complex One-Loop LIbrary with Extended Regularizations"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "collier"
+        ]
+      }
     },
     "extra": {
       "feedstock-name": "collier",
@@ -1012,19 +1167,9 @@
     "outputs": [
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -1036,42 +1181,91 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
+        "build": null,
+        "name": "collier-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
             "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "cmake",
+            "make",
             "sed"
           ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
+          "host": [],
+          "run": [
+            "collier"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
+      },
+      {
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -1081,36 +1275,65 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       }
     ],
     "package": {
-      "name": "collier-split",
+      "name": "collier",
       "version": "1.2.9"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "cmake",
+        "make",
+        "sed"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "folder": "source",
       "sha256": "98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54",
       "url": "https://collier.hepforge.org/downloads/?f=collier-1.2.9.tar.gz"
     }
@@ -1133,7 +1356,9 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "collier"
+      ]
     },
     "test": {
       "__set__": true,
@@ -1144,16 +1369,21 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\n  regularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\n  singularities\n* complex internal masses (for unstable particles) fully supported\n  (external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\n  determinants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\n  for internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).\n",
+      "description": "COLLIER is a fortran library for the numerical evaluation of one-loop\nscalar and tensor integrals appearing in perturbative relativistic\nquantum field theory with the following features:\n* scalar and tensor integrals for high particle multiplicities\n* dimensional regularization for ultraviolet divergences\n* dimensional regularization for soft infrared divergences (mass\nregularization for abelian soft divergences is supported as well)\n* dimensional regularization or mass regularization for collinear mass\nsingularities\n* complex internal masses (for unstable particles) fully supported\n(external momenta and virtualities are expected to be real)\n* numerically dangerous regions (small Gram or other kinematical\ndeterminants) cured by dedicated expansions\n* two independent implementations of all basic building blocks allow\nfor internal cross-checks\n* cache system to speed up calculations\n\nIf you use Collier for a publication, please cite all the references\nlisted [here](https://collier.hepforge.org/documentation.html).",
       "doc_url": "https://collier.hepforge.org/documentation.html",
       "home": "https://collier.hepforge.org/",
       "license": "GPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "GPL-3.0-only",
       "license_file": "source/COPYING",
       "summary": "COLLIER: A Complex One-Loop LIbrary with Extended Regularizations"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "collier"
+        ]
+      }
     },
     "extra": {
       "feedstock-name": "collier",
@@ -1166,19 +1396,9 @@
     "outputs": [
       {
         "build": {
-          "ignore_run_exports_from": [
-            "cxx_compiler_stub",
-            "sed"
-          ],
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "collier"
-          ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
           ]
         },
         "name": "collier",
@@ -1190,42 +1410,91 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libcollier.a",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "collier"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       },
       {
-        "build": {
-          "ignore_run_exports_from": [
+        "build": null,
+        "name": "collier-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
             "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "cmake",
+            "make",
             "sed"
           ],
-          "script": [
-            "sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt",
-            "cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build",
-            "cmake -LH build",
-            "cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"",
-            "cmake --install build"
+          "host": [],
+          "run": [
+            "collier"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "collier/*.mod"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90",
+              "$FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier",
+              "./test_modules"
+            ]
+          }
+        ],
+        "version": "1.2.9"
+      },
+      {
+        "build": null,
         "name": "collier-static",
         "requirements": {
           "build": [
@@ -1235,36 +1504,65 @@
             "cmake",
             "make",
             "sed"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/cmake/collierConfig.cmake",
-            "test -f $PREFIX/lib/cmake/collierConfigVersion.cmake",
-            "test -f $PREFIX/lib/libcollier.a",
-            "test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}",
-            "test -f $PREFIX/include/collier.mod",
-            "cd source/demos",
-            "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier",
-            "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier",
-            "./democache"
-          ],
-          "requires": [
-            "fortran_compiler_stub"
-          ],
-          "source_files": [
-            "source/demos"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/cmake/collierConfig.cmake",
+                "lib/cmake/collierConfigVersion.cmake",
+                "etc/conda/test-files/collier-static/0/*"
+              ],
+              "include": [
+                "collier.mod"
+              ],
+              "lib": [
+                "libcollier.a"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "source": [
+                "source/demos"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "fortran_compiler_stub"
+              ]
+            },
+            "script": [
+              "cd source/demos",
+              "$FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "$FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier",
+              "./democache"
+            ]
+          }
+        ],
+        "version": "1.2.9"
       }
     ],
     "package": {
-      "name": "collier-split",
+      "name": "collier",
       "version": "1.2.9"
     },
-    "schema_version": 0,
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "cmake",
+        "make",
+        "sed"
+      ]
+    },
+    "schema_version": 1,
     "source": {
-      "folder": "source",
       "sha256": "98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54",
       "url": "https://collier.hepforge.org/downloads/?f=collier-1.2.9.tar.gz"
     }
@@ -1287,7 +1585,9 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "collier"
+      ]
     },
     "test": {
       "__set__": true,
@@ -1300,6 +1600,7 @@
     "__set__": true,
     "elements": [
       "collier",
+      "collier-devel",
       "collier-static"
     ]
   },
@@ -1307,19 +1608,19 @@
   "platforms": [
     "linux_64",
     "linux_aarch64",
-    "linux_ppc64le",
     "osx_64",
     "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/collier.json"
   },
-  "raw_meta_yaml": "{% set name = \"collier\" %}\n{% set version = \"1.2.9\" %}\n\npackage:\n  # Have top level name be unique from any outputs\n  # c.f. https://github.com/conda-forge/conda-forge.github.io/blob/abfc33db28c35e9a8f6b719d0021768f0d5d06be/docs/maintainer/knowledge_base.md?plain=1#L1749\n  name: {{ name }}-split\n  version: {{ version }}\n\nsource:\n  url: https://collier.hepforge.org/downloads/?f={{ name }}-{{ version }}.tar.gz\n  sha256: 98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54\n  folder: source\n\nbuild:\n  number: 0\n\noutputs:\n  - name: {{ name }}\n\n    build:\n      skip: true  # [win]\n      run_exports:\n        - {{ pin_subpackage('collier', max_pin='x.x') }}\n      ignore_run_exports_from:\n        - {{ compiler('cxx') }}\n        - sed\n      script:\n        # Use modern CMake by using range of compatible versions\n        - sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt\n        - cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build\n        - cmake -LH build\n        - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n        - cmake --install build\n\n    requirements:\n      build:\n        - {{ stdlib('c') }}\n        - {{ compiler('cxx') }}  # Not used, but needed for CMake to not error\n        - {{ compiler('fortran') }}\n        - cmake\n        - make\n        - sed\n\n    test:\n      source_files:\n        - source/demos\n      requires:\n        - {{ compiler('fortran') }}\n      commands:\n        - test -f $PREFIX/lib/cmake/collierConfig.cmake\n        - test -f $PREFIX/lib/cmake/collierConfigVersion.cmake\n        - test -f $PREFIX/lib/libcollier${SHLIB_EXT}\n        - test ! -f $PREFIX/lib/libcollier.a\n        - test -f $PREFIX/include/collier.mod\n\n        - cd source/demos\n        # The addition of -I$PREFIX/include is only needed on osx, but for\n        # simplicity add it for all.\n        # demo executable requires user keyboard input, so skip after build.\n        - $FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier\n        - $FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier\n        - ./democache  # [build_platform == target_platform]\n\n  - name: {{ name }}-static\n\n    build:\n      skip: true  # [win]\n      ignore_run_exports_from:\n        - {{ compiler('cxx') }}\n        - sed\n      script:\n        # Use modern CMake by using range of compatible versions\n        - sed -i 's/cmake_minimum_required (VERSION 2.8.7)/cmake_minimum_required(VERSION 3.15...3.31)/g' source/CMakeLists.txt\n        - cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build\n        - cmake -LH build\n        - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n        - cmake --install build\n\n    requirements:\n      build:\n        - {{ stdlib('c') }}\n        - {{ compiler('cxx') }}  # Not used, but needed for CMake to not error\n        - {{ compiler('fortran') }}\n        - cmake\n        - make\n        - sed\n\n    test:\n      source_files:\n        - source/demos\n      requires:\n        - {{ compiler('fortran') }}\n      commands:\n        - test -f $PREFIX/lib/cmake/collierConfig.cmake\n        - test -f $PREFIX/lib/cmake/collierConfigVersion.cmake\n        - test -f $PREFIX/lib/libcollier.a\n        - test ! -f $PREFIX/lib/libcollier${SHLIB_EXT}\n        - test -f $PREFIX/include/collier.mod\n\n        - cd source/demos\n        # The addition of -I$PREFIX/include is only needed on osx, but for\n        # simplicity add it for all.\n        # demo executable requires user keyboard input, so skip after build.\n        - $FC demo.f90 -o demo $FFLAGS -I$PREFIX/include -lcollier\n        - $FC democache.f90 -o democache $FFLAGS -I$PREFIX/include -lcollier\n        - ./democache  # [build_platform == target_platform]\n\nabout:\n  home: https://collier.hepforge.org/\n  summary: 'COLLIER: A Complex One-Loop LIbrary with Extended Regularizations'\n  description: |\n    COLLIER is a fortran library for the numerical evaluation of one-loop\n    scalar and tensor integrals appearing in perturbative relativistic\n    quantum field theory with the following features:\n    * scalar and tensor integrals for high particle multiplicities\n    * dimensional regularization for ultraviolet divergences\n    * dimensional regularization for soft infrared divergences (mass\n      regularization for abelian soft divergences is supported as well)\n    * dimensional regularization or mass regularization for collinear mass\n      singularities\n    * complex internal masses (for unstable particles) fully supported\n      (external momenta and virtualities are expected to be real)\n    * numerically dangerous regions (small Gram or other kinematical\n      determinants) cured by dedicated expansions\n    * two independent implementations of all basic building blocks allow\n      for internal cross-checks\n    * cache system to speed up calculations\n\n    If you use Collier for a publication, please cite all the references\n    listed [here](https://collier.hepforge.org/documentation.html).\n  license: GPL-3.0-only\n  license_family: GPL\n  license_file: source/COPYING\n  doc_url: https://collier.hepforge.org/documentation.html\n\nextra:\n  feedstock-name: collier\n  recipe-maintainers:\n    - matthewfeickert\n    - ansgardenner\n    - dittmaier\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.2.9\"\n\nrecipe:\n  # Have top level name be unique from any outputs\n  # c.f. https://github.com/conda-forge/conda-forge.github.io/blob/abfc33db28c35e9a8f6b719d0021768f0d5d06be/docs/maintainer/knowledge_base.md?plain=1#L1749\n  name: collier-split\n  version: ${{ version }}\n\nsource:\n  url: https://collier.hepforge.org/downloads/?f=collier-${{ version }}.tar.gz\n  sha256: 98d14f638d6dda826303f24720715af8c23f1185ddaffd46533c61a92a7fcb54\n  target_directory: source\n\nbuild:\n  number: 1\n  skip:\n    - win\n\noutputs:\n  # c.f. https://rattler-build.prefix.dev/latest/multiple_output_cache/\n  - staging:\n      name: collier-build\n    build:\n      script:\n        # Use modern CMake by using range of compatible versions\n        - sed -i 's/cmake_minimum_required (VERSION 3.5...4.0)/cmake_minimum_required(VERSION 3.15...4.3)/g' source/CMakeLists.txt\n        - cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_Fortran_COMPILER=$FC -S source -B build\n        - cmake -LH build\n        - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n        - cmake --install build\n        # Stage for collier-devel for downstream software to build against\n        # COLLIER's internal modules\n        - mkdir -p $PREFIX/include/collier\n        - cp source/modules/*.mod $PREFIX/include/collier/\n\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler(\"cxx\") }}  # Not used, but needed for CMake to not error\n        - ${{ compiler(\"fortran\") }}\n        - cmake\n        - make\n        - sed\n      ignore_run_exports:\n        from_package:\n          - ${{ compiler(\"cxx\") }}\n          - sed\n\n  - package:\n      name: collier\n    inherit: collier-build\n\n    build:\n      files:\n        - lib/libcollier.*\n        - lib/cmake/collierConfig.cmake\n        - lib/cmake/collierConfigVersion.cmake\n        - include/collier.mod\n    requirements:\n      run_exports:\n        - ${{ pin_subpackage(\"collier\", upper_bound=\"x.x\") }}\n\n    tests:\n      - package_contents:\n          strict: true\n          lib:\n            - collier\n          include:\n            - collier.mod\n          files:\n            - lib/cmake/collierConfig.cmake\n            - lib/cmake/collierConfigVersion.cmake\n            - etc/conda/test-files/collier/0/*\n\n      - files:\n          source:\n            - source/demos\n        requirements:\n          run:\n            - ${{ compiler(\"fortran\") }}\n        script:\n          - cd source/demos\n          # The addition of -I$PREFIX/include is only needed on osx, but for\n          # simplicity add it for all.\n          # demo executable requires user keyboard input, so skip after build.\n          - $FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier\n          - $FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier\n          - if: build_platform == target_platform\n            then: ./democache\n\n  - package:\n      name: collier-devel\n    inherit:\n      from: collier-build\n      run_exports: false\n\n    build:\n      files:\n        - include/collier/**\n    requirements:\n      run:\n        - ${{ pin_subpackage(\"collier\", exact=true) }}\n\n    tests:\n      - package_contents:\n          strict: true\n          include:\n            - collier/*.mod\n\n      - requirements:\n          run:\n            - ${{ compiler(\"fortran\") }}\n        script:\n          # The exposed internal modules must be usable for compilation.\n          - printf 'program test_modules\\n  use collier_coefs\\n  use collier_init\\nend program test_modules\\n' > test_modules.f90\n          - $FC test_modules.f90 -o test_modules $FFLAGS -I$PREFIX/include/collier $LDFLAGS -lcollier\n          - ./test_modules\n\n  - package:\n      name: collier-static\n    build:\n      script:\n        # Use modern CMake by using range of compatible versions\n        - sed -i 's/cmake_minimum_required (VERSION 3.5...4.0)/cmake_minimum_required(VERSION 3.15...4.3)/g' source/CMakeLists.txt\n        - cmake ${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=$PREFIX -Dstatic=ON -DCMAKE_Fortran_COMPILER=$FC -S source -B build\n        - cmake -LH build\n        - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n        - cmake --install build\n\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler(\"cxx\") }}  # Not used, but needed for CMake to not error\n        - ${{ compiler(\"fortran\") }}\n        - cmake\n        - make\n        - sed\n      ignore_run_exports:\n        from_package:\n          - ${{ compiler(\"cxx\") }}\n          - sed\n\n    tests:\n      - package_contents:\n          strict: true\n          lib:\n            - libcollier.a\n          include:\n            - collier.mod\n          files:\n            - lib/cmake/collierConfig.cmake\n            - lib/cmake/collierConfigVersion.cmake\n            - etc/conda/test-files/collier-static/0/*\n\n      - files:\n          source:\n            - source/demos\n        requirements:\n          run:\n            - ${{ compiler(\"fortran\") }}\n        script:\n          - cd source/demos\n          # The addition of -I$PREFIX/include is only needed on osx, but for\n          # simplicity add it for all.\n          # demo executable requires user keyboard input, so skip after build.\n          - $FC demo.f90 -o demo $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier\n          - $FC democache.f90 -o democache $FFLAGS -I$PREFIX/include $LDFLAGS -lcollier\n          - if: build_platform == target_platform\n            then: ./democache\n\nabout:\n  summary: \"COLLIER: A Complex One-Loop LIbrary with Extended Regularizations\"\n  description: |\n    COLLIER is a fortran library for the numerical evaluation of one-loop\n    scalar and tensor integrals appearing in perturbative relativistic\n    quantum field theory with the following features:\n    * scalar and tensor integrals for high particle multiplicities\n    * dimensional regularization for ultraviolet divergences\n    * dimensional regularization for soft infrared divergences (mass\n    regularization for abelian soft divergences is supported as well)\n    * dimensional regularization or mass regularization for collinear mass\n    singularities\n    * complex internal masses (for unstable particles) fully supported\n    (external momenta and virtualities are expected to be real)\n    * numerically dangerous regions (small Gram or other kinematical\n    determinants) cured by dedicated expansions\n    * two independent implementations of all basic building blocks allow\n    for internal cross-checks\n    * cache system to speed up calculations\n\n    If you use Collier for a publication, please cite all the references\n    listed [here](https://collier.hepforge.org/documentation.html).\n  license: GPL-3.0-only\n  license_file: source/COPYING\n  homepage: https://collier.hepforge.org/\n  documentation: https://collier.hepforge.org/documentation.html\n\nextra:\n  feedstock-name: collier\n  recipe-maintainers:\n    - matthewfeickert\n    - ansgardenner\n    - dittmaier\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_stdlib_stub",
       "cmake",
+      "collier",
       "cxx_compiler_stub",
       "fortran_compiler_stub",
       "make",
@@ -1350,6 +1651,7 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "collier",
         "cxx_compiler_stub",
         "fortran_compiler_stub"
       ]
@@ -1380,7 +1682,9 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "collier"
+      ]
     },
     "test": {
       "__set__": true,
