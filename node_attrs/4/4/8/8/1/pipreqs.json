@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "cdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.9'\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -9,32 +9,32 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "5bcd9c748e3e99b14d199298765a74ababb59a79",
-  "feedstock_hash_ts": 1776871978,
+  "feedstock_hash": "794969ae5fa2b18cde1e9c2a9c03c473cee20f26",
+  "feedstock_hash_ts": 1781919669,
   "feedstock_name": "pipreqs",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/bndr/pipreqs",
       "home": "https://github.com/bndr/pipreqs",
       "license": "Apache-2.0",
-      "license_family": "Apache",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
       "summary": "Pip requirements.txt generator based on imports in project"
     },
     "build": {
-      "entry_points": [
-        "pipreqs=pipreqs.pipreqs:main"
-      ],
       "noarch": "python",
-      "number": "1",
-      "script": "python setup.py install --single-version-externally-managed --record record.txt"
+      "number": "0",
+      "script": [
+        "sed -i -e '/tool\\.poetry\\.dependencies/,$s:\"\\([0-9]\\):\">=\\1:' pyproject.toml",
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -42,37 +42,69 @@
         "ericmjl"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "pipreqs",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "poetry-core",
+            "pip"
+          ],
+          "run": [
+            "python >=3.10",
+            "yarg >=0.1.9",
+            "docopt >=0.6.2",
+            "nbconvert >=7.11.0,<8",
+            "ipython >=8.12.3"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "pipreqs"
+              ],
+              "python_version": "3.10.*"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pip",
+                "python 3.10.*"
+              ]
+            },
+            "script": "pipreqs --help"
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "pipreqs",
       "version": "0.5.0"
     },
     "requirements": {
       "host": [
-        "python 3.9",
-        "setuptools"
+        "python 3.10.*",
+        "poetry-core",
+        "pip"
       ],
       "run": [
-        "python >=3.9",
-        "docopt",
-        "yarg"
+        "python >=3.10",
+        "yarg >=0.1.9",
+        "docopt >=0.6.2",
+        "nbconvert >=7.11.0,<8",
+        "ipython >=8.12.3"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "fn": "pipreqs-0.5.0.tar.gz",
       "sha256": "f33298d235ff76def369cb9a3594d084d9badc70cebba1e8cb271fcd4fdc0183",
-      "url": "https://pypi.org/packages/source/p/pipreqs/pipreqs-0.5.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pipreqs --help"
-      ],
-      "imports": [
-        "pipreqs"
-      ],
-      "requires": [
-        "python 3.9"
-      ]
+      "url": "https://files.pythonhosted.org/packages/source/p/pipreqs/pipreqs-0.5.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -83,14 +115,17 @@
     "host": {
       "__set__": true,
       "elements": [
-        "python",
-        "setuptools"
+        "pip",
+        "poetry-core",
+        "python"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
         "docopt",
+        "ipython",
+        "nbconvert",
         "python",
         "yarg"
       ]
@@ -98,26 +133,26 @@
     "test": {
       "__set__": true,
       "elements": [
+        "pip",
         "python"
       ]
     }
   },
   "meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/bndr/pipreqs",
       "home": "https://github.com/bndr/pipreqs",
       "license": "Apache-2.0",
-      "license_family": "Apache",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
       "summary": "Pip requirements.txt generator based on imports in project"
     },
     "build": {
-      "entry_points": [
-        "pipreqs=pipreqs.pipreqs:main"
-      ],
       "noarch": "python",
-      "number": "1",
-      "script": "python setup.py install --single-version-externally-managed --record record.txt"
+      "number": "0",
+      "script": [
+        "sed -i -e '/tool\\.poetry\\.dependencies/,$s:\"\\([0-9]\\):\">=\\1:' pyproject.toml",
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -125,37 +160,69 @@
         "ericmjl"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "pipreqs",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "poetry-core",
+            "pip"
+          ],
+          "run": [
+            "python >=3.10",
+            "yarg >=0.1.9",
+            "docopt >=0.6.2",
+            "nbconvert >=7.11.0,<8",
+            "ipython >=8.12.3"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "pipreqs"
+              ],
+              "python_version": "3.10.*"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pip",
+                "python 3.10.*"
+              ]
+            },
+            "script": "pipreqs --help"
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "pipreqs",
       "version": "0.5.0"
     },
     "requirements": {
       "host": [
-        "python 3.9",
-        "setuptools"
+        "python 3.10.*",
+        "poetry-core",
+        "pip"
       ],
       "run": [
-        "python >=3.9",
-        "docopt",
-        "yarg"
+        "python >=3.10",
+        "yarg >=0.1.9",
+        "docopt >=0.6.2",
+        "nbconvert >=7.11.0,<8",
+        "ipython >=8.12.3"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "fn": "pipreqs-0.5.0.tar.gz",
       "sha256": "f33298d235ff76def369cb9a3594d084d9badc70cebba1e8cb271fcd4fdc0183",
-      "url": "https://pypi.org/packages/source/p/pipreqs/pipreqs-0.5.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pipreqs --help"
-      ],
-      "imports": [
-        "pipreqs"
-      ],
-      "requires": [
-        "python 3.9"
-      ]
+      "url": "https://files.pythonhosted.org/packages/source/p/pipreqs/pipreqs-0.5.0.tar.gz"
     }
   },
   "name": "pipreqs",
@@ -172,13 +239,16 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pipreqs.json"
   },
-  "raw_meta_yaml": "{% set name = \"pipreqs\" %}\n{% set version = \"0.5.0\" %}\n{% set sha256 = \"f33298d235ff76def369cb9a3594d084d9badc70cebba1e8cb271fcd4fdc0183\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  fn: {{ name }}-{{ version }}.tar.gz\n  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n\nbuild:\n  noarch: python\n  number: 1\n  script: python setup.py install --single-version-externally-managed --record record.txt\n  entry_points:\n    - pipreqs=pipreqs.pipreqs:main\n\nrequirements:\n  host:\n    - python {{ python_min }}\n    - setuptools\n\n  run:\n    - python >={{ python_min }}\n    - docopt\n    - yarg\n\ntest:\n  requires:\n    - python {{ python_min }}\n  imports:\n    - pipreqs\n\n  commands:\n    - pipreqs --help\n\nabout:\n  home: https://github.com/bndr/pipreqs\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE\n  summary: Pip requirements.txt generator based on imports in project\n  dev_url: https://github.com/bndr/pipreqs\n\nextra:\n  recipe-maintainers:\n    - proinsias\n    - ericmjl\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"0.5.0\"\n  sha256: f33298d235ff76def369cb9a3594d084d9badc70cebba1e8cb271fcd4fdc0183\n\npackage:\n  name: pipreqs\n  version: ${{ version }}\n\nsource:\n  url: https://files.pythonhosted.org/packages/source/p/pipreqs/pipreqs-${{ version }}.tar.gz\n  sha256: ${{ sha256 }}\n\nbuild:\n  number: 0\n  noarch: python\n  script:\n    # remove strict dependency pins\n    - sed -i -e '/tool\\.poetry\\.dependencies/,$s:\"\\([0-9]\\):\">=\\1:' pyproject.toml\n    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n  python:\n    entry_points:\n      - pipreqs = pipreqs.pipreqs:main\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - poetry-core\n    - pip\n  run:\n    - python >=${{ python_min }}\n    - yarg >=0.1.9\n    - docopt >=0.6.2\n    - nbconvert >=7.11.0,<8\n    - ipython >=8.12.3\n\ntests:\n  - python:\n      imports:\n        - pipreqs\n      pip_check: true\n      python_version: ${{ python_min }}.*\n  - requirements:\n      run:\n        - pip\n        - python ${{ python_min }}.*\n    script:\n      - pipreqs --help\n\nabout:\n  summary: Pip requirements.txt generator based on imports in project\n  license: Apache-2.0\n  license_file: LICENSE\n  homepage: https://github.com/bndr/pipreqs\n\nextra:\n  recipe-maintainers:\n    - proinsias\n    - ericmjl\n",
   "req": {
     "__set__": true,
     "elements": [
       "docopt",
+      "ipython",
+      "nbconvert",
+      "pip",
+      "poetry-core",
       "python",
-      "setuptools",
       "yarg"
     ]
   },
@@ -190,14 +260,17 @@
     "host": {
       "__set__": true,
       "elements": [
-        "python",
-        "setuptools"
+        "pip",
+        "poetry-core",
+        "python"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
         "docopt",
+        "ipython",
+        "nbconvert",
         "python",
         "yarg"
       ]
@@ -205,6 +278,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "pip",
         "python"
       ]
     }
@@ -218,26 +292,30 @@
     "host": {
       "__set__": true,
       "elements": [
-        "python 3.9",
-        "setuptools"
+        "pip",
+        "poetry-core",
+        "python 3.10.*"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "docopt",
-        "python >=3.9",
-        "yarg"
+        "docopt >=0.6.2",
+        "ipython >=8.12.3",
+        "nbconvert >=7.11.0,<8",
+        "python >=3.10",
+        "yarg >=0.1.9"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "python 3.9"
+        "pip",
+        "python 3.10.*"
       ]
     }
   },
-  "url": "https://pypi.org/packages/source/p/pipreqs/pipreqs-0.5.0.tar.gz",
+  "url": "https://files.pythonhosted.org/packages/source/p/pipreqs/pipreqs-0.5.0.tar.gz",
   "version": "0.5.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/pipreqs.json"
