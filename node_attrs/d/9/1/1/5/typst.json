@@ -17,7 +17,8 @@
       }
     },
     "build_platform": {
-      "linux_ppc64le": "linux_64"
+      "linux_ppc64le": "linux_64",
+      "win_arm64": "win_64"
     },
     "conda_build": {
       "error_overlinking": true
@@ -35,8 +36,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "090a4d9ae165ed35e662824afc5f859ceb153cb5",
-  "feedstock_hash_ts": 1781556956,
+  "feedstock_hash": "125dd23f6b743fddeaf26a5d340b3e90537d46d1",
+  "feedstock_hash_ts": 1781981355,
   "feedstock_name": "typst",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -824,6 +825,59 @@
           }
         ],
         "version": "0.15.0"
+      },
+      {
+        "build": null,
+        "name": "typst",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "typst"
+              ],
+              "files": [
+                "etc/conda/env_vars.d/typst.json",
+                "share/bash-completion/completions/typst",
+                "share/fish/vendor_completions.d/typst.fish",
+                "share/zsh/site-functions/_typst"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "typst --version",
+              "typst info",
+              "typst info 2>&1 | grep TYPST_FONT_PATHS | grep $CONDA_PREFIX/fonts",
+              "typst info 2>&1 | grep TYPST_PACKAGE_PATH | grep $CONDA_PREFIX/share/typst/packages"
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "font-otf-fontawesome"
+              ]
+            },
+            "script": [
+              "typst fonts",
+              "typst fonts | grep \"Font Awesome\""
+            ]
+          }
+        ],
+        "version": "0.15.0"
       }
     ],
     "package": {
@@ -1148,7 +1202,8 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/typst.json"
@@ -1348,6 +1403,149 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "openssl"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "font-otf-fontawesome"
+      ]
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/typst/typst",
+      "doc_url": "https://typst.app/docs",
+      "home": "https://typst.app/",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "A markup-based typesetting system that is powerful and easy to learn."
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "export OPENSSL_DIR=$PREFIX",
+          "cd crates/typst-cli",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ../../THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/typst completions zsh > $PREFIX/share/zsh/site-functions/_typst",
+          "$PREFIX/bin/typst completions bash > $PREFIX/share/bash-completion/completions/typst",
+          "$PREFIX/bin/typst completions fish > $PREFIX/share/fish/vendor_completions.d/typst.fish",
+          "mkdir -p $PREFIX/etc/conda/env_vars.d",
+          "echo {\\\"TYPST_PACKAGE_PATH\\\": \\\"$PREFIX/share/typst/packages\\\", \\\"TYPST_FONT_PATHS\\\": \\\"$PREFIX/fonts\\\"} > $PREFIX/etc/conda/env_vars.d/typst.json"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "AdrianFreundQC",
+        "freundTech",
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "typst",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "typst"
+              ],
+              "files": [
+                "etc/conda/env_vars.d/typst.json",
+                "share/bash-completion/completions/typst",
+                "share/fish/vendor_completions.d/typst.fish",
+                "share/zsh/site-functions/_typst"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "typst --version",
+              "typst info",
+              "typst info 2>&1 | grep TYPST_FONT_PATHS | grep $CONDA_PREFIX/fonts",
+              "typst info 2>&1 | grep TYPST_PACKAGE_PATH | grep $CONDA_PREFIX/share/typst/packages"
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "font-otf-fontawesome"
+              ]
+            },
+            "script": [
+              "typst fonts",
+              "typst fonts | grep \"Font Awesome\""
+            ]
+          }
+        ],
+        "version": "0.15.0"
+      }
+    ],
+    "package": {
+      "name": "typst",
+      "version": "0.15.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable"
+      ],
+      "host": [
+        "openssl"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "5044bd12138491c6e880df0e09056a9ae4607d937c73962d5806402ae6ee96a6",
+      "url": "https://github.com/typst/typst/archive/refs/tags/v0.15.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
