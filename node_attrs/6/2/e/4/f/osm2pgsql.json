@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "bzip2:\n- '1'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nexpat:\n- '2'\nlibboost_devel:\n- '1.90'\nlua:\n- '5'\npostgresql:\n- '18'\nproj:\n- '9.8'\ntarget_platform:\n- linux-64\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "bzip2:\n- '1'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nexpat:\n- '2'\nlibboost_devel:\n- '1.90'\nlua:\n- '5'\npostgresql:\n- '18'\nproj:\n- '9.8'\npython_min:\n- '3.10'\ntarget_platform:\n- linux-64\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -11,10 +11,18 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
+    },
+    "noarch_platforms": [
+      "linux_64",
+      "win_64"
+    ],
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
     }
   },
-  "feedstock_hash": "bcc5698ff9d6b8a9a055d713d185ec47d15d2823",
-  "feedstock_hash_ts": 1781502116,
+  "feedstock_hash": "a6a4c2e0628abc1f254427b1460758157f7a97af",
+  "feedstock_hash_ts": 1782145643,
   "feedstock_name": "osm2pgsql",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -29,7 +37,8 @@
       "summary": "Import OpenStreetMap data into a PostgreSQL/PostGIS database"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
@@ -64,8 +73,7 @@
           ],
           "run": [
             "lua",
-            "pyosmium",
-            "psycopg"
+            "osm2pgsql-replication"
           ]
         },
         "tests": [
@@ -87,6 +95,40 @@
               "osm2pgsql --help",
               "bash test.sh"
             ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
           }
         ],
         "version": "2.3.0"
@@ -120,8 +162,7 @@
       ],
       "run": [
         "lua",
-        "pyosmium",
-        "psycopg"
+        "osm2pgsql-replication"
       ]
     },
     "schema_version": 1,
@@ -148,13 +189,16 @@
         "cli11",
         "expat",
         "fmt",
+        "hatchling",
         "libboost-devel",
         "libosmium",
         "lua",
         "nlohmann_json",
+        "pip",
         "postgresql",
         "proj",
         "protozero",
+        "python",
         "zlib"
       ]
     },
@@ -162,19 +206,23 @@
       "__set__": true,
       "elements": [
         "lua",
+        "osm2pgsql-replication",
         "psycopg",
-        "pyosmium"
+        "pyosmium",
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pip",
         "postgis",
-        "postgresql"
+        "postgresql",
+        "python"
       ]
     }
   },
-  "meta_yaml": {
+  "linux_aarch64_meta_yaml": {
     "about": {
       "description": "osm2pgsql is a tool for loading OpenStreetMap data into a PostgreSQL / PostGIS database suitable for applications like rendering into a map, geocoding with Nominatim, or general analysis.",
       "dev_url": "https://github.com/osm2pgsql-dev/osm2pgsql",
@@ -186,7 +234,8 @@
       "summary": "Import OpenStreetMap data into a PostgreSQL/PostGIS database"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
@@ -221,8 +270,7 @@
           ],
           "run": [
             "lua",
-            "pyosmium",
-            "psycopg"
+            "osm2pgsql-replication"
           ]
         },
         "tests": [
@@ -250,108 +298,34 @@
       },
       {
         "build": null,
-        "name": "osm2pgsql",
+        "name": "osm2pgsql-replication",
         "requirements": {
-          "build": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "pkg-config"
-          ],
+          "build": [],
           "host": [
-            "expat",
-            "proj",
-            "bzip2",
-            "zlib",
-            "postgresql",
-            "lua",
-            "protozero",
-            "libosmium",
-            "cli11",
-            "fmt <12",
-            "nlohmann_json",
-            "libboost-devel"
+            "python 3.10.*",
+            "pip",
+            "hatchling"
           ],
           "run": [
-            "lua",
+            "python >=3.10",
             "pyosmium",
             "psycopg"
           ]
         },
         "tests": [
           {
-            "files": {
-              "recipe": [
-                "test.sh",
-                "liechtenstein-2013-08-03.osm.pbf"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "postgresql",
-                "postgis"
-              ]
-            },
-            "script": [
-              "osm2pgsql --version",
-              "osm2pgsql --help",
-              "bash test.sh"
-            ]
-          }
-        ],
-        "version": "2.3.0"
-      },
-      {
-        "build": null,
-        "name": "osm2pgsql",
-        "requirements": {
-          "build": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "pkg-config"
-          ],
-          "host": [
-            "expat",
-            "proj",
-            "bzip2",
-            "zlib",
-            "postgresql",
-            "lua",
-            "protozero",
-            "libosmium",
-            "cli11",
-            "fmt <12",
-            "nlohmann_json",
-            "libboost-devel"
-          ],
-          "run": [
-            "lua",
-            "pyosmium",
-            "psycopg"
-          ]
-        },
-        "tests": [
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
           {
-            "files": {
-              "recipe": [
-                "test.sh",
-                "liechtenstein-2013-08-03.osm.pbf"
-              ]
-            },
             "requirements": {
               "run": [
-                "postgresql",
-                "postgis"
+                "python 3.10.*"
               ]
             },
-            "script": [
-              "osm2pgsql --version",
-              "osm2pgsql --help",
-              "bash test.sh"
-            ]
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
           }
         ],
         "version": "2.3.0"
@@ -385,8 +359,552 @@
       ],
       "run": [
         "lua",
+        "osm2pgsql-replication"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "334c19fd58140e48216ec842fd63d7a978c7a2aea034858c2a62f32ad9e94c06",
+      "url": "https://github.com/osm2pgsql-dev/osm2pgsql/archive/refs/tags/2.3.0.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "bzip2",
+        "cli11",
+        "expat",
+        "fmt",
+        "hatchling",
+        "libboost-devel",
+        "libosmium",
+        "lua",
+        "nlohmann_json",
+        "pip",
+        "postgresql",
+        "proj",
+        "protozero",
+        "python",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "lua",
+        "osm2pgsql-replication",
+        "psycopg",
         "pyosmium",
-        "psycopg"
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "postgis",
+        "postgresql",
+        "python"
+      ]
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "description": "osm2pgsql is a tool for loading OpenStreetMap data into a PostgreSQL / PostGIS database suitable for applications like rendering into a map, geocoding with Nominatim, or general analysis.",
+      "dev_url": "https://github.com/osm2pgsql-dev/osm2pgsql",
+      "doc_url": "https://osm2pgsql.org/",
+      "home": "https://osm2pgsql.org/",
+      "license": "GPL-2.0-only",
+      "license_family": "GPL-2.0-only",
+      "license_file": "COPYING",
+      "summary": "Import OpenStreetMap data into a PostgreSQL/PostGIS database"
+    },
+    "build": {
+      "number": "1",
+      "script": "build.sh"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "travishathaway"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "osm2pgsql",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "expat",
+            "proj",
+            "bzip2",
+            "zlib",
+            "postgresql",
+            "lua",
+            "protozero",
+            "libosmium",
+            "cli11",
+            "fmt <12",
+            "nlohmann_json",
+            "libboost-devel"
+          ],
+          "run": [
+            "lua",
+            "osm2pgsql-replication"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test.sh",
+                "liechtenstein-2013-08-03.osm.pbf"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "postgresql",
+                "postgis"
+              ]
+            },
+            "script": [
+              "osm2pgsql --version",
+              "osm2pgsql --help",
+              "bash test.sh"
+            ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "expat",
+            "proj",
+            "bzip2",
+            "zlib",
+            "postgresql",
+            "lua",
+            "protozero",
+            "libosmium",
+            "cli11",
+            "fmt <12",
+            "nlohmann_json",
+            "libboost-devel"
+          ],
+          "run": [
+            "lua",
+            "osm2pgsql-replication"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test.sh",
+                "liechtenstein-2013-08-03.osm.pbf"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "postgresql",
+                "postgis"
+              ]
+            },
+            "script": [
+              "osm2pgsql --version",
+              "osm2pgsql --help",
+              "bash test.sh"
+            ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "expat",
+            "proj",
+            "bzip2",
+            "zlib",
+            "postgresql",
+            "lua",
+            "protozero",
+            "libosmium",
+            "cli11",
+            "fmt <12",
+            "nlohmann_json",
+            "libboost-devel"
+          ],
+          "run": [
+            "lua",
+            "osm2pgsql-replication"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test.sh",
+                "liechtenstein-2013-08-03.osm.pbf"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "postgresql",
+                "postgis"
+              ]
+            },
+            "script": [
+              "osm2pgsql --version",
+              "osm2pgsql --help",
+              "bash test.sh"
+            ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "expat",
+            "proj",
+            "bzip2",
+            "zlib",
+            "postgresql",
+            "lua",
+            "protozero",
+            "libosmium",
+            "cli11",
+            "fmt <12",
+            "nlohmann_json",
+            "libboost-devel"
+          ],
+          "run": [
+            "lua",
+            "osm2pgsql-replication"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test.sh",
+                "liechtenstein-2013-08-03.osm.pbf"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "postgresql",
+                "postgis"
+              ]
+            },
+            "script": [
+              "osm2pgsql --version",
+              "osm2pgsql --help",
+              "bash test.sh"
+            ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "expat",
+            "proj",
+            "bzip2",
+            "zlib",
+            "postgresql",
+            "lua",
+            "protozero",
+            "libosmium",
+            "cli11",
+            "fmt <12",
+            "nlohmann_json",
+            "libboost-devel"
+          ],
+          "run": [
+            "lua",
+            "osm2pgsql-replication"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test.sh",
+                "liechtenstein-2013-08-03.osm.pbf"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "postgresql",
+                "postgis"
+              ]
+            },
+            "script": [
+              "osm2pgsql --version",
+              "osm2pgsql --help",
+              "bash test.sh"
+            ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
+          }
+        ],
+        "version": "2.3.0"
+      }
+    ],
+    "package": {
+      "name": "osm2pgsql",
+      "version": "2.3.0"
+    },
+    "requirements": {
+      "build": [
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "ninja",
+        "pkg-config"
+      ],
+      "host": [
+        "expat",
+        "proj",
+        "bzip2",
+        "zlib",
+        "postgresql",
+        "lua",
+        "protozero",
+        "libosmium",
+        "cli11",
+        "fmt <12",
+        "nlohmann_json",
+        "libboost-devel"
+      ],
+      "run": [
+        "lua",
+        "osm2pgsql-replication"
       ]
     },
     "schema_version": 1,
@@ -408,7 +926,8 @@
       "summary": "Import OpenStreetMap data into a PostgreSQL/PostGIS database"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
@@ -443,8 +962,7 @@
           ],
           "run": [
             "lua",
-            "pyosmium",
-            "psycopg"
+            "osm2pgsql-replication"
           ]
         },
         "tests": [
@@ -466,6 +984,40 @@
               "osm2pgsql --help",
               "bash test.sh"
             ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
           }
         ],
         "version": "2.3.0"
@@ -499,8 +1051,7 @@
       ],
       "run": [
         "lua",
-        "pyosmium",
-        "psycopg"
+        "osm2pgsql-replication"
       ]
     },
     "schema_version": 1,
@@ -527,13 +1078,16 @@
         "cli11",
         "expat",
         "fmt",
+        "hatchling",
         "libboost-devel",
         "libosmium",
         "lua",
         "nlohmann_json",
+        "pip",
         "postgresql",
         "proj",
         "protozero",
+        "python",
         "zlib"
       ]
     },
@@ -541,157 +1095,23 @@
       "__set__": true,
       "elements": [
         "lua",
+        "osm2pgsql-replication",
         "psycopg",
-        "pyosmium"
+        "pyosmium",
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pip",
         "postgis",
-        "postgresql"
-      ]
-    }
-  },
-  "outputs_names": {
-    "__set__": true,
-    "elements": [
-      "osm2pgsql"
-    ]
-  },
-  "parsing_error": false,
-  "platforms": [
-    "linux_64",
-    "osx_64",
-    "win_64"
-  ],
-  "pr_info": {
-    "__lazy_json__": "pr_info/osm2pgsql.json"
-  },
-  "raw_meta_yaml": "context:\n  version: \"2.3.0\"\n\npackage:\n  name: osm2pgsql\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/osm2pgsql-dev/osm2pgsql/archive/refs/tags/${{ version }}.tar.gz\n    sha256: 334c19fd58140e48216ec842fd63d7a978c7a2aea034858c2a62f32ad9e94c06\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - ninja\n    - pkg-config\n\n  host:\n    - expat\n    - proj\n    - bzip2\n    - zlib\n    - postgresql\n    - lua\n    - protozero\n    - libosmium\n    - cli11\n    - fmt <12\n    - nlohmann_json\n    - libboost-devel\n\n  run:\n    - lua\n    - pyosmium\n    - psycopg\n\ntests:\n  - files:\n      recipe:\n        - test.sh\n        - liechtenstein-2013-08-03.osm.pbf\n    requirements:\n      run:\n        - postgresql\n        - if: unix\n          then: postgis\n    script:\n      - osm2pgsql --version\n      - osm2pgsql --help\n      - if: unix\n        then: bash test.sh\n\nabout:\n  homepage: https://osm2pgsql.org\n  license: GPL-2.0-only\n  license_file:\n    - COPYING\n  summary: Import OpenStreetMap data into a PostgreSQL/PostGIS database\n  description: osm2pgsql is a tool for loading OpenStreetMap data into a PostgreSQL / PostGIS database suitable for applications like rendering into a map, geocoding with Nominatim, or general analysis.\n  documentation: https://osm2pgsql.org\n  repository: https://github.com/osm2pgsql-dev/osm2pgsql\n\nextra:\n  recipe-maintainers:\n    - travishathaway\n",
-  "req": {
-    "__set__": true,
-    "elements": [
-      "bzip2",
-      "c_stdlib_stub",
-      "cli11",
-      "cmake",
-      "cxx_compiler_stub",
-      "expat",
-      "fmt",
-      "libboost-devel",
-      "libosmium",
-      "lua",
-      "ninja",
-      "nlohmann_json",
-      "pkg-config",
-      "postgresql",
-      "proj",
-      "protozero",
-      "psycopg",
-      "pyosmium",
-      "zlib"
-    ]
-  },
-  "requirements": {
-    "build": {
-      "__set__": true,
-      "elements": [
-        "c_stdlib_stub",
-        "cmake",
-        "cxx_compiler_stub",
-        "ninja",
-        "pkg-config"
-      ]
-    },
-    "host": {
-      "__set__": true,
-      "elements": [
-        "bzip2",
-        "c_stdlib_stub",
-        "cli11",
-        "cxx_compiler_stub",
-        "expat",
-        "fmt",
-        "libboost-devel",
-        "libosmium",
-        "lua",
-        "nlohmann_json",
         "postgresql",
-        "proj",
-        "protozero",
-        "zlib"
-      ]
-    },
-    "run": {
-      "__set__": true,
-      "elements": [
-        "c_stdlib_stub",
-        "cxx_compiler_stub",
-        "lua",
-        "psycopg",
-        "pyosmium"
-      ]
-    },
-    "test": {
-      "__set__": true,
-      "elements": [
-        "postgis",
-        "postgresql"
+        "python"
       ]
     }
   },
-  "strong_exports": false,
-  "total_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": [
-        "c_stdlib_stub",
-        "cmake",
-        "cxx_compiler_stub",
-        "ninja",
-        "pkg-config"
-      ]
-    },
-    "host": {
-      "__set__": true,
-      "elements": [
-        "bzip2",
-        "cli11",
-        "expat",
-        "fmt <12",
-        "libboost-devel",
-        "libosmium",
-        "lua",
-        "nlohmann_json",
-        "postgresql",
-        "proj",
-        "protozero",
-        "zlib"
-      ]
-    },
-    "run": {
-      "__set__": true,
-      "elements": [
-        "lua",
-        "psycopg",
-        "pyosmium"
-      ]
-    },
-    "test": {
-      "__set__": true,
-      "elements": [
-        "postgis",
-        "postgresql"
-      ]
-    }
-  },
-  "url": "https://github.com/osm2pgsql-dev/osm2pgsql/archive/refs/tags/2.3.0.tar.gz",
-  "version": "2.3.0",
-  "version_pr_info": {
-    "__lazy_json__": "version_pr_info/osm2pgsql.json"
-  },
-  "win_64_meta_yaml": {
+  "osx_arm64_meta_yaml": {
     "about": {
       "description": "osm2pgsql is a tool for loading OpenStreetMap data into a PostgreSQL / PostGIS database suitable for applications like rendering into a map, geocoding with Nominatim, or general analysis.",
       "dev_url": "https://github.com/osm2pgsql-dev/osm2pgsql",
@@ -703,7 +1123,8 @@
       "summary": "Import OpenStreetMap data into a PostgreSQL/PostGIS database"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
@@ -738,8 +1159,7 @@
           ],
           "run": [
             "lua",
-            "pyosmium",
-            "psycopg"
+            "osm2pgsql-replication"
           ]
         },
         "tests": [
@@ -761,6 +1181,40 @@
               "osm2pgsql --help",
               "bash test.sh"
             ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
           }
         ],
         "version": "2.3.0"
@@ -794,8 +1248,363 @@
       ],
       "run": [
         "lua",
+        "osm2pgsql-replication"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "334c19fd58140e48216ec842fd63d7a978c7a2aea034858c2a62f32ad9e94c06",
+      "url": "https://github.com/osm2pgsql-dev/osm2pgsql/archive/refs/tags/2.3.0.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "bzip2",
+        "cli11",
+        "expat",
+        "fmt",
+        "hatchling",
+        "libboost-devel",
+        "libosmium",
+        "lua",
+        "nlohmann_json",
+        "pip",
+        "postgresql",
+        "proj",
+        "protozero",
+        "python",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "lua",
+        "osm2pgsql-replication",
+        "psycopg",
         "pyosmium",
-        "psycopg"
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "postgis",
+        "postgresql",
+        "python"
+      ]
+    }
+  },
+  "outputs_names": {
+    "__set__": true,
+    "elements": [
+      "osm2pgsql",
+      "osm2pgsql-replication"
+    ]
+  },
+  "parsing_error": false,
+  "platforms": [
+    "linux_64",
+    "linux_aarch64",
+    "osx_64",
+    "osx_arm64",
+    "win_64"
+  ],
+  "pr_info": {
+    "__lazy_json__": "pr_info/osm2pgsql.json"
+  },
+  "raw_meta_yaml": "context:\n  version: \"2.3.0\"\n\nrecipe:\n  name: osm2pgsql\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/osm2pgsql-dev/osm2pgsql/archive/refs/tags/${{ version }}.tar.gz\n    sha256: 334c19fd58140e48216ec842fd63d7a978c7a2aea034858c2a62f32ad9e94c06\n\nbuild:\n  number: 1\n\noutputs:\n  - package:\n      name: osm2pgsql\n      version: ${{ version }}\n    build:\n      number: 1\n      script:\n        - if: unix\n          then: build.sh\n          else: build.bat\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - ninja\n        - pkg-config\n      host:\n        - expat\n        - proj\n        - bzip2\n        - zlib\n        - postgresql\n        - lua\n        - protozero\n        - libosmium\n        - cli11\n        - fmt <12\n        - nlohmann_json\n        - libboost-devel\n      run:\n        - lua\n        - osm2pgsql-replication\n    tests:\n      - files:\n          recipe:\n            - test.sh\n            - liechtenstein-2013-08-03.osm.pbf\n        requirements:\n          run:\n            - postgresql\n            - if: unix\n              then: postgis\n        script:\n          - osm2pgsql --version\n          - osm2pgsql --help\n          - if: unix\n            then: bash test.sh\n    about:\n      homepage: https://osm2pgsql.org\n      license: GPL-2.0-only\n      license_file:\n        - COPYING\n      summary: Import OpenStreetMap data into a PostgreSQL/PostGIS database\n      description: osm2pgsql is a tool for loading OpenStreetMap data into a PostgreSQL / PostGIS database suitable for applications like rendering into a map, geocoding with Nominatim, or general analysis.\n      documentation: https://osm2pgsql.org\n      repository: https://github.com/osm2pgsql-dev/osm2pgsql\n\n  - package:\n      name: osm2pgsql-replication\n      version: ${{ version }}\n    build:\n      noarch: python\n      script:\n        - if: unix\n          then: build-replication.sh\n          else: build-replication.bat\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n        - pip\n        - hatchling\n      run:\n        - python >=${{ python_min }}\n        - pyosmium\n        - psycopg\n    tests:\n      - python:\n          python_version: ${{ python_min }}\n      - requirements:\n          run:\n            - python ${{ python_min }}.*\n        script:\n          - if: unix\n            then: osm2pgsql-replication --help 2>&1 | grep -qi \"usage\"\n    about:\n      homepage: https://osm2pgsql.org\n      license: GPL-2.0-only\n      license_file:\n        - COPYING\n      summary: Replication tool for osm2pgsql\n      description: osm2pgsql-replication keeps a database loaded with osm2pgsql up to date with the latest changes from OpenStreetMap.\n      documentation: https://osm2pgsql.org/doc/manual.html#keeping-the-database-up-to-date-with-osm2pgsql-replication\n      repository: https://github.com/osm2pgsql-dev/osm2pgsql\n\nabout:\n  homepage: https://osm2pgsql.org\n  license: GPL-2.0-only\n  license_file:\n    - COPYING\n  summary: Import OpenStreetMap data into a PostgreSQL/PostGIS database\n  description: osm2pgsql is a tool for loading OpenStreetMap data into a PostgreSQL / PostGIS database suitable for applications like rendering into a map, geocoding with Nominatim, or general analysis.\n  documentation: https://osm2pgsql.org\n  repository: https://github.com/osm2pgsql-dev/osm2pgsql\n\nextra:\n  recipe-maintainers:\n    - travishathaway\n",
+  "req": {
+    "__set__": true,
+    "elements": [
+      "bzip2",
+      "c_stdlib_stub",
+      "cli11",
+      "cmake",
+      "cxx_compiler_stub",
+      "expat",
+      "fmt",
+      "hatchling",
+      "libboost-devel",
+      "libosmium",
+      "lua",
+      "ninja",
+      "nlohmann_json",
+      "osm2pgsql-replication",
+      "pip",
+      "pkg-config",
+      "postgresql",
+      "proj",
+      "protozero",
+      "psycopg",
+      "pyosmium",
+      "python",
+      "zlib"
+    ]
+  },
+  "requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "bzip2",
+        "c_stdlib_stub",
+        "cli11",
+        "cxx_compiler_stub",
+        "expat",
+        "fmt",
+        "hatchling",
+        "libboost-devel",
+        "libosmium",
+        "lua",
+        "nlohmann_json",
+        "pip",
+        "postgresql",
+        "proj",
+        "protozero",
+        "python",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "lua",
+        "osm2pgsql-replication",
+        "psycopg",
+        "pyosmium",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "postgis",
+        "postgresql",
+        "python"
+      ]
+    }
+  },
+  "strong_exports": false,
+  "total_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "bzip2",
+        "cli11",
+        "expat",
+        "fmt <12",
+        "hatchling",
+        "libboost-devel",
+        "libosmium",
+        "lua",
+        "nlohmann_json",
+        "pip",
+        "postgresql",
+        "proj",
+        "protozero",
+        "python 3.10.*",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "lua",
+        "osm2pgsql-replication",
+        "psycopg",
+        "pyosmium",
+        "python >=3.10"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "postgis",
+        "postgresql",
+        "python 3.10.*"
+      ]
+    }
+  },
+  "url": "https://github.com/osm2pgsql-dev/osm2pgsql/archive/refs/tags/2.3.0.tar.gz",
+  "version": "2.3.0",
+  "version_pr_info": {
+    "__lazy_json__": "version_pr_info/osm2pgsql.json"
+  },
+  "win_64_meta_yaml": {
+    "about": {
+      "description": "osm2pgsql is a tool for loading OpenStreetMap data into a PostgreSQL / PostGIS database suitable for applications like rendering into a map, geocoding with Nominatim, or general analysis.",
+      "dev_url": "https://github.com/osm2pgsql-dev/osm2pgsql",
+      "doc_url": "https://osm2pgsql.org/",
+      "home": "https://osm2pgsql.org/",
+      "license": "GPL-2.0-only",
+      "license_family": "GPL-2.0-only",
+      "license_file": "COPYING",
+      "summary": "Import OpenStreetMap data into a PostgreSQL/PostGIS database"
+    },
+    "build": {
+      "number": "1",
+      "script": "build.sh"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "travishathaway"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "osm2pgsql",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ],
+          "host": [
+            "expat",
+            "proj",
+            "bzip2",
+            "zlib",
+            "postgresql",
+            "lua",
+            "protozero",
+            "libosmium",
+            "cli11",
+            "fmt <12",
+            "nlohmann_json",
+            "libboost-devel"
+          ],
+          "run": [
+            "lua",
+            "osm2pgsql-replication"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test.sh",
+                "liechtenstein-2013-08-03.osm.pbf"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "postgresql",
+                "postgis"
+              ]
+            },
+            "script": [
+              "osm2pgsql --version",
+              "osm2pgsql --help",
+              "bash test.sh"
+            ]
+          }
+        ],
+        "version": "2.3.0"
+      },
+      {
+        "build": null,
+        "name": "osm2pgsql-replication",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "hatchling"
+          ],
+          "run": [
+            "python >=3.10",
+            "pyosmium",
+            "psycopg"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [],
+              "python_version": "3.10"
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "osm2pgsql-replication --help 2>&1 | grep -qi \"usage\""
+          }
+        ],
+        "version": "2.3.0"
+      }
+    ],
+    "package": {
+      "name": "osm2pgsql",
+      "version": "2.3.0"
+    },
+    "requirements": {
+      "build": [
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "ninja",
+        "pkg-config"
+      ],
+      "host": [
+        "expat",
+        "proj",
+        "bzip2",
+        "zlib",
+        "postgresql",
+        "lua",
+        "protozero",
+        "libosmium",
+        "cli11",
+        "fmt <12",
+        "nlohmann_json",
+        "libboost-devel"
+      ],
+      "run": [
+        "lua",
+        "osm2pgsql-replication"
       ]
     },
     "schema_version": 1,
@@ -822,13 +1631,16 @@
         "cli11",
         "expat",
         "fmt",
+        "hatchling",
         "libboost-devel",
         "libosmium",
         "lua",
         "nlohmann_json",
+        "pip",
         "postgresql",
         "proj",
         "protozero",
+        "python",
         "zlib"
       ]
     },
@@ -836,15 +1648,19 @@
       "__set__": true,
       "elements": [
         "lua",
+        "osm2pgsql-replication",
         "psycopg",
-        "pyosmium"
+        "pyosmium",
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pip",
         "postgis",
-        "postgresql"
+        "postgresql",
+        "python"
       ]
     }
   }
