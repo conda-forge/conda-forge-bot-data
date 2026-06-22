@@ -22,8 +22,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "77d2161451fcf6cde437b5063a0ac7c2d6e767d4",
-  "feedstock_hash_ts": 1782127098,
+  "feedstock_hash": "ceb8e3379eed708695d73eae557d63e8435a72d9",
+  "feedstock_hash_ts": 1782129701,
   "feedstock_name": "magika-cli",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -34,11 +34,11 @@
       "home": "https://github.com/google/magika",
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
-      "license_file": "rust/cli/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Determines file content types using AI"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export OPENSSL_DIR=\"${PREFIX}\"",
@@ -159,11 +159,11 @@
       "home": "https://github.com/google/magika",
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
-      "license_file": "rust/cli/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Determines file content types using AI"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export OPENSSL_DIR=\"${PREFIX}\"",
@@ -284,11 +284,11 @@
       "home": "https://github.com/google/magika",
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
-      "license_file": "rust/cli/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Determines file content types using AI"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export OPENSSL_DIR=\"${PREFIX}\"",
@@ -526,11 +526,11 @@
       "home": "https://github.com/google/magika",
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
-      "license_file": "rust/cli/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Determines file content types using AI"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export OPENSSL_DIR=\"${PREFIX}\"",
@@ -651,11 +651,11 @@
       "home": "https://github.com/google/magika",
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
-      "license_file": "rust/cli/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Determines file content types using AI"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export OPENSSL_DIR=\"${PREFIX}\"",
@@ -785,7 +785,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/magika-cli.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.1.0\"\n\npackage:\n  name: magika-cli\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/google/magika/archive/refs/tags/cli/v${{ version }}.tar.gz\n  sha256: 87fd85f33d2c644d657de024b83cdc36bbdcf4a2961be5e93fe74e081477076c\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n      # Dynamically link against conda-forge's onnxruntime instead of letting\n      # the `ort` crate download prebuilt binaries from the network.\n      ORT_PREFER_DYNAMIC_LINK: \"1\"\n    content:\n      - if: linux\n        then:\n          - export OPENSSL_DIR=\"${PREFIX}\"\n      - if: unix\n        then:\n          # The library embeds the model via `include_bytes!(\"model.onnx\")`,\n          # where `rust/lib/src/model.onnx` is a symlink chain pointing at\n          # `assets/models/standard_v3_3/model.onnx`. Verify the symlink still\n          # resolves to that expected file (guards against upstream bumping the\n          # model directory), then replace it with the real file so the build\n          # reads real bytes (the symlink does not survive extraction on\n          # Windows).\n          - test rust/lib/src/model.onnx -ef assets/models/standard_v3_3/model.onnx\n          - rm -f rust/lib/src/model.onnx\n          - cp assets/models/standard_v3_3/model.onnx rust/lib/src/model.onnx\n          - export ORT_LIB_LOCATION=\"${PREFIX}/lib\"\n          - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path rust/cli\n          - cd rust/cli && cargo-bundle-licenses --format yaml --output ${{ SRC_DIR }}/THIRDPARTY.yml\n        else:\n          # `rust\\lib\\src\\model.onnx` is a dangling symlink on Windows; remove\n          # it and copy the real model file over it.\n          - if not exist assets\\models\\standard_v3_3\\model.onnx exit 1\n          - del /F /Q rust\\lib\\src\\model.onnx\n          - copy /Y assets\\models\\standard_v3_3\\model.onnx rust\\lib\\src\\model.onnx\n          - if errorlevel 1 exit 1\n          # conda-forge ships the import library as `onnxruntime_conda.lib`, but\n          # the `ort` crate links against `onnxruntime`. Provide an alias in a\n          # build-only directory so it does not get packaged into the output.\n          - mkdir ort-lib\n          - copy /Y %LIBRARY_PREFIX%\\lib\\onnxruntime_conda.lib ort-lib\\onnxruntime.lib\n          - if errorlevel 1 exit 1\n          - set \"ORT_LIB_LOCATION=%SRC_DIR%\\ort-lib\"\n          - cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path rust/cli\n          - if errorlevel 1 exit 1\n          - cd rust/cli && cargo-bundle-licenses --format yaml --output %SRC_DIR%/THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n  host:\n    - onnxruntime-cpp\n    - if: linux\n      then:\n        - openssl\n\ntests:\n  - script:\n      - magika --version\n      - magika --help\n  - package_contents:\n      bin:\n        - magika\n      strict: true\n\nabout:\n  homepage: https://github.com/google/magika\n  summary: Determines file content types using AI\n  description: |\n    Magika is a tool that detects content types of files using deep learning.\n    This package provides the `magika` command-line interface implemented in\n    Rust on top of the `magika` library crate.\n  license: Apache-2.0\n  license_file:\n    - rust/cli/LICENSE\n    - THIRDPARTY.yml\n  documentation: https://securityresearch.google/magika/\n  repository: https://github.com/google/magika\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
+  "raw_meta_yaml": "context:\n  version: \"1.1.0\"\n\npackage:\n  name: magika-cli\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/google/magika/archive/refs/tags/cli/v${{ version }}.tar.gz\n  sha256: 87fd85f33d2c644d657de024b83cdc36bbdcf4a2961be5e93fe74e081477076c\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n      # Dynamically link against conda-forge's onnxruntime instead of letting\n      # the `ort` crate download prebuilt binaries from the network.\n      ORT_PREFER_DYNAMIC_LINK: \"1\"\n    content:\n      - if: linux\n        then:\n          - export OPENSSL_DIR=\"${PREFIX}\"\n      - if: unix\n        then:\n          # The library embeds the model via `include_bytes!(\"model.onnx\")`,\n          # where `rust/lib/src/model.onnx` is a symlink chain pointing at\n          # `assets/models/standard_v3_3/model.onnx`. Verify the symlink still\n          # resolves to that expected file (guards against upstream bumping the\n          # model directory), then replace it with the real file so the build\n          # reads real bytes (the symlink does not survive extraction on\n          # Windows).\n          - test rust/lib/src/model.onnx -ef assets/models/standard_v3_3/model.onnx\n          - rm -f rust/lib/src/model.onnx\n          - cp assets/models/standard_v3_3/model.onnx rust/lib/src/model.onnx\n          - export ORT_LIB_LOCATION=\"${PREFIX}/lib\"\n          - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path rust/cli\n          - cd rust/cli && cargo-bundle-licenses --format yaml --output ${{ SRC_DIR }}/THIRDPARTY.yml\n        else:\n          # `rust\\lib\\src\\model.onnx` is a dangling symlink on Windows; remove\n          # it and copy the real model file over it.\n          - if not exist assets\\models\\standard_v3_3\\model.onnx exit 1\n          - del /F /Q rust\\lib\\src\\model.onnx\n          - copy /Y assets\\models\\standard_v3_3\\model.onnx rust\\lib\\src\\model.onnx\n          - if errorlevel 1 exit 1\n          # conda-forge ships the import library as `onnxruntime_conda.lib`, but\n          # the `ort` crate links against `onnxruntime`. Provide an alias in a\n          # build-only directory so it does not get packaged into the output.\n          - mkdir ort-lib\n          - copy /Y %LIBRARY_PREFIX%\\lib\\onnxruntime_conda.lib ort-lib\\onnxruntime.lib\n          - if errorlevel 1 exit 1\n          - set \"ORT_LIB_LOCATION=%SRC_DIR%\\ort-lib\"\n          - cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path rust/cli\n          - if errorlevel 1 exit 1\n          - cd rust/cli && cargo-bundle-licenses --format yaml --output %SRC_DIR%/THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n  host:\n    - onnxruntime-cpp\n    - if: linux\n      then:\n        - openssl\n\ntests:\n  - script:\n      - magika --version\n      - magika --help\n  - package_contents:\n      bin:\n        - magika\n      strict: true\n\nabout:\n  homepage: https://github.com/google/magika\n  summary: Determines file content types using AI\n  description: |\n    Magika is a tool that detects content types of files using deep learning.\n    This package provides the `magika` command-line interface implemented in\n    Rust on top of the `magika` library crate.\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  documentation: https://securityresearch.google/magika/\n  repository: https://github.com/google/magika\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -876,11 +876,11 @@
       "home": "https://github.com/google/magika",
       "license": "Apache-2.0",
       "license_family": "Apache-2.0",
-      "license_file": "rust/cli/LICENSE",
+      "license_file": "LICENSE",
       "summary": "Determines file content types using AI"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export OPENSSL_DIR=\"${PREFIX}\"",
