@@ -3,18 +3,25 @@
   "branch": "main",
   "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
+    "bot": {
+      "automerge": true,
+      "check_solvable": true,
+      "inspection": "update-grayskull",
+      "run_deps_from_wheel": true
+    },
     "conda_build": {
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "a08df8ca65b6c4cdcde9f71213020adc13b6b4a2",
-  "feedstock_hash_ts": 1780482737,
+  "feedstock_hash": "de1d4082e8ae5b976080388d58de1b7a2afc1086",
+  "feedstock_hash_ts": 1782123240,
   "feedstock_name": "kedro-dagster",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -29,8 +36,14 @@
     },
     "build": {
       "noarch": "python",
-      "number": "0",
-      "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+      "number": "1",
+      "script": {
+        "content": "${{ PYTHON }} -m pip install -vv --use-pep517 --no-deps --no-build-isolation .",
+        "env": {
+          "PYTHONWARNINGS": "ignore::UserWarning",
+          "WARNINGS": "ignore::kedro.KedroPythonVersionWarning"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -51,7 +64,7 @@
             "pip"
           ],
           "run": [
-            "python >=3.11,<3.14",
+            "python >=3.11,<3.15",
             "kedro >=1.0.0",
             "kedro-datasets >=1.0.0",
             "dagster >=1.10,<2.0",
@@ -63,11 +76,19 @@
         },
         "tests": [
           {
-            "python": {
-              "imports": [
-                "kedro_dagster"
-              ],
-              "python_version": "3.11.*"
+            "requirements": {
+              "run": [
+                "pip",
+                "python 3.11.*"
+              ]
+            },
+            "script": {
+              "content": "import kedro_dagster\n",
+              "env": {
+                "PYTHONWARNINGS": "ignore::UserWarning",
+                "WARNINGS": "ignore::kedro.KedroPythonVersionWarning"
+              },
+              "interpreter": "python"
             }
           }
         ],
@@ -86,7 +107,7 @@
         "pip"
       ],
       "run": [
-        "python >=3.11,<3.14",
+        "python >=3.11,<3.15",
         "kedro >=1.0.0",
         "kedro-datasets >=1.0.0",
         "dagster >=1.10,<2.0",
@@ -132,7 +153,8 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "python"
       ]
     }
   },
@@ -148,8 +170,14 @@
     },
     "build": {
       "noarch": "python",
-      "number": "0",
-      "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+      "number": "1",
+      "script": {
+        "content": "${{ PYTHON }} -m pip install -vv --use-pep517 --no-deps --no-build-isolation .",
+        "env": {
+          "PYTHONWARNINGS": "ignore::UserWarning",
+          "WARNINGS": "ignore::kedro.KedroPythonVersionWarning"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -170,7 +198,7 @@
             "pip"
           ],
           "run": [
-            "python >=3.11,<3.14",
+            "python >=3.11,<3.15",
             "kedro >=1.0.0",
             "kedro-datasets >=1.0.0",
             "dagster >=1.10,<2.0",
@@ -182,11 +210,19 @@
         },
         "tests": [
           {
-            "python": {
-              "imports": [
-                "kedro_dagster"
-              ],
-              "python_version": "3.11.*"
+            "requirements": {
+              "run": [
+                "pip",
+                "python 3.11.*"
+              ]
+            },
+            "script": {
+              "content": "import kedro_dagster\n",
+              "env": {
+                "PYTHONWARNINGS": "ignore::UserWarning",
+                "WARNINGS": "ignore::kedro.KedroPythonVersionWarning"
+              },
+              "interpreter": "python"
             }
           }
         ],
@@ -205,7 +241,7 @@
         "pip"
       ],
       "run": [
-        "python >=3.11,<3.14",
+        "python >=3.11,<3.15",
         "kedro >=1.0.0",
         "kedro-datasets >=1.0.0",
         "dagster >=1.10,<2.0",
@@ -235,7 +271,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/kedro-dagster.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  name: kedro-dagster\n  version: \"0.7.0\"\n  python_min: '3.11'\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/kedro_dagster-${{ version }}.tar.gz\n  sha256: a52d63fc3571ed399db7eed2877eb8a9e1cf5f44a821a7ad4cd233608757b782\n\nbuild:\n  number: 0\n  noarch: python\n  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - hatchling\n    - hatch-vcs\n    - pip\n  run:\n    - python >=${{ python_min }},<3.14\n    - kedro >=1.0.0\n    - kedro-datasets >=1.0.0\n    - dagster >=1.10,<2.0\n    - dagster-webserver\n    - dagster-dg-cli\n    - pydantic >=2.0.0\n    - cachetools >=4.1\n\ntests:\n  - python:\n      imports:\n        - kedro_dagster\n      pip_check: true\n      python_version: ${{ python_min }}.*\n\nabout:\n  summary: Kedro-Dagster makes it easy to deploy Kedro projects to Dagster\n  license: Apache-2.0\n  license_file: LICENSE\n  homepage: https://pypi.org/project/kedro-dagster\n  documentation: https://kedro-dagster.readthedocs.io\n  repository: https://github.com/stateful-y/kedro-dagster\n\nextra:\n  recipe-maintainers:\n    - gtauzin\n    - rxm7706\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  name: kedro-dagster\n  version: \"0.7.0\"\n  python_min: '3.11'\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/kedro_dagster-${{ version }}.tar.gz\n  sha256: a52d63fc3571ed399db7eed2877eb8a9e1cf5f44a821a7ad4cd233608757b782\n\nbuild:\n  number: 1\n  noarch: python\n  script:\n    env:\n      WARNINGS: \"ignore::kedro.KedroPythonVersionWarning\"\n      PYTHONWARNINGS: \"ignore::UserWarning\"\n    content:\n      - \"${{ PYTHON }} -m pip install -vv --use-pep517 --no-deps --no-build-isolation .\"\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - hatchling\n    - hatch-vcs\n    - pip\n  run:\n    - python >=${{ python_min }},<3.15\n    - kedro >=1.0.0\n    - kedro-datasets >=1.0.0\n    - dagster >=1.10,<2.0\n    - dagster-webserver\n    - dagster-dg-cli\n    - pydantic >=2.0.0\n    - cachetools >=4.1\n\ntests:\n  - requirements:\n      run:\n        - pip\n        - python ${{ python_min }}.*\n    script:\n      env:\n        WARNINGS: \"ignore::kedro.KedroPythonVersionWarning\"\n        PYTHONWARNINGS: \"ignore::UserWarning\"\n      interpreter: python\n      content: |\n        import kedro_dagster\n\nabout:\n  summary: Kedro-Dagster makes it easy to deploy Kedro projects to Dagster\n  license: Apache-2.0\n  license_file: LICENSE\n  homepage: https://pypi.org/project/kedro-dagster\n  documentation: https://kedro-dagster.readthedocs.io\n  repository: https://github.com/stateful-y/kedro-dagster\n\nextra:\n  recipe-maintainers:\n    - gtauzin\n    - rxm7706\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -282,7 +318,8 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "python"
       ]
     }
   },
@@ -311,13 +348,14 @@
         "kedro >=1.0.0",
         "kedro-datasets >=1.0.0",
         "pydantic >=2.0.0",
-        "python >=3.11,<3.14"
+        "python >=3.11,<3.15"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "python 3.11.*"
       ]
     }
   },
