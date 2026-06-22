@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "856d7cf85c12570542e9a659b36a768248463e78",
-  "feedstock_hash_ts": 1781885666,
+  "feedstock_hash": "6ec25640416026e4f10524996bd1b1da91254ed6",
+  "feedstock_hash_ts": 1782130983,
   "feedstock_name": "pixi-build-r",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -84,12 +84,12 @@
             }
           }
         ],
-        "version": "0.1.1"
+        "version": "0.1.3"
       }
     ],
     "package": {
       "name": "pixi-build-r",
-      "version": "0.1.1"
+      "version": "0.1.3"
     },
     "requirements": {
       "build": [
@@ -110,8 +110,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "044d39584261b2157bd6a95f2404f580db3f0f4eee42132d1036dee54d7ea4db",
-      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.1.tar.gz"
+      "sha256": "905b2c29507ffc022d17b24f25ace2da88f77452bb841cf5767c48b6c97fdae4",
+      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.3.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -211,7 +211,7 @@
             }
           }
         ],
-        "version": "0.1.1"
+        "version": "0.1.3"
       },
       {
         "build": null,
@@ -245,7 +245,7 @@
             }
           }
         ],
-        "version": "0.1.1"
+        "version": "0.1.3"
       },
       {
         "build": null,
@@ -279,12 +279,12 @@
             }
           }
         ],
-        "version": "0.1.1"
+        "version": "0.1.3"
       }
     ],
     "package": {
       "name": "pixi-build-r",
-      "version": "0.1.1"
+      "version": "0.1.3"
     },
     "requirements": {
       "build": [
@@ -305,8 +305,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "044d39584261b2157bd6a95f2404f580db3f0f4eee42132d1036dee54d7ea4db",
-      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.1.tar.gz"
+      "sha256": "905b2c29507ffc022d17b24f25ace2da88f77452bb841cf5767c48b6c97fdae4",
+      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.3.tar.gz"
     }
   },
   "name": "pixi-build-r",
@@ -377,12 +377,12 @@
             }
           }
         ],
-        "version": "0.1.1"
+        "version": "0.1.3"
       }
     ],
     "package": {
       "name": "pixi-build-r",
-      "version": "0.1.1"
+      "version": "0.1.3"
     },
     "requirements": {
       "build": [
@@ -403,8 +403,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "044d39584261b2157bd6a95f2404f580db3f0f4eee42132d1036dee54d7ea4db",
-      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.1.tar.gz"
+      "sha256": "905b2c29507ffc022d17b24f25ace2da88f77452bb841cf5767c48b6c97fdae4",
+      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.3.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -452,7 +452,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pixi-build-r.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\n\nschema_version: 1\n\ncontext:\n  name: pixi-build-r\n  crate_name: pixi_build_r\n  version: \"0.1.1\"\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/prefix-dev/pixi/archive/refs/tags/${{ name }}-v${{ version }}.tar.gz\n  sha256: 044d39584261b2157bd6a95f2404f580db3f0f4eee42132d1036dee54d7ea4db\n\nbuild:\n  number: 0\n  script:\n    env:\n      AWS_LC_SYS_CMAKE_BUILDER: \"1\"\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content:\n      - if: osx and x86_64\n        then:\n          - unset CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER\n      - if: unix\n        then:\n          - export OPENSSL_DIR=\"$PREFIX\"\n      - if: linux\n        then:\n          - export CMAKE_GENERATOR=Ninja\n      - if: win\n        then:\n          - set CARGO_HOME=C:\\\\.cargo\n          - md %CARGO_HOME%\n      - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path crates/${{ crate_name }} --no-default-features --features native-tls\n      - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n  files:\n    - bin/${{ name }}\n    - bin/${{ name }}.exe\n\nrequirements:\n  build:\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - cargo-bundle-licenses\n    - cargo-auditable\n  host:\n    - if: target_platform != 'win-arm64'\n      then: pkg-config\n    - if: unix\n      then: openssl\n  run:\n    - pixi-build-api-version >=5,<6\n\ntests:\n  - script:\n      - if: build_platform == target_platform\n        then: ${{ name }} --help\n  - package_contents:\n      bin:\n        - ${{ name }}\n\nabout:\n  homepage: https://github.com/prefix-dev/pixi\n  summary: A pixi build backend to build R packages.\n  description: |\n    This package provides a build backend for pixi that allows building R packages.\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  documentation: https://pixi.prefix.dev/latest/build/backends/pixi-build-r/\n  repository: https://github.com/prefix-dev/pixi\n\nextra:\n  recipe-maintainers:\n    - Hofer-Julian\n    - baszalmstra\n    - ruben-arts\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\n\nschema_version: 1\n\ncontext:\n  name: pixi-build-r\n  crate_name: pixi_build_r\n  version: \"0.1.3\"\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/prefix-dev/pixi/archive/refs/tags/${{ name }}-v${{ \n    version }}.tar.gz\n  sha256: 905b2c29507ffc022d17b24f25ace2da88f77452bb841cf5767c48b6c97fdae4\n\nbuild:\n  number: 0\n  script:\n    env:\n      AWS_LC_SYS_CMAKE_BUILDER: \"1\"\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content:\n    - if: osx and x86_64\n      then:\n      - unset CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER\n    - if: unix\n      then:\n      - export OPENSSL_DIR=\"$PREFIX\"\n    - if: linux\n      then:\n      - export CMAKE_GENERATOR=Ninja\n    - if: win\n      then:\n      - set CARGO_HOME=C:\\\\.cargo\n      - md %CARGO_HOME%\n    - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} \n      --path crates/${{ crate_name }} --no-default-features --features \n      native-tls\n    - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n  files:\n  - bin/${{ name }}\n  - bin/${{ name }}.exe\n\nrequirements:\n  build:\n  - ${{ compiler(\"rust\") }}\n  - ${{ stdlib(\"c\") }}\n  - cmake\n  - ninja\n  - cargo-bundle-licenses\n  - cargo-auditable\n  host:\n  - if: target_platform != 'win-arm64'\n    then: pkg-config\n  - if: unix\n    then: openssl\n  run:\n  - pixi-build-api-version >=5,<6\n\ntests:\n- script:\n  - if: build_platform == target_platform\n    then: ${{ name }} --help\n- package_contents:\n    bin:\n    - ${{ name }}\n\nabout:\n  homepage: https://github.com/prefix-dev/pixi\n  summary: A pixi build backend to build R packages.\n  description: |\n    This package provides a build backend for pixi that allows building R packages.\n  license: BSD-3-Clause\n  license_file:\n  - LICENSE\n  - THIRDPARTY.yml\n  documentation: https://pixi.prefix.dev/latest/build/backends/pixi-build-r/\n  repository: https://github.com/prefix-dev/pixi\n\nextra:\n  recipe-maintainers:\n  - Hofer-Julian\n  - baszalmstra\n  - ruben-arts\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -530,8 +530,8 @@
       "elements": []
     }
   },
-  "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.1.tar.gz",
-  "version": "0.1.1",
+  "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.3.tar.gz",
+  "version": "0.1.3",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/pixi-build-r.json"
   },
@@ -602,12 +602,12 @@
             }
           }
         ],
-        "version": "0.1.1"
+        "version": "0.1.3"
       }
     ],
     "package": {
       "name": "pixi-build-r",
-      "version": "0.1.1"
+      "version": "0.1.3"
     },
     "requirements": {
       "build": [
@@ -628,8 +628,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "044d39584261b2157bd6a95f2404f580db3f0f4eee42132d1036dee54d7ea4db",
-      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.1.tar.gz"
+      "sha256": "905b2c29507ffc022d17b24f25ace2da88f77452bb841cf5767c48b6c97fdae4",
+      "url": "https://github.com/prefix-dev/pixi/archive/refs/tags/pixi-build-r-v0.1.3.tar.gz"
     }
   },
   "win_64_requirements": {
