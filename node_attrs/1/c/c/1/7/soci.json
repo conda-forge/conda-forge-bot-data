@@ -22,8 +22,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "1789f4462c640298f1ebe8a95e7c24628980e43c",
-  "feedstock_hash_ts": 1782139938,
+  "feedstock_hash": "50b36b03fadcade68181a892bb40ca3c73b45df0",
+  "feedstock_hash_ts": 1782224221,
   "feedstock_name": "soci",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -35,7 +35,7 @@
       "summary": "SOCI is a general purpose database access library written in C++."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -210,7 +210,7 @@
       "summary": "SOCI is a general purpose database access library written in C++."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -385,7 +385,7 @@
       "summary": "SOCI is a general purpose database access library written in C++."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -560,7 +560,7 @@
       "summary": "SOCI is a general purpose database access library written in C++."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1270,7 +1270,7 @@
       "summary": "SOCI is a general purpose database access library written in C++."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1445,7 +1445,7 @@
       "summary": "SOCI is a general purpose database access library written in C++."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1632,7 +1632,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/soci.json"
   },
-  "raw_meta_yaml": "{% set name = \"soci\" %}\n{% set version = \"4.1.4\" %}\n{% set version_major = version.split(\".\")[0] %}\n{% set version_minor = version.split(\".\")[1] %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/SOCI/soci/archive/v{{ version }}.tar.gz\n  sha256: 144f017cccc2e2d806badb3313d6ab3c67a1925bccaa747a46fb3907108a615d\n\nbuild:\n  number: 0\n\noutputs:\n  - name: soci-core\n    script: build_soci.sh  # [unix]\n    script: bld_soci.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - fmt\n    run_exports:\n      - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_core.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_core.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_core_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: SOCI is a general purpose database written in C++.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\n  - name: soci-sqlite\n    script: build_soci.sh  # [unix]\n    script: bld_soci.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - soci-core\n        - sqlite\n      run:\n        # even though soci-core has a_run exports section\n        # it seems that it is not taken into account when rendering\n        # the recipe.\n        - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_sqlite3.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_sqlite3.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_sqlite3_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: soci-sqlite3 contains SOCI core and the implementation of SQLite3 backend.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\n  - name: soci-mysql\n    script: build_soci.sh  # [unix]\n    script: bld_soci.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - soci-core\n        - mysql-devel\n      run:\n        # even though soci-core has a_run exports section\n        # it seems that it is not taken into account when rendering\n        # the recipe.\n        - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_mysql.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_mysql.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_mysql_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: soci-mysql contains SOCI core and the implementation of MySQL backend.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\n  - name: soci-postgresql\n    script: build_soci.sh  # [unix]\n    build:\n      skip: true  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - soci-core\n        - libpq\n      run:\n        - libpq\n        # even though soci-core has a_run exports section\n        # it seems that it is not taken into account when rendering\n        # the recipe.\n        - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_postgresql.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_postgresql.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_postgresql_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: soci-postgresql contains SOCI core and the implementation of PostgreSQL backend.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\nabout:\n  home: http://soci.sourceforge.net/\n  license: BSL-1.0\n  license_file: LICENSE\n  summary: SOCI is a general purpose database access library written in C++.\n  doc_url: http://soci.sourceforge.net/doc/release/4.0/\n\nextra:\n  recipe-maintainers:\n    - SylvainCorlay\n    - JohanMabille\n    - marimeireles\n",
+  "raw_meta_yaml": "{% set name = \"soci\" %}\n{% set version = \"4.1.4\" %}\n{% set version_major = version.split(\".\")[0] %}\n{% set version_minor = version.split(\".\")[1] %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/SOCI/soci/archive/v{{ version }}.tar.gz\n  sha256: 144f017cccc2e2d806badb3313d6ab3c67a1925bccaa747a46fb3907108a615d\n\nbuild:\n  number: 1\n\noutputs:\n  - name: soci-core\n    script: build_soci.sh  # [unix]\n    script: bld_soci.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - fmt\n    run_exports:\n      - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_core.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_core.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_core_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: SOCI is a general purpose database written in C++.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\n  - name: soci-sqlite\n    script: build_soci.sh  # [unix]\n    script: bld_soci.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - soci-core\n        - sqlite\n      run:\n        # even though soci-core has a_run exports section\n        # it seems that it is not taken into account when rendering\n        # the recipe.\n        - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_sqlite3.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_sqlite3.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_sqlite3_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: soci-sqlite3 contains SOCI core and the implementation of SQLite3 backend.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\n  - name: soci-mysql\n    script: build_soci.sh  # [unix]\n    script: bld_soci.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - soci-core\n        - mysql-devel\n      run:\n        # even though soci-core has a_run exports section\n        # it seems that it is not taken into account when rendering\n        # the recipe.\n        - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_mysql.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_mysql.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_mysql_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: soci-mysql contains SOCI core and the implementation of MySQL backend.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\n  - name: soci-postgresql\n    script: build_soci.sh  # [unix]\n    build:\n      skip: true  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake =3.31\n        - make  # [unix]\n        - ninja  # [win]\n      host:\n        - soci-core\n        - libpq\n      run:\n        - libpq\n        # even though soci-core has a_run exports section\n        # it seems that it is not taken into account when rendering\n        # the recipe.\n        - {{ pin_subpackage('soci-core', max_pin='x.x') }}\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libsoci_postgresql.so  # [linux]\n        - test -f ${PREFIX}/lib/libsoci_postgresql.dylib  # [osx]\n        - if exist %LIBRARY_PREFIX%\\bin\\soci_postgresql_{{ version_major }}_{{ version_minor }}.dll (exit 0) else (exit 1)  # [win]\n\n    about:\n      summary: soci-postgresql contains SOCI core and the implementation of PostgreSQL backend.\n      doc_source_url: http://soci.sourceforge.net/doc/release/4.0/\n\nabout:\n  home: http://soci.sourceforge.net/\n  license: BSL-1.0\n  license_file: LICENSE\n  summary: SOCI is a general purpose database access library written in C++.\n  doc_url: http://soci.sourceforge.net/doc/release/4.0/\n\nextra:\n  recipe-maintainers:\n    - SylvainCorlay\n    - JohanMabille\n    - marimeireles\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1733,7 +1733,7 @@
       "summary": "SOCI is a general purpose database access library written in C++."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
