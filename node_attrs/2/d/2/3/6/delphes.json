@@ -1,9 +1,10 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_root_base6.36.10root_cxx_standard20.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nroot_base:\n- 6.36.10\nroot_cxx_standard:\n- '20'\ntarget_platform:\n- linux-64\nzip_keys:\n- - root_base\n  - root_cxx_standard\n",
+  "ci_support_linux_64_root_base6.36.10root_cxx_standard20.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npythia8:\n- '8.312'\nroot_base:\n- 6.36.10\nroot_cxx_standard:\n- '20'\ntarget_platform:\n- linux-64\nzip_keys:\n- - root_base\n  - root_cxx_standard\n",
   "conda-forge.yml": {
     "build_platform": {
+      "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64"
     },
     "conda_build": {
@@ -22,8 +23,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "f6261abd6f9421ead4bb601bc6eec523a279caa1",
-  "feedstock_hash_ts": 1780893918,
+  "feedstock_hash": "35301dc73bf021e6d9307bcbfd306e05417a41bd",
+  "feedstock_hash_ts": 1782274631,
   "feedstock_name": "delphes",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,7 +39,7 @@
       "summary": "A framework for fast simulation of a generic collider experiment"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "delphes"
@@ -447,7 +448,7 @@
       "summary": "A framework for fast simulation of a generic collider experiment"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "delphes"
@@ -856,7 +857,7 @@
       "summary": "A framework for fast simulation of a generic collider experiment"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "delphes"
@@ -1265,7 +1266,7 @@
       "summary": "A framework for fast simulation of a generic collider experiment"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "delphes"
@@ -2879,7 +2880,7 @@
       "summary": "A framework for fast simulation of a generic collider experiment"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "delphes"
@@ -3288,7 +3289,7 @@
       "summary": "A framework for fast simulation of a generic collider experiment"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "delphes"
@@ -3702,7 +3703,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/delphes.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"3.5.1\"\n\npackage:\n  name: \"delphes\"\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/delphes/delphes/archive/refs/tags/${{ version }}.tar.gz\n  sha256: b60d26d2ee2c84b58fbf2cf397fabd0ef3e89d3a0546d843c4ada82cc802d787\n  patches:\n    # std::prev_permutation needs <algorithm>, not transitively included on osx\n    - add-missing-algorithm-include.patch\n\nbuild:\n  number: 2\n  skip:\n    - win\n  script:\n    # Make the examples location independent by removing the 'external/' prefix\n    # in includes to instead use the installed versions\n    - grep -r -l \"external/\" examples/ | xargs sed -i 's|external/||g'\n    - CXXFLAGS=\"${CXXFLAGS}\" cmake ${CMAKE_ARGS} -DPYTHIA8_DATA=$(pythia8-config --datadir) -S . -B build\n    - cmake build -LH\n    - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n    - cmake --install build\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - make\n    - grep\n    - sed\n  host:\n    - root_base\n    - root_cxx_standard\n    - pythia8\n  run_exports:\n    - ${{ pin_subpackage(\"delphes\", upper_bound=\"x.x.x\") }}\n\ntests:\n  - package_contents:\n      bin:\n        - DelphesHepMC2\n        - DelphesHepMC3\n        - DelphesLHEF\n        - DelphesPythia8\n        - DelphesROOT\n        - DelphesSTDHEP\n\n  - script:\n      - curl -sLO https://github.com/hep-packaging-coordination/conda-forge-test-files/raw/refs/heads/main/delphes/z_ee.hep.gz\n      - gunzip z_ee.hep.gz\n      - DelphesSTDHEP \"${PREFIX}\"/cards/delphes_card_CMS.tcl delphes_output.root z_ee.hep\n\n      # avoid lots of output to stdout\n      - root -l -b -q \"${PREFIX}\"/examples/Example1.C'(\"delphes_output.root\")' &> /dev/null\n      - root -l -b -q \"${PREFIX}\"/examples/Example2.C'(\"delphes_output.root\")'\n      - root -l -b -q \"${PREFIX}\"/examples/Example3.C'(\"delphes_output.root\")'\n      - root -l -b -q \"${PREFIX}\"/examples/Example4.C'(\"delphes_output.root\", \"plots.root\")'\n      - root -l -b -q \"${PREFIX}\"/examples/Example5.C'(\"delphes_output.root\")' &> /dev/null\n      # FIXME: Example6.C is failing in CI but not locally\n      # - root -l -b -q $PREFIX/examples/Example6.C'(\"delphes_output.root\")'\n\n    requirements:\n      run:\n        - root_base\n        - pythia8\n        - gzip\n        - curl\n        - grep\n        - sed\n\nabout:\n  summary: 'A framework for fast simulation of a generic collider experiment'\n  description: |\n    Delphes is a C++ framework, performing a fast multipurpose detector\n    response simulation. The simulation includes a tracking system, embedded\n    into a magnetic field, calorimeters and a muon system. The framework is\n    interfaced to standard file formats (e.g. Les Houches Event File or HepMC)\n    and outputs observables such as isolated leptons, missing transverse energy\n    and collection of jets which can be used for dedicated analyses.\n    The simulation of the detector response takes into account the effect of\n    magnetic field, the granularity of the calorimeters and sub-detector resolutions.\n    Visualisation of the final state particles is also built-in using the\n    corresponding ROOT library.\n  license: GPL-3.0-or-later\n  license_file: COPYING\n  homepage: https://github.com/delphes/delphes\n  documentation: https://cp3.irmp.ucl.ac.be/projects/delphes\n  repository: https://github.com/delphes/delphes\n\nextra:\n  recipe-maintainers:\n    - pavel-demin\n    - matthewfeickert\n    - kratsg\n",
+  "raw_meta_yaml": "context:\n  version: \"3.5.1\"\n\npackage:\n  name: \"delphes\"\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/delphes/delphes/archive/refs/tags/${{ version }}.tar.gz\n  sha256: b60d26d2ee2c84b58fbf2cf397fabd0ef3e89d3a0546d843c4ada82cc802d787\n  patches:\n    # std::prev_permutation needs <algorithm>, not transitively included on osx\n    - add-missing-algorithm-include.patch\n\nbuild:\n  number: 3\n  skip:\n    - win\n  script:\n    # Make the examples location independent by removing the 'external/' prefix\n    # in includes to instead use the installed versions\n    - grep -r -l \"external/\" examples/ | xargs sed -i 's|external/||g'\n    - CXXFLAGS=\"${CXXFLAGS}\" cmake ${CMAKE_ARGS} -DPYTHIA8_DATA=$(pythia8-config --datadir) -S . -B build\n    - cmake build -LH\n    - cmake --build build --clean-first --parallel=\"${CPU_COUNT}\"\n    - cmake --install build\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - make\n    - grep\n    - sed\n  host:\n    - root_base\n    - root_cxx_standard\n    - pythia8\n  run_exports:\n    - ${{ pin_subpackage(\"delphes\", upper_bound=\"x.x.x\") }}\n\ntests:\n  - package_contents:\n      bin:\n        - DelphesHepMC2\n        - DelphesHepMC3\n        - DelphesLHEF\n        - DelphesPythia8\n        - DelphesROOT\n        - DelphesSTDHEP\n\n  - script:\n      - curl -sLO https://github.com/hep-packaging-coordination/conda-forge-test-files/raw/refs/heads/main/delphes/z_ee.hep.gz\n      - gunzip z_ee.hep.gz\n      - DelphesSTDHEP \"${PREFIX}\"/cards/delphes_card_CMS.tcl delphes_output.root z_ee.hep\n\n      # avoid lots of output to stdout\n      - root -l -b -q \"${PREFIX}\"/examples/Example1.C'(\"delphes_output.root\")' &> /dev/null\n      - root -l -b -q \"${PREFIX}\"/examples/Example2.C'(\"delphes_output.root\")'\n      - root -l -b -q \"${PREFIX}\"/examples/Example3.C'(\"delphes_output.root\")'\n      - root -l -b -q \"${PREFIX}\"/examples/Example4.C'(\"delphes_output.root\", \"plots.root\")'\n      - root -l -b -q \"${PREFIX}\"/examples/Example5.C'(\"delphes_output.root\")' &> /dev/null\n      # FIXME: Example6.C is failing in CI but not locally\n      # - root -l -b -q $PREFIX/examples/Example6.C'(\"delphes_output.root\")'\n\n    requirements:\n      run:\n        - root_base\n        - pythia8\n        - gzip\n        - curl\n        - grep\n        - sed\n\nabout:\n  summary: 'A framework for fast simulation of a generic collider experiment'\n  description: |\n    Delphes is a C++ framework, performing a fast multipurpose detector\n    response simulation. The simulation includes a tracking system, embedded\n    into a magnetic field, calorimeters and a muon system. The framework is\n    interfaced to standard file formats (e.g. Les Houches Event File or HepMC)\n    and outputs observables such as isolated leptons, missing transverse energy\n    and collection of jets which can be used for dedicated analyses.\n    The simulation of the detector response takes into account the effect of\n    magnetic field, the granularity of the calorimeters and sub-detector resolutions.\n    Visualisation of the final state particles is also built-in using the\n    corresponding ROOT library.\n  license: GPL-3.0-or-later\n  license_file: COPYING\n  homepage: https://github.com/delphes/delphes\n  documentation: https://cp3.irmp.ucl.ac.be/projects/delphes\n  repository: https://github.com/delphes/delphes\n\nextra:\n  recipe-maintainers:\n    - pavel-demin\n    - matthewfeickert\n    - kratsg\n",
   "req": {
     "__set__": true,
     "elements": [
