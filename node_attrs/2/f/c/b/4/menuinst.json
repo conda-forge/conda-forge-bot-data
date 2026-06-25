@@ -28,8 +28,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "dbf4d9848f81bf6398fc32a39a82eef84cab9f2b",
-  "feedstock_hash_ts": 1782062615,
+  "feedstock_hash": "6ad4b6fda581c2c452146a950899cc60145b4d73",
+  "feedstock_hash_ts": 1782377634,
   "feedstock_name": "menuinst",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -42,7 +42,7 @@
       "summary": "cross platform install of menu items"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": {
         "content": [
           "rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"",
@@ -288,7 +288,7 @@
       "summary": "cross platform install of menu items"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": {
         "content": [
           "rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"",
@@ -534,7 +534,7 @@
       "summary": "cross platform install of menu items"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": {
         "content": [
           "rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"",
@@ -780,7 +780,7 @@
       "summary": "cross platform install of menu items"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": {
         "content": [
           "rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"",
@@ -1803,7 +1803,7 @@
       "summary": "cross platform install of menu items"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": {
         "content": [
           "rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"",
@@ -2049,7 +2049,7 @@
       "summary": "cross platform install of menu items"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": {
         "content": [
           "rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"",
@@ -2303,7 +2303,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/menuinst.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"2.5.0\"\n\npackage:\n  name: menuinst\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/conda/menuinst/archive/${{ version }}.tar.gz\n  sha256: 0c53dd1b692bca901d674a1c2393fa69d22a6463091c51433103a14232cb5e30\n\nbuild:\n  number: 1\n  script:\n    env:\n      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ version }}\n    content:\n      - if: win\n        then:\n          # Apparently these files make the post-build linkage analysis crash\n          # and we should not need them on Windows\n          - del /q \"${{ SRC_DIR }}\\\\menuinst\\\\data\\\\osx_launcher_*\"\n          - del /q \"${{ SRC_DIR }}\\\\menuinst\\\\data\\\\appkit_launcher_*\" \n      - if: linux\n        then:\n          # Delete in Linux too because we don't need them there\n          - rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"\n          - rm -f \"${{ SRC_DIR }}/menuinst/data/appkit_launcher_*\" \n      - ${{ PYTHON }} -m pip install . -vv\n      - if: win\n        # menuinst v1 expects cwp.py in PREFIX; backwards compat fix\n        then: copy \"%SP_DIR%\\\\menuinst\\\\_legacy\\cwp.py\" \"%PREFIX%\\\\\"\n  python:\n    entry_points:\n      - menuinst = menuinst.cli:main\n    skip_pyc_compilation:\n      - if: win\n        then: cwp.py\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n    - if: win\n      then:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n  host:\n    - python\n    - pip\n    - setuptools\n    - setuptools_scm\n  run:\n    - python\n    - if: match(python, \"<3.11\")\n      then: tomli\n    - tomli-w\n\ntests:\n  - python:\n      imports:\n        - menuinst\n        - menuinst.api\n        - if: win\n          then:\n            - menuinst._legacy\n            - menuinst.platforms.win_utils.winshortcut\n      pip_check: false\n  - script:\n      - menuinst --help\n      - if: osx\n        then:\n          - SP_DIR=\"$(python -c 'import site; print(site.getsitepackages()[0])')\"\n          - test -f \"${SP_DIR}/menuinst/data/appkit_launcher_arm64\"\n          - test -f \"${SP_DIR}/menuinst/data/appkit_launcher_x86_64\"\n          - test -f \"${SP_DIR}/menuinst/data/osx_launcher_arm64\"\n          - test -f \"${SP_DIR}/menuinst/data/osx_launcher_x86_64\"\n\nabout:\n  license: BSD-3-Clause AND MIT\n  license_file:\n    - LICENSE.txt\n    - menuinst/_vendor/apipkg/LICENSE\n  summary: cross platform install of menu items\n  homepage: https://github.com/conda/menuinst/\n  documentation: https://conda.github.io/menuinst/\n\nextra:\n  recipe-maintainers:\n    - goanpeca\n    - jakirkham\n    - carlodri\n    - isuruf\n    - jaimergp\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"2.5.0\"\n\npackage:\n  name: menuinst\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/conda/menuinst/archive/${{ version }}.tar.gz\n  sha256: 0c53dd1b692bca901d674a1c2393fa69d22a6463091c51433103a14232cb5e30\n\nbuild:\n  number: 2\n  dynamic_linking:\n    # The launcher binaries under menuinst/data/ are standalone .app templates that\n    # get copied verbatim into the shortcuts menuinst creates; they are not linked\n    # into this environment and must not be relocated. Relocation strips the\n    # /usr/lib/swift RPATH from the Swift appkit_launcher, which then fails to load\n    # libswiftCore on Intel macOS (arm64 is unaffected because dyld resolves the OS\n    # Swift runtime from the shared cache regardless). menuinst is pure Python with\n    # no other binaries, so disabling relocation is safe. See conda/menuinst#507.\n    binary_relocation: false\n  script:\n    env:\n      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ version }}\n    content:\n      - if: win\n        then:\n          # Apparently these files make the post-build linkage analysis crash\n          # and we should not need them on Windows\n          - del /q \"${{ SRC_DIR }}\\\\menuinst\\\\data\\\\osx_launcher_*\"\n          - del /q \"${{ SRC_DIR }}\\\\menuinst\\\\data\\\\appkit_launcher_*\" \n      - if: linux\n        then:\n          # Delete in Linux too because we don't need them there\n          - rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"\n          - rm -f \"${{ SRC_DIR }}/menuinst/data/appkit_launcher_*\" \n      - ${{ PYTHON }} -m pip install . -vv\n      - if: win\n        # menuinst v1 expects cwp.py in PREFIX; backwards compat fix\n        then: copy \"%SP_DIR%\\\\menuinst\\\\_legacy\\cwp.py\" \"%PREFIX%\\\\\"\n  python:\n    entry_points:\n      - menuinst = menuinst.cli:main\n    skip_pyc_compilation:\n      - if: win\n        then: cwp.py\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n    - if: win\n      then:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n  host:\n    - python\n    - pip\n    - setuptools\n    - setuptools_scm\n  run:\n    - python\n    - if: match(python, \"<3.11\")\n      then: tomli\n    - tomli-w\n\ntests:\n  - python:\n      imports:\n        - menuinst\n        - menuinst.api\n        - if: win\n          then:\n            - menuinst._legacy\n            - menuinst.platforms.win_utils.winshortcut\n      pip_check: false\n  - script:\n      - menuinst --help\n      - if: osx\n        then:\n          - SP_DIR=\"$(python -c 'import site; print(site.getsitepackages()[0])')\"\n          - test -f \"${SP_DIR}/menuinst/data/appkit_launcher_arm64\"\n          - test -f \"${SP_DIR}/menuinst/data/appkit_launcher_x86_64\"\n          - test -f \"${SP_DIR}/menuinst/data/osx_launcher_arm64\"\n          - test -f \"${SP_DIR}/menuinst/data/osx_launcher_x86_64\"\n\nabout:\n  license: BSD-3-Clause AND MIT\n  license_file:\n    - LICENSE.txt\n    - menuinst/_vendor/apipkg/LICENSE\n  summary: cross platform install of menu items\n  homepage: https://github.com/conda/menuinst/\n  documentation: https://conda.github.io/menuinst/\n\nextra:\n  recipe-maintainers:\n    - goanpeca\n    - jakirkham\n    - carlodri\n    - isuruf\n    - jaimergp\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -2389,7 +2389,7 @@
       "summary": "cross platform install of menu items"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": {
         "content": [
           "rm -f \"${{ SRC_DIR }}/menuinst/data/osx_launcher_*\"",
