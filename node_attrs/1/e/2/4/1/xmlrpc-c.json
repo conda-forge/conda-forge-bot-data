@@ -1,39 +1,102 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '12'\ncdt_name:\n- cos6\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '12'\ndocker_image:\n- quay.io/condaforge/linux-anvil-cos7-x86_64\nlibcurl:\n- '8'\nlibxml2:\n- '2.12'\nopenssl:\n- '3'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1.2'\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibcurl:\n- '8'\nliblzma_devel:\n- '5'\nlibxml2_devel:\n- '2.14'\nopenssl:\n- '3.5'\nreadline:\n- '8'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
+    },
+    "provider": {
+      "linux_64": "github_actions",
+      "linux_aarch64": "github_actions",
+      "osx_64": "github_actions",
+      "osx_arm64": "github_actions"
     }
   },
-  "feedstock_hash": "b69b7d58a6df271424afeb564c2749a74187a738",
-  "feedstock_hash_ts": 1777043325,
+  "feedstock_hash": "623797d20aa164061aa2d178df67bd3de95f7b79",
+  "feedstock_hash_ts": 1782420522,
   "feedstock_name": "xmlrpc-c",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "home": "http://xmlrpc-c.sourceforge.net/",
       "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
       "license_file": "doc/COPYING",
       "summary": "A lightweight RPC library based on XML and HTTP."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "xmlrpc-c"
-      ]
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "xmlrpc-c"
+        ]
+      },
+      "script": "export CXXFLAGS=\"${CXXFLAGS} -std=c++14\"\n\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.guess\" config.guess\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.sub\" config.sub\n\n./configure \\\n  --build=\"${BUILD}\" \\\n  --host=\"${HOST}\" \\\n  --prefix=\"${PREFIX}\" \\\n  --enable-libxml2-backend\n\nmake -j${CPU_COUNT}\nmake install\nmake -C tools install\n\nmake check\n"
     },
     "extra": {
       "recipe-maintainers": [
         "Tobias-Fischer"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      }
+    ],
     "package": {
       "name": "xmlrpc-c",
       "version": "1.54.06"
@@ -42,52 +105,44 @@
       "build": [
         "c_compiler_stub",
         "cxx_compiler_stub",
+        "c_stdlib_stub",
         "make",
-        "autoconf",
+        "gnuconfig",
         "pkg-config"
       ],
       "host": [
-        "libxml2",
+        "libxml2-devel",
+        "liblzma-devel",
         "libcurl",
         "openssl",
         "zlib",
         "readline"
       ],
-      "run": []
+      "run": [
+        "libxml2-devel"
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "fix-cpp11.patch",
-        "fix-dumpvalue.patch"
+        "patches/01-fix-cpp11.patch",
+        "patches/02-fix-dumpvalue.patch",
+        "patches/03-fix-asprintf.patch",
+        "patches/04-fix-missing-includes.patch",
+        "patches/05-use-isfinite.patch"
       ],
       "sha256": "ae6d0fb58f38f1536511360dc0081d3876c1f209d9eaa54357e2bacd690a5640",
       "url": "https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Super%20Stable/1.54.06/xmlrpc-c-1.54.06.tgz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
-        "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
-        "test -f ${PREFIX}/include/xmlrpc.h",
-        "test -f ${PREFIX}/include/xmlrpc_client.h",
-        "test -f ${PREFIX}/include/xmlrpc_server.h",
-        "xmlrpc-c-config --version"
-      ]
     }
   },
   "linux_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "autoconf",
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cxx_compiler_stub",
+        "gnuconfig",
         "make",
         "pkg-config"
       ]
@@ -96,7 +151,8 @@
       "__set__": true,
       "elements": [
         "libcurl",
-        "libxml2",
+        "liblzma-devel",
+        "libxml2-devel",
         "openssl",
         "readline",
         "zlib"
@@ -104,7 +160,155 @@
     },
     "run": {
       "__set__": true,
+      "elements": [
+        "libxml2-devel"
+      ]
+    },
+    "test": {
+      "__set__": true,
       "elements": []
+    }
+  },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "home": "http://xmlrpc-c.sourceforge.net/",
+      "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
+      "license_file": "doc/COPYING",
+      "summary": "A lightweight RPC library based on XML and HTTP."
+    },
+    "build": {
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "xmlrpc-c"
+        ]
+      },
+      "script": "export CXXFLAGS=\"${CXXFLAGS} -std=c++14\"\n\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.guess\" config.guess\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.sub\" config.sub\n\n./configure \\\n  --build=\"${BUILD}\" \\\n  --host=\"${HOST}\" \\\n  --prefix=\"${PREFIX}\" \\\n  --enable-libxml2-backend\n\nmake -j${CPU_COUNT}\nmake install\nmake -C tools install\n\nmake check\n"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "Tobias-Fischer"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      }
+    ],
+    "package": {
+      "name": "xmlrpc-c",
+      "version": "1.54.06"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "make",
+        "gnuconfig",
+        "pkg-config"
+      ],
+      "host": [
+        "libxml2-devel",
+        "liblzma-devel",
+        "libcurl",
+        "openssl",
+        "zlib",
+        "readline"
+      ],
+      "run": [
+        "libxml2-devel"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/01-fix-cpp11.patch",
+        "patches/02-fix-dumpvalue.patch",
+        "patches/03-fix-asprintf.patch",
+        "patches/04-fix-missing-includes.patch",
+        "patches/05-use-isfinite.patch"
+      ],
+      "sha256": "ae6d0fb58f38f1536511360dc0081d3876c1f209d9eaa54357e2bacd690a5640",
+      "url": "https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Super%20Stable/1.54.06/xmlrpc-c-1.54.06.tgz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "gnuconfig",
+        "make",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libcurl",
+        "liblzma-devel",
+        "libxml2-devel",
+        "openssl",
+        "readline",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libxml2-devel"
+      ]
     },
     "test": {
       "__set__": true,
@@ -115,20 +319,226 @@
     "about": {
       "home": "http://xmlrpc-c.sourceforge.net/",
       "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
       "license_file": "doc/COPYING",
       "summary": "A lightweight RPC library based on XML and HTTP."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "xmlrpc-c"
-      ]
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "xmlrpc-c"
+        ]
+      },
+      "script": "export CXXFLAGS=\"${CXXFLAGS} -std=c++14\"\n\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.guess\" config.guess\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.sub\" config.sub\n\n./configure \\\n  --build=\"${BUILD}\" \\\n  --host=\"${HOST}\" \\\n  --prefix=\"${PREFIX}\" \\\n  --enable-libxml2-backend\n\nmake -j${CPU_COUNT}\nmake install\nmake -C tools install\n\nmake check\n"
     },
     "extra": {
       "recipe-maintainers": [
         "Tobias-Fischer"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      }
+    ],
     "package": {
       "name": "xmlrpc-c",
       "version": "1.54.06"
@@ -137,47 +547,34 @@
       "build": [
         "c_compiler_stub",
         "cxx_compiler_stub",
+        "c_stdlib_stub",
         "make",
-        "autoconf",
+        "gnuconfig",
         "pkg-config"
       ],
       "host": [
-        "libxml2",
+        "libxml2-devel",
+        "liblzma-devel",
         "libcurl",
         "openssl",
         "zlib",
         "readline"
       ],
       "run": [
-        "__osx >=10.14"
+        "libxml2-devel"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "fix-cpp11.patch",
-        "fix-dumpvalue.patch",
-        "fix-asprintf.patch",
-        "fix-missing-includes.patch"
+        "patches/01-fix-cpp11.patch",
+        "patches/02-fix-dumpvalue.patch",
+        "patches/03-fix-asprintf.patch",
+        "patches/04-fix-missing-includes.patch",
+        "patches/05-use-isfinite.patch"
       ],
       "sha256": "ae6d0fb58f38f1536511360dc0081d3876c1f209d9eaa54357e2bacd690a5640",
       "url": "https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Super%20Stable/1.54.06/xmlrpc-c-1.54.06.tgz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
-        "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
-        "test -f ${PREFIX}/include/xmlrpc.h",
-        "test -f ${PREFIX}/include/xmlrpc_client.h",
-        "test -f ${PREFIX}/include/xmlrpc_server.h",
-        "xmlrpc-c-config --version"
-      ]
     }
   },
   "name": "xmlrpc-c",
@@ -185,20 +582,76 @@
     "about": {
       "home": "http://xmlrpc-c.sourceforge.net/",
       "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
       "license_file": "doc/COPYING",
       "summary": "A lightweight RPC library based on XML and HTTP."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "xmlrpc-c"
-      ]
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "xmlrpc-c"
+        ]
+      },
+      "script": "export CXXFLAGS=\"${CXXFLAGS} -std=c++14\"\n\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.guess\" config.guess\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.sub\" config.sub\n\n./configure \\\n  --build=\"${BUILD}\" \\\n  --host=\"${HOST}\" \\\n  --prefix=\"${PREFIX}\" \\\n  --enable-libxml2-backend\n\nmake -j${CPU_COUNT}\nmake install\nmake -C tools install\n\nmake check\n"
     },
     "extra": {
       "recipe-maintainers": [
         "Tobias-Fischer"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      }
+    ],
     "package": {
       "name": "xmlrpc-c",
       "version": "1.54.06"
@@ -207,56 +660,44 @@
       "build": [
         "c_compiler_stub",
         "cxx_compiler_stub",
+        "c_stdlib_stub",
         "make",
-        "autoconf",
+        "gnuconfig",
         "pkg-config"
       ],
       "host": [
-        "libxml2",
+        "libxml2-devel",
+        "liblzma-devel",
         "libcurl",
         "openssl",
         "zlib",
         "readline"
       ],
       "run": [
-        "__osx >=10.14"
+        "libxml2-devel"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "fix-cpp11.patch",
-        "fix-dumpvalue.patch",
-        "fix-asprintf.patch",
-        "fix-missing-includes.patch"
+        "patches/01-fix-cpp11.patch",
+        "patches/02-fix-dumpvalue.patch",
+        "patches/03-fix-asprintf.patch",
+        "patches/04-fix-missing-includes.patch",
+        "patches/05-use-isfinite.patch"
       ],
       "sha256": "ae6d0fb58f38f1536511360dc0081d3876c1f209d9eaa54357e2bacd690a5640",
       "url": "https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Super%20Stable/1.54.06/xmlrpc-c-1.54.06.tgz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
-        "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
-        "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
-        "test -f ${PREFIX}/include/xmlrpc.h",
-        "test -f ${PREFIX}/include/xmlrpc_client.h",
-        "test -f ${PREFIX}/include/xmlrpc_server.h",
-        "xmlrpc-c-config --version"
-      ]
     }
   },
   "osx_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "autoconf",
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cxx_compiler_stub",
+        "gnuconfig",
         "make",
         "pkg-config"
       ]
@@ -265,7 +706,8 @@
       "__set__": true,
       "elements": [
         "libcurl",
-        "libxml2",
+        "liblzma-devel",
+        "libxml2-devel",
         "openssl",
         "readline",
         "zlib"
@@ -274,7 +716,153 @@
     "run": {
       "__set__": true,
       "elements": [
-        "__osx"
+        "libxml2-devel"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "home": "http://xmlrpc-c.sourceforge.net/",
+      "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
+      "license_file": "doc/COPYING",
+      "summary": "A lightweight RPC library based on XML and HTTP."
+    },
+    "build": {
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "xmlrpc-c"
+        ]
+      },
+      "script": "export CXXFLAGS=\"${CXXFLAGS} -std=c++14\"\n\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.guess\" config.guess\ncp \"${BUILD_PREFIX}/share/gnuconfig/config.sub\" config.sub\n\n./configure \\\n  --build=\"${BUILD}\" \\\n  --host=\"${HOST}\" \\\n  --prefix=\"${PREFIX}\" \\\n  --enable-libxml2-backend\n\nmake -j${CPU_COUNT}\nmake install\nmake -C tools install\n\nmake check\n"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "Tobias-Fischer"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "xmlrpc-c"
+          ]
+        },
+        "name": "xmlrpc-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "gnuconfig",
+            "pkg-config"
+          ],
+          "host": [
+            "libxml2-devel",
+            "liblzma-devel",
+            "libcurl",
+            "openssl",
+            "zlib",
+            "readline"
+          ],
+          "run": [
+            "libxml2-devel"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc",
+              "test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc",
+              "test -f ${PREFIX}/include/xmlrpc.h",
+              "test -f ${PREFIX}/include/xmlrpc_client.h",
+              "test -f ${PREFIX}/include/xmlrpc_server.h",
+              "xmlrpc-c-config --version",
+              "xmlrpc-c-config c++2 pstream-server client --libs"
+            ]
+          }
+        ],
+        "version": "1.54.06"
+      }
+    ],
+    "package": {
+      "name": "xmlrpc-c",
+      "version": "1.54.06"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "make",
+        "gnuconfig",
+        "pkg-config"
+      ],
+      "host": [
+        "libxml2-devel",
+        "liblzma-devel",
+        "libcurl",
+        "openssl",
+        "zlib",
+        "readline"
+      ],
+      "run": [
+        "libxml2-devel"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/01-fix-cpp11.patch",
+        "patches/02-fix-dumpvalue.patch",
+        "patches/03-fix-asprintf.patch",
+        "patches/04-fix-missing-includes.patch",
+        "patches/05-use-isfinite.patch"
+      ],
+      "sha256": "ae6d0fb58f38f1536511360dc0081d3876c1f209d9eaa54357e2bacd690a5640",
+      "url": "https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Super%20Stable/1.54.06/xmlrpc-c-1.54.06.tgz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "gnuconfig",
+        "make",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libcurl",
+        "liblzma-devel",
+        "libxml2-devel",
+        "openssl",
+        "readline",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libxml2-devel"
       ]
     },
     "test": {
@@ -291,21 +879,24 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64"
+    "linux_aarch64",
+    "osx_64",
+    "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/xmlrpc-c.json"
   },
-  "raw_meta_yaml": "{% set name = \"xmlrpc-c\" %}\n{% set version = \"1.54.06\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://sourceforge.net/projects/{{ name }}/files/Xmlrpc-c%20Super%20Stable/{{ version }}/{{ name }}-{{ version }}.tgz\n  sha256: ae6d0fb58f38f1536511360dc0081d3876c1f209d9eaa54357e2bacd690a5640\n  patches:\n    - fix-cpp11.patch\n    - fix-dumpvalue.patch\n    - fix-asprintf.patch  # [osx]\n    - fix-missing-includes.patch  # [osx]\n\nbuild:\n  number: 0\n  skip: true  # [win]\n  run_exports:\n    - {{ pin_subpackage(name, max_pin='x.x') }}\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - make\n    - autoconf\n    - pkg-config\n  host:\n    - libxml2\n    - libcurl\n    - openssl\n    - zlib\n    - readline\n  run:\n    - __osx >={{ MACOSX_DEPLOYMENT_TARGET|default(\"10.9\") }}  # [osx and x86_64]\n\ntest:\n  commands:\n    - test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}\n    - test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}\n    - test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}\n    - test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}\n    - test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}\n    - test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}\n    - test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc\n    - test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc\n    - test -f ${PREFIX}/include/xmlrpc.h\n    - test -f ${PREFIX}/include/xmlrpc_client.h\n    - test -f ${PREFIX}/include/xmlrpc_server.h\n    - xmlrpc-c-config --version\n\nabout:\n  home: http://xmlrpc-c.sourceforge.net/\n  license:  BSD-3-Clause\n  license_file: doc/COPYING\n  summary: A lightweight RPC library based on XML and HTTP.\n\nextra:\n  recipe-maintainers:\n    - Tobias-Fischer\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: xmlrpc-c\n  version: \"1.54.06\"\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://sourceforge.net/projects/${{ name }}/files/Xmlrpc-c%20Super%20Stable/${{ version }}/${{ name }}-${{ version }}.tgz\n  sha256: ae6d0fb58f38f1536511360dc0081d3876c1f209d9eaa54357e2bacd690a5640\n  patches:\n    - patches/01-fix-cpp11.patch\n    - patches/02-fix-dumpvalue.patch\n    - patches/03-fix-asprintf.patch\n    - patches/04-fix-missing-includes.patch\n    - patches/05-use-isfinite.patch\n\nbuild:\n  number: 1\n  skip:\n    - win\n  script: |\n    export CXXFLAGS=\"${CXXFLAGS} -std=c++14\"\n\n    cp \"${BUILD_PREFIX}/share/gnuconfig/config.guess\" config.guess\n    cp \"${BUILD_PREFIX}/share/gnuconfig/config.sub\" config.sub\n\n    ./configure \\\n      --build=\"${BUILD}\" \\\n      --host=\"${HOST}\" \\\n      --prefix=\"${PREFIX}\" \\\n      --enable-libxml2-backend\n\n    make -j${CPU_COUNT}\n    make install\n    make -C tools install\n\n    make check\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - make\n    - gnuconfig\n    - pkg-config\n    - if: osx\n      then: libcxx-devel ${{ cxx_compiler_version }}.*\n  host:\n    - libxml2-devel\n    - liblzma-devel\n    - libcurl\n    - openssl\n    - zlib\n    - readline\n  ignore_run_exports:\n    from_package:\n      - liblzma-devel\n      - zlib\n  run:\n    - libxml2-devel\n  run_exports:\n    - ${{ pin_subpackage(name, upper_bound='x.x') }}\n\ntests:\n  - script:\n      - test -f ${PREFIX}/lib/libxmlrpc${SHLIB_EXT}\n      - test -f ${PREFIX}/lib/libxmlrpc++${SHLIB_EXT}\n      - test -f ${PREFIX}/lib/libxmlrpc_server${SHLIB_EXT}\n      - test -f ${PREFIX}/lib/libxmlrpc_server++${SHLIB_EXT}\n      - test -f ${PREFIX}/lib/libxmlrpc_client${SHLIB_EXT}\n      - test -f ${PREFIX}/lib/libxmlrpc_client++${SHLIB_EXT}\n      - test -f ${PREFIX}/lib/pkgconfig/xmlrpc.pc\n      - test -f ${PREFIX}/lib/pkgconfig/xmlrpc++.pc\n      - test -f ${PREFIX}/include/xmlrpc.h\n      - test -f ${PREFIX}/include/xmlrpc_client.h\n      - test -f ${PREFIX}/include/xmlrpc_server.h\n      - xmlrpc-c-config --version\n      - xmlrpc-c-config c++2 pstream-server client --libs\n\nabout:\n  homepage: http://xmlrpc-c.sourceforge.net/\n  license: BSD-3-Clause\n  license_file: doc/COPYING\n  summary: A lightweight RPC library based on XML and HTTP.\n\nextra:\n  recipe-maintainers:\n    - Tobias-Fischer\n",
   "req": {
     "__set__": true,
     "elements": [
-      "__osx",
-      "autoconf",
       "c_compiler_stub",
+      "c_stdlib_stub",
       "cxx_compiler_stub",
+      "gnuconfig",
       "libcurl",
-      "libxml2",
+      "liblzma-devel",
+      "libxml2-devel",
       "make",
       "openssl",
       "pkg-config",
@@ -317,9 +908,10 @@
     "build": {
       "__set__": true,
       "elements": [
-        "autoconf",
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cxx_compiler_stub",
+        "gnuconfig",
         "make",
         "pkg-config"
       ]
@@ -328,9 +920,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cxx_compiler_stub",
         "libcurl",
-        "libxml2",
+        "liblzma-devel",
+        "libxml2-devel",
         "openssl",
         "readline",
         "zlib"
@@ -339,9 +933,10 @@
     "run": {
       "__set__": true,
       "elements": [
-        "__osx",
         "c_compiler_stub",
-        "cxx_compiler_stub"
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "libxml2-devel"
       ]
     },
     "test": {
@@ -354,9 +949,10 @@
     "build": {
       "__set__": true,
       "elements": [
-        "autoconf",
         "c_compiler_stub",
+        "c_stdlib_stub",
         "cxx_compiler_stub",
+        "gnuconfig",
         "make",
         "pkg-config"
       ]
@@ -365,7 +961,8 @@
       "__set__": true,
       "elements": [
         "libcurl",
-        "libxml2",
+        "liblzma-devel",
+        "libxml2-devel",
         "openssl",
         "readline",
         "zlib"
@@ -374,7 +971,7 @@
     "run": {
       "__set__": true,
       "elements": [
-        "__osx >=10.14"
+        "libxml2-devel"
       ]
     },
     "test": {
