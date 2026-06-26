@@ -16,42 +16,36 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
-    "provider": {
-      "linux_aarch64": "default",
-      "linux_ppc64le": "default"
-    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "2092bc51ceeecb4a6070b87f1433a3724ed32b5e",
-  "feedstock_hash_ts": 1780879851,
+  "feedstock_hash": "67f76023d53afc1968416944a8b796db809f735b",
+  "feedstock_hash_ts": 1782479948,
   "feedstock_name": "ldas-tools-framecpp",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "This provides the runtime libraries for the framecpp library.\n",
+      "description": "This provides the runtime libraries for the framecpp library.",
       "dev_url": "https://git.ligo.org/ldastools/LDAS_Tools.git",
       "doc_url": "https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/",
       "home": "https://wiki.ligo.org/Computing/LDASTools",
       "license": "GPL-2.0-or-later",
-      "license_family": "GPL",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "COPYING",
       "summary": "LDAS tools libframecpp toolkit runtime files"
     },
     "build": {
-      "error_overdepending": true,
-      "error_overlinking": true,
-      "ignore_run_exports": [
-        "gtest"
-      ],
-      "number": "1",
-      "run_exports": [
-        "ldas-tools-framecpp"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "ldas-tools-framecpp"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -59,16 +53,76 @@
         "emaros"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      }
+    ],
     "package": {
       "name": "ldas-tools-framecpp",
-      "version": "4.0.3"
+      "version": "4.1.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "cmake >=3.6,!=3.27.*",
+        "cmake >=3.12,<4.0.0a0",
         "make",
         "pkg-config"
       ],
@@ -76,43 +130,20 @@
         "libboost-devel",
         "gmock",
         "gtest",
-        "ldas-tools-al >=2.8.0",
-        "ldas-tools-cmake >=1.4.2",
+        "ldas-tools-al >=2.10.0",
+        "ldas-tools-cmake >=1.5.0",
         "openssl",
         "zlib",
         "zstd"
-      ],
-      "run": [
-        "ldas-tools-al >=2.8.0",
-        "openssl"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "efa63df2fecc821a28ddab5bc5207d4b72f12f08aa66ed5acacbfa31904e9873",
-      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.0.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "framecpp_sample --channel-adc-type int_2u",
-        "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc fracfg.gwf",
-        "framecpp_transform --help",
-        "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp_common",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppc",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppu"
+      "patches": [
+        "test-fixtures_required.patch"
       ],
-      "requires": [
-        "pkg-config"
-      ]
+      "sha256": "8bfd356ccfbca9edc3e927a8750611e06b7f5650d216f12bcc7b3b24d8918901",
+      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.1.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -142,10 +173,7 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "ldas-tools-al",
-        "openssl"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -156,25 +184,22 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "This provides the runtime libraries for the framecpp library.\n",
+      "description": "This provides the runtime libraries for the framecpp library.",
       "dev_url": "https://git.ligo.org/ldastools/LDAS_Tools.git",
       "doc_url": "https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/",
       "home": "https://wiki.ligo.org/Computing/LDASTools",
       "license": "GPL-2.0-or-later",
-      "license_family": "GPL",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "COPYING",
       "summary": "LDAS tools libframecpp toolkit runtime files"
     },
     "build": {
-      "error_overdepending": true,
-      "error_overlinking": true,
-      "ignore_run_exports": [
-        "gtest"
-      ],
-      "number": "1",
-      "run_exports": [
-        "ldas-tools-framecpp"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "ldas-tools-framecpp"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -182,16 +207,76 @@
         "emaros"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      }
+    ],
     "package": {
       "name": "ldas-tools-framecpp",
-      "version": "4.0.3"
+      "version": "4.1.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "cmake >=3.6,!=3.27.*",
+        "cmake >=3.12,<4.0.0a0",
         "make",
         "pkg-config"
       ],
@@ -199,43 +284,20 @@
         "libboost-devel",
         "gmock",
         "gtest",
-        "ldas-tools-al >=2.8.0",
-        "ldas-tools-cmake >=1.4.2",
+        "ldas-tools-al >=2.10.0",
+        "ldas-tools-cmake >=1.5.0",
         "openssl",
         "zlib",
         "zstd"
-      ],
-      "run": [
-        "ldas-tools-al >=2.8.0",
-        "openssl"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "efa63df2fecc821a28ddab5bc5207d4b72f12f08aa66ed5acacbfa31904e9873",
-      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.0.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "framecpp_sample --channel-adc-type int_2u",
-        "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc fracfg.gwf",
-        "framecpp_transform --help",
-        "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp_common",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppc",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppu"
+      "patches": [
+        "test-fixtures_required.patch"
       ],
-      "requires": [
-        "pkg-config"
-      ]
+      "sha256": "8bfd356ccfbca9edc3e927a8750611e06b7f5650d216f12bcc7b3b24d8918901",
+      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.1.0.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -265,10 +327,7 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "ldas-tools-al",
-        "openssl"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -279,25 +338,22 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
-      "description": "This provides the runtime libraries for the framecpp library.\n",
+      "description": "This provides the runtime libraries for the framecpp library.",
       "dev_url": "https://git.ligo.org/ldastools/LDAS_Tools.git",
       "doc_url": "https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/",
       "home": "https://wiki.ligo.org/Computing/LDASTools",
       "license": "GPL-2.0-or-later",
-      "license_family": "GPL",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "COPYING",
       "summary": "LDAS tools libframecpp toolkit runtime files"
     },
     "build": {
-      "error_overdepending": true,
-      "error_overlinking": true,
-      "ignore_run_exports": [
-        "gtest"
-      ],
-      "number": "1",
-      "run_exports": [
-        "ldas-tools-framecpp"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "ldas-tools-framecpp"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -305,16 +361,76 @@
         "emaros"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      }
+    ],
     "package": {
       "name": "ldas-tools-framecpp",
-      "version": "4.0.3"
+      "version": "4.1.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "cmake >=3.6,!=3.27.*",
+        "cmake >=3.12,<4.0.0a0",
         "make",
         "pkg-config"
       ],
@@ -322,43 +438,20 @@
         "libboost-devel",
         "gmock",
         "gtest",
-        "ldas-tools-al >=2.8.0",
-        "ldas-tools-cmake >=1.4.2",
+        "ldas-tools-al >=2.10.0",
+        "ldas-tools-cmake >=1.5.0",
         "openssl",
         "zlib",
         "zstd"
-      ],
-      "run": [
-        "ldas-tools-al >=2.8.0",
-        "openssl"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "efa63df2fecc821a28ddab5bc5207d4b72f12f08aa66ed5acacbfa31904e9873",
-      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.0.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "framecpp_sample --channel-adc-type int_2u",
-        "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc fracfg.gwf",
-        "framecpp_transform --help",
-        "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp_common",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppc",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppu"
+      "patches": [
+        "test-fixtures_required.patch"
       ],
-      "requires": [
-        "pkg-config"
-      ]
+      "sha256": "8bfd356ccfbca9edc3e927a8750611e06b7f5650d216f12bcc7b3b24d8918901",
+      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.1.0.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -388,10 +481,7 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "ldas-tools-al",
-        "openssl"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -402,25 +492,22 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "This provides the runtime libraries for the framecpp library.\n",
+      "description": "This provides the runtime libraries for the framecpp library.",
       "dev_url": "https://git.ligo.org/ldastools/LDAS_Tools.git",
       "doc_url": "https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/",
       "home": "https://wiki.ligo.org/Computing/LDASTools",
       "license": "GPL-2.0-or-later",
-      "license_family": "GPL",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "COPYING",
       "summary": "LDAS tools libframecpp toolkit runtime files"
     },
     "build": {
-      "error_overdepending": true,
-      "error_overlinking": true,
-      "ignore_run_exports": [
-        "gtest"
-      ],
-      "number": "1",
-      "run_exports": [
-        "ldas-tools-framecpp"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "ldas-tools-framecpp"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -428,16 +515,308 @@
         "emaros"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      }
+    ],
     "package": {
       "name": "ldas-tools-framecpp",
-      "version": "4.0.3"
+      "version": "4.1.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "cmake >=3.6,!=3.27.*",
+        "cmake >=3.12,<4.0.0a0",
         "make",
         "pkg-config"
       ],
@@ -445,67 +824,41 @@
         "libboost-devel",
         "gmock",
         "gtest",
-        "ldas-tools-al >=2.8.0",
-        "ldas-tools-cmake >=1.4.2",
+        "ldas-tools-al >=2.10.0",
+        "ldas-tools-cmake >=1.5.0",
         "openssl",
         "zlib",
         "zstd"
-      ],
-      "run": [
-        "ldas-tools-al >=2.8.0",
-        "openssl"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "efa63df2fecc821a28ddab5bc5207d4b72f12f08aa66ed5acacbfa31904e9873",
-      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.0.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "framecpp_sample --channel-adc-type int_2u",
-        "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc fracfg.gwf",
-        "framecpp_transform --help",
-        "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp_common",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppc",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppu"
+      "patches": [
+        "test-fixtures_required.patch"
       ],
-      "requires": [
-        "pkg-config"
-      ]
+      "sha256": "8bfd356ccfbca9edc3e927a8750611e06b7f5650d216f12bcc7b3b24d8918901",
+      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.1.0.tar.gz"
     }
   },
   "name": "ldas-tools-framecpp",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "This provides the runtime libraries for the framecpp library.\n",
+      "description": "This provides the runtime libraries for the framecpp library.",
       "dev_url": "https://git.ligo.org/ldastools/LDAS_Tools.git",
       "doc_url": "https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/",
       "home": "https://wiki.ligo.org/Computing/LDASTools",
       "license": "GPL-2.0-or-later",
-      "license_family": "GPL",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "COPYING",
       "summary": "LDAS tools libframecpp toolkit runtime files"
     },
     "build": {
-      "error_overdepending": true,
-      "error_overlinking": true,
-      "ignore_run_exports": [
-        "gtest"
-      ],
-      "number": "1",
-      "run_exports": [
-        "ldas-tools-framecpp"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "ldas-tools-framecpp"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -513,16 +866,76 @@
         "emaros"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      }
+    ],
     "package": {
       "name": "ldas-tools-framecpp",
-      "version": "4.0.3"
+      "version": "4.1.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "cmake >=3.6,!=3.27.*",
+        "cmake >=3.12,<4.0.0a0",
         "make",
         "pkg-config"
       ],
@@ -530,43 +943,20 @@
         "libboost-devel",
         "gmock",
         "gtest",
-        "ldas-tools-al >=2.8.0",
-        "ldas-tools-cmake >=1.4.2",
+        "ldas-tools-al >=2.10.0",
+        "ldas-tools-cmake >=1.5.0",
         "openssl",
         "zlib",
         "zstd"
-      ],
-      "run": [
-        "ldas-tools-al >=2.8.0",
-        "openssl"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "efa63df2fecc821a28ddab5bc5207d4b72f12f08aa66ed5acacbfa31904e9873",
-      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.0.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "framecpp_sample --channel-adc-type int_2u",
-        "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc fracfg.gwf",
-        "framecpp_transform --help",
-        "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp_common",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppc",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppu"
+      "patches": [
+        "test-fixtures_required.patch"
       ],
-      "requires": [
-        "pkg-config"
-      ]
+      "sha256": "8bfd356ccfbca9edc3e927a8750611e06b7f5650d216f12bcc7b3b24d8918901",
+      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.1.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -596,10 +986,7 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "ldas-tools-al",
-        "openssl"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -610,25 +997,22 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "This provides the runtime libraries for the framecpp library.\n",
+      "description": "This provides the runtime libraries for the framecpp library.",
       "dev_url": "https://git.ligo.org/ldastools/LDAS_Tools.git",
       "doc_url": "https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/",
       "home": "https://wiki.ligo.org/Computing/LDASTools",
       "license": "GPL-2.0-or-later",
-      "license_family": "GPL",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "COPYING",
       "summary": "LDAS tools libframecpp toolkit runtime files"
     },
     "build": {
-      "error_overdepending": true,
-      "error_overlinking": true,
-      "ignore_run_exports": [
-        "gtest"
-      ],
-      "number": "1",
-      "run_exports": [
-        "ldas-tools-framecpp"
-      ]
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "ldas-tools-framecpp"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -636,16 +1020,76 @@
         "emaros"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "ldas-tools-framecpp"
+          ]
+        },
+        "name": "ldas-tools-framecpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake >=3.12,<4.0.0a0",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "libboost-devel",
+            "gmock",
+            "gtest",
+            "ldas-tools-al >=2.10.0",
+            "ldas-tools-cmake >=1.5.0",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "set -x",
+              "framecpp_sample --channel-adc-type int_2u",
+              "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
+              "framecpp_dump_toc fracfg.gwf",
+              "framecpp_transform --help",
+              "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp",
+              "pkg-config --print-errors --exact-version ${{ version }} framecpp_common",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppc",
+              "pkg-config --print-errors --exact-version ${{ version }} framecppu"
+            ]
+          }
+        ],
+        "version": "4.1.0"
+      }
+    ],
     "package": {
       "name": "ldas-tools-framecpp",
-      "version": "4.0.3"
+      "version": "4.1.0"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "cmake >=3.6,!=3.27.*",
+        "cmake >=3.12,<4.0.0a0",
         "make",
         "pkg-config"
       ],
@@ -653,43 +1097,20 @@
         "libboost-devel",
         "gmock",
         "gtest",
-        "ldas-tools-al >=2.8.0",
-        "ldas-tools-cmake >=1.4.2",
+        "ldas-tools-al >=2.10.0",
+        "ldas-tools-cmake >=1.5.0",
         "openssl",
         "zlib",
         "zstd"
-      ],
-      "run": [
-        "ldas-tools-al >=2.8.0",
-        "openssl"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "efa63df2fecc821a28ddab5bc5207d4b72f12f08aa66ed5acacbfa31904e9873",
-      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.0.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "framecpp_sample --channel-adc-type int_2u",
-        "framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf",
-        "framecpp_dump_toc fracfg.gwf",
-        "framecpp_transform --help",
-        "framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp",
-        "pkg-config --print-errors --exact-version 4.0.3 framecpp_common",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppc",
-        "pkg-config --print-errors --exact-version 4.0.3 framecppu"
+      "patches": [
+        "test-fixtures_required.patch"
       ],
-      "requires": [
-        "pkg-config"
-      ]
+      "sha256": "8bfd356ccfbca9edc3e927a8750611e06b7f5650d216f12bcc7b3b24d8918901",
+      "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.1.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -719,10 +1140,7 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "ldas-tools-al",
-        "openssl"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -748,7 +1166,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/ldas-tools-framecpp.json"
   },
-  "raw_meta_yaml": "{% set name = \"ldas-tools-framecpp\" %}\n{% set version = \"4.0.3\" %}\n\n# dependency versions\n{% set ldas_tools_al_version = \"2.8.0\" %}\n{% set ldas_tools_cmake_version = \"1.4.2\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://software.igwn.org/sources/source/{{ name }}-{{ version }}.tar.gz\n  sha256: efa63df2fecc821a28ddab5bc5207d4b72f12f08aa66ed5acacbfa31904e9873\n\nbuild:\n  error_overdepending: true\n  error_overlinking: true\n  ignore_run_exports:\n    - gtest\n  number: 1\n  skip: true  # [win]\n  run_exports:\n    - {{ pin_subpackage(\"ldas-tools-framecpp\", max_pin=\"x.x\") }}\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - cmake >=3.6,!=3.27.*\n    - make  # [unix]\n    - pkg-config  # [unix]\n  host:\n    - libboost-devel\n    - gmock\n    - gtest\n    - ldas-tools-al >={{ ldas_tools_al_version }}\n    - ldas-tools-cmake >={{ ldas_tools_cmake_version }}\n    - openssl\n    - zlib\n    - zstd\n  run:\n    - ldas-tools-al >={{ ldas_tools_al_version }}\n    - openssl\n\ntest:\n  requires:\n    - pkg-config  # [unix]\n  commands:\n    # framecpp_sample with --channel-adc-type int_2u writes\n    # Z-ilwd_test_frame-600000000-1.gwf containing channel\n    # Z0:RAMPED_INT_2U_1. Pre-4.0.x the bare 'framecpp_sample' command\n    # produced both the file (Z-ilwd_test_frame-...) and the channel; in\n    # 4.0.x the file is named differently and channels are only emitted\n    # via the all_type_frame path triggered by --channel-*-type flags.\n    # See https://git.ligo.org/computing/ldastools/LDAS_Tools/-/issues/283\n    - framecpp_sample --channel-adc-type int_2u\n    - framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf\n    - framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf\n    - framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf\n    - framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf\n    - framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf\n    - framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf\n    - framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf\n    - framecpp_dump_toc fracfg.gwf\n    - framecpp_transform --help\n    # framecpp_verify's --verbose now takes an int (verbosity level) in 4.0.x\n    - framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf\n    # 4.0.x consolidated all version-specific libframecppN into a single\n    # libframecppu (Universal); the framecpp{3,4,5,6,7,8,9}.pc files\n    # are no longer generated. See the version consolidation notes in\n    # framecpp/CLAUDE.md and ChangeLog.md for 4.0.x.\n    - pkg-config --print-errors --exact-version {{ version }} framecpp  # [unix]\n    - pkg-config --print-errors --exact-version {{ version }} framecpp_common  # [unix]\n    - pkg-config --print-errors --exact-version {{ version }} framecppc  # [unix]\n    - pkg-config --print-errors --exact-version {{ version }} framecppu  # [unix]\n\nabout:\n  home: https://wiki.ligo.org/Computing/LDASTools\n  dev_url: https://git.ligo.org/ldastools/LDAS_Tools.git\n  doc_url: https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/\n  license: GPL-2.0-or-later\n  license_family: GPL\n  license_file: COPYING\n  summary: LDAS tools libframecpp toolkit runtime files\n  description: |\n    This provides the runtime libraries for the framecpp library.\n\nextra:\n  recipe-maintainers:\n    - duncanmmacleod\n    - emaros\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: ldas-tools-framecpp\n  version: 4.1.0\n  # dependency versions\n  ldas_tools_al_version: 2.10.0\n  ldas_tools_cmake_version: 1.5.0\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://software.igwn.org/sources/source/${{ name }}-${{ version }}.tar.gz\n  sha256: 8bfd356ccfbca9edc3e927a8750611e06b7f5650d216f12bcc7b3b24d8918901\n  patches:\n    - if: osx\n      then: largeframetest-timeout.patch\n    # Backport patch for https://git.ligo.org/computing/ldastools/LDAS_Tools/-/work_items/363\n    - test-fixtures_required.patch\n\nbuild:\n  dynamic_linking:\n    overdepending_behavior: error\n  number: 0\n  skip:\n    - win\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    - cmake >=3.12,<4.0.0a0\n    - make\n    - pkg-config\n  host:\n    - libboost-devel\n    - gmock\n    - gtest\n    - ldas-tools-al >=${{ ldas_tools_al_version }}\n    - ldas-tools-cmake >=${{ ldas_tools_cmake_version }}\n    - openssl\n    - zlib\n    - zstd\n  run_exports:\n    - ${{ pin_subpackage(\"ldas-tools-framecpp\", upper_bound=\"x.x\") }}\n  ignore_run_exports:\n    by_name:\n      - gtest\n\ntests:\n  - requirements:\n      run:\n        - pkg-config\n    script:\n      - set -x\n      - framecpp_sample --channel-adc-type int_2u\n      - if: build_platform == target_platform\n        then:\n          - framecpp_checksum --verbose --checksum-file --checksum-frame --checksum-structure Z-ilwd_test_frame-600000000-1.gwf\n          - framecpp_compressor --compression-level 9 --output compressed.gwf Z-ilwd_test_frame-600000000-1.gwf\n          - framecpp_dump_channel --channel Z0:RAMPED_INT_2U_1 Z-ilwd_test_frame-600000000-1.gwf\n          - framecpp_dump_objects --silent Z-ilwd_test_frame-600000000-1.gwf\n          - framecpp_dump_toc Z-ilwd_test_frame-600000000-1.gwf\n          - framecpp_fix_metadata --output fixed.gwf Z-ilwd_test_frame-600000000-1.gwf\n          - framecpp_fracfg --channels Z0:RAMPED_INT_2U_1 --output fracfg.gwf Z-ilwd_test_frame-600000000-1.gwf\n          - framecpp_dump_toc fracfg.gwf\n          - framecpp_transform --help\n          - framecpp_verify --verbose 1 Z-ilwd_test_frame-600000000-1.gwf\n      # pkg-config version checks\n      - pkg-config --print-errors --exact-version ${{ version }} framecpp\n      - pkg-config --print-errors --exact-version ${{ version }} framecpp_common\n      - pkg-config --print-errors --exact-version ${{ version }} framecppc\n      - pkg-config --print-errors --exact-version ${{ version }} framecppu\n\nabout:\n  summary: LDAS tools libframecpp toolkit runtime files\n  description: |\n    This provides the runtime libraries for the framecpp library.\n  homepage: https://wiki.ligo.org/Computing/LDASTools\n  repository: https://git.ligo.org/ldastools/LDAS_Tools.git\n  documentation: https://computing.docs.ligo.org/ldastools/LDAS_Tools/ldas-tools-framecpp/\n  license: GPL-2.0-or-later\n  license_file: COPYING\n\nextra:\n  recipe-maintainers:\n    - duncanmmacleod\n    - emaros\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -801,9 +1219,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub",
-        "ldas-tools-al",
-        "openssl"
+        "cxx_compiler_stub"
       ]
     },
     "test": {
@@ -820,7 +1236,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cmake >=3.6,!=3.27.*",
+        "cmake >=3.12,<4.0.0a0",
         "cxx_compiler_stub",
         "make",
         "pkg-config"
@@ -831,8 +1247,8 @@
       "elements": [
         "gmock",
         "gtest",
-        "ldas-tools-al >=2.8.0",
-        "ldas-tools-cmake >=1.4.2",
+        "ldas-tools-al >=2.10.0",
+        "ldas-tools-cmake >=1.5.0",
         "libboost-devel",
         "openssl",
         "zlib",
@@ -841,10 +1257,7 @@
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "ldas-tools-al >=2.8.0",
-        "openssl"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -853,8 +1266,8 @@
       ]
     }
   },
-  "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.0.3.tar.gz",
-  "version": "4.0.3",
+  "url": "https://software.igwn.org/sources/source/ldas-tools-framecpp-4.1.0.tar.gz",
+  "version": "4.1.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/ldas-tools-framecpp.json"
   }
