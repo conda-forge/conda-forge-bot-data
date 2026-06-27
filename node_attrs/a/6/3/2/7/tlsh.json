@@ -1,34 +1,49 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\n- 3.14.* *_cp314\n- 3.14.* *_cp314t\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     }
   },
-  "feedstock_hash": "2811587f8aa08b1fa3fa1c1516be33253381628f",
-  "feedstock_hash_ts": 1777007162,
+  "feedstock_hash": "1c25f7455ab1527a5267f38447812267d0cdb63e",
+  "feedstock_hash_ts": 1782603020,
   "feedstock_name": "tlsh",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.\n",
+      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.",
+      "dev_url": "https://github.com/trendmicro/tlsh",
       "home": "https://github.com/trendmicro/tlsh",
       "license": "Apache-2.0 OR BSD-3-Clause",
-      "license_file": [
-        "LICENSE",
-        "NOTICE.txt"
-      ],
+      "license_family": "Apache-2.0 OR BSD-3-Clause",
+      "license_file": "src/LICENSE",
       "summary": "TLSH is a fuzzy matching library."
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtlsh"
+        ]
+      },
+      "script": {
+        "file": "build-output.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -38,7 +53,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libtlsh"
           ]
         },
@@ -47,23 +63,41 @@
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "tlsh-tools",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
             "libtlsh"
@@ -72,354 +106,287 @@
             "libtlsh"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
-          "imports": [
-            "tlsh"
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
           ],
-          "requires": [
-            "pip"
+          "run": [
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       }
     ],
     "package": {
-      "name": "tlsh",
-      "version": "4.13.3"
+      "name": "libtlsh",
+      "version": "5.0.0"
     },
     "requirements": {
       "build": [
@@ -428,23 +395,15 @@
         "c_stdlib_stub",
         "cmake <4",
         "ninja"
-      ],
-      "host": [
-        "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0000-fix-cmake-flags.txt"
       ],
-      "sha256": "c49a6efcd44747444441138a4c4298635eb6daef7408f169b77d9d21d23b7433",
-      "url": "https://github.com/trendmicro/tlsh/archive/4.13.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "echo \"tests in subpackages\""
-      ]
+      "sha256": "2e513993b6b08380dd03777c22caab33a6d0d93ef230250b1b12027d9b7d8a4b",
+      "url": "https://github.com/trendmicro/tlsh/archive/5.0.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -477,23 +436,871 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "tlsh-tools"
+      ]
+    }
+  },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.",
+      "dev_url": "https://github.com/trendmicro/tlsh",
+      "home": "https://github.com/trendmicro/tlsh",
+      "license": "Apache-2.0 OR BSD-3-Clause",
+      "license_family": "Apache-2.0 OR BSD-3-Clause",
+      "license_file": "src/LICENSE",
+      "summary": "TLSH is a fuzzy matching library."
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtlsh"
+        ]
+      },
+      "script": {
+        "file": "build-output.sh",
+        "interpreter": "bash"
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "bollwyvl"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libtlsh"
+          ]
+        },
+        "name": "libtlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "tlsh-tools",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "libtlsh"
+          ],
+          "run": [
+            "libtlsh"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      }
+    ],
+    "package": {
+      "name": "libtlsh",
+      "version": "5.0.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake <4",
+        "ninja"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "0000-fix-cmake-flags.txt"
+      ],
+      "sha256": "2e513993b6b08380dd03777c22caab33a6d0d93ef230250b1b12027d9b7d8a4b",
+      "url": "https://github.com/trendmicro/tlsh/archive/5.0.0.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libtlsh",
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libtlsh",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "pytest",
+        "tlsh-tools"
+      ]
+    }
+  },
+  "linux_ppc64le_meta_yaml": {
+    "about": {
+      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.",
+      "dev_url": "https://github.com/trendmicro/tlsh",
+      "home": "https://github.com/trendmicro/tlsh",
+      "license": "Apache-2.0 OR BSD-3-Clause",
+      "license_family": "Apache-2.0 OR BSD-3-Clause",
+      "license_file": "src/LICENSE",
+      "summary": "TLSH is a fuzzy matching library."
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtlsh"
+        ]
+      },
+      "script": {
+        "file": "build-output.sh",
+        "interpreter": "bash"
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "bollwyvl"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libtlsh"
+          ]
+        },
+        "name": "libtlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "tlsh-tools",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "libtlsh"
+          ],
+          "run": [
+            "libtlsh"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      }
+    ],
+    "package": {
+      "name": "libtlsh",
+      "version": "5.0.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake <4",
+        "ninja"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "0000-fix-cmake-flags.txt"
+      ],
+      "sha256": "2e513993b6b08380dd03777c22caab33a6d0d93ef230250b1b12027d9b7d8a4b",
+      "url": "https://github.com/trendmicro/tlsh/archive/5.0.0.tar.gz"
+    }
+  },
+  "linux_ppc64le_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libtlsh",
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libtlsh",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "pytest",
+        "tlsh-tools"
       ]
     }
   },
   "meta_yaml": {
     "about": {
-      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.\n",
+      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.",
+      "dev_url": "https://github.com/trendmicro/tlsh",
       "home": "https://github.com/trendmicro/tlsh",
       "license": "Apache-2.0 OR BSD-3-Clause",
-      "license_file": [
-        "LICENSE",
-        "NOTICE.txt"
-      ],
+      "license_family": "Apache-2.0 OR BSD-3-Clause",
+      "license_file": "src/LICENSE",
       "summary": "TLSH is a fuzzy matching library."
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtlsh"
+        ]
+      },
+      "script": {
+        "file": "build-output.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -503,7 +1310,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libtlsh"
           ]
         },
@@ -512,23 +1320,41 @@
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "tlsh-tools",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
             "libtlsh"
@@ -537,49 +1363,287 @@
             "libtlsh"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
-          "imports": [
-            "tlsh"
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
           ],
-          "requires": [
-            "pip"
+          "run": [
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libtlsh"
           ]
         },
@@ -588,23 +1652,41 @@
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "tlsh-tools",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
             "libtlsh"
@@ -613,49 +1695,287 @@
             "libtlsh"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
-          "imports": [
-            "tlsh"
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
           ],
-          "requires": [
-            "pip"
+          "run": [
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libtlsh"
           ]
         },
@@ -664,23 +1984,41 @@
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "tlsh-tools",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
             "libtlsh"
@@ -689,49 +2027,287 @@
             "libtlsh"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
-          "imports": [
-            "tlsh"
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
           ],
-          "requires": [
-            "pip"
+          "run": [
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libtlsh"
           ]
         },
@@ -740,23 +2316,41 @@
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "tlsh-tools",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
             "libtlsh"
@@ -765,49 +2359,287 @@
             "libtlsh"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
-          "imports": [
-            "tlsh"
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
           ],
-          "requires": [
-            "pip"
+          "run": [
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libtlsh"
           ]
         },
@@ -816,23 +2648,41 @@
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "tlsh-tools",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
             "libtlsh"
@@ -841,430 +2691,287 @@
             "libtlsh"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       }
     ],
     "package": {
-      "name": "tlsh",
-      "version": "4.13.3"
+      "name": "libtlsh",
+      "version": "5.0.0"
     },
     "requirements": {
       "build": [
@@ -1273,39 +2980,39 @@
         "c_stdlib_stub",
         "cmake <4",
         "ninja"
-      ],
-      "host": [
-        "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0000-fix-cmake-flags.txt"
       ],
-      "sha256": "c49a6efcd44747444441138a4c4298635eb6daef7408f169b77d9d21d23b7433",
-      "url": "https://github.com/trendmicro/tlsh/archive/4.13.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "echo \"tests in subpackages\""
-      ]
+      "sha256": "2e513993b6b08380dd03777c22caab33a6d0d93ef230250b1b12027d9b7d8a4b",
+      "url": "https://github.com/trendmicro/tlsh/archive/5.0.0.tar.gz"
     }
   },
-  "name": "tlsh",
+  "name": "libtlsh",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.\n",
+      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.",
+      "dev_url": "https://github.com/trendmicro/tlsh",
       "home": "https://github.com/trendmicro/tlsh",
       "license": "Apache-2.0 OR BSD-3-Clause",
-      "license_file": [
-        "LICENSE",
-        "NOTICE.txt"
-      ],
+      "license_family": "Apache-2.0 OR BSD-3-Clause",
+      "license_file": "src/LICENSE",
       "summary": "TLSH is a fuzzy matching library."
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtlsh"
+        ]
+      },
+      "script": {
+        "file": "build-output.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -1315,7 +3022,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libtlsh"
           ]
         },
@@ -1324,23 +3032,41 @@
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "tlsh-tools",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
             "libtlsh"
@@ -1349,354 +3075,287 @@
             "libtlsh"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
       },
       {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
-          ],
-          "imports": [
-            "tlsh"
-          ],
-          "requires": [
-            "pip"
-          ]
-        }
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "libtlsh"
-          ]
-        },
-        "name": "libtlsh",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\""
-          ]
-        }
-      },
-      {
-        "name": "tlsh-tools",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "libtlsh"
-          ],
-          "run": [
-            "libtlsh"
-          ]
-        },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "tlsh -help",
-            "tlsh_unittest -help"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "python-tlsh",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
           "host": [
-            "libtlsh",
             "pip",
             "python",
             "setuptools"
           ],
           "run": [
-            "libtlsh",
             "python"
           ]
         },
-        "script": "build-output.sh",
-        "test": {
-          "commands": [
-            "pip check"
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
           ],
-          "imports": [
-            "tlsh"
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
           ],
-          "requires": [
-            "pip"
+          "run": [
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
       }
     ],
     "package": {
-      "name": "tlsh",
-      "version": "4.13.3"
+      "name": "libtlsh",
+      "version": "5.0.0"
     },
     "requirements": {
       "build": [
@@ -1705,23 +3364,15 @@
         "c_stdlib_stub",
         "cmake <4",
         "ninja"
-      ],
-      "host": [
-        "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0000-fix-cmake-flags.txt"
       ],
-      "sha256": "c49a6efcd44747444441138a4c4298635eb6daef7408f169b77d9d21d23b7433",
-      "url": "https://github.com/trendmicro/tlsh/archive/4.13.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "echo \"tests in subpackages\""
-      ]
+      "sha256": "2e513993b6b08380dd03777c22caab33a6d0d93ef230250b1b12027d9b7d8a4b",
+      "url": "https://github.com/trendmicro/tlsh/archive/5.0.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -1754,7 +3405,428 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "tlsh-tools"
+      ]
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "description": "Given a byte stream with a minimum length of 50 bytes TLSH generates a\nhash value which can be used for similarity comparisons. Similar objects\nwill have similar hash values which allows for the detection of similar\nobjects by comparing their hash values. Note that the byte stream should\nhave a sufficient amount of complexity. For example, a byte stream of\nidentical bytes will not generate a hash value.",
+      "dev_url": "https://github.com/trendmicro/tlsh",
+      "home": "https://github.com/trendmicro/tlsh",
+      "license": "Apache-2.0 OR BSD-3-Clause",
+      "license_family": "Apache-2.0 OR BSD-3-Clause",
+      "license_file": "src/LICENSE",
+      "summary": "TLSH is a fuzzy matching library."
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtlsh"
+        ]
+      },
+      "script": {
+        "file": "build-output.sh",
+        "interpreter": "bash"
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "bollwyvl"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libtlsh"
+          ]
+        },
+        "name": "libtlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "tlsh/*.h"
+              ],
+              "lib": [
+                "libtlsh",
+                "libtlsh.a",
+                "libtlsh.so.5",
+                "libtlsh.so.5.0.0"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "tlsh-tools",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "libtlsh"
+          ],
+          "run": [
+            "libtlsh"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "tlsh",
+                "tlsh_unittest"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "tlsh -help",
+              "tlsh_unittest -help"
+            ]
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      },
+      {
+        "build": null,
+        "name": "python-tlsh",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake <4",
+            "ninja"
+          ],
+          "host": [
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "tlsh"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "tlsh-tools",
+                "pytest"
+              ]
+            },
+            "script": {
+              "file": "run_test.py",
+              "interpreter": "python"
+            }
+          }
+        ],
+        "version": "5.0.0"
+      }
+    ],
+    "package": {
+      "name": "libtlsh",
+      "version": "5.0.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake <4",
+        "ninja"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "0000-fix-cmake-flags.txt"
+      ],
+      "sha256": "2e513993b6b08380dd03777c22caab33a6d0d93ef230250b1b12027d9b7d8a4b",
+      "url": "https://github.com/trendmicro/tlsh/archive/5.0.0.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libtlsh",
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libtlsh",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "pytest",
+        "tlsh-tools"
       ]
     }
   },
@@ -1769,12 +3841,15 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64"
+    "linux_aarch64",
+    "linux_ppc64le",
+    "osx_64",
+    "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/tlsh.json"
   },
-  "raw_meta_yaml": "{% set version = \"4.13.3\" %}\n\npackage:\n  name: tlsh\n  version: {{ version }}\n\nsource:\n  url: https://github.com/trendmicro/tlsh/archive/{{ version }}.tar.gz\n  sha256: c49a6efcd44747444441138a4c4298635eb6daef7408f169b77d9d21d23b7433\n  patches:\n    - 0000-fix-cmake-flags.txt\n\nbuild:\n  number: 0\n  skip: true  # [win]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake <4\n    - ninja\n  host:\n    - python\n\ntest:\n  commands:\n    - echo \"tests in subpackages\"\n\noutputs:\n  - name: libtlsh\n    script: build-output.sh\n    build:\n      run_exports:\n        - {{ pin_subpackage('libtlsh', max_pin='x.x') }}\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n    test:\n      commands:\n        - test -f \"${PREFIX}/lib/libtlsh${SHLIB_EXT}\"\n\n  - name: tlsh-tools\n    script: build-output.sh\n    test:\n      commands:\n        - tlsh -help\n        - tlsh_unittest -help\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n      host:\n        - {{ pin_subpackage('libtlsh', exact=True) }}\n      run:\n        - {{ pin_subpackage('libtlsh', exact=True) }}\n\n  - name: python-tlsh\n    script: build-output.sh\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n      host:\n        - {{ pin_subpackage('libtlsh', exact=True) }}\n        - pip\n        - python\n        - setuptools\n      run:\n        - {{ pin_subpackage('libtlsh', exact=True) }}\n        - python\n    test:\n      requires:\n        - pip\n      imports:\n        - tlsh\n      commands:\n        - pip check\n\nabout:\n  home: https://github.com/trendmicro/tlsh\n  license: Apache-2.0 OR BSD-3-Clause\n  license_file:\n    - LICENSE\n    - NOTICE.txt\n  summary: TLSH is a fuzzy matching library.\n  description: |\n    Given a byte stream with a minimum length of 50 bytes TLSH generates a\n    hash value which can be used for similarity comparisons. Similar objects\n    will have similar hash values which allows for the detection of similar\n    objects by comparing their hash values. Note that the byte stream should\n    have a sufficient amount of complexity. For example, a byte stream of\n    identical bytes will not generate a hash value.\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"5.0.0\"\n  version_major: ${{ (version | split(\".\"))[0] }}\n\nrecipe:\n  name: tlsh\n  version: ${{ version }}\n\nsource:\n  - target_directory: src\n    url: https://github.com/trendmicro/tlsh/archive/${{ version }}.tar.gz\n    sha256: 2e513993b6b08380dd03777c22caab33a6d0d93ef230250b1b12027d9b7d8a4b\n    patches:\n      - 0000-fix-cmake-flags.txt\n  - target_directory: py\n    url: https://pypi.org/packages/source/p/py-tlsh/py_tlsh-${{ version }}.tar.gz\n    sha256: a21cb75eb49e9d9237c8c39d2fb310a5c976b3abc6c35c2e405e16c089abad1b\n\nbuild:\n  number: 0\n  skip: win\n\noutputs:\n  - staging:\n      name: staging\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake <4\n        - ninja\n    build:\n      script:\n        file: build-staging\n\n  - inherit: staging\n    package:\n      name: libtlsh\n    build:\n      script:\n        file: build-output.sh\n    requirements:\n      build:\n        - ${{ stdlib('c') }}\n      run_exports:\n        - ${{ pin_subpackage('libtlsh', upper_bound='x.x') }}\n    tests:\n      - package_contents:\n          include:\n            - tlsh/*.h\n          lib:\n            - libtlsh\n            - libtlsh.a\n            - if: linux\n              then:\n                - libtlsh.so.${{ version_major }}\n                - libtlsh.so.${{ version }}\n            - if: osx\n              then:\n                - libtlsh.${{ version_major }}.dylib\n                - libtlsh.${{ version }}.dylib\n          strict: true\n\n  - inherit: staging\n    package:\n      name: tlsh-tools\n    build:\n      script:\n        file: build-output.sh\n    requirements:\n      build:\n        - ${{ stdlib('c') }}\n      host:\n        - ${{ pin_subpackage('libtlsh', exact=True) }}\n      run:\n        - ${{ pin_subpackage('libtlsh', exact=True) }}\n    tests:\n      - package_contents:\n          bin:\n            - tlsh\n            - tlsh_unittest\n          strict: true\n      - script:\n          - tlsh -help\n          - tlsh_unittest -help\n\n  - package:\n      name: python-tlsh\n    build:\n      script:\n        file: build-output.sh\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake <4\n        - ninja\n      host:\n        - pip\n        - python\n        - setuptools\n      run:\n        - python\n      run_constraints:\n        - ${{ pin_subpackage('libtlsh', exact=True) }}\n    tests:\n      - python:\n          imports: tlsh\n          pip_check: true\n      - requirements:\n          run:\n            - tlsh-tools\n            - pytest\n        script:\n          file: run_test.py\n    about:\n      homepage: https://pypi.org/project/py-tlsh\n\nabout:\n  license: Apache-2.0 OR BSD-3-Clause\n  license_file:\n    - src/LICENSE\n    - src/NOTICE.txt\n  summary: TLSH is a fuzzy matching library.\n  homepage: https://github.com/trendmicro/tlsh\n  repository: https://github.com/trendmicro/tlsh\n  description: |-\n    Given a byte stream with a minimum length of 50 bytes TLSH generates a\n    hash value which can be used for similarity comparisons. Similar objects\n    will have similar hash values which allows for the detection of similar\n    objects by comparing their hash values. Note that the byte stream should\n    have a sufficient amount of complexity. For example, a byte stream of\n    identical bytes will not generate a hash value.\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1825,7 +3900,9 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "tlsh-tools"
       ]
     }
   },
@@ -1860,12 +3937,14 @@
     "test": {
       "__set__": true,
       "elements": [
-        "pip"
+        "pip",
+        "pytest",
+        "tlsh-tools"
       ]
     }
   },
-  "url": "https://github.com/trendmicro/tlsh/archive/4.13.3.tar.gz",
-  "version": "4.13.3",
+  "url": "https://github.com/trendmicro/tlsh/archive/5.0.0.tar.gz",
+  "version": "5.0.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/tlsh.json"
   }
