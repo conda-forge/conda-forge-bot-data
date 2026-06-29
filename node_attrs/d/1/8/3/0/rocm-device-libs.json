@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- clang\nc_compiler_version:\n- '19'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- clangxx\ncxx_compiler_version:\n- '19'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- clang\nc_compiler_version:\n- '20'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- clangxx\ncxx_compiler_version:\n- '20'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
@@ -12,8 +12,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "b4de24cc24e573ffedfef9faf0ee27ae5bbcd261",
-  "feedstock_hash_ts": 1776901882,
+  "feedstock_hash": "6e820903919318506edb7dee1ab977586ac031ac",
+  "feedstock_hash_ts": 1782716900,
   "feedstock_name": "rocm-device-libs",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -36,7 +36,7 @@
     },
     "package": {
       "name": "rocm-device-libs",
-      "version": "6.4.3"
+      "version": "7.0.2"
     },
     "requirements": {
       "build": [
@@ -47,24 +47,37 @@
         "make"
       ],
       "host": [
-        "rocm-cmake",
+        "rocm-core 7.0.2",
+        "rocm-cmake 7.0.2",
         "zlib",
-        "clangdev 19.*",
-        "llvmdev 19.*",
+        "clangdev 20.*",
+        "llvmdev 20.*",
         "llvm"
       ]
     },
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/0001-Use-a-folder-inside-lib-for-bitcode-instead-of-top-l.patch"
+        "patches/0001-fix-install-path.patch"
       ],
-      "sha256": "1e3f2e33dff85b475a11c6d541b9ef5891a5164e75ae59d48392da434ab070f5",
-      "url": "https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-6.4.3.zip"
+      "sha256": "f6ef7f7b0cbf904c8ee223ec84326e0ae4ea88fb11bb2d0f9ece9f9620844b2a",
+      "url": "https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-7.0.2.zip"
     },
     "test": {
       "commands": [
-        "test -f $PREFIX/lib/amdgcn/bitcode/hip.bc"
+        "test -f $PREFIX/lib/clang/20/lib/amdgcn/bitcode/hip.bc",
+        "test -f $PREFIX/amdgcn/bitcode/hip.bc",
+        "clang -x hip -nogpuinc -c ./test/hip_smoke_test.hip -o ./test/hip_smoke_test.o"
+      ],
+      "files": [
+        "test/hip_smoke_test.hip"
+      ],
+      "requires": [
+        "clangdev 20.*",
+        "llvmdev 20.*",
+        "lld 20.*",
+        "compiler-rt 20.*",
+        "clang-tools 20.*"
       ]
     }
   },
@@ -86,6 +99,7 @@
         "llvm",
         "llvmdev",
         "rocm-cmake",
+        "rocm-core",
         "zlib"
       ]
     },
@@ -95,7 +109,13 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "clang-tools",
+        "clangdev",
+        "compiler-rt",
+        "lld",
+        "llvmdev"
+      ]
     }
   },
   "meta_yaml": {
@@ -118,7 +138,7 @@
     },
     "package": {
       "name": "rocm-device-libs",
-      "version": "6.4.3"
+      "version": "7.0.2"
     },
     "requirements": {
       "build": [
@@ -129,24 +149,37 @@
         "make"
       ],
       "host": [
-        "rocm-cmake",
+        "rocm-core 7.0.2",
+        "rocm-cmake 7.0.2",
         "zlib",
-        "clangdev 19.*",
-        "llvmdev 19.*",
+        "clangdev 20.*",
+        "llvmdev 20.*",
         "llvm"
       ]
     },
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/0001-Use-a-folder-inside-lib-for-bitcode-instead-of-top-l.patch"
+        "patches/0001-fix-install-path.patch"
       ],
-      "sha256": "1e3f2e33dff85b475a11c6d541b9ef5891a5164e75ae59d48392da434ab070f5",
-      "url": "https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-6.4.3.zip"
+      "sha256": "f6ef7f7b0cbf904c8ee223ec84326e0ae4ea88fb11bb2d0f9ece9f9620844b2a",
+      "url": "https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-7.0.2.zip"
     },
     "test": {
       "commands": [
-        "test -f $PREFIX/lib/amdgcn/bitcode/hip.bc"
+        "test -f $PREFIX/lib/clang/20/lib/amdgcn/bitcode/hip.bc",
+        "test -f $PREFIX/amdgcn/bitcode/hip.bc",
+        "clang -x hip -nogpuinc -c ./test/hip_smoke_test.hip -o ./test/hip_smoke_test.o"
+      ],
+      "files": [
+        "test/hip_smoke_test.hip"
+      ],
+      "requires": [
+        "clangdev 20.*",
+        "llvmdev 20.*",
+        "lld 20.*",
+        "compiler-rt 20.*",
+        "clang-tools 20.*"
       ]
     }
   },
@@ -164,7 +197,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/rocm-device-libs.json"
   },
-  "raw_meta_yaml": "{% set name = \"rocm-device-libs\" %}\n{% set version = \"6.4.3\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-{{ version }}.zip\n  sha256: 1e3f2e33dff85b475a11c6d541b9ef5891a5164e75ae59d48392da434ab070f5\n  patches:\n    - patches/0001-Use-a-folder-inside-lib-for-bitcode-instead-of-top-l.patch\n\nbuild:\n  number: 0\n  skip: true  # [not linux]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake <4\n    - make\n  host:\n    - rocm-cmake\n    - zlib\n    - clangdev 19.*\n    - llvmdev 19.*\n    - llvm\n\ntest:\n  commands:\n    - test -f $PREFIX/lib/amdgcn/bitcode/hip.bc\n\nabout:\n  home: https://github.com/ROCm/ROCm-Device-Libs\n  license: NCSA\n  license_family: MIT\n  license_file: LICENSE.TXT\n  summary: 'ROCm Device libraries'\n\nextra:\n  recipe-maintainers:\n    - isuruf\n    - zklaus\n    - conda-forge/rocm-core\n",
+  "raw_meta_yaml": "{% set name = \"rocm-device-libs\" %}\n{% set version = \"7.0.2\" %}\n\n{% set llvm_major_version = \"20\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-{{ version }}.zip\n  sha256: f6ef7f7b0cbf904c8ee223ec84326e0ae4ea88fb11bb2d0f9ece9f9620844b2a\n  patches:\n    - patches/0001-fix-install-path.patch\n\nbuild:\n  number: 0\n  skip: true  # [not linux]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    # Workaround for https://github.com/ROCm/llvm-project/commit/a18cc4c7cb51f94182b6018c7c73acde1b8ebddb\n    - cmake <4\n    - make\n  host:\n    - rocm-core {{ version }}\n    # There exists rocm-cmake version that do not depend on rocm-core, so to ensure that a compatible version is installed,\n    # let's also constrain the rocm-cmake version\n    # See https://github.com/conda-forge/rocm-device-libs-feedstock/pull/22#issuecomment-3431934615\n    - rocm-cmake {{ version }}\n    - zlib\n    - clangdev {{ llvm_major_version }}.*\n    - llvmdev {{ llvm_major_version }}.*\n    - llvm\n\ntest:\n  requires:\n    - clangdev {{ llvm_major_version }}.*\n    - llvmdev {{ llvm_major_version }}.*\n    - lld {{ llvm_major_version }}.*\n    - compiler-rt {{ llvm_major_version }}.*\n    - clang-tools {{ llvm_major_version }}.*\n  files:\n    - test/hip_smoke_test.hip\n  commands:\n    # Check files are in the expected location (the one expected by clang)\n    - test -f $PREFIX/lib/clang/{{ llvm_major_version }}/lib/amdgcn/bitcode/hip.bc\n    # Check files are in the location expected by hipcc\n    - test -f $PREFIX/amdgcn/bitcode/hip.bc\n    # Test that clang can find the bitcode files out of the box\n    - clang -x hip -nogpuinc -c ./test/hip_smoke_test.hip -o ./test/hip_smoke_test.o\n\nabout:\n  home: https://github.com/ROCm/ROCm-Device-Libs\n  license: NCSA\n  license_family: MIT\n  license_file: LICENSE.TXT\n  summary: 'ROCm Device libraries'\n\nextra:\n  recipe-maintainers:\n    - isuruf\n    - zklaus\n    - conda-forge/rocm-core\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -177,6 +210,7 @@
       "llvmdev",
       "make",
       "rocm-cmake",
+      "rocm-core",
       "zlib"
     ]
   },
@@ -201,6 +235,7 @@
         "llvm",
         "llvmdev",
         "rocm-cmake",
+        "rocm-core",
         "zlib"
       ]
     },
@@ -214,7 +249,13 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "clang-tools",
+        "clangdev",
+        "compiler-rt",
+        "lld",
+        "llvmdev"
+      ]
     }
   },
   "strong_exports": false,
@@ -232,10 +273,11 @@
     "host": {
       "__set__": true,
       "elements": [
-        "clangdev 19.*",
+        "clangdev 20.*",
         "llvm",
-        "llvmdev 19.*",
-        "rocm-cmake",
+        "llvmdev 20.*",
+        "rocm-cmake 7.0.2",
+        "rocm-core 7.0.2",
         "zlib"
       ]
     },
@@ -245,11 +287,17 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "clang-tools 20.*",
+        "clangdev 20.*",
+        "compiler-rt 20.*",
+        "lld 20.*",
+        "llvmdev 20.*"
+      ]
     }
   },
-  "url": "https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-6.4.3.zip",
-  "version": "6.4.3",
+  "url": "https://github.com/ROCm/llvm-project/archive/refs/tags/rocm-7.0.2.zip",
+  "version": "7.0.2",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/rocm-device-libs.json"
   }
