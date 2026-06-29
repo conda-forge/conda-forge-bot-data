@@ -1,0 +1,938 @@
+{
+  "archived": false,
+  "branch": "main",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - fortran_compiler_version\n",
+  "conda-forge.yml": {
+    "conda_build": {
+      "error_overlinking": true
+    },
+    "conda_build_tool": "rattler-build",
+    "conda_forge_output_validation": true,
+    "github": {
+      "branch_name": "main",
+      "tooling_branch_name": "main"
+    }
+  },
+  "feedstock_hash": "217dc13c6f047388aa55ee29178548858d3d3c0c",
+  "feedstock_hash_ts": 1782766828,
+  "feedstock_name": "calchep",
+  "hash_type": "sha256",
+  "linux_64_meta_yaml": {
+    "about": {
+      "description": "CalcHEP is a package for automatic calculations of elementary particle decay\nand collision properties in the lowest order of perturbation theory\n(the tree approximation).\nThe main idea prescribed into the CalcHEP is to make available passing on\nfrom the Lagrangian to the final distributions effectively with a high\nlevel of automation.\n\nTwo variants are provided:\n\n* `calchep` builds in \"blind\" (non-interactive) mode, with no X11\n  dependency. The symbolic engine, numerical integration, batch operation,\n  and matrix-element generation all work; only the interactive graphical\n  menu is unavailable.\n* `calchep-gui` adds the X11-enabled interactive `calchep-gui` front-end\n  (it depends on `calchep` for the shared data and libraries).\n\nCalcHEP is a run-in-place package installed under `$CONDA_PREFIX/share/calchep`;\nactivation exports the `CALCHEP` environment variable. Generating a new process\ncompiles C code on demand at run time, so the package depends on a C compiler\n(`gcc` on Linux, `clang` on macOS) and works out of the box. (A Fortran compiler\nis only needed for models that use user-defined Fortran functions; standard\nprocess generation is C only.)",
+      "doc_url": "https://theory.sinp.msu.ru/~pukhov/calchep.html",
+      "home": "https://theory.sinp.msu.ru/~pukhov/calchep.html",
+      "license": "GPL-3.0-or-later",
+      "license_family": "GPL-3.0-or-later",
+      "license_file": "LICENSE",
+      "summary": "Calculation of Feynman diagrams and integration over multi-particle phase space"
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "calchep"
+        ]
+      },
+      "script": {
+        "file": "install_calchep"
+      }
+    },
+    "extra": {
+      "feedstock-name": "calchep",
+      "recipe-maintainers": [
+        "matthewfeickert"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "calchep"
+          ]
+        },
+        "name": "calchep",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [],
+          "run": [
+            "perl",
+            "gcc"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "s_calchep",
+                "mkWORKdir",
+                "event2lhe",
+                "event_mixer",
+                "events2tab",
+                "lhapdf2pdt",
+                "lhe2tab",
+                "show_distr",
+                "sum_distr"
+              ],
+              "files": [
+                "share/calchep/FlagsForSh",
+                "share/calchep/calchep.ini",
+                "share/calchep/bin/s_calchep",
+                "share/calchep/bin/calc",
+                "share/calchep/lib/libcalchep.so",
+                "share/calchep/lib/dummy.a",
+                "share/calchep/lib/dynamic_vp.a",
+                "share/calchep/lib/sqme_aux.so",
+                "etc/conda/activate.d/calchep_activate.sh",
+                "etc/conda/activate.d/calchep_activate.csh",
+                "etc/conda/activate.d/calchep_activate.fish",
+                "etc/conda/deactivate.d/calchep_deactivate.sh",
+                "etc/conda/deactivate.d/calchep_deactivate.csh",
+                "etc/conda/deactivate.d/calchep_deactivate.fish"
+              ]
+            }
+          },
+          {
+            "script": [
+              "s_calchep --version",
+              "test -n \"${CALCHEP}\"",
+              "test -f \"${CALCHEP}/calchep.ini\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "make",
+                "gnuplot",
+                "grep",
+                "awk"
+              ]
+            },
+            "script": [
+              "mkWORKdir _example",
+              "cd _example",
+              "./calchep_batch -help",
+              "./calchep_batch \"${CALCHEP}/utile/batch_file\"",
+              "test -f batch_results/test-cs.dat",
+              "test -f batch_results/test-Mh120_1.jpg",
+              "gzip -dc batch_results/test-Mh120.lhe.gz > events.lhe",
+              "lhe2tab \"M(5,-5)\" 0 400 50 < events.lhe > hist.txt",
+              "grep -q \"lost_momenta_max\" hist.txt",
+              "awk '/lost_momenta_max.Etot/{for(i=2;i<=NF;i++) if($i+0>1e-6) exit 1}' hist.txt",
+              "sum_distr batch_results/test-Mh120.distr batch_results/test-Mh125.distr > combined.distr",
+              "grep -q \"M(b,B)\" combined.distr",
+              "cd ..",
+              "mkWORKdir _main",
+              "cd _main",
+              "cp \"${CALCHEP}/utile/main_22.c\" .",
+              "${CALCHEP}/bin/make_main main_22.c",
+              "./main_22 > main_22.out",
+              "grep -q \"sigmaTot\" main_22.out"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      },
+      {
+        "build": null,
+        "name": "calchep-gui",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "run": [
+            "calchep"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "calchep-gui"
+              ],
+              "files": [
+                "share/calchep-gui/bin/s_calchep"
+              ]
+            }
+          },
+          {
+            "script": [
+              "calchep-gui --version",
+              "ldd \"${PREFIX}/bin/calchep-gui\" | grep -q libX11"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      }
+    ],
+    "package": {
+      "name": "calchep",
+      "version": "3.8.4"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make",
+        "sed"
+      ],
+      "run": [
+        "perl",
+        "gcc"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-fix-initStrFun-out-of-bounds-write-segfault.patch",
+        "patches/0002-qcdScale-guard-zero-arg-min-max-overflow.patch",
+        "patches/0003-histogram-calloc-distribution-record.patch",
+        "patches/0004-link-VandP.so-against-libcalchep.patch"
+      ],
+      "sha256": "802b7d7e776643b3a46f0611bb4f43f1ba9a84ebe071c251b2caf7ddb36e5043",
+      "url": "https://theory.sinp.msu.ru/~pukhov/CALCHEP/calchep_3.8.4.tgz"
+    }
+  },
+  "linux_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make",
+        "sed"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "xorg-libx11",
+        "xorg-xorgproto"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "calchep",
+        "gcc",
+        "perl"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "awk",
+        "gnuplot",
+        "grep",
+        "make"
+      ]
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "description": "CalcHEP is a package for automatic calculations of elementary particle decay\nand collision properties in the lowest order of perturbation theory\n(the tree approximation).\nThe main idea prescribed into the CalcHEP is to make available passing on\nfrom the Lagrangian to the final distributions effectively with a high\nlevel of automation.\n\nTwo variants are provided:\n\n* `calchep` builds in \"blind\" (non-interactive) mode, with no X11\n  dependency. The symbolic engine, numerical integration, batch operation,\n  and matrix-element generation all work; only the interactive graphical\n  menu is unavailable.\n* `calchep-gui` adds the X11-enabled interactive `calchep-gui` front-end\n  (it depends on `calchep` for the shared data and libraries).\n\nCalcHEP is a run-in-place package installed under `$CONDA_PREFIX/share/calchep`;\nactivation exports the `CALCHEP` environment variable. Generating a new process\ncompiles C code on demand at run time, so the package depends on a C compiler\n(`gcc` on Linux, `clang` on macOS) and works out of the box. (A Fortran compiler\nis only needed for models that use user-defined Fortran functions; standard\nprocess generation is C only.)",
+      "doc_url": "https://theory.sinp.msu.ru/~pukhov/calchep.html",
+      "home": "https://theory.sinp.msu.ru/~pukhov/calchep.html",
+      "license": "GPL-3.0-or-later",
+      "license_family": "GPL-3.0-or-later",
+      "license_file": "LICENSE",
+      "summary": "Calculation of Feynman diagrams and integration over multi-particle phase space"
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "calchep"
+        ]
+      },
+      "script": {
+        "file": "install_calchep"
+      }
+    },
+    "extra": {
+      "feedstock-name": "calchep",
+      "recipe-maintainers": [
+        "matthewfeickert"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "calchep"
+          ]
+        },
+        "name": "calchep",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [],
+          "run": [
+            "perl",
+            "gcc"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "s_calchep",
+                "mkWORKdir",
+                "event2lhe",
+                "event_mixer",
+                "events2tab",
+                "lhapdf2pdt",
+                "lhe2tab",
+                "show_distr",
+                "sum_distr"
+              ],
+              "files": [
+                "share/calchep/FlagsForSh",
+                "share/calchep/calchep.ini",
+                "share/calchep/bin/s_calchep",
+                "share/calchep/bin/calc",
+                "share/calchep/lib/libcalchep.so",
+                "share/calchep/lib/dummy.a",
+                "share/calchep/lib/dynamic_vp.a",
+                "share/calchep/lib/sqme_aux.so",
+                "etc/conda/activate.d/calchep_activate.sh",
+                "etc/conda/activate.d/calchep_activate.csh",
+                "etc/conda/activate.d/calchep_activate.fish",
+                "etc/conda/deactivate.d/calchep_deactivate.sh",
+                "etc/conda/deactivate.d/calchep_deactivate.csh",
+                "etc/conda/deactivate.d/calchep_deactivate.fish"
+              ]
+            }
+          },
+          {
+            "script": [
+              "s_calchep --version",
+              "test -n \"${CALCHEP}\"",
+              "test -f \"${CALCHEP}/calchep.ini\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "make",
+                "gnuplot",
+                "grep",
+                "awk"
+              ]
+            },
+            "script": [
+              "mkWORKdir _example",
+              "cd _example",
+              "./calchep_batch -help",
+              "./calchep_batch \"${CALCHEP}/utile/batch_file\"",
+              "test -f batch_results/test-cs.dat",
+              "test -f batch_results/test-Mh120_1.jpg",
+              "gzip -dc batch_results/test-Mh120.lhe.gz > events.lhe",
+              "lhe2tab \"M(5,-5)\" 0 400 50 < events.lhe > hist.txt",
+              "grep -q \"lost_momenta_max\" hist.txt",
+              "awk '/lost_momenta_max.Etot/{for(i=2;i<=NF;i++) if($i+0>1e-6) exit 1}' hist.txt",
+              "sum_distr batch_results/test-Mh120.distr batch_results/test-Mh125.distr > combined.distr",
+              "grep -q \"M(b,B)\" combined.distr",
+              "cd ..",
+              "mkWORKdir _main",
+              "cd _main",
+              "cp \"${CALCHEP}/utile/main_22.c\" .",
+              "${CALCHEP}/bin/make_main main_22.c",
+              "./main_22 > main_22.out",
+              "grep -q \"sigmaTot\" main_22.out"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      },
+      {
+        "build": null,
+        "name": "calchep-gui",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "run": [
+            "calchep"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "calchep-gui"
+              ],
+              "files": [
+                "share/calchep-gui/bin/s_calchep"
+              ]
+            }
+          },
+          {
+            "script": [
+              "calchep-gui --version",
+              "ldd \"${PREFIX}/bin/calchep-gui\" | grep -q libX11"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "calchep"
+          ]
+        },
+        "name": "calchep",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [],
+          "run": [
+            "perl",
+            "gcc"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "s_calchep",
+                "mkWORKdir",
+                "event2lhe",
+                "event_mixer",
+                "events2tab",
+                "lhapdf2pdt",
+                "lhe2tab",
+                "show_distr",
+                "sum_distr"
+              ],
+              "files": [
+                "share/calchep/FlagsForSh",
+                "share/calchep/calchep.ini",
+                "share/calchep/bin/s_calchep",
+                "share/calchep/bin/calc",
+                "share/calchep/lib/libcalchep.so",
+                "share/calchep/lib/dummy.a",
+                "share/calchep/lib/dynamic_vp.a",
+                "share/calchep/lib/sqme_aux.so",
+                "etc/conda/activate.d/calchep_activate.sh",
+                "etc/conda/activate.d/calchep_activate.csh",
+                "etc/conda/activate.d/calchep_activate.fish",
+                "etc/conda/deactivate.d/calchep_deactivate.sh",
+                "etc/conda/deactivate.d/calchep_deactivate.csh",
+                "etc/conda/deactivate.d/calchep_deactivate.fish"
+              ]
+            }
+          },
+          {
+            "script": [
+              "s_calchep --version",
+              "test -n \"${CALCHEP}\"",
+              "test -f \"${CALCHEP}/calchep.ini\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "make",
+                "gnuplot",
+                "grep",
+                "awk"
+              ]
+            },
+            "script": [
+              "mkWORKdir _example",
+              "cd _example",
+              "./calchep_batch -help",
+              "./calchep_batch \"${CALCHEP}/utile/batch_file\"",
+              "test -f batch_results/test-cs.dat",
+              "test -f batch_results/test-Mh120_1.jpg",
+              "gzip -dc batch_results/test-Mh120.lhe.gz > events.lhe",
+              "lhe2tab \"M(5,-5)\" 0 400 50 < events.lhe > hist.txt",
+              "grep -q \"lost_momenta_max\" hist.txt",
+              "awk '/lost_momenta_max.Etot/{for(i=2;i<=NF;i++) if($i+0>1e-6) exit 1}' hist.txt",
+              "sum_distr batch_results/test-Mh120.distr batch_results/test-Mh125.distr > combined.distr",
+              "grep -q \"M(b,B)\" combined.distr",
+              "cd ..",
+              "mkWORKdir _main",
+              "cd _main",
+              "cp \"${CALCHEP}/utile/main_22.c\" .",
+              "${CALCHEP}/bin/make_main main_22.c",
+              "./main_22 > main_22.out",
+              "grep -q \"sigmaTot\" main_22.out"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      },
+      {
+        "build": null,
+        "name": "calchep-gui",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "run": [
+            "calchep"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "calchep-gui"
+              ],
+              "files": [
+                "share/calchep-gui/bin/s_calchep"
+              ]
+            }
+          },
+          {
+            "script": [
+              "calchep-gui --version",
+              "ldd \"${PREFIX}/bin/calchep-gui\" | grep -q libX11"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      }
+    ],
+    "package": {
+      "name": "calchep",
+      "version": "3.8.4"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make",
+        "sed"
+      ],
+      "run": [
+        "perl",
+        "gcc"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-fix-initStrFun-out-of-bounds-write-segfault.patch",
+        "patches/0002-qcdScale-guard-zero-arg-min-max-overflow.patch",
+        "patches/0003-histogram-calloc-distribution-record.patch",
+        "patches/0004-link-VandP.so-against-libcalchep.patch"
+      ],
+      "sha256": "802b7d7e776643b3a46f0611bb4f43f1ba9a84ebe071c251b2caf7ddb36e5043",
+      "url": "https://theory.sinp.msu.ru/~pukhov/CALCHEP/calchep_3.8.4.tgz"
+    }
+  },
+  "name": "calchep",
+  "osx_64_meta_yaml": {
+    "about": {
+      "description": "CalcHEP is a package for automatic calculations of elementary particle decay\nand collision properties in the lowest order of perturbation theory\n(the tree approximation).\nThe main idea prescribed into the CalcHEP is to make available passing on\nfrom the Lagrangian to the final distributions effectively with a high\nlevel of automation.\n\nTwo variants are provided:\n\n* `calchep` builds in \"blind\" (non-interactive) mode, with no X11\n  dependency. The symbolic engine, numerical integration, batch operation,\n  and matrix-element generation all work; only the interactive graphical\n  menu is unavailable.\n* `calchep-gui` adds the X11-enabled interactive `calchep-gui` front-end\n  (it depends on `calchep` for the shared data and libraries).\n\nCalcHEP is a run-in-place package installed under `$CONDA_PREFIX/share/calchep`;\nactivation exports the `CALCHEP` environment variable. Generating a new process\ncompiles C code on demand at run time, so the package depends on a C compiler\n(`gcc` on Linux, `clang` on macOS) and works out of the box. (A Fortran compiler\nis only needed for models that use user-defined Fortran functions; standard\nprocess generation is C only.)",
+      "doc_url": "https://theory.sinp.msu.ru/~pukhov/calchep.html",
+      "home": "https://theory.sinp.msu.ru/~pukhov/calchep.html",
+      "license": "GPL-3.0-or-later",
+      "license_family": "GPL-3.0-or-later",
+      "license_file": "LICENSE",
+      "summary": "Calculation of Feynman diagrams and integration over multi-particle phase space"
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "calchep"
+        ]
+      },
+      "script": {
+        "file": "install_calchep"
+      }
+    },
+    "extra": {
+      "feedstock-name": "calchep",
+      "recipe-maintainers": [
+        "matthewfeickert"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "calchep"
+          ]
+        },
+        "name": "calchep",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [],
+          "run": [
+            "perl",
+            "gcc"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "s_calchep",
+                "mkWORKdir",
+                "event2lhe",
+                "event_mixer",
+                "events2tab",
+                "lhapdf2pdt",
+                "lhe2tab",
+                "show_distr",
+                "sum_distr"
+              ],
+              "files": [
+                "share/calchep/FlagsForSh",
+                "share/calchep/calchep.ini",
+                "share/calchep/bin/s_calchep",
+                "share/calchep/bin/calc",
+                "share/calchep/lib/libcalchep.so",
+                "share/calchep/lib/dummy.a",
+                "share/calchep/lib/dynamic_vp.a",
+                "share/calchep/lib/sqme_aux.so",
+                "etc/conda/activate.d/calchep_activate.sh",
+                "etc/conda/activate.d/calchep_activate.csh",
+                "etc/conda/activate.d/calchep_activate.fish",
+                "etc/conda/deactivate.d/calchep_deactivate.sh",
+                "etc/conda/deactivate.d/calchep_deactivate.csh",
+                "etc/conda/deactivate.d/calchep_deactivate.fish"
+              ]
+            }
+          },
+          {
+            "script": [
+              "s_calchep --version",
+              "test -n \"${CALCHEP}\"",
+              "test -f \"${CALCHEP}/calchep.ini\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "make",
+                "gnuplot",
+                "grep",
+                "awk"
+              ]
+            },
+            "script": [
+              "mkWORKdir _example",
+              "cd _example",
+              "./calchep_batch -help",
+              "./calchep_batch \"${CALCHEP}/utile/batch_file\"",
+              "test -f batch_results/test-cs.dat",
+              "test -f batch_results/test-Mh120_1.jpg",
+              "gzip -dc batch_results/test-Mh120.lhe.gz > events.lhe",
+              "lhe2tab \"M(5,-5)\" 0 400 50 < events.lhe > hist.txt",
+              "grep -q \"lost_momenta_max\" hist.txt",
+              "awk '/lost_momenta_max.Etot/{for(i=2;i<=NF;i++) if($i+0>1e-6) exit 1}' hist.txt",
+              "sum_distr batch_results/test-Mh120.distr batch_results/test-Mh125.distr > combined.distr",
+              "grep -q \"M(b,B)\" combined.distr",
+              "cd ..",
+              "mkWORKdir _main",
+              "cd _main",
+              "cp \"${CALCHEP}/utile/main_22.c\" .",
+              "${CALCHEP}/bin/make_main main_22.c",
+              "./main_22 > main_22.out",
+              "grep -q \"sigmaTot\" main_22.out"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      },
+      {
+        "build": null,
+        "name": "calchep-gui",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "run": [
+            "calchep"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "calchep-gui"
+              ],
+              "files": [
+                "share/calchep-gui/bin/s_calchep"
+              ]
+            }
+          },
+          {
+            "script": [
+              "calchep-gui --version",
+              "ldd \"${PREFIX}/bin/calchep-gui\" | grep -q libX11"
+            ]
+          }
+        ],
+        "version": "3.8.4"
+      }
+    ],
+    "package": {
+      "name": "calchep",
+      "version": "3.8.4"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make",
+        "sed"
+      ],
+      "run": [
+        "perl",
+        "gcc"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-fix-initStrFun-out-of-bounds-write-segfault.patch",
+        "patches/0002-qcdScale-guard-zero-arg-min-max-overflow.patch",
+        "patches/0003-histogram-calloc-distribution-record.patch",
+        "patches/0004-link-VandP.so-against-libcalchep.patch"
+      ],
+      "sha256": "802b7d7e776643b3a46f0611bb4f43f1ba9a84ebe071c251b2caf7ddb36e5043",
+      "url": "https://theory.sinp.msu.ru/~pukhov/CALCHEP/calchep_3.8.4.tgz"
+    }
+  },
+  "osx_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make",
+        "sed"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "xorg-libx11",
+        "xorg-xorgproto"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "calchep",
+        "gcc",
+        "perl"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "awk",
+        "gnuplot",
+        "grep",
+        "make"
+      ]
+    }
+  },
+  "outputs_names": {
+    "__set__": true,
+    "elements": [
+      "calchep",
+      "calchep-gui"
+    ]
+  },
+  "parsing_error": false,
+  "platforms": [
+    "linux_64",
+    "osx_64"
+  ],
+  "pr_info": {
+    "__lazy_json__": "pr_info/calchep.json"
+  },
+  "raw_meta_yaml": "context:\n  version: \"3.8.4\"\n\nrecipe:\n  name: calchep\n  version: ${{ version }}\n\nsource:\n  - url: https://theory.sinp.msu.ru/~pukhov/CALCHEP/calchep_${{ version }}.tgz\n    sha256: 802b7d7e776643b3a46f0611bb4f43f1ba9a84ebe071c251b2caf7ddb36e5043\n    patches:\n      # initStrFun() writes nnan[i1-1]/sf_be[i1-1] before validating i1; called\n      # as initStrFun(0) it writes nnan[-1], which the -O2 BSS layout overlaps\n      # with the adjacent ``plist`` pointer -> truncated pointer -> SIGSEGV in\n      # realloc during numerical integration. (Reported upstream.)\n      - patches/0001-fix-initStrFun-out-of-bounds-write-segfault.patch\n      # Zero-argument min()/max() in the QCD-scale parser: malloc(0)+strcpy\n      # overflow / out-of-bounds args[0] read (latent; reported upstream).\n      - patches/0002-qcdScale-guard-zero-arg-min-max-overflow.patch\n      # readDistributions() reads a session record into a malloc'd histRec;\n      # fscanf gaps leave fields uninitialised (later printed). calloc zero-\n      # fills them (valgrind-clean; harmless but undefined behaviour).\n      - patches/0003-histogram-calloc-distribution-record.patch\n      # Link the run-time-generated VandP.so against the combined shared library\n      # (libcalchep.so) instead of the individual static archives that are no\n      # longer shipped. (Pairs with the ld_n/make_main link edits in install_calchep.sh.)\n      - patches/0004-link-VandP.so-against-libcalchep.patch\n\nbuild:\n  number: 0\n  # POSIX build system (Makefile + getFlags + sh); no Windows support.\n  # osx (osx-64 + osx-arm64) is enabled via Darwin-specific handling in\n  # build_cache.sh / install_calchep.sh (clang -dynamiclib, -install_name,\n  # `ranlib -c`, no -rdynamic, -force_load, -undefined dynamic_lookup,\n  # @loader_path). That macOS link path could not be validated locally, so it may\n  # still need iteration against conda-forge's osx builders.\n  skip:\n    - win\n\noutputs:\n  # The staging output builds the run-in-place tree (in blind, non-X11 mode) once\n  # under $PREFIX/share/calchep, including every X11-independent library and all\n  # intermediate objects. Both package outputs inherit it: ``calchep`` ships the\n  # blind tree as-is, while ``calchep-gui`` re-links only the interactive\n  # front-end against X11, reusing the cached libraries.\n  - staging:\n      name: calchep-build\n\n    build:\n      script:\n        file: build_cache\n\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ compiler(\"fortran\") }}\n        - make\n        # GNU sed: on macOS build_cache.sh rewrites the GNU allow-undefined link\n        # flag to the ld64 spelling before building, and the system BSD sed differs.\n        - sed\n\n  - package:\n      name: calchep\n    inherit: calchep-build\n\n    build:\n      script:\n        file: install_calchep\n      files:\n        - share/calchep/**\n        - bin/*\n        - etc/conda/**\n\n    requirements:\n      build:\n        # The shipped binaries/libraries come from the staging build; the C and\n        # Fortran compilers are declared here only so their run-exports (libgcc,\n        # libgfortran) become this package's run dependencies. compiler(\"cxx\") is\n        # omitted: CalcHEP's C++ sources link no libstdc++ runtime, so nothing\n        # shipped needs it (verified with readelf). The run-time JIT compiler is a\n        # real ``run`` dependency (below).\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"fortran\") }}\n        - sed\n      run:\n        # The run-time-generated bin/ scripts (run_batch, ...) are Perl.\n        - perl\n        # Process generation JIT-compiles C on demand with the compiler recorded in\n        # FlagsForSh, so ship it: gcc on Linux, clang on macOS.\n        - if: linux\n          then: gcc\n        - if: osx\n          then: clang\n      run_exports:\n        - ${{ pin_subpackage(\"calchep\", upper_bound=\"x.x\") }}\n\n    tests:\n      - package_contents:\n          bin:\n            - s_calchep\n            - mkWORKdir\n            - event2lhe\n            - event_mixer\n            - events2tab\n            - lhapdf2pdt\n            - lhe2tab\n            - show_distr\n            - sum_distr\n          files:\n            - share/calchep/FlagsForSh\n            - share/calchep/calchep.ini\n            - share/calchep/bin/s_calchep\n            - share/calchep/bin/calc\n            # The numerical core ships as one shared library (libcalchep.so);\n            # dummy.a and dynamic_vp.a must stay static (see build_cache.sh for the\n            # link-semantics reasons) and sqme_aux.so is already shared.\n            - share/calchep/lib/libcalchep.so\n            - share/calchep/lib/dummy.a\n            - share/calchep/lib/dynamic_vp.a\n            - share/calchep/lib/sqme_aux.so\n            - etc/conda/activate.d/calchep_activate.sh\n            - etc/conda/activate.d/calchep_activate.csh\n            - etc/conda/activate.d/calchep_activate.fish\n            - etc/conda/deactivate.d/calchep_deactivate.sh\n            - etc/conda/deactivate.d/calchep_deactivate.csh\n            - etc/conda/deactivate.d/calchep_deactivate.fish\n\n      - script:\n          # --version needs no compiler and exits before opening any display.\n          - s_calchep --version\n          # The activation script must export CALCHEP into the (run-in-place) tree.\n          - test -n \"${CALCHEP}\"\n          - test -f \"${CALCHEP}/calchep.ini\"\n\n      # End-to-end batch run, event/distribution post-processing, and the make_main\n      # C-API check. Runs on every platform: CalcHEP JIT-generates, compiles and\n      # integrates the process on demand using the run-time toolchain (gcc on linux,\n      # clang on macOS -- a package run dependency) plus make and gnuplot (pulled\n      # into the test environment only).\n      - requirements:\n          run:\n            - make\n            - gnuplot\n            - grep\n            - awk\n        script:\n          - mkWORKdir _example\n          - cd _example\n          # -help is a single dash; --help is unrecognized and exits 6.\n          - ./calchep_batch -help\n          - ./calchep_batch \"${CALCHEP}/utile/batch_file\"\n          # A cross-section result must actually be produced, and the\n          # distribution plots require gnuplot. Both land at the top of\n          # batch_results/ (run name \"test\", so plots are test-Mh*_*.jpg).\n          - test -f batch_results/test-cs.dat\n          - test -f batch_results/test-Mh120_1.jpg\n          # Post-processing utilities on the generated outputs. lhe2tab\n          # histograms the LHE events (M(5,-5) = M(b,bbar), always in the final\n          # state) and records the worst energy-momentum imbalance; assert the\n          # events conserve 4-momentum (~1e-11, far below the 1e-6 tolerance).\n          # (gzip -dc, not zcat: macOS zcat is the legacy compress tool and looks\n          # for a .Z file instead of decompressing the .gz.)\n          - gzip -dc batch_results/test-Mh120.lhe.gz > events.lhe\n          - lhe2tab \"M(5,-5)\" 0 400 50 < events.lhe > hist.txt\n          - grep -q \"lost_momenta_max\" hist.txt\n          - awk '/lost_momenta_max.Etot/{for(i=2;i<=NF;i++) if($i+0>1e-6) exit 1}' hist.txt\n          # sum_distr merges same-specification distribution files into one.\n          - sum_distr batch_results/test-Mh120.distr batch_results/test-Mh125.distr > combined.distr\n          - grep -q \"M(b,B)\" combined.distr\n          # make_main builds a standalone program against CalcHEP's C\n          # matrix-element API -- the path other packages (e.g. micrOMEGAs) use,\n          # and the sole consumer of the static dynamic_vp.a. make_main derives\n          # the output name from its argument and writes it to the current\n          # directory, so the source is copied into a fresh (writable) work dir\n          # and passed by bare name.\n          - cd ..\n          - mkWORKdir _main\n          - cd _main\n          - cp \"${CALCHEP}/utile/main_22.c\" .\n          - ${CALCHEP}/bin/make_main main_22.c\n          - ./main_22 > main_22.out\n          - grep -q \"sigmaTot\" main_22.out\n\n  - package:\n      name: calchep-gui\n    inherit: calchep-build\n\n    build:\n      script:\n        file: build_gui\n      files:\n        - share/calchep-gui/**\n        - bin/calchep-gui\n\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - make\n        - sed\n      host:\n        # X11/Xlib.h + libX11 from xorg-libx11; the X11/X.h protocol headers it\n        # includes come from xorg-xorgproto.\n        - xorg-libx11\n        - xorg-xorgproto\n      run:\n        # The GUI binary's data tree and libraries come from the blind package.\n        - ${{ pin_subpackage(\"calchep\", exact=True) }}\n\n    tests:\n      - package_contents:\n          bin:\n            - calchep-gui\n          files:\n            - share/calchep-gui/bin/s_calchep\n      - script:\n          - calchep-gui --version\n          # The GUI front-end's defining feature over the blind package is the X11\n          # link; verify it directly. bin/calchep-gui is a symlink to the X11-linked\n          # s_calchep. ldd is the linux tool; otool -L is its macOS equivalent.\n          - if: linux\n            then: ldd \"${PREFIX}/bin/calchep-gui\" | grep -q libX11\n          - if: osx\n            then: otool -L \"${PREFIX}/bin/calchep-gui\" | grep -q libX11\n\nabout:\n  homepage: https://theory.sinp.msu.ru/~pukhov/calchep.html\n  documentation: https://theory.sinp.msu.ru/~pukhov/calchep.html\n  license: GPL-3.0-or-later\n  license_file: LICENSE\n  summary: Calculation of Feynman diagrams and integration over multi-particle phase space\n  description: |\n    CalcHEP is a package for automatic calculations of elementary particle decay\n    and collision properties in the lowest order of perturbation theory\n    (the tree approximation).\n    The main idea prescribed into the CalcHEP is to make available passing on\n    from the Lagrangian to the final distributions effectively with a high\n    level of automation.\n\n    Two variants are provided:\n\n    * `calchep` builds in \"blind\" (non-interactive) mode, with no X11\n      dependency. The symbolic engine, numerical integration, batch operation,\n      and matrix-element generation all work; only the interactive graphical\n      menu is unavailable.\n    * `calchep-gui` adds the X11-enabled interactive `calchep-gui` front-end\n      (it depends on `calchep` for the shared data and libraries).\n\n    CalcHEP is a run-in-place package installed under `$CONDA_PREFIX/share/calchep`;\n    activation exports the `CALCHEP` environment variable. Generating a new process\n    compiles C code on demand at run time, so the package depends on a C compiler\n    (`gcc` on Linux, `clang` on macOS) and works out of the box. (A Fortran compiler\n    is only needed for models that use user-defined Fortran functions; standard\n    process generation is C only.)\n\nextra:\n  feedstock-name: calchep\n  recipe-maintainers:\n    - matthewfeickert\n",
+  "req": {
+    "__set__": true,
+    "elements": [
+      "c_compiler_stub",
+      "c_stdlib_stub",
+      "calchep",
+      "cxx_compiler_stub",
+      "fortran_compiler_stub",
+      "gcc",
+      "make",
+      "perl",
+      "sed",
+      "xorg-libx11",
+      "xorg-xorgproto"
+    ]
+  },
+  "requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make",
+        "sed"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "ctng-compilers",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "xorg-libx11",
+        "xorg-xorgproto"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "calchep",
+        "ctng-compilers",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "gcc",
+        "perl"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "awk",
+        "gnuplot",
+        "grep",
+        "make"
+      ]
+    }
+  },
+  "strong_exports": false,
+  "total_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make",
+        "sed"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "xorg-libx11",
+        "xorg-xorgproto"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "calchep",
+        "gcc",
+        "perl"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "awk",
+        "gnuplot",
+        "grep",
+        "make"
+      ]
+    }
+  },
+  "url": "https://theory.sinp.msu.ru/~pukhov/CALCHEP/calchep_3.8.4.tgz",
+  "version": "3.8.4",
+  "version_pr_info": {
+    "__lazy_json__": "version_pr_info/calchep.json"
+  }
+}
