@@ -1,10 +1,10 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncairo:\n- '1'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nexpat:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\nicu:\n- '78'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncairo:\n- '1'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nexpat:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\nicu:\n- '78'\nlibpng:\n- '1.6'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "build_platform": {
-      "osx_arm64": "osx_64"
+      "linux_ppc64le": "linux_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -15,14 +15,13 @@
       "tooling_branch_name": "main"
     },
     "provider": {
-      "linux_aarch64": "azure",
-      "linux_ppc64le": "azure",
-      "win": "azure"
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ab2f9946aebd954083f67ce225a611635850a3f7",
-  "feedstock_hash_ts": 1780450168,
+  "feedstock_hash": "565bbf64b2fcf7a4c957148b54fcffc67d511029",
+  "feedstock_hash_ts": 1782800209,
   "feedstock_name": "harfbuzz",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -36,45 +35,156 @@
       "summary": "An OpenType text shaping engine."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "harfbuzz >=14.2.1"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "harfbuzz",
       "recipe-maintainers": [
         "ocefpaf",
         "pkgw",
-        "tschoonj"
+        "tschoonj",
+        "h-vetinari"
       ]
     },
+    "outputs": [
+      {
+        "files": [
+          "lib/libharfbuzz*.so*"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "harfbuzz",
+      "name": "harfbuzz-split",
       "version": "14.2.1"
     },
     "requirements": {
       "build": [
-        "gobject-introspection",
         "meson",
         "ninja",
         "pkg-config",
-        "pthread-stubs",
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "g-ir-build-tools"
       ],
       "host": [
         "cairo",
-        "glib",
         "freetype",
-        "icu",
+        "glib",
+        "gobject-introspection",
         "graphite2",
+        "icu",
+        "libpng",
+        "pthread-stubs",
         "expat",
         "xorg-xorgproto",
         "zlib"
-      ],
-      "run": [
-        "graphite2"
       ]
     },
     "schema_version": 0,
@@ -82,21 +192,6 @@
       "patches": null,
       "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb",
       "url": "https://github.com/harfbuzz/harfbuzz/archive/14.2.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
-        "test -f $PREFIX/include/harfbuzz/hb-ft.h",
-        "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
-        "hb-view --version"
-      ],
-      "requires": [
-        "pygobject"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -106,11 +201,10 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -120,8 +214,13 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
+        "pthread-stubs",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -129,12 +228,15 @@
     "run": {
       "__set__": true,
       "elements": [
-        "graphite2"
+        "freetype",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
@@ -150,45 +252,156 @@
       "summary": "An OpenType text shaping engine."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "harfbuzz >=14.2.1"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "harfbuzz",
       "recipe-maintainers": [
         "ocefpaf",
         "pkgw",
-        "tschoonj"
+        "tschoonj",
+        "h-vetinari"
       ]
     },
+    "outputs": [
+      {
+        "files": [
+          "lib/libharfbuzz*.so*"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "harfbuzz",
+      "name": "harfbuzz-split",
       "version": "14.2.1"
     },
     "requirements": {
       "build": [
-        "gobject-introspection",
         "meson",
         "ninja",
         "pkg-config",
-        "pthread-stubs",
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "g-ir-build-tools"
       ],
       "host": [
         "cairo",
-        "glib",
         "freetype",
-        "icu",
+        "glib",
+        "gobject-introspection",
         "graphite2",
+        "icu",
+        "libpng",
+        "pthread-stubs",
         "expat",
         "xorg-xorgproto",
         "zlib"
-      ],
-      "run": [
-        "graphite2"
       ]
     },
     "schema_version": 0,
@@ -196,21 +409,6 @@
       "patches": null,
       "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb",
       "url": "https://github.com/harfbuzz/harfbuzz/archive/14.2.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
-        "test -f $PREFIX/include/harfbuzz/hb-ft.h",
-        "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
-        "hb-view --version"
-      ],
-      "requires": [
-        "pygobject"
-      ]
     }
   },
   "linux_aarch64_requirements": {
@@ -220,11 +418,10 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -234,8 +431,13 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
+        "pthread-stubs",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -243,12 +445,15 @@
     "run": {
       "__set__": true,
       "elements": [
-        "graphite2"
+        "freetype",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
@@ -264,45 +469,156 @@
       "summary": "An OpenType text shaping engine."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "harfbuzz >=14.2.1"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "harfbuzz",
       "recipe-maintainers": [
         "ocefpaf",
         "pkgw",
-        "tschoonj"
+        "tschoonj",
+        "h-vetinari"
       ]
     },
+    "outputs": [
+      {
+        "files": [
+          "lib/libharfbuzz*.so*"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "harfbuzz",
+      "name": "harfbuzz-split",
       "version": "14.2.1"
     },
     "requirements": {
       "build": [
-        "gobject-introspection",
         "meson",
         "ninja",
         "pkg-config",
-        "pthread-stubs",
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "g-ir-build-tools"
       ],
       "host": [
         "cairo",
-        "glib",
         "freetype",
-        "icu",
+        "glib",
+        "gobject-introspection",
         "graphite2",
+        "icu",
+        "libpng",
+        "pthread-stubs",
         "expat",
         "xorg-xorgproto",
         "zlib"
-      ],
-      "run": [
-        "graphite2"
       ]
     },
     "schema_version": 0,
@@ -310,21 +626,6 @@
       "patches": null,
       "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb",
       "url": "https://github.com/harfbuzz/harfbuzz/archive/14.2.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
-        "test -f $PREFIX/include/harfbuzz/hb-ft.h",
-        "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
-        "hb-view --version"
-      ],
-      "requires": [
-        "pygobject"
-      ]
     }
   },
   "linux_ppc64le_requirements": {
@@ -334,11 +635,10 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -348,8 +648,13 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
+        "pthread-stubs",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -357,12 +662,15 @@
     "run": {
       "__set__": true,
       "elements": [
-        "graphite2"
+        "freetype",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
@@ -378,79 +686,728 @@
       "summary": "An OpenType text shaping engine."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "harfbuzz >=14.2.1"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "harfbuzz",
       "recipe-maintainers": [
         "ocefpaf",
         "pkgw",
-        "tschoonj"
+        "tschoonj",
+        "h-vetinari"
       ]
     },
+    "outputs": [
+      {
+        "files": [
+          "lib/libharfbuzz*.so*"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      },
+      {
+        "files": [
+          "lib/libharfbuzz*.so*"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      },
+      {
+        "files": [
+          "lib/libharfbuzz*.so*"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      },
+      {
+        "files": [
+          "lib/libharfbuzz*.dylib"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      },
+      {
+        "files": [
+          "lib/libharfbuzz*.dylib"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      },
+      {
+        "files": [
+          "Library/bin/harfbuzz*.dll"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "expat",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_BIN%\\harfbuzz.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-cairo.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-gobject.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-gpu.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-icu.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-raster.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-subset.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-vector.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "expat",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype",
+            "glib"
+          ]
+        },
+        "script": "install_pkg.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_INC%\\harfbuzz\\hb-ft.h exit 1",
+            "if not exist %LIBRARY_LIB%\\girepository-1.0\\HarfBuzz-0.0.typelib exit 1",
+            "if not exist %LIBRARY_PREFIX%\\share\\gir-1.0\\HarfBuzz-0.0.gir exit 1",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "harfbuzz",
+      "name": "harfbuzz-split",
       "version": "14.2.1"
     },
     "requirements": {
       "build": [
-        "gobject-introspection",
         "meson",
         "ninja",
         "pkg-config",
-        "pthread-stubs",
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "g-ir-build-tools"
       ],
       "host": [
         "cairo",
-        "glib",
         "freetype",
-        "icu",
+        "glib",
+        "gobject-introspection",
         "graphite2",
+        "icu",
+        "libpng",
+        "pthread-stubs",
         "expat",
         "xorg-xorgproto",
         "zlib"
-      ],
-      "run": [
-        "graphite2"
       ]
     },
     "schema_version": 0,
     "source": {
       "patches": [
-        "gir-windows.patch"
+        "patches/0001-Revert-meson-fix-generating-introspection.patch"
       ],
       "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb",
       "url": "https://github.com/harfbuzz/harfbuzz/archive/14.2.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
-        "test -f $PREFIX/include/harfbuzz/hb-ft.h",
-        "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
-        "hb-view --version",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-cairo.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-gobject.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-icu.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-subset.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz.dll exit 1",
-        "if not exist %PREFIX%\\Library\\include\\harfbuzz\\hb-ft.h exit 1",
-        "if not exist %PREFIX%\\Library\\lib\\girepository-1.0\\HarfBuzz-0.0.typelib exit 1"
-      ],
-      "requires": [
-        "pygobject"
-      ]
     }
   },
-  "name": "harfbuzz",
+  "name": "harfbuzz-split",
   "osx_64_meta_yaml": {
     "about": {
       "description": "HarfBuzz is a text shaping library. New Harbuzz targets various font\ntechnologies while Old HarfBuzz targets only OpenType fonts.\n",
@@ -462,68 +1419,165 @@
       "summary": "An OpenType text shaping engine."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "harfbuzz >=14.2.1"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "harfbuzz",
       "recipe-maintainers": [
         "ocefpaf",
         "pkgw",
-        "tschoonj"
+        "tschoonj",
+        "h-vetinari"
       ]
     },
+    "outputs": [
+      {
+        "files": [
+          "lib/libharfbuzz*.dylib"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "harfbuzz",
+      "name": "harfbuzz-split",
       "version": "14.2.1"
     },
     "requirements": {
       "build": [
-        "gobject-introspection",
         "meson",
         "ninja",
         "pkg-config",
-        "pthread-stubs",
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "g-ir-build-tools"
       ],
       "host": [
         "cairo",
-        "glib",
         "freetype",
-        "icu",
+        "glib",
+        "gobject-introspection",
         "graphite2",
+        "icu",
+        "libpng",
+        "pthread-stubs",
         "expat",
         "xorg-xorgproto",
         "zlib"
-      ],
-      "run": [
-        "graphite2"
       ]
     },
     "schema_version": 0,
     "source": {
-      "patches": [
-        "createfontdescriptors.patch"
-      ],
+      "patches": null,
       "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb",
       "url": "https://github.com/harfbuzz/harfbuzz/archive/14.2.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
-        "test -f $PREFIX/include/harfbuzz/hb-ft.h",
-        "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib"
-      ],
-      "requires": [
-        "pygobject"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -533,11 +1587,11 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
+        "g-ir-host-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -547,8 +1601,13 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
+        "pthread-stubs",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -556,12 +1615,15 @@
     "run": {
       "__set__": true,
       "elements": [
-        "graphite2"
+        "freetype",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
@@ -577,68 +1639,165 @@
       "summary": "An OpenType text shaping engine."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "harfbuzz >=14.2.1"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "harfbuzz",
       "recipe-maintainers": [
         "ocefpaf",
         "pkgw",
-        "tschoonj"
+        "tschoonj",
+        "h-vetinari"
       ]
     },
+    "outputs": [
+      {
+        "files": [
+          "lib/libharfbuzz*.dylib"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-gpu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-raster${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libharfbuzz-vector${SHLIB_EXT}"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools",
+            "g-ir-host-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "pthread-stubs",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype"
+          ]
+        },
+        "script": "install_pkg.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/include/harfbuzz/hb-ft.h",
+            "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib",
+            "test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "harfbuzz",
+      "name": "harfbuzz-split",
       "version": "14.2.1"
     },
     "requirements": {
       "build": [
-        "gobject-introspection",
         "meson",
         "ninja",
         "pkg-config",
-        "pthread-stubs",
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "g-ir-build-tools"
       ],
       "host": [
         "cairo",
-        "glib",
         "freetype",
-        "icu",
+        "glib",
+        "gobject-introspection",
         "graphite2",
+        "icu",
+        "libpng",
+        "pthread-stubs",
         "expat",
         "xorg-xorgproto",
         "zlib"
-      ],
-      "run": [
-        "graphite2"
       ]
     },
     "schema_version": 0,
     "source": {
-      "patches": [
-        "createfontdescriptors.patch"
-      ],
+      "patches": null,
       "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb",
       "url": "https://github.com/harfbuzz/harfbuzz/archive/14.2.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/lib/libharfbuzz-cairo${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-gobject${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-icu${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz-subset${SHLIB_EXT}",
-        "test -f $PREFIX/lib/libharfbuzz${SHLIB_EXT}",
-        "test -f $PREFIX/include/harfbuzz/hb-ft.h",
-        "test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib"
-      ],
-      "requires": [
-        "pygobject"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -648,11 +1807,11 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
+        "g-ir-host-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -662,8 +1821,13 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
+        "pthread-stubs",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -671,12 +1835,15 @@
     "run": {
       "__set__": true,
       "elements": [
-        "graphite2"
+        "freetype",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
@@ -684,7 +1851,9 @@
   "outputs_names": {
     "__set__": true,
     "elements": [
-      "harfbuzz"
+      "harfbuzz",
+      "libharfbuzz",
+      "libharfbuzz-devel"
     ]
   },
   "parsing_error": false,
@@ -699,7 +1868,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/harfbuzz.json"
   },
-  "raw_meta_yaml": "{% set version = \"14.2.1\" %}\n\npackage:\n  name: harfbuzz\n  version: {{ version }}\n\nsource:\n  url: https://github.com/harfbuzz/harfbuzz/archive/{{ version }}.tar.gz\n  sha256: 3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb\n  patches:\n    - gir-windows.patch  # [win]\n    - createfontdescriptors.patch  # [osx]\n\nbuild:\n  number: 0\n  run_exports:\n    # \"We will never break the ABI.\"\n    # https://github.com/conda-forge/harfbuzz-feedstock/issues/123\n    # https://github.com/harfbuzz/harfbuzz/discussions/5245#discussioncomment-12728609\n    - harfbuzz >={{ version }}\n\nrequirements:\n  build:\n    - gobject-introspection\n    - meson\n    - ninja\n    - pkg-config\n    - pthread-stubs\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler(\"cxx\") }}\n    - cairo           # [build_platform != target_platform]\n    - glib            # [build_platform != target_platform]\n    - freetype        # [build_platform != target_platform]\n    - icu             # [build_platform != target_platform]\n    - graphite2       # [build_platform != target_platform]\n    # needed for development files:\n    - expat           # [build_platform != target_platform]\n    - xorg-xorgproto  # [build_platform != target_platform]\n    - zlib            # [build_platform != target_platform]\n  host:\n    - cairo\n    - glib\n    - freetype\n    - icu\n    - graphite2\n    # needed for development files:\n    - expat\n    - xorg-xorgproto\n    - zlib\n  run:\n    # Still doesn't have run export as of 2025/07/26\n    # https://github.com/conda-forge/graphite2-feedstock/pull/19\n    - graphite2\n\ntest:\n  requires:\n    - pygobject\n  commands:\n    # Libraries/headers.\n    {% set libs = [\"harfbuzz-cairo\", \"harfbuzz-gobject\", \"harfbuzz-icu\", \"harfbuzz-subset\", \"harfbuzz\"] %}\n    {% for lib in libs %}\n    - test -f $PREFIX/lib/lib{{ lib }}${SHLIB_EXT}    # [unix]\n    - if not exist %PREFIX%\\Library\\bin\\{{ lib }}.dll exit 1       # [win]\n    {% endfor %}\n    - test -f $PREFIX/include/harfbuzz/hb-ft.h    # [not win]\n    - if not exist %PREFIX%\\Library\\include\\harfbuzz\\hb-ft.h exit 1         # [win]\n    - test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib    # [unix]\n    - if not exist %PREFIX%\\Library\\lib\\girepository-1.0\\HarfBuzz-0.0.typelib exit 1         # [win]\n    # CLI tests.\n    - hb-view --version  # [linux]\n\nabout:\n  home: https://harfbuzz.github.io/\n  license: MIT\n  license_file: COPYING\n  summary: An OpenType text shaping engine.\n  description: |\n    HarfBuzz is a text shaping library. New Harbuzz targets various font\n    technologies while Old HarfBuzz targets only OpenType fonts.\n  doc_url: https://harfbuzz.github.io/\n  dev_url: https://github.com/harfbuzz/harfbuzz\n\nextra:\n  recipe-maintainers:\n    - ocefpaf\n    - pkgw\n    - tschoonj\n",
+  "raw_meta_yaml": "{% set version = \"14.2.1\" %}\n\n{% set libs = [\n    \"harfbuzz\", \"harfbuzz-cairo\", \"harfbuzz-gobject\", \"harfbuzz-gpu\",\n    \"harfbuzz-icu\", \"harfbuzz-raster\", \"harfbuzz-subset\", \"harfbuzz-vector\"]\n%}\n\npackage:\n  name: harfbuzz-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/harfbuzz/harfbuzz/archive/{{ version }}.tar.gz\n  sha256: 3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb\n  patches:\n    - patches/0001-Revert-meson-fix-generating-introspection.patch  # [win]\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - meson\n    - ninja\n    - pkg-config\n    - {{ stdlib(\"c\") }}\n    - {{ compiler(\"c\") }}\n    - {{ compiler(\"cxx\") }}\n    - cairo           # [build_platform != target_platform]\n    - freetype        # [build_platform != target_platform]\n    - glib            # [build_platform != target_platform]\n    - gobject-introspection  # [build_platform != target_platform]\n    - graphite2       # [build_platform != target_platform]\n    - icu             # [build_platform != target_platform]\n    - libpng          # [build_platform != target_platform]\n    - pthread-stubs   # [build_platform != target_platform]\n    # needed for development files:\n    - expat           # [build_platform != target_platform]\n    - xorg-xorgproto  # [build_platform != target_platform]\n    - zlib            # [build_platform != target_platform]\n    # necessary binaries that we need at build time in all cases\n    - g-ir-build-tools\n  host:\n    - cairo\n    - freetype\n    - glib\n    - gobject-introspection\n    - graphite2\n    - icu\n    - libpng\n    - pthread-stubs             # [unix]\n    # needed for development files:\n    - expat\n    - xorg-xorgproto\n    - zlib\n\noutputs:\n  - name: libharfbuzz\n    script: install_pkg.sh   # [unix]\n    script: install_pkg.bat  # [win]\n    files:\n      - lib/libharfbuzz*.so*        # [linux]\n      - lib/libharfbuzz*.dylib      # [osx]\n      - Library/bin/harfbuzz*.dll   # [win]\n    requirements:\n      build:\n        - {{ stdlib(\"c\") }}\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - meson\n        - ninja\n        - pkg-config\n        # for bin/g-ir-scanner\n        - g-ir-build-tools\n        # for bin/g-ir-compiler\n        - g-ir-host-tools           # [osx]\n        # for bin/glib-mkenums\n        - glib                      # [build_platform != target_platform]\n      host:\n        - cairo\n        - expat                     # [win]\n        - freetype\n        - glib\n        - gobject-introspection\n        - graphite2\n        - icu\n        - libpng\n        - pthread-stubs             # [unix]\n        - zlib\n    test:\n      commands:\n        # shared ibraries\n        {% for lib in libs %}\n        - test -f $PREFIX/lib/lib{{ lib }}${SHLIB_EXT}      # [unix]\n        - if not exist %LIBRARY_BIN%\\{{ lib }}.dll exit 1   # [win]\n        {% endfor %}\n\n  - name: libharfbuzz-devel\n    script: install_pkg.sh   # [unix]\n    script: install_pkg.bat  # [win]\n    build:\n      run_exports:\n        # \"We will never break the ABI.\"\n        # https://github.com/conda-forge/harfbuzz-feedstock/issues/123\n        # https://github.com/harfbuzz/harfbuzz/discussions/5245#discussioncomment-12728609\n        - libharfbuzz >={{ version }}\n    requirements:\n      build:\n        - {{ stdlib(\"c\") }}\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - meson\n        - ninja\n        - pkg-config\n        # for bin/g-ir-scanner\n        - g-ir-build-tools\n        # for bin/g-ir-compiler\n        - g-ir-host-tools           # [osx]\n        # for bin/glib-mkenums\n        - glib                      # [build_platform != target_platform]\n      host:\n        - {{ pin_subpackage(\"libharfbuzz\", exact=True) }}\n        - cairo\n        - expat                     # [win]\n        - freetype\n        - glib\n        - gobject-introspection\n        - graphite2\n        - icu\n        - libpng\n        - pthread-stubs             # [unix]\n        - zlib\n      run:\n        - {{ pin_subpackage(\"libharfbuzz\", exact=True) }}\n        # necessary for pkg-config metadata\n        - freetype\n        - glib      # [win]\n    test:\n      requires:\n        - pkg-config\n        - pygobject\n      commands:\n        # Headers\n        - test -f $PREFIX/include/harfbuzz/hb-ft.h              # [unix]\n        - if not exist %LIBRARY_INC%\\harfbuzz\\hb-ft.h exit 1    # [win]\n\n        # gobject-introspection metadata\n        - test -f $PREFIX/lib/girepository-1.0/HarfBuzz-0.0.typelib                 # [unix]\n        - test -f $PREFIX/share/gir-1.0/HarfBuzz-0.0.gir                            # [unix]\n        - if not exist %LIBRARY_LIB%\\girepository-1.0\\HarfBuzz-0.0.typelib exit 1   # [win]\n        - if not exist %LIBRARY_PREFIX%\\share\\gir-1.0\\HarfBuzz-0.0.gir exit 1       # [win]\n\n        # CLI tests.\n        - hb-view --version\n\n        # test that pkg-config metadata is satisfied\n        - pkg-config --print-errors --exact-version \"{{ version }}\" harfbuzz\n\n  # compatibility wrapper\n  - name: harfbuzz\n    build:\n      run_exports:\n        # see above\n        - libharfbuzz >={{ version }}\n    requirements:\n      host:\n        - {{ pin_subpackage(\"libharfbuzz-devel\", exact=True) }}\n      run:\n        - {{ pin_subpackage(\"libharfbuzz-devel\", exact=True) }}\n    test:\n      commands:\n        - echo \"pure metapackage\"\n\nabout:\n  home: https://harfbuzz.github.io/\n  license: MIT\n  license_file: COPYING\n  summary: An OpenType text shaping engine.\n  description: |\n    HarfBuzz is a text shaping library. New Harbuzz targets various font\n    technologies while Old HarfBuzz targets only OpenType fonts.\n  doc_url: https://harfbuzz.github.io/\n  dev_url: https://github.com/harfbuzz/harfbuzz\n\nextra:\n  recipe-maintainers:\n    - ocefpaf\n    - pkgw\n    - tschoonj\n    - h-vetinari\n  feedstock-name: harfbuzz\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -709,10 +1878,15 @@
       "cxx_compiler_stub",
       "expat",
       "freetype",
+      "g-ir-build-tools",
+      "g-ir-host-tools",
       "glib",
       "gobject-introspection",
       "graphite2",
       "icu",
+      "libharfbuzz",
+      "libharfbuzz-devel",
+      "libpng",
       "meson",
       "ninja",
       "pkg-config",
@@ -728,11 +1902,11 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
+        "g-ir-host-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -745,8 +1919,13 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
+        "pthread-stubs",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -757,12 +1936,16 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "graphite2"
+        "freetype",
+        "glib",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
@@ -775,11 +1958,11 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
+        "g-ir-host-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -789,8 +1972,13 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
+        "pthread-stubs",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -798,12 +1986,16 @@
     "run": {
       "__set__": true,
       "elements": [
-        "graphite2"
+        "freetype",
+        "glib",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
@@ -824,68 +2016,165 @@
       "summary": "An OpenType text shaping engine."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "harfbuzz >=14.2.1"
-      ]
+      "number": "1"
     },
     "extra": {
+      "feedstock-name": "harfbuzz",
       "recipe-maintainers": [
         "ocefpaf",
         "pkgw",
-        "tschoonj"
+        "tschoonj",
+        "h-vetinari"
       ]
     },
+    "outputs": [
+      {
+        "files": [
+          "Library/bin/harfbuzz*.dll"
+        ],
+        "name": "libharfbuzz",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "cairo",
+            "expat",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "zlib"
+          ]
+        },
+        "script": "install_pkg.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_BIN%\\harfbuzz.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-cairo.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-gobject.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-gpu.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-icu.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-raster.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-subset.dll exit 1",
+            "if not exist %LIBRARY_BIN%\\harfbuzz-vector.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "libharfbuzz-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "ninja",
+            "pkg-config",
+            "g-ir-build-tools"
+          ],
+          "host": [
+            "libharfbuzz",
+            "cairo",
+            "expat",
+            "freetype",
+            "glib",
+            "gobject-introspection",
+            "graphite2",
+            "icu",
+            "libpng",
+            "zlib"
+          ],
+          "run": [
+            "libharfbuzz",
+            "freetype",
+            "glib"
+          ]
+        },
+        "script": "install_pkg.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_INC%\\harfbuzz\\hb-ft.h exit 1",
+            "if not exist %LIBRARY_LIB%\\girepository-1.0\\HarfBuzz-0.0.typelib exit 1",
+            "if not exist %LIBRARY_PREFIX%\\share\\gir-1.0\\HarfBuzz-0.0.gir exit 1",
+            "hb-view --version",
+            "pkg-config --print-errors --exact-version \"14.2.1\" harfbuzz"
+          ],
+          "requires": [
+            "pkg-config",
+            "pygobject"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libharfbuzz >=14.2.1"
+          ]
+        },
+        "name": "harfbuzz",
+        "requirements": {
+          "host": [
+            "libharfbuzz-devel"
+          ],
+          "run": [
+            "libharfbuzz-devel"
+          ]
+        },
+        "test": {
+          "commands": [
+            "echo \"pure metapackage\""
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "harfbuzz",
+      "name": "harfbuzz-split",
       "version": "14.2.1"
     },
     "requirements": {
       "build": [
-        "gobject-introspection",
         "meson",
         "ninja",
         "pkg-config",
-        "pthread-stubs",
-        "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "g-ir-build-tools"
       ],
       "host": [
         "cairo",
-        "glib",
         "freetype",
-        "icu",
+        "glib",
+        "gobject-introspection",
         "graphite2",
+        "icu",
+        "libpng",
         "expat",
         "xorg-xorgproto",
         "zlib"
-      ],
-      "run": [
-        "graphite2"
       ]
     },
     "schema_version": 0,
     "source": {
       "patches": [
-        "gir-windows.patch"
+        "patches/0001-Revert-meson-fix-generating-introspection.patch"
       ],
       "sha256": "3c2a9006a7e1bf58737e557014d7882c554c628fb379a9f00008f5ea53dbbdfb",
       "url": "https://github.com/harfbuzz/harfbuzz/archive/14.2.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-cairo.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-gobject.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-icu.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz-subset.dll exit 1",
-        "if not exist %PREFIX%\\Library\\bin\\harfbuzz.dll exit 1",
-        "if not exist %PREFIX%\\Library\\include\\harfbuzz\\hb-ft.h exit 1",
-        "if not exist %PREFIX%\\Library\\lib\\girepository-1.0\\HarfBuzz-0.0.typelib exit 1"
-      ],
-      "requires": [
-        "pygobject"
-      ]
     }
   },
   "win_64_requirements": {
@@ -895,11 +2184,10 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "gobject-introspection",
+        "g-ir-build-tools",
         "meson",
         "ninja",
-        "pkg-config",
-        "pthread-stubs"
+        "pkg-config"
       ]
     },
     "host": {
@@ -909,8 +2197,12 @@
         "expat",
         "freetype",
         "glib",
+        "gobject-introspection",
         "graphite2",
         "icu",
+        "libharfbuzz",
+        "libharfbuzz-devel",
+        "libpng",
         "xorg-xorgproto",
         "zlib"
       ]
@@ -918,12 +2210,16 @@
     "run": {
       "__set__": true,
       "elements": [
-        "graphite2"
+        "freetype",
+        "glib",
+        "libharfbuzz",
+        "libharfbuzz-devel"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "pkg-config",
         "pygobject"
       ]
     }
