@@ -4,9 +4,8 @@
   "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nkrb5:\n- '1.22'\nlibcurl:\n- '8'\nlibssh2:\n- '1'\nopenssl:\n- '3.5'\nperl:\n- 5.32.1\ntarget_platform:\n- linux-64\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
   "conda-forge.yml": {
     "build_platform": {
-      "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "win_arm64": "win_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -18,12 +17,12 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "e6e8ca02c96f82045dd344b4355e4592a5e02d93",
-  "feedstock_hash_ts": 1782296264,
+  "feedstock_hash": "1117cc4421ae9305b0868b4e8ce70ff3468b4d08",
+  "feedstock_hash_ts": 1782802264,
   "feedstock_name": "curl",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -39,7 +38,7 @@
       "summary": "tool and library for transferring data with URL syntax"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -47,7 +46,8 @@
         "jakirkham",
         "ocefpaf",
         "mingwandroid",
-        "xylar"
+        "xylar",
+        "h-vetinari"
       ]
     },
     "outputs": [
@@ -167,12 +167,12 @@
         "pkg-config"
       ],
       "host": [
-        "zlib",
-        "zstd",
         "krb5",
         "libssh2",
         "openssl",
-        "libnghttp2"
+        "libnghttp2",
+        "zlib",
+        "zstd"
       ]
     },
     "schema_version": 0,
@@ -231,7 +231,7 @@
       "summary": "tool and library for transferring data with URL syntax"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -239,7 +239,8 @@
         "jakirkham",
         "ocefpaf",
         "mingwandroid",
-        "xylar"
+        "xylar",
+        "h-vetinari"
       ]
     },
     "outputs": [
@@ -359,12 +360,12 @@
         "pkg-config"
       ],
       "host": [
-        "zlib",
-        "zstd",
         "krb5",
         "libssh2",
         "openssl",
-        "libnghttp2"
+        "libnghttp2",
+        "zlib",
+        "zstd"
       ]
     },
     "schema_version": 0,
@@ -423,7 +424,7 @@
       "summary": "tool and library for transferring data with URL syntax"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -431,7 +432,8 @@
         "jakirkham",
         "ocefpaf",
         "mingwandroid",
-        "xylar"
+        "xylar",
+        "h-vetinari"
       ]
     },
     "outputs": [
@@ -551,12 +553,12 @@
         "pkg-config"
       ],
       "host": [
-        "zlib",
-        "zstd",
         "krb5",
         "libssh2",
         "openssl",
-        "libnghttp2"
+        "libnghttp2",
+        "zlib",
+        "zstd"
       ]
     },
     "schema_version": 0,
@@ -615,7 +617,7 @@
       "summary": "tool and library for transferring data with URL syntax"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -623,7 +625,8 @@
         "jakirkham",
         "ocefpaf",
         "mingwandroid",
-        "xylar"
+        "xylar",
+        "h-vetinari"
       ]
     },
     "outputs": [
@@ -1222,6 +1225,97 @@
             "if not exist %LIBRARY_BIN%\\curl.exe exit 1"
           ]
         }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libcurl"
+          ]
+        },
+        "files": [
+          "Library/bin/libcurl.dll",
+          "Library/include/curl",
+          "Library/lib/libcurl.lib",
+          "Library/lib/pkgconfig/libcurl.pc"
+        ],
+        "name": "libcurl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "zlib",
+            "libssh2",
+            "krb5"
+          ],
+          "run": [
+            "libssh2"
+          ]
+        },
+        "test": {
+          "commands": [
+            "if exist %LIBRARY_BIN%\\curl.exe exit 1",
+            "if exist %LIBRARY_LIB%\\libcurl_a.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\libcurl.dll exit 1",
+            "if not exist %LIBRARY_LIB%\\pkgconfig\\libcurl.pc exit 1"
+          ]
+        }
+      },
+      {
+        "files": [
+          "Library/lib/libcurl_a.lib"
+        ],
+        "name": "libcurl-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "zlib",
+            "libssh2",
+            "krb5",
+            "libcurl"
+          ],
+          "run": [
+            "libcurl"
+          ]
+        },
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\libcurl_a.lib exit 1"
+          ]
+        }
+      },
+      {
+        "files": [
+          "Library/bin/curl.exe*"
+        ],
+        "name": "curl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libcurl",
+            "zlib",
+            "libssh2",
+            "krb5"
+          ],
+          "run": [
+            "libcurl",
+            "libssh2"
+          ]
+        },
+        "test": {
+          "commands": [
+            "curl --help",
+            "curl https://raw.githubusercontent.com/conda-forge/curl-feedstock/master/LICENSE.txt",
+            "if not exist %LIBRARY_BIN%\\curl.exe exit 1"
+          ]
+        }
       }
     ],
     "package": {
@@ -1239,12 +1333,12 @@
         "cmake-no-system"
       ],
       "host": [
-        "zlib",
-        "zstd",
         "krb5",
         "libssh2",
         "openssl",
-        "libnghttp2"
+        "libnghttp2",
+        "zlib",
+        "zstd"
       ]
     },
     "schema_version": 0,
@@ -1267,7 +1361,7 @@
       "summary": "tool and library for transferring data with URL syntax"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1275,7 +1369,8 @@
         "jakirkham",
         "ocefpaf",
         "mingwandroid",
-        "xylar"
+        "xylar",
+        "h-vetinari"
       ]
     },
     "outputs": [
@@ -1395,12 +1490,12 @@
         "pkg-config"
       ],
       "host": [
-        "zlib",
-        "zstd",
         "krb5",
         "libssh2",
         "openssl",
-        "libnghttp2"
+        "libnghttp2",
+        "zlib",
+        "zstd"
       ]
     },
     "schema_version": 0,
@@ -1459,7 +1554,7 @@
       "summary": "tool and library for transferring data with URL syntax"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1467,7 +1562,8 @@
         "jakirkham",
         "ocefpaf",
         "mingwandroid",
-        "xylar"
+        "xylar",
+        "h-vetinari"
       ]
     },
     "outputs": [
@@ -1587,12 +1683,12 @@
         "pkg-config"
       ],
       "host": [
-        "zlib",
-        "zstd",
         "krb5",
         "libssh2",
         "openssl",
-        "libnghttp2"
+        "libnghttp2",
+        "zlib",
+        "zstd"
       ]
     },
     "schema_version": 0,
@@ -1653,12 +1749,13 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/curl.json"
   },
-  "raw_meta_yaml": "{% set version = \"8.21.0\" %}\n\npackage:\n  name: curl_split_recipe\n  version: {{ version }}\n\nsource:\n  url: http://curl.haxx.se/download/curl-{{ version }}.tar.bz2\n  sha256: ad6f2f94934b38e31e48272833c99b891d045b4565fe942a53fbd27bd3910e16\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - libtool  # [unix]\n    - {{ compiler('c') }}\n    - {{ stdlib('c') }}\n    - make             # [unix]\n    - cmake-no-system  # [win]\n    # perl is required to run the tests on UNIX.\n    - perl  # [unix]\n    - pkg-config  # [unix]\n  host:\n    - zlib\n    - zstd  # [unix]\n    - krb5\n    - libssh2\n    - openssl        # [unix]\n    - libnghttp2     # [unix]\n    - zlib\n\n\noutputs:\n  - name: libcurl\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ stdlib('c') }}\n      host:\n        - openssl   # [unix]\n        - libnghttp2   # [unix]\n        - zlib\n        - zstd  # [unix]\n        - libssh2\n        - krb5\n      run:\n        - libssh2\n        - libnghttp2   # [unix]\n    build:\n      run_exports:\n        - {{ pin_subpackage('libcurl') }}\n    files:\n      - include/curl             # [unix]\n      - lib/libcurl.so*          # [linux]\n      - lib/libcurl*.dylib       # [osx]\n      - lib/pkgconfig/libcurl*   # [unix]\n      - bin/curl-config          # [unix]\n      - Library/bin/libcurl.dll  # [win]\n      - Library/include/curl     # [win]\n      - Library/lib/libcurl.lib           # [win]\n      - Library/lib/pkgconfig/libcurl.pc  # [win]\n    test:\n      commands:\n        - curl-config --features       # [not win]\n        - curl-config --protocols      # [not win]\n        - test -f ${PREFIX}/lib/pkgconfig/libcurl.pc  # [not win]\n        - test -f ${PREFIX}/lib/libcurl${SHLIB_EXT}   # [not win]\n        - test ! -f ${PREFIX}/lib/libcurl.a           # [not win]\n        - if exist %LIBRARY_BIN%\\curl.exe exit 1                  # [win]\n        - if exist %LIBRARY_LIB%\\libcurl_a.lib exit 1             # [win]\n        - if not exist %LIBRARY_BIN%\\libcurl.dll exit 1           # [win]\n        - if not exist %LIBRARY_LIB%\\pkgconfig\\libcurl.pc exit 1  # [win]\n        - CURL_SSL_BACKENDS=$(curl-config --ssl-backends)                            # [unix]\n        - if ! echo $CURL_SSL_BACKENDS | grep -q \"OpenSSL\"; then exit 1; fi          # [unix]\n\n\n  - name: libcurl-static\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ stdlib('c') }}\n      host:\n        - openssl   # [unix]\n        - zlib\n        - zstd  # [unix]\n        - libssh2\n        - krb5\n        - {{ pin_subpackage('libcurl', exact=True) }}\n      run:\n        - {{ pin_subpackage('libcurl', exact=True) }}\n    files:\n      - lib/libcurl.a*  # [unix]\n      - Library/lib/libcurl_a.lib  # [win]\n    test:\n      commands:\n        - test -f $PREFIX/lib/libcurl.a  # [not win]\n        - if not exist %LIBRARY_LIB%\\libcurl_a.lib exit 1  # [win]\n\n  - name: curl\n    files:\n      - bin/curl               # [unix]\n      - Library/bin/curl.exe*   # [win]\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ stdlib('c') }}\n      host:\n        - {{ pin_subpackage('libcurl', exact=True) }}\n        # OpenSSL is needed here to prevent conda-build from getting confused while\n        # both OpenSSL 1.1.1 and 3.0.0 and being supported\n        - openssl   # [unix]\n        - zlib\n        - zstd  # [unix]\n        - libssh2\n        - krb5\n      run:\n        - {{ pin_subpackage('libcurl', exact=True) }}\n        - libssh2\n    test:\n      commands:\n        # curl help commands on Windows have non-zero status codes.  Need other test.\n        - curl --help\n        # Try downloading something from https to make sure the certs are used correctly.\n        - curl https://raw.githubusercontent.com/conda-forge/curl-feedstock/master/LICENSE.txt\n        - if not exist %LIBRARY_BIN%\\curl.exe exit 1  # [win]\n\nabout:\n  home: http://curl.haxx.se/\n  license: curl\n  license_family: MIT\n  license_file: COPYING\n  summary: tool and library for transferring data with URL syntax\n\n  description: |\n    Curl is an open source command line tool and library for transferring data\n    with URL syntax. It is used in command lines or scripts to transfer data.\n  doc_url: https://curl.haxx.se/docs/\n  dev_url: https://github.com/curl/curl\n  doc_source_url: https://github.com/curl/curl/tree/master/docs\n\nextra:\n  recipe-maintainers:\n    - msarahan\n    - jakirkham\n    - ocefpaf\n    - mingwandroid\n    - xylar\n",
+  "raw_meta_yaml": "{% set version = \"8.21.0\" %}\n\npackage:\n  name: curl_split_recipe\n  version: {{ version }}\n\nsource:\n  url: http://curl.haxx.se/download/curl-{{ version }}.tar.bz2\n  sha256: ad6f2f94934b38e31e48272833c99b891d045b4565fe942a53fbd27bd3910e16\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - libtool  # [unix]\n    - {{ compiler('c') }}\n    - {{ stdlib('c') }}\n    - make             # [unix]\n    - cmake-no-system  # [win]\n    # perl is required to run the tests on UNIX.\n    - perl  # [unix]\n    - pkg-config  # [unix]\n  host:\n    - krb5\n    - libssh2\n    - openssl        # [unix]\n    - libnghttp2     # [unix]\n    - zlib\n    - zstd           # [unix]\n\n\noutputs:\n  - name: libcurl\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ stdlib('c') }}\n      host:\n        - openssl   # [unix]\n        - libnghttp2   # [unix]\n        - zlib\n        - zstd  # [unix]\n        - libssh2\n        - krb5\n      run:\n        - libssh2\n        - libnghttp2   # [unix]\n    build:\n      run_exports:\n        - {{ pin_subpackage('libcurl') }}\n    files:\n      - include/curl             # [unix]\n      - lib/libcurl.so*          # [linux]\n      - lib/libcurl*.dylib       # [osx]\n      - lib/pkgconfig/libcurl*   # [unix]\n      - bin/curl-config          # [unix]\n      - Library/bin/libcurl.dll  # [win]\n      - Library/include/curl     # [win]\n      - Library/lib/libcurl.lib           # [win]\n      - Library/lib/pkgconfig/libcurl.pc  # [win]\n    test:\n      commands:\n        - curl-config --features       # [not win]\n        - curl-config --protocols      # [not win]\n        - test -f ${PREFIX}/lib/pkgconfig/libcurl.pc  # [not win]\n        - test -f ${PREFIX}/lib/libcurl${SHLIB_EXT}   # [not win]\n        - test ! -f ${PREFIX}/lib/libcurl.a           # [not win]\n        - if exist %LIBRARY_BIN%\\curl.exe exit 1                  # [win]\n        - if exist %LIBRARY_LIB%\\libcurl_a.lib exit 1             # [win]\n        - if not exist %LIBRARY_BIN%\\libcurl.dll exit 1           # [win]\n        - if not exist %LIBRARY_LIB%\\pkgconfig\\libcurl.pc exit 1  # [win]\n        - CURL_SSL_BACKENDS=$(curl-config --ssl-backends)                            # [unix]\n        - if ! echo $CURL_SSL_BACKENDS | grep -q \"OpenSSL\"; then exit 1; fi          # [unix]\n\n\n  - name: libcurl-static\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ stdlib('c') }}\n      host:\n        - openssl   # [unix]\n        - zlib\n        - zstd  # [unix]\n        - libssh2\n        - krb5\n        - {{ pin_subpackage('libcurl', exact=True) }}\n      run:\n        - {{ pin_subpackage('libcurl', exact=True) }}\n    files:\n      - lib/libcurl.a*  # [unix]\n      - Library/lib/libcurl_a.lib  # [win]\n    test:\n      commands:\n        - test -f $PREFIX/lib/libcurl.a  # [not win]\n        - if not exist %LIBRARY_LIB%\\libcurl_a.lib exit 1  # [win]\n\n  - name: curl\n    files:\n      - bin/curl               # [unix]\n      - Library/bin/curl.exe*   # [win]\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ stdlib('c') }}\n      host:\n        - {{ pin_subpackage('libcurl', exact=True) }}\n        # OpenSSL is needed here to prevent conda-build from getting confused while\n        # both OpenSSL 1.1.1 and 3.0.0 and being supported\n        - openssl   # [unix]\n        - zlib\n        - zstd  # [unix]\n        - libssh2\n        - krb5\n      run:\n        - {{ pin_subpackage('libcurl', exact=True) }}\n        - libssh2\n    test:\n      commands:\n        # curl help commands on Windows have non-zero status codes.  Need other test.\n        - curl --help\n        # Try downloading something from https to make sure the certs are used correctly.\n        - curl https://raw.githubusercontent.com/conda-forge/curl-feedstock/master/LICENSE.txt\n        - if not exist %LIBRARY_BIN%\\curl.exe exit 1  # [win]\n\nabout:\n  home: http://curl.haxx.se/\n  license: curl\n  license_family: MIT\n  license_file: COPYING\n  summary: tool and library for transferring data with URL syntax\n\n  description: |\n    Curl is an open source command line tool and library for transferring data\n    with URL syntax. It is used in command lines or scripts to transfer data.\n  doc_url: https://curl.haxx.se/docs/\n  dev_url: https://github.com/curl/curl\n  doc_source_url: https://github.com/curl/curl/tree/master/docs\n\nextra:\n  recipe-maintainers:\n    - msarahan\n    - jakirkham\n    - ocefpaf\n    - mingwandroid\n    - xylar\n    - h-vetinari\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1777,7 +1874,7 @@
       "summary": "tool and library for transferring data with URL syntax"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1785,7 +1882,8 @@
         "jakirkham",
         "ocefpaf",
         "mingwandroid",
-        "xylar"
+        "xylar",
+        "h-vetinari"
       ]
     },
     "outputs": [
@@ -1892,9 +1990,9 @@
         "cmake-no-system"
       ],
       "host": [
-        "zlib",
         "krb5",
-        "libssh2"
+        "libssh2",
+        "zlib"
       ]
     },
     "schema_version": 0,
@@ -1904,6 +2002,176 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake-no-system"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "krb5",
+        "libcurl",
+        "libssh2",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libcurl",
+        "libssh2"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "Curl is an open source command line tool and library for transferring data\nwith URL syntax. It is used in command lines or scripts to transfer data.\n",
+      "dev_url": "https://github.com/curl/curl",
+      "doc_source_url": "https://github.com/curl/curl/tree/master/docs",
+      "doc_url": "https://curl.haxx.se/docs/",
+      "home": "http://curl.haxx.se/",
+      "license": "curl",
+      "license_family": "MIT",
+      "license_file": "COPYING",
+      "summary": "tool and library for transferring data with URL syntax"
+    },
+    "build": {
+      "number": "1"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "msarahan",
+        "jakirkham",
+        "ocefpaf",
+        "mingwandroid",
+        "xylar",
+        "h-vetinari"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "run_exports": [
+            "libcurl"
+          ]
+        },
+        "files": [
+          "Library/bin/libcurl.dll",
+          "Library/include/curl",
+          "Library/lib/libcurl.lib",
+          "Library/lib/pkgconfig/libcurl.pc"
+        ],
+        "name": "libcurl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "zlib",
+            "libssh2",
+            "krb5"
+          ],
+          "run": [
+            "libssh2"
+          ]
+        },
+        "test": {
+          "commands": [
+            "if exist %LIBRARY_BIN%\\curl.exe exit 1",
+            "if exist %LIBRARY_LIB%\\libcurl_a.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\libcurl.dll exit 1",
+            "if not exist %LIBRARY_LIB%\\pkgconfig\\libcurl.pc exit 1"
+          ]
+        }
+      },
+      {
+        "files": [
+          "Library/lib/libcurl_a.lib"
+        ],
+        "name": "libcurl-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "zlib",
+            "libssh2",
+            "krb5",
+            "libcurl"
+          ],
+          "run": [
+            "libcurl"
+          ]
+        },
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\libcurl_a.lib exit 1"
+          ]
+        }
+      },
+      {
+        "files": [
+          "Library/bin/curl.exe*"
+        ],
+        "name": "curl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libcurl",
+            "zlib",
+            "libssh2",
+            "krb5"
+          ],
+          "run": [
+            "libcurl",
+            "libssh2"
+          ]
+        },
+        "test": {
+          "commands": [
+            "curl --help",
+            "curl https://raw.githubusercontent.com/conda-forge/curl-feedstock/master/LICENSE.txt",
+            "if not exist %LIBRARY_BIN%\\curl.exe exit 1"
+          ]
+        }
+      }
+    ],
+    "package": {
+      "name": "curl_split_recipe",
+      "version": "8.21.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake-no-system"
+      ],
+      "host": [
+        "krb5",
+        "libssh2",
+        "zlib"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "sha256": "ad6f2f94934b38e31e48272833c99b891d045b4565fe942a53fbd27bd3910e16",
+      "url": "http://curl.haxx.se/download/curl-8.21.0.tar.bz2"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
