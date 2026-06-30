@@ -11,10 +11,14 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "noarch_platforms": [
+      "linux_64",
+      "win_64"
+    ]
   },
-  "feedstock_hash": "c4ba975c0f7e5d5bac78459e36be4403db656b57",
-  "feedstock_hash_ts": 1782818260,
+  "feedstock_hash": "3a90606c77668797a00169578aa6df0902eae427",
+  "feedstock_hash_ts": 1782825943,
   "feedstock_name": "jrl-cmakemodules",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -30,7 +34,7 @@
     },
     "build": {
       "noarch": "generic",
-      "number": "0",
+      "number": "1",
       "script": "build.sh"
     },
     "extra": {
@@ -175,7 +179,7 @@
     },
     "build": {
       "noarch": "generic",
-      "number": "0",
+      "number": "1",
       "script": "build.sh"
     },
     "extra": {
@@ -184,6 +188,71 @@
       ]
     },
     "outputs": [
+      {
+        "build": null,
+        "name": "jrl-cmakemodules",
+        "requirements": {
+          "build": [
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": [
+            "__unix"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "share/cmake/jrl-cmakemodules/v2/modules/jrl.cmake"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "cmake-package-check",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": "cmake-package-check jrl-cmakemodules --target jrl-cmakemodules::jrl-cmakemodules"
+          }
+        ],
+        "version": "2.0.0"
+      },
+      {
+        "build": null,
+        "name": "jrl-cmakemodules-scripts",
+        "requirements": {
+          "build": [],
+          "host": [
+            "pip",
+            "python 3.10.*",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.10",
+            "tomlkit >=0.11.0",
+            "ruamel.yaml >=0.17.0",
+            "rich >=12.0.0",
+            "packaging >=21.0",
+            "cmake-parser >=0.1.0"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "jrl-release --help"
+          }
+        ],
+        "version": "2.0.0"
+      },
       {
         "build": null,
         "name": "jrl-cmakemodules",
@@ -279,12 +348,13 @@
   },
   "parsing_error": false,
   "platforms": [
-    "linux_64"
+    "linux_64",
+    "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/jrl-cmakemodules.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"2.0.0\"\n\nrecipe:\n  name: jrl-cmakemodules\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/jrl-umi3218/jrl-cmakemodules/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 71496a11bce4ef49a0d695ada9edb0d11034273888132ff135a41e476d699727\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: jrl-cmakemodules\n    build:\n      noarch: generic\n      script:\n        - if: win\n          then: build.bat\n          else: build.sh\n    requirements:\n      build:\n        - cmake\n        - ninja\n      run:\n        - if: unix\n          then: __unix\n          else: __win\n    tests:\n      # test package contents\n      - package_contents:\n          files:\n            - if: unix\n              then:\n                - share/cmake/jrl-cmakemodules/v2/modules/jrl.cmake\n            - if: win\n              then:\n                - Library/share/cmake/jrl-cmakemodules/v2/modules/jrl.cmake\n      # cmake-package-check doesn't work on Windows\n      # It create an issue when rattler build want to remove test directory\n      - if: unix\n        then:\n        - script:\n            - cmake-package-check jrl-cmakemodules --target jrl-cmakemodules::jrl-cmakemodules\n          requirements:\n            run:\n              - cmake-package-check\n              - ${{ compiler('c') }}\n              - ${{ compiler('cxx') }}\n  - package:\n      name: jrl-cmakemodules-scripts\n    build:\n      noarch: python\n      script: pip install ./v2/scripts -v\n      python:\n        entry_points:\n          - jrl-release = jrl_release:main\n    requirements:\n      host:\n        - pip\n        - python ${{ python_min }}.*\n        - setuptools\n      run:\n        - python >=${{ python_min }}\n        - tomlkit >=0.11.0\n        - ruamel.yaml >=0.17.0\n        - rich >=12.0.0\n        - packaging >=21.0\n        - cmake-parser >=0.1.0\n    tests:\n      - script:\n          - jrl-release --help\n        requirements:\n          run:\n            - python ${{ python_min }}.*\n\nabout:\n  homepage: https://github.com/jrl-umi3218/jrl-cmakemodules\n  summary: \"CMake utility toolbox.\"\n  description: |\n    `jrl-cmakemodules` provide functions to factorize and write more reliable CMake code.\n    It is used by teams at CNRS, LAAS/HPP, JRL and INRIA, but can be integrated in any project.\n  license: BSD-3-Clause\n  license_file: v2/LICENSE\n  documentation: https://simplejson.readthedocs.io/\n  repository: https://github.com/jrl-umi3218/jrl-cmakemodules/\n\nextra:\n  recipe-maintainers:\n    - jorisv\n",
+  "raw_meta_yaml": "context:\n  version: \"2.0.0\"\n\nrecipe:\n  name: jrl-cmakemodules\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/jrl-umi3218/jrl-cmakemodules/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 71496a11bce4ef49a0d695ada9edb0d11034273888132ff135a41e476d699727\n\nbuild:\n  number: 1\n\noutputs:\n  - package:\n      name: jrl-cmakemodules\n    build:\n      noarch: generic\n      script:\n        - if: win\n          then: build.bat\n          else: build.sh\n    requirements:\n      build:\n        - cmake\n        - ninja\n      run:\n        - if: unix\n          then: __unix\n          else: __win\n    tests:\n      # test package contents\n      - package_contents:\n          files:\n            - if: unix\n              then:\n                - share/cmake/jrl-cmakemodules/v2/modules/jrl.cmake\n            - if: win\n              then:\n                - Library/share/cmake/jrl-cmakemodules/v2/modules/jrl.cmake\n      # cmake-package-check doesn't work on Windows\n      # It create an issue when rattler build want to remove test directory\n      - if: unix\n        then:\n        - script:\n            - cmake-package-check jrl-cmakemodules --target jrl-cmakemodules::jrl-cmakemodules\n          requirements:\n            run:\n              - cmake-package-check\n              - ${{ compiler('c') }}\n              - ${{ compiler('cxx') }}\n  - package:\n      name: jrl-cmakemodules-scripts\n    build:\n      noarch: python\n      script: pip install ./v2/scripts -v\n      python:\n        entry_points:\n          - jrl-release = jrl_release:main\n    requirements:\n      host:\n        - pip\n        - python ${{ python_min }}.*\n        - setuptools\n      run:\n        - python >=${{ python_min }}\n        - tomlkit >=0.11.0\n        - ruamel.yaml >=0.17.0\n        - rich >=12.0.0\n        - packaging >=21.0\n        - cmake-parser >=0.1.0\n    tests:\n      - script:\n          - jrl-release --help\n        requirements:\n          run:\n            - python ${{ python_min }}.*\n\nabout:\n  homepage: https://github.com/jrl-umi3218/jrl-cmakemodules\n  summary: \"CMake utility toolbox.\"\n  description: |\n    `jrl-cmakemodules` provide functions to factorize and write more reliable CMake code.\n    It is used by teams at CNRS, LAAS/HPP, JRL and INRIA, but can be integrated in any project.\n  license: BSD-3-Clause\n  license_file: v2/LICENSE\n  documentation: https://simplejson.readthedocs.io/\n  repository: https://github.com/jrl-umi3218/jrl-cmakemodules/\n\nextra:\n  recipe-maintainers:\n    - jorisv\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -386,5 +456,150 @@
   "version": "2.0.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/jrl-cmakemodules.json"
+  },
+  "win_64_meta_yaml": {
+    "about": {
+      "description": "`jrl-cmakemodules` provide functions to factorize and write more reliable CMake code.\nIt is used by teams at CNRS, LAAS/HPP, JRL and INRIA, but can be integrated in any project.",
+      "dev_url": "https://github.com/jrl-umi3218/jrl-cmakemodules/",
+      "doc_url": "https://simplejson.readthedocs.io/",
+      "home": "https://github.com/jrl-umi3218/jrl-cmakemodules",
+      "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
+      "license_file": "v2/LICENSE",
+      "summary": "CMake utility toolbox."
+    },
+    "build": {
+      "noarch": "generic",
+      "number": "1",
+      "script": "build.sh"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "jorisv"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "jrl-cmakemodules",
+        "requirements": {
+          "build": [
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": [
+            "__unix"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "share/cmake/jrl-cmakemodules/v2/modules/jrl.cmake"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "cmake-package-check",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": "cmake-package-check jrl-cmakemodules --target jrl-cmakemodules::jrl-cmakemodules"
+          }
+        ],
+        "version": "2.0.0"
+      },
+      {
+        "build": null,
+        "name": "jrl-cmakemodules-scripts",
+        "requirements": {
+          "build": [],
+          "host": [
+            "pip",
+            "python 3.10.*",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.10",
+            "tomlkit >=0.11.0",
+            "ruamel.yaml >=0.17.0",
+            "rich >=12.0.0",
+            "packaging >=21.0",
+            "cmake-parser >=0.1.0"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "python 3.10.*"
+              ]
+            },
+            "script": "jrl-release --help"
+          }
+        ],
+        "version": "2.0.0"
+      }
+    ],
+    "package": {
+      "name": "jrl-cmakemodules",
+      "version": "2.0.0"
+    },
+    "requirements": {
+      "build": [
+        "cmake",
+        "ninja"
+      ],
+      "run": [
+        "__unix"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "71496a11bce4ef49a0d695ada9edb0d11034273888132ff135a41e476d699727",
+      "url": "https://github.com/jrl-umi3218/jrl-cmakemodules/archive/refs/tags/v2.0.0.tar.gz"
+    }
+  },
+  "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "cmake",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "__unix",
+        "cmake-parser",
+        "packaging",
+        "python",
+        "rich",
+        "ruamel.yaml",
+        "tomlkit"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "cmake-package-check",
+        "cxx_compiler_stub",
+        "python"
+      ]
+    }
   }
 }
