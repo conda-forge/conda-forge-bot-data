@@ -1,29 +1,27 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_mpimpich.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nlibpnetcdf:\n- 1.14.1\nmpi:\n- mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - fortran_compiler_version\n",
+  "ci_support_linux_64_mpimpichmpi_prefixmpi_mpich.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nmpi:\n- mpich\nmpi_prefix:\n- mpi_mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - fortran_compiler_version\n- - mpi\n  - mpi_prefix\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "59aa9026b80aa47a509a04945c07ce1884f1d932",
-  "feedstock_hash_ts": 1776822649,
+  "feedstock_hash": "46964b63289f601e6e3b2c6a343fe3928bb5f4ce",
+  "feedstock_hash_ts": 1783000420,
   "feedstock_name": "libpnetcdf",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -31,17 +29,20 @@
       "dev_url": "https://github.com/Parallel-NetCDF/PnetCDF",
       "home": "https://parallel-netcdf.github.io/",
       "license": "LicenseRef-PnetCDF",
+      "license_family": "LicenseRef-PnetCDF",
       "license_file": "COPYRIGHT",
-      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5.\n"
+      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5."
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpnetcdf mpi_mpich_*",
-        "libpnetcdf mpi_mvapich_*",
-        "libpnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_1"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libpnetcdf",
+          "libpnetcdf * mpi_mpich_*",
+          "libpnetcdf * mpi_mvapich_*",
+          "libpnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -50,9 +51,158 @@
         "jedwards4b"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mvapich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mvapich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      }
+    ],
     "package": {
       "name": "libpnetcdf",
-      "version": "1.14.1"
+      "version": "1.15.0"
     },
     "requirements": {
       "build": [
@@ -71,24 +221,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "6f0f7221006c211fce9ddd2c008796b8c69dd717b2ad1be0b4027fc328fd3220",
-      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.14.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pnetcdf-config --all",
-        "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
-        "test -f ${PREFIX}/include/pnetcdf",
-        "test -f ${PREFIX}/include/pnetcdf.h",
-        "test -f ${PREFIX}/include/pnetcdf.mod",
-        "test -f ${PREFIX}/include/pnetcdf.inc",
-        "test ! -f ${PREFIX}/lib/libpnetcdf.a",
-        "test -f ${PREFIX}/lib/libpnetcdf${SHLIB_EXT}",
-        "pnetcdf-config --has-c++      | grep -q yes",
-        "pnetcdf-config --has-fortran  | grep -q yes"
-      ]
+      "sha256": "39813fe91ec901c7cfca3212731edbb5201029ebf55caeaaaa08d9e33c6bad65",
+      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.15.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -127,17 +263,20 @@
       "dev_url": "https://github.com/Parallel-NetCDF/PnetCDF",
       "home": "https://parallel-netcdf.github.io/",
       "license": "LicenseRef-PnetCDF",
+      "license_family": "LicenseRef-PnetCDF",
       "license_file": "COPYRIGHT",
-      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5.\n"
+      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5."
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpnetcdf mpi_mpich_*",
-        "libpnetcdf mpi_mvapich_*",
-        "libpnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_1"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libpnetcdf",
+          "libpnetcdf * mpi_mpich_*",
+          "libpnetcdf * mpi_mvapich_*",
+          "libpnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -146,9 +285,158 @@
         "jedwards4b"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mvapich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mvapich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      }
+    ],
     "package": {
       "name": "libpnetcdf",
-      "version": "1.14.1"
+      "version": "1.15.0"
     },
     "requirements": {
       "build": [
@@ -167,24 +455,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "6f0f7221006c211fce9ddd2c008796b8c69dd717b2ad1be0b4027fc328fd3220",
-      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.14.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pnetcdf-config --all",
-        "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
-        "test -f ${PREFIX}/include/pnetcdf",
-        "test -f ${PREFIX}/include/pnetcdf.h",
-        "test -f ${PREFIX}/include/pnetcdf.mod",
-        "test -f ${PREFIX}/include/pnetcdf.inc",
-        "test ! -f ${PREFIX}/lib/libpnetcdf.a",
-        "test -f ${PREFIX}/lib/libpnetcdf${SHLIB_EXT}",
-        "pnetcdf-config --has-c++      | grep -q yes",
-        "pnetcdf-config --has-fortran  | grep -q yes"
-      ]
+      "sha256": "39813fe91ec901c7cfca3212731edbb5201029ebf55caeaaaa08d9e33c6bad65",
+      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.15.0.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -223,17 +497,19 @@
       "dev_url": "https://github.com/Parallel-NetCDF/PnetCDF",
       "home": "https://parallel-netcdf.github.io/",
       "license": "LicenseRef-PnetCDF",
+      "license_family": "LicenseRef-PnetCDF",
       "license_file": "COPYRIGHT",
-      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5.\n"
+      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5."
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpnetcdf mpi_mpich_*",
-        "libpnetcdf mpi_mvapich_*",
-        "libpnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_1"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libpnetcdf",
+          "libpnetcdf * mpi_mpich_*",
+          "libpnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -242,9 +518,109 @@
         "jedwards4b"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      }
+    ],
     "package": {
       "name": "libpnetcdf",
-      "version": "1.14.1"
+      "version": "1.15.0"
     },
     "requirements": {
       "build": [
@@ -259,28 +635,13 @@
       "host": [
         "mpich",
         "openssh",
-        "mvapich",
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "6f0f7221006c211fce9ddd2c008796b8c69dd717b2ad1be0b4027fc328fd3220",
-      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.14.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pnetcdf-config --all",
-        "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
-        "test -f ${PREFIX}/include/pnetcdf",
-        "test -f ${PREFIX}/include/pnetcdf.h",
-        "test -f ${PREFIX}/include/pnetcdf.mod",
-        "test -f ${PREFIX}/include/pnetcdf.inc",
-        "test ! -f ${PREFIX}/lib/libpnetcdf.a",
-        "test -f ${PREFIX}/lib/libpnetcdf${SHLIB_EXT}",
-        "pnetcdf-config --has-c++      | grep -q yes",
-        "pnetcdf-config --has-fortran  | grep -q yes"
-      ]
+      "sha256": "39813fe91ec901c7cfca3212731edbb5201029ebf55caeaaaa08d9e33c6bad65",
+      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.15.0.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -300,7 +661,6 @@
       "__set__": true,
       "elements": [
         "mpich",
-        "mvapich",
         "openmpi",
         "openssh"
       ]
@@ -319,17 +679,20 @@
       "dev_url": "https://github.com/Parallel-NetCDF/PnetCDF",
       "home": "https://parallel-netcdf.github.io/",
       "license": "LicenseRef-PnetCDF",
+      "license_family": "LicenseRef-PnetCDF",
       "license_file": "COPYRIGHT",
-      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5.\n"
+      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5."
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpnetcdf mpi_mpich_*",
-        "libpnetcdf mpi_mvapich_*",
-        "libpnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_1"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libpnetcdf",
+          "libpnetcdf * mpi_mpich_*",
+          "libpnetcdf * mpi_mvapich_*",
+          "libpnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -338,9 +701,599 @@
         "jedwards4b"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mvapich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mvapich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mvapich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mvapich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      }
+    ],
     "package": {
       "name": "libpnetcdf",
-      "version": "1.14.1"
+      "version": "1.15.0"
     },
     "requirements": {
       "build": [
@@ -359,24 +1312,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "6f0f7221006c211fce9ddd2c008796b8c69dd717b2ad1be0b4027fc328fd3220",
-      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.14.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pnetcdf-config --all",
-        "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
-        "test -f ${PREFIX}/include/pnetcdf",
-        "test -f ${PREFIX}/include/pnetcdf.h",
-        "test -f ${PREFIX}/include/pnetcdf.mod",
-        "test -f ${PREFIX}/include/pnetcdf.inc",
-        "test ! -f ${PREFIX}/lib/libpnetcdf.a",
-        "test -f ${PREFIX}/lib/libpnetcdf${SHLIB_EXT}",
-        "pnetcdf-config --has-c++      | grep -q yes",
-        "pnetcdf-config --has-fortran  | grep -q yes"
-      ]
+      "sha256": "39813fe91ec901c7cfca3212731edbb5201029ebf55caeaaaa08d9e33c6bad65",
+      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.15.0.tar.gz"
     }
   },
   "name": "libpnetcdf",
@@ -385,16 +1324,19 @@
       "dev_url": "https://github.com/Parallel-NetCDF/PnetCDF",
       "home": "https://parallel-netcdf.github.io/",
       "license": "LicenseRef-PnetCDF",
+      "license_family": "LicenseRef-PnetCDF",
       "license_file": "COPYRIGHT",
-      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5.\n"
+      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5."
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpnetcdf mpi_mpich_*",
-        "libpnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_1"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libpnetcdf",
+          "libpnetcdf * mpi_mpich_*",
+          "libpnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -403,9 +1345,109 @@
         "jedwards4b"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      }
+    ],
     "package": {
       "name": "libpnetcdf",
-      "version": "1.14.1"
+      "version": "1.15.0"
     },
     "requirements": {
       "build": [
@@ -423,24 +1465,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "6f0f7221006c211fce9ddd2c008796b8c69dd717b2ad1be0b4027fc328fd3220",
-      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.14.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pnetcdf-config --all",
-        "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
-        "test -f ${PREFIX}/include/pnetcdf",
-        "test -f ${PREFIX}/include/pnetcdf.h",
-        "test -f ${PREFIX}/include/pnetcdf.mod",
-        "test -f ${PREFIX}/include/pnetcdf.inc",
-        "test ! -f ${PREFIX}/lib/libpnetcdf.a",
-        "test -f ${PREFIX}/lib/libpnetcdf${SHLIB_EXT}",
-        "pnetcdf-config --has-c++      | grep -q yes",
-        "pnetcdf-config --has-fortran  | grep -q yes"
-      ]
+      "sha256": "39813fe91ec901c7cfca3212731edbb5201029ebf55caeaaaa08d9e33c6bad65",
+      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.15.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -478,16 +1506,19 @@
       "dev_url": "https://github.com/Parallel-NetCDF/PnetCDF",
       "home": "https://parallel-netcdf.github.io/",
       "license": "LicenseRef-PnetCDF",
+      "license_family": "LicenseRef-PnetCDF",
       "license_file": "COPYRIGHT",
-      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5.\n"
+      "summary": "PnetCDF is a high-performance parallel I/O library for accessing Unidata's\nNetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n5."
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpnetcdf mpi_mpich_*",
-        "libpnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_1"
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libpnetcdf",
+          "libpnetcdf * mpi_mpich_*",
+          "libpnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -496,9 +1527,109 @@
         "jedwards4b"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpnetcdf",
+            "libpnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libpnetcdf",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "fortran_compiler_stub",
+            "m4",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "openssh"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "pnetcdf"
+              ]
+            }
+          },
+          {
+            "script": [
+              "pnetcdf-config --all",
+              "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
+              "test -f ${PREFIX}/include/pnetcdf",
+              "test -f ${PREFIX}/include/pnetcdf.h",
+              "test -f ${PREFIX}/include/pnetcdf.mod",
+              "test -f ${PREFIX}/include/pnetcdf.inc",
+              "test ! -f ${PREFIX}/lib/libpnetcdf.a",
+              "pnetcdf-config --has-c++      | grep -q yes",
+              "pnetcdf-config --has-fortran  | grep -q yes"
+            ]
+          }
+        ],
+        "version": "1.15.0"
+      }
+    ],
     "package": {
       "name": "libpnetcdf",
-      "version": "1.14.1"
+      "version": "1.15.0"
     },
     "requirements": {
       "build": [
@@ -516,24 +1647,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "6f0f7221006c211fce9ddd2c008796b8c69dd717b2ad1be0b4027fc328fd3220",
-      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.14.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pnetcdf-config --all",
-        "test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc",
-        "test -f ${PREFIX}/include/pnetcdf",
-        "test -f ${PREFIX}/include/pnetcdf.h",
-        "test -f ${PREFIX}/include/pnetcdf.mod",
-        "test -f ${PREFIX}/include/pnetcdf.inc",
-        "test ! -f ${PREFIX}/lib/libpnetcdf.a",
-        "test -f ${PREFIX}/lib/libpnetcdf${SHLIB_EXT}",
-        "pnetcdf-config --has-c++      | grep -q yes",
-        "pnetcdf-config --has-fortran  | grep -q yes"
-      ]
+      "sha256": "39813fe91ec901c7cfca3212731edbb5201029ebf55caeaaaa08d9e33c6bad65",
+      "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.15.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -583,7 +1700,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libpnetcdf.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.14.1\" %}\n{% set build = 1 %}\n\n# recipe-lint fails if mpi is undefined\n{% set mpi = mpi or 'mpich' %}\n{% if mpi == \"mpich\" %}\n# prioritize mpich via build number\n{% set build = build + 100 %}\n{% endif %}\n\npackage:\n  name: libpnetcdf\n  version: {{ version }}\n\nsource:\n  url: https://parallel-netcdf.github.io/Release/pnetcdf-{{ version }}.tar.gz\n  sha256: 6f0f7221006c211fce9ddd2c008796b8c69dd717b2ad1be0b4027fc328fd3220\n\nbuild:\n  number: {{ build }}\n  skip: true  # [win]\n  {% set mpi_prefix = \"mpi_\" + mpi %}\n  {% if (mpi == \"mvapich\" and target_platform not in [\"linux-64\", \"linux-aarch64\", \"linux-ppc64le\"]) %}\n  skip: true\n  {% endif %}\n  # add build string so packages can depend on mpi variants dependencies:\n  # `PKG_NAME * mpi_mpich_*` for mpich\n  # `PKG_NAME * mpi_*` for any mpi\n  string: {{ mpi_prefix }}_h{{ PKG_HASH }}_{{ build }}\n\n  run_exports:\n    - {{ pin_subpackage('libpnetcdf', max_pin='x.x.x') }} {{ mpi_prefix }}_*\n\nrequirements:\n  build:\n    - gnuconfig  # [unix]\n    - {{ compiler('c') }}\n    - {{ stdlib('c') }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('fortran') }}\n    - {{ mpi }}  # [mpi == 'openmpi' and build_platform != target_platform]\n    - m4\n    - make\n  host:\n    - {{ mpi }}\n    - openssh  # for testing\n\ntest:\n  commands:\n    - pnetcdf-config --all\n    - test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc\n    - test -f ${PREFIX}/include/pnetcdf\n    - test -f ${PREFIX}/include/pnetcdf.h\n    - test -f ${PREFIX}/include/pnetcdf.mod\n    - test -f ${PREFIX}/include/pnetcdf.inc\n    - test ! -f ${PREFIX}/lib/libpnetcdf.a\n    - test -f ${PREFIX}/lib/libpnetcdf${SHLIB_EXT}\n    - pnetcdf-config --has-c++      | grep -q yes\n    - pnetcdf-config --has-fortran  | grep -q yes\n    # disabled for now\n    # - pnetcdf-config --netcdf4      | grep -q enabled\n\n\nabout:\n  home: https://parallel-netcdf.github.io/\n  license: LicenseRef-PnetCDF\n  license_file: COPYRIGHT\n  summary: |\n    PnetCDF is a high-performance parallel I/O library for accessing Unidata's\n    NetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n    5.\n  dev_url: https://github.com/Parallel-NetCDF/PnetCDF\n\nextra:\n  recipe-maintainers:\n    - xylar\n    - zklaus\n    - jedwards4b\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.15.0\"\n  build_number: 0\n\npackage:\n  name: libpnetcdf\n  version: ${{ version }}\n\nsource:\n  url: https://parallel-netcdf.github.io/Release/pnetcdf-${{ version }}.tar.gz\n  sha256: 39813fe91ec901c7cfca3212731edbb5201029ebf55caeaaaa08d9e33c6bad65\n\nbuild:\n  # add build string so packages can depend on mpi variants explicitly:\n  # `PKG_NAME * mpi_mpich_*` for mpich\n  # `PKG_NAME * mpi_*` for any mpi\n  # prioritize mpich via build number\n  number: ${{ build_number | int + 100 if mpi == \"mpich\" else build_number }}\n  string: ${{ mpi_prefix }}_h${{ hash }}_${{ build_number | int + 100 if mpi == \"mpich\" else build_number }}\n  variant:\n    # prefer 'mpich' over other mpi variants\n    down_prioritize_variant: ${{ 0 if mpi == \"mpich\" else 1 }}\n  skip: win or (mpi == \"mvapich\" and target_platform not in [\"linux-64\", \"linux-aarch64\"])\n\nrequirements:\n  build:\n    - if: unix\n      then: gnuconfig\n    - ${{ compiler(\"c\") }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ compiler(\"fortran\") }}\n    - if: mpi == \"openmpi\" and build_platform != target_platform\n      then: ${{ mpi }}\n    - m4\n    - make\n  host:\n    - ${{ mpi }}\n    - openssh  # for testing\n  run_exports:\n    - ${{ pin_subpackage(\"libpnetcdf\", upper_bound=\"x.x.x\") }}\n    - libpnetcdf * ${{ mpi_prefix }}_*\n\ntests:\n  - package_contents:\n      lib:\n        - pnetcdf\n  - script:\n      - pnetcdf-config --all\n      - test -f ${PREFIX}/lib/pkgconfig/pnetcdf.pc\n      - test -f ${PREFIX}/include/pnetcdf\n      - test -f ${PREFIX}/include/pnetcdf.h\n      - test -f ${PREFIX}/include/pnetcdf.mod\n      - test -f ${PREFIX}/include/pnetcdf.inc\n      - test ! -f ${PREFIX}/lib/libpnetcdf.a\n      - pnetcdf-config --has-c++      | grep -q yes\n      - pnetcdf-config --has-fortran  | grep -q yes\n      # disabled for now\n      # - pnetcdf-config --netcdf4      | grep -q enabled\n\nabout:\n  license: LicenseRef-PnetCDF\n  license_file: COPYRIGHT\n  summary: |\n    PnetCDF is a high-performance parallel I/O library for accessing Unidata's\n    NetCDF, files in classic formats, specifically the formats of CDF-1, 2, and\n    5.\n  homepage: https://parallel-netcdf.github.io/\n  repository: https://github.com/Parallel-NetCDF/PnetCDF\n\nextra:\n  recipe-maintainers:\n    - xylar\n    - zklaus\n    - jedwards4b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -672,8 +1789,8 @@
       "elements": []
     }
   },
-  "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.14.1.tar.gz",
-  "version": "1.14.1",
+  "url": "https://parallel-netcdf.github.io/Release/pnetcdf-1.15.0.tar.gz",
+  "version": "1.15.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/libpnetcdf.json"
   }
