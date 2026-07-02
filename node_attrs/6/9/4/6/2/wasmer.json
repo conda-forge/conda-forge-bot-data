@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibffi:\n- '3.5'\nlibxml2_devel:\n- '2.14'\nllvmdev:\n- '21'\nopenssl:\n- '3.5'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibffi:\n- '3.5'\nlibxml2_devel:\n- '2.14'\nllvmdev:\n- '22'\nopenssl:\n- '3.5'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
@@ -13,12 +13,15 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default"
+    },
     "shellcheck": {
       "enabled": true
     }
   },
-  "feedstock_hash": "2fedf2be1867aef4d46ea58eba560f9eb091a6fe",
-  "feedstock_hash_ts": 1777029617,
+  "feedstock_hash": "7bb93a8d02886bc3f1afc0e45b4c7907ae9e62fc",
+  "feedstock_hash_ts": 1783014228,
   "feedstock_name": "wasmer",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -35,6 +38,9 @@
     "build": {
       "number": "0",
       "script": {
+        "env": {
+          "DEFAULT_FEATURES": "cranelift,singlepass,wasm-c-api,wasmer-artifact-create,static-artifact-create,wasmer-artifact-load,static-artifact-load"
+        },
         "file": "build-wasmer"
       }
     },
@@ -78,7 +84,7 @@
                 "run_test.py"
               ],
               "source": [
-                "tests/wasi-wast/wasi/snapshot1/hello.wasm"
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
               ]
             },
             "requirements": {
@@ -86,20 +92,25 @@
                 "pytest"
               ]
             },
-            "script": [
-              "wasmer --version",
-              "wasmer --version | grep -ie \"${{ version | replace(\".\", \"\\\\.\") }}\"",
-              "wasmer --help",
-              "python run_test.py"
-            ]
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
           }
         ],
-        "version": "7.1.0"
+        "version": "7.2.0"
       }
     ],
     "package": {
       "name": "wasmer",
-      "version": "7.1.0"
+      "version": "7.2.0"
     },
     "requirements": {
       "build": [
@@ -126,11 +137,166 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "4a4374e84f55758de2f8b57b3f5a88015d5f9341b6417601c372138ab90f9fa4",
-      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.1.0/wasmer-full-source.tar.xz"
+      "sha256": "9fa9150fc939b1b1636ed19cfd0b345be09082a8ae1ac6ce96061dec2effb574",
+      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.2.0/wasmer-full-source.tar.gz"
     }
   },
   "linux_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cxx_compiler_stub",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libffi",
+        "libxkbcommon",
+        "libxml2-devel",
+        "llvm-tools",
+        "llvmdev",
+        "openssl",
+        "zlib",
+        "zstd"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "zstd"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "pytest"
+      ]
+    }
+  },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "description": "Wasmer is a standalone JIT WebAssembly runtime, aiming to be fully\ncompatible with WASI and Emscripten.",
+      "dev_url": "https://github.com/wasmerio/wasmer",
+      "doc_url": "https://docs.wasmer.io/",
+      "home": "https://wasmer.io/",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Universal WebAssembly runtime"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "env": {
+          "DEFAULT_FEATURES": "cranelift,singlepass,wasm-c-api,wasmer-artifact-create,static-artifact-create,wasmer-artifact-load,static-artifact-load"
+        },
+        "file": "build-wasmer"
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "bollwyvl",
+        "wolfv"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "wasmer",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "pkg-config"
+          ],
+          "host": [
+            "libffi",
+            "openssl",
+            "zlib",
+            "libxkbcommon",
+            "libxml2-devel",
+            "llvm-tools",
+            "llvmdev",
+            "zstd"
+          ],
+          "run": [
+            "zstd"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.py"
+              ],
+              "source": [
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest"
+              ]
+            },
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
+          }
+        ],
+        "version": "7.2.0"
+      }
+    ],
+    "package": {
+      "name": "wasmer",
+      "version": "7.2.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "pkg-config"
+      ],
+      "host": [
+        "libffi",
+        "openssl",
+        "zlib",
+        "libxkbcommon",
+        "libxml2-devel",
+        "llvm-tools",
+        "llvmdev",
+        "zstd"
+      ],
+      "run": [
+        "zstd"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "9fa9150fc939b1b1636ed19cfd0b345be09082a8ae1ac6ce96061dec2effb574",
+      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.2.0/wasmer-full-source.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
@@ -182,6 +348,9 @@
     "build": {
       "number": "0",
       "script": {
+        "env": {
+          "DEFAULT_FEATURES": "cranelift,singlepass,wasm-c-api,wasmer-artifact-create,static-artifact-create,wasmer-artifact-load,static-artifact-load"
+        },
         "file": "build-wasmer"
       }
     },
@@ -225,7 +394,7 @@
                 "run_test.py"
               ],
               "source": [
-                "tests/wasi-wast/wasi/snapshot1/hello.wasm"
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
               ]
             },
             "requirements": {
@@ -233,15 +402,20 @@
                 "pytest"
               ]
             },
-            "script": [
-              "wasmer --version",
-              "wasmer --version | grep -ie \"${{ version | replace(\".\", \"\\\\.\") }}\"",
-              "wasmer --help",
-              "python run_test.py"
-            ]
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
           }
         ],
-        "version": "7.1.0"
+        "version": "7.2.0"
       },
       {
         "build": null,
@@ -276,7 +450,7 @@
                 "run_test.py"
               ],
               "source": [
-                "tests/wasi-wast/wasi/snapshot1/hello.wasm"
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
               ]
             },
             "requirements": {
@@ -284,15 +458,20 @@
                 "pytest"
               ]
             },
-            "script": [
-              "wasmer --version",
-              "wasmer --version | grep -ie \"${{ version | replace(\".\", \"\\\\.\") }}\"",
-              "wasmer --help",
-              "python run_test.py"
-            ]
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
           }
         ],
-        "version": "7.1.0"
+        "version": "7.2.0"
       },
       {
         "build": null,
@@ -327,7 +506,7 @@
                 "run_test.py"
               ],
               "source": [
-                "tests/wasi-wast/wasi/snapshot1/hello.wasm"
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
               ]
             },
             "requirements": {
@@ -335,20 +514,81 @@
                 "pytest"
               ]
             },
-            "script": [
-              "wasmer --version",
-              "wasmer --version | grep -ie \"${{ version | replace(\".\", \"\\\\.\") }}\"",
-              "wasmer --help",
-              "python run_test.py"
-            ]
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
           }
         ],
-        "version": "7.1.0"
+        "version": "7.2.0"
+      },
+      {
+        "build": null,
+        "name": "wasmer",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "pkg-config"
+          ],
+          "host": [
+            "libffi",
+            "openssl",
+            "zlib",
+            "libxkbcommon",
+            "libxml2-devel",
+            "llvm-tools",
+            "llvmdev",
+            "zstd"
+          ],
+          "run": [
+            "zstd"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.py"
+              ],
+              "source": [
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pytest"
+              ]
+            },
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
+          }
+        ],
+        "version": "7.2.0"
       }
     ],
     "package": {
       "name": "wasmer",
-      "version": "7.1.0"
+      "version": "7.2.0"
     },
     "requirements": {
       "build": [
@@ -375,8 +615,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "4a4374e84f55758de2f8b57b3f5a88015d5f9341b6417601c372138ab90f9fa4",
-      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.1.0/wasmer-full-source.tar.xz"
+      "sha256": "9fa9150fc939b1b1636ed19cfd0b345be09082a8ae1ac6ce96061dec2effb574",
+      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.2.0/wasmer-full-source.tar.gz"
     }
   },
   "name": "wasmer",
@@ -394,6 +634,9 @@
     "build": {
       "number": "0",
       "script": {
+        "env": {
+          "DEFAULT_FEATURES": "cranelift,singlepass,wasm-c-api,wasmer-artifact-create,static-artifact-create,wasmer-artifact-load,static-artifact-load"
+        },
         "file": "build-wasmer"
       }
     },
@@ -437,7 +680,7 @@
                 "run_test.py"
               ],
               "source": [
-                "tests/wasi-wast/wasi/snapshot1/hello.wasm"
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
               ]
             },
             "requirements": {
@@ -445,20 +688,25 @@
                 "pytest"
               ]
             },
-            "script": [
-              "wasmer --version",
-              "wasmer --version | grep -ie \"${{ version | replace(\".\", \"\\\\.\") }}\"",
-              "wasmer --help",
-              "python run_test.py"
-            ]
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
           }
         ],
-        "version": "7.1.0"
+        "version": "7.2.0"
       }
     ],
     "package": {
       "name": "wasmer",
-      "version": "7.1.0"
+      "version": "7.2.0"
     },
     "requirements": {
       "build": [
@@ -485,8 +733,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "4a4374e84f55758de2f8b57b3f5a88015d5f9341b6417601c372138ab90f9fa4",
-      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.1.0/wasmer-full-source.tar.xz"
+      "sha256": "9fa9150fc939b1b1636ed19cfd0b345be09082a8ae1ac6ce96061dec2effb574",
+      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.2.0/wasmer-full-source.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -536,13 +784,14 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
     "osx_64",
     "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/wasmer.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"7.1.0\"\n\npackage:\n  name: wasmer\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/wasmerio/wasmer/releases/download/v${{ version }}/wasmer-full-source.tar.xz\n  sha256: 4a4374e84f55758de2f8b57b3f5a88015d5f9341b6417601c372138ab90f9fa4\n\nbuild:\n  number: 0\n  script:\n    file: build-wasmer\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - pkg-config\n  host:\n    - libffi\n    - openssl\n    - zlib\n    - if: linux\n      then:\n        - libxkbcommon\n        - libxml2-devel\n        - llvm-tools\n        - llvmdev\n        - zstd\n  run:\n    - if: linux\n      then:\n        - zstd\n\ntests:\n  - files:\n      recipe:\n        - run_test.py\n      source:\n        - tests/wasi-wast/wasi/snapshot1/hello.wasm\n    requirements:\n      run:\n        - pytest\n        - if: win\n          then:\n            - m2-grep\n    script:\n      - wasmer --version\n      - wasmer --version | grep -ie \"${{ version | replace(\".\", \"\\\\.\") }}\"\n      - wasmer --help\n      - python run_test.py\n\nabout:\n  license: MIT\n  summary: Universal WebAssembly runtime\n  description: |\n    Wasmer is a standalone JIT WebAssembly runtime, aiming to be fully\n    compatible with WASI and Emscripten.\n  license_file:\n    - LICENSE\n    - lib/c-api/tests/wasm-c-api/LICENSE\n    - lib/compiler-llvm/LICENSE\n    - lib/compiler-singlepass/LICENSE\n    - lib/config/LICENSE\n    - tests/wasi-fyi/LICENSE\n    - tests/wast/spec/LICENSE\n  homepage: https://wasmer.io\n  repository: https://github.com/wasmerio/wasmer\n  documentation: https://docs.wasmer.io\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n    - wolfv\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"7.2.0\"\n  cowsay_wasm: wasmer-test-files/integration/wasm/cowsay.wasm\n\npackage:\n  name: wasmer\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/wasmerio/wasmer/releases/download/v${{ version }}/wasmer-full-source.tar.gz\n  sha256: 9fa9150fc939b1b1636ed19cfd0b345be09082a8ae1ac6ce96061dec2effb574\n\nbuild:\n  number: 0\n  script:\n    env:\n      DEFAULT_FEATURES: |-\n        cranelift,singlepass,wasm-c-api,wasmer-artifact-create,static-artifact-create,wasmer-artifact-load,static-artifact-load\n    file: build-wasmer\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ compiler(\"rust\") }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n    - pkg-config\n  host:\n    - libffi\n    - openssl\n    - zlib\n    - if: linux\n      then:\n        - libxkbcommon\n        - libxml2-devel\n        - llvm-tools\n        - llvmdev\n        - zstd\n  run:\n    - if: linux\n      then:\n        - zstd\n\ntests:\n  - files:\n      recipe:\n        - run_test.py\n      source:\n        - ${{ cowsay_wasm }}\n    requirements:\n      run:\n        - pytest\n    script:\n      env:\n        COWSAY_WASM: ${{ cowsay_wasm }}\n      content:\n        - wasmer --version\n        - wasmer --help\n        - wasmer run --help\n        - python run_test.py\n\nabout:\n  license: MIT\n  summary: Universal WebAssembly runtime\n  description: |\n    Wasmer is a standalone JIT WebAssembly runtime, aiming to be fully\n    compatible with WASI and Emscripten.\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n    - docs/ATTRIBUTIONS.md\n  homepage: https://wasmer.io\n  repository: https://github.com/wasmerio/wasmer\n  documentation: https://docs.wasmer.io\n\nextra:\n  recipe-maintainers:\n    - bollwyvl\n    - wolfv\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -645,8 +894,8 @@
       ]
     }
   },
-  "url": "https://github.com/wasmerio/wasmer/releases/download/v7.1.0/wasmer-full-source.tar.xz",
-  "version": "7.1.0",
+  "url": "https://github.com/wasmerio/wasmer/releases/download/v7.2.0/wasmer-full-source.tar.gz",
+  "version": "7.2.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/wasmer.json"
   },
@@ -664,6 +913,9 @@
     "build": {
       "number": "0",
       "script": {
+        "env": {
+          "DEFAULT_FEATURES": "cranelift,singlepass,wasm-c-api,wasmer-artifact-create,static-artifact-create,wasmer-artifact-load,static-artifact-load"
+        },
         "file": "build-wasmer"
       }
     },
@@ -707,7 +959,7 @@
                 "run_test.py"
               ],
               "source": [
-                "tests/wasi-wast/wasi/snapshot1/hello.wasm"
+                "wasmer-test-files/integration/wasm/cowsay.wasm"
               ]
             },
             "requirements": {
@@ -715,20 +967,25 @@
                 "pytest"
               ]
             },
-            "script": [
-              "wasmer --version",
-              "wasmer --version | grep -ie \"${{ version | replace(\".\", \"\\\\.\") }}\"",
-              "wasmer --help",
-              "python run_test.py"
-            ]
+            "script": {
+              "content": [
+                "wasmer --version",
+                "wasmer --help",
+                "wasmer run --help",
+                "python run_test.py"
+              ],
+              "env": {
+                "COWSAY_WASM": "wasmer-test-files/integration/wasm/cowsay.wasm"
+              }
+            }
           }
         ],
-        "version": "7.1.0"
+        "version": "7.2.0"
       }
     ],
     "package": {
       "name": "wasmer",
-      "version": "7.1.0"
+      "version": "7.2.0"
     },
     "requirements": {
       "build": [
@@ -755,8 +1012,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "4a4374e84f55758de2f8b57b3f5a88015d5f9341b6417601c372138ab90f9fa4",
-      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.1.0/wasmer-full-source.tar.xz"
+      "sha256": "9fa9150fc939b1b1636ed19cfd0b345be09082a8ae1ac6ce96061dec2effb574",
+      "url": "https://github.com/wasmerio/wasmer/releases/download/v7.2.0/wasmer-full-source.tar.gz"
     }
   },
   "win_64_requirements": {
