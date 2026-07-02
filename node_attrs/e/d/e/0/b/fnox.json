@@ -1,20 +1,30 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.34'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibudev:\n- '257'\nperl:\n- 5.32.1\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.34'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibudev:\n- '257'\nopenssl:\n- '3.5'\nperl:\n- 5.32.1\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
+    "bot": {
+      "automerge": true
+    },
     "conda_build": {
+      "error_overdepending": true,
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default",
+      "win_arm64": "default"
     }
   },
-  "feedstock_hash": "a44d47a185cde3c302c7bd358a937ca04241d98c",
-  "feedstock_hash_ts": 1783018519,
+  "feedstock_hash": "d7ffedceb27d7565f09d9b6156bc2d56f2087b0f",
+  "feedstock_hash_ts": 1783030507,
   "feedstock_name": "fnox",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -28,7 +38,7 @@
       "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
@@ -40,8 +50,12 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_DIR": "$PREFIX",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
         }
       }
     },
@@ -58,6 +72,7 @@
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
             "cargo-bundle-licenses",
@@ -70,8 +85,9 @@
             "pkg-config"
           ],
           "host": [
+            "usage",
             "libudev",
-            "usage"
+            "openssl"
           ],
           "run": []
         },
@@ -107,6 +123,7 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
@@ -119,8 +136,9 @@
         "pkg-config"
       ],
       "host": [
+        "usage",
         "libudev",
-        "usage"
+        "openssl"
       ]
     },
     "schema_version": 1,
@@ -139,6 +157,7 @@
         "cargo-bundle-licenses",
         "clang",
         "cmake",
+        "cxx_compiler_stub",
         "libclang",
         "make",
         "ninja",
@@ -151,6 +170,163 @@
       "__set__": true,
       "elements": [
         "libudev",
+        "openssl",
+        "usage"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "description": "fnox is a flexible secret management tool that supports storing secrets with\nencryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n(AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\ninterface to work with secrets across development, CI, and production,\nand supports shell integration to auto-load secrets on directory change.",
+      "dev_url": "https://github.com/jdx/fnox",
+      "home": "https://fnox.jdx.dev/",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
+          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
+          "\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox",
+          "\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish",
+          "\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox",
+          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+        ],
+        "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_DIR": "$PREFIX",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "salim-b"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.29.0"
+      }
+    ],
+    "package": {
+      "name": "fnox",
+      "version": "1.29.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config"
+      ],
+      "host": [
+        "usage",
+        "libudev",
+        "openssl"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "f25393fc2769f7916698d858b315244db34cc388c582399257f61cf4ebdd0981",
+      "url": "https://github.com/jdx/fnox/archive/refs/tags/v1.29.0.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "cxx_compiler_stub",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libudev",
+        "openssl",
         "usage"
       ]
     },
@@ -174,7 +350,7 @@
       "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
@@ -186,8 +362,12 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_DIR": "$PREFIX",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
         }
       }
     },
@@ -204,6 +384,7 @@
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
             "cargo-bundle-licenses",
@@ -216,8 +397,9 @@
             "pkg-config"
           ],
           "host": [
+            "usage",
             "libudev",
-            "usage"
+            "openssl"
           ],
           "run": []
         },
@@ -251,6 +433,7 @@
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
             "cargo-bundle-licenses",
@@ -263,8 +446,9 @@
             "pkg-config"
           ],
           "host": [
+            "usage",
             "libudev",
-            "usage"
+            "openssl"
           ],
           "run": []
         },
@@ -298,6 +482,7 @@
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
             "cargo-bundle-licenses",
@@ -310,8 +495,156 @@
             "pkg-config"
           ],
           "host": [
+            "usage",
             "libudev",
-            "usage"
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.29.0"
+      },
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.29.0"
+      },
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.29.0"
+      },
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
           ],
           "run": []
         },
@@ -347,6 +680,7 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
@@ -359,8 +693,9 @@
         "pkg-config"
       ],
       "host": [
+        "usage",
         "libudev",
-        "usage"
+        "openssl"
       ]
     },
     "schema_version": 1,
@@ -381,7 +716,7 @@
       "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
@@ -393,8 +728,12 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_DIR": "$PREFIX",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
         }
       }
     },
@@ -411,6 +750,7 @@
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
             "cargo-bundle-licenses",
@@ -423,8 +763,9 @@
             "pkg-config"
           ],
           "host": [
+            "usage",
             "libudev",
-            "usage"
+            "openssl"
           ],
           "run": []
         },
@@ -460,6 +801,7 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
@@ -472,8 +814,9 @@
         "pkg-config"
       ],
       "host": [
+        "usage",
         "libudev",
-        "usage"
+        "openssl"
       ]
     },
     "schema_version": 1,
@@ -492,6 +835,7 @@
         "cargo-bundle-licenses",
         "clang",
         "cmake",
+        "cxx_compiler_stub",
         "libclang",
         "make",
         "ninja",
@@ -504,6 +848,163 @@
       "__set__": true,
       "elements": [
         "libudev",
+        "openssl",
+        "usage"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "description": "fnox is a flexible secret management tool that supports storing secrets with\nencryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n(AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\ninterface to work with secrets across development, CI, and production,\nand supports shell integration to auto-load secrets on directory change.",
+      "dev_url": "https://github.com/jdx/fnox",
+      "home": "https://fnox.jdx.dev/",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
+          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
+          "\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox",
+          "\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish",
+          "\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox",
+          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+        ],
+        "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_DIR": "$PREFIX",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "salim-b"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.29.0"
+      }
+    ],
+    "package": {
+      "name": "fnox",
+      "version": "1.29.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config"
+      ],
+      "host": [
+        "usage",
+        "libudev",
+        "openssl"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "f25393fc2769f7916698d858b315244db34cc388c582399257f61cf4ebdd0981",
+      "url": "https://github.com/jdx/fnox/archive/refs/tags/v1.29.0.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "cxx_compiler_stub",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libudev",
+        "openssl",
         "usage"
       ]
     },
@@ -525,13 +1026,16 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
     "osx_64",
-    "win_64"
+    "osx_arm64",
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/fnox.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.29.0\"\n\npackage:\n  name: fnox\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/jdx/fnox/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: f25393fc2769f7916698d858b315244db34cc388c582399257f61cf4ebdd0981\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      # NOTE: we have to set LIBCLANG_PATH for bindgen to find libclang (used by aws-lc-rs)\n      # cf. https://github.com/conda-forge/clangdev-feedstock/issues/373 & https://github.com/rust-lang/rust-bindgen/issues/918\n      - if: unix\n        then:\n          - export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins\n          # generate shell completions\n          - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n          - '\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox'\n          - '\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish'\n          - '\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox'\n      - if: win\n        then:\n          # bindgen expects libclang.dll; conda-forge only provides versioned DLLs on Windows\n          - powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"\n          - set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins\n          # generate shell completions\n          - if not exist \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions mkdir \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\n          - if not exist \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d   mkdir \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\n          - if not exist \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions          mkdir \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\n          - '\"%LIBRARY_BIN%\"\\fnox.exe completion bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\fnox'\n          - '\"%LIBRARY_BIN%\"\\fnox.exe completion fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\fnox.fish'\n          - '\"%LIBRARY_BIN%\"\\fnox.exe completion zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_fnox'\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - clang\n    - cmake\n    - libclang\n    - make\n    - ninja\n    - perl\n    - pkg-config\n  host:\n    - if: linux\n      then: libudev\n    - usage\n\ntests:\n  - script:\n      - fnox --help\n      - fnox --version\n  - package_contents:\n      bin:\n        - fnox\n      files:\n        - if: unix\n          then:\n            - share/bash-completion/completions/fnox\n            - share/fish/vendor_completions.d/fnox.fish\n            - share/zsh/site-functions/_fnox\n        - if: win\n          then:\n            - Library/share/bash-completion/completions/fnox\n            - Library/share/fish/vendor_completions.d/fnox.fish\n            - Library/share/zsh/site-functions/_fnox\n      strict: true\n\nabout:\n  summary: Fort Knox for your secrets — flexible secret management with encryption and cloud providers\n  description: |\n    fnox is a flexible secret management tool that supports storing secrets with\n    encryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n    (AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n    1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\n    interface to work with secrets across development, CI, and production,\n    and supports shell integration to auto-load secrets on directory change.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://fnox.jdx.dev\n  repository: https://github.com/jdx/fnox\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"1.29.0\"\n\npackage:\n  name: fnox\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/jdx/fnox/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: f25393fc2769f7916698d858b315244db34cc388c582399257f61cf4ebdd0981\n\nbuild:\n  number: 1\n  script:\n    env:\n      AWS_LC_SYS_CMAKE_BUILDER: ${{ \"1\" if host_platform == \"win-arm64\" else \"0\" }} # force CMake builder for `aws-lc-sys` native C/C++ code on `win-arm64`\n      CARGO_PROFILE_RELEASE_LTO: ${{ \"fat\" if build_platform == host_platform else \"thin\" }} # avoid linker crashes with `fat` LTO when cross-compiling (e.g. with Apple's `ld64`) \n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      OPENSSL_DIR: $PREFIX # force using host's (conda-forge's) OpenSSL lib dir (on Linux)\n      OPENSSL_NO_VENDOR: \"1\" # force linking to host's (conda-forge's) OpenSSL libs (on Linux)\n      PKG_CONFIG_ALLOW_CROSS: \"1\" # ignore `pkg-config` crate's host-target mismatch safeguard to fix cross compilation\n    content:\n      # NOTE: we have to set LIBCLANG_PATH for bindgen to find libclang (used by aws-lc-rs)\n      # cf. https://github.com/conda-forge/clangdev-feedstock/issues/373 & https://github.com/rust-lang/rust-bindgen/issues/918\n      - if: unix\n        then:\n          - export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins\n          # generate shell completions\n          - if: build_platform == host_platform\n            then:\n              - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n              - '\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox'\n              - '\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish'\n              - '\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox'\n      - if: win\n        then:\n          # bindgen expects libclang.dll; conda-forge only provides versioned DLLs on Windows\n          - powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"\n          - set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins\n          # generate shell completions\n          - if: build_platform == host_platform\n            then:\n              - if not exist \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions mkdir \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\n              - if not exist \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d   mkdir \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\n              - if not exist \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions          mkdir \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\n              - '\"%LIBRARY_BIN%\"\\fnox.exe completion bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\fnox'\n              - '\"%LIBRARY_BIN%\"\\fnox.exe completion fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\fnox.fish'\n              - '\"%LIBRARY_BIN%\"\\fnox.exe completion zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_fnox'\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - clang\n    - cmake\n    - libclang\n    - make\n    - ninja\n    - perl\n    - pkg-config\n  host:\n    - usage\n    - if: linux\n      then:\n        - libudev\n        - openssl\n\ntests:\n  - script:\n      - if: build_platform == host_platform\n        then:\n          - fnox --help\n          - fnox --version\n  - package_contents:\n      bin:\n        - fnox\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/fnox\n            - share/fish/vendor_completions.d/fnox.fish\n            - share/zsh/site-functions/_fnox\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/fnox\n            - Library/share/fish/vendor_completions.d/fnox.fish\n            - Library/share/zsh/site-functions/_fnox\n      strict: true\n\nabout:\n  summary: Fort Knox for your secrets — flexible secret management with encryption and cloud providers\n  description: |\n    fnox is a flexible secret management tool that supports storing secrets with\n    encryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n    (AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n    1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\n    interface to work with secrets across development, CI, and production,\n    and supports shell integration to auto-load secrets on directory change.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://fnox.jdx.dev\n  repository: https://github.com/jdx/fnox\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -541,10 +1045,12 @@
       "cargo-bundle-licenses",
       "clang",
       "cmake",
+      "cxx_compiler_stub",
       "libclang",
       "libudev",
       "make",
       "ninja",
+      "openssl",
       "perl",
       "pkg-config",
       "rust_compiler_stub",
@@ -561,6 +1067,7 @@
         "cargo-bundle-licenses",
         "clang",
         "cmake",
+        "cxx_compiler_stub",
         "libclang",
         "make",
         "ninja",
@@ -574,7 +1081,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cxx_compiler_stub",
         "libudev",
+        "openssl",
         "usage"
       ]
     },
@@ -582,7 +1091,8 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cxx_compiler_stub"
       ]
     },
     "test": {
@@ -601,6 +1111,7 @@
         "cargo-bundle-licenses",
         "clang",
         "cmake",
+        "cxx_compiler_stub",
         "libclang",
         "make",
         "ninja",
@@ -613,6 +1124,7 @@
       "__set__": true,
       "elements": [
         "libudev",
+        "openssl",
         "usage"
       ]
     },
@@ -641,7 +1153,7 @@
       "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
@@ -653,8 +1165,12 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_DIR": "$PREFIX",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
         }
       }
     },
@@ -671,6 +1187,7 @@
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
             "cargo-bundle-licenses",
@@ -683,8 +1200,9 @@
             "pkg-config"
           ],
           "host": [
+            "usage",
             "libudev",
-            "usage"
+            "openssl"
           ],
           "run": []
         },
@@ -720,6 +1238,7 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
@@ -732,8 +1251,9 @@
         "pkg-config"
       ],
       "host": [
+        "usage",
         "libudev",
-        "usage"
+        "openssl"
       ]
     },
     "schema_version": 1,
@@ -752,6 +1272,7 @@
         "cargo-bundle-licenses",
         "clang",
         "cmake",
+        "cxx_compiler_stub",
         "libclang",
         "make",
         "ninja",
@@ -764,6 +1285,163 @@
       "__set__": true,
       "elements": [
         "libudev",
+        "openssl",
+        "usage"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "fnox is a flexible secret management tool that supports storing secrets with\nencryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n(AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\ninterface to work with secrets across development, CI, and production,\nand supports shell integration to auto-load secrets on directory change.",
+      "dev_url": "https://github.com/jdx/fnox",
+      "home": "https://fnox.jdx.dev/",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
+          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
+          "\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox",
+          "\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish",
+          "\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox",
+          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+        ],
+        "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_DIR": "$PREFIX",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "salim-b"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.29.0"
+      }
+    ],
+    "package": {
+      "name": "fnox",
+      "version": "1.29.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config"
+      ],
+      "host": [
+        "usage",
+        "libudev",
+        "openssl"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "f25393fc2769f7916698d858b315244db34cc388c582399257f61cf4ebdd0981",
+      "url": "https://github.com/jdx/fnox/archive/refs/tags/v1.29.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "cxx_compiler_stub",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libudev",
+        "openssl",
         "usage"
       ]
     },
