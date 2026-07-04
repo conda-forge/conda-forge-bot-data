@@ -1,29 +1,27 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_hdf51.14.6mpimpich.yaml": "bzip2:\n- '1'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nhdf4:\n- 4.2.15\nhdf5:\n- 1.14.6\nlibaec:\n- '1'\nlibcurl:\n- '8'\nlibnetcdf:\n- 4.9.3\nlibpnetcdf:\n- 1.14.1\nlibxml2_devel:\n- '2.14'\nlibzip:\n- '1'\nmpi:\n- mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\nopenssl:\n- '3.5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
+  "ci_support_linux_64_hdf51.14.6mpimpichmpi_prefixmpi_mpich.yaml": "bzip2:\n- '1'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nhdf4:\n- 4.2.15\nhdf5:\n- 1.14.6\nlibaec:\n- '1'\nlibcurl:\n- '8'\nlibpnetcdf:\n- 1.15.0\nlibxml2_devel:\n- '2.14'\nlibzip:\n- '1'\nmpi:\n- mpich\nmpi_prefix:\n- mpi_mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\nopenssl:\n- '3.5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n- - mpi\n  - mpi_prefix\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
-      "pkg_format": "2"
+      "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "b6056a42b251d6f13ae02a9d2e75af375921f1e6",
-  "feedstock_hash_ts": 1776822438,
+  "feedstock_hash": "0a50ace49a8016a10c51a4fdcf44ba6b932e90ab",
+  "feedstock_hash_ts": 1783192126,
   "feedstock_name": "libnetcdf",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -31,17 +29,19 @@
       "dev_url": "https://github.com/Unidata/netcdf-c",
       "home": "http://www.unidata.ucar.edu/software/netcdf/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "COPYRIGHT",
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "4",
-      "run_exports": [
-        "libnetcdf mpi_mpich_*",
-        "libnetcdf",
-        "libnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_4"
+      "number": "5",
+      "run_exports": {
+        "weak": [
+          "libnetcdf",
+          "libnetcdf * mpi_mpich_*",
+          "libnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -56,6 +56,350 @@
         "zklaus"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      }
+    ],
     "package": {
       "name": "libnetcdf",
       "version": "4.10.0"
@@ -94,18 +438,10 @@
         "hdf5 * mpi_openmpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "patches": null,
       "sha256": "ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c",
       "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test ! -f ${PREFIX}/lib/libnetcdf.a",
-        "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
-        "nc-config --all"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -158,17 +494,19 @@
       "dev_url": "https://github.com/Unidata/netcdf-c",
       "home": "http://www.unidata.ucar.edu/software/netcdf/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "COPYRIGHT",
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "4",
-      "run_exports": [
-        "libnetcdf mpi_mpich_*",
-        "libnetcdf",
-        "libnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_4"
+      "number": "5",
+      "run_exports": {
+        "weak": [
+          "libnetcdf",
+          "libnetcdf * mpi_mpich_*",
+          "libnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -183,6 +521,350 @@
         "zklaus"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      }
+    ],
     "package": {
       "name": "libnetcdf",
       "version": "4.10.0"
@@ -221,18 +903,10 @@
         "hdf5 * mpi_openmpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "patches": null,
       "sha256": "ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c",
       "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test ! -f ${PREFIX}/lib/libnetcdf.a",
-        "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
-        "nc-config --all"
-      ]
     }
   },
   "linux_aarch64_requirements": {
@@ -285,17 +959,19 @@
       "dev_url": "https://github.com/Unidata/netcdf-c",
       "home": "http://www.unidata.ucar.edu/software/netcdf/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "COPYRIGHT",
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "4",
-      "run_exports": [
-        "libnetcdf mpi_mpich_*",
-        "libnetcdf",
-        "libnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_4"
+      "number": "5",
+      "run_exports": {
+        "weak": [
+          "libnetcdf",
+          "libnetcdf * mpi_mpich_*",
+          "libnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -310,6 +986,350 @@
         "zklaus"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      }
+    ],
     "package": {
       "name": "libnetcdf",
       "version": "4.10.0"
@@ -348,20 +1368,10 @@
         "hdf5 * mpi_openmpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "patches": [
-        "patches/do_not_use_16_processes_in_tests.patch"
-      ],
       "sha256": "ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c",
       "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test ! -f ${PREFIX}/lib/libnetcdf.a",
-        "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
-        "nc-config --all"
-      ]
     }
   },
   "linux_ppc64le_requirements": {
@@ -414,17 +1424,19 @@
       "dev_url": "https://github.com/Unidata/netcdf-c",
       "home": "http://www.unidata.ucar.edu/software/netcdf/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "COPYRIGHT",
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "104",
-      "run_exports": [
-        "libnetcdf mpi_mpich_*",
-        "libnetcdf",
-        "libnetcdf mpi_openmpi_*"
-      ],
-      "string": "nompi_h1234567_104"
+      "number": "105",
+      "run_exports": {
+        "weak": [
+          "libnetcdf",
+          "libnetcdf * mpi_mpich_*",
+          "libnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -439,6 +1451,1828 @@
         "zklaus"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      }
+    ],
     "package": {
       "name": "libnetcdf",
       "version": "4.10.0"
@@ -455,9 +3289,7 @@
         "unzip",
         "m4",
         "wget",
-        "diffutils",
-        "m2-unzip",
-        "m2-m4"
+        "diffutils"
       ],
       "host": [
         "mpich",
@@ -479,16 +3311,10 @@
         "hdf5 * mpi_openmpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "patches": [
-        "patches/fix-utf8-public-flag.patch"
-      ],
       "sha256": "ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c",
       "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-    },
-    "test": {
-      "commands": null
     }
   },
   "name": "libnetcdf",
@@ -497,17 +3323,19 @@
       "dev_url": "https://github.com/Unidata/netcdf-c",
       "home": "http://www.unidata.ucar.edu/software/netcdf/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "COPYRIGHT",
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "4",
-      "run_exports": [
-        "libnetcdf mpi_mpich_*",
-        "libnetcdf",
-        "libnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_4"
+      "number": "5",
+      "run_exports": {
+        "weak": [
+          "libnetcdf",
+          "libnetcdf * mpi_mpich_*",
+          "libnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -522,6 +3350,350 @@
         "zklaus"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      }
+    ],
     "package": {
       "name": "libnetcdf",
       "version": "4.10.0"
@@ -537,7 +3709,8 @@
         "cxx_compiler_stub",
         "unzip",
         "m4",
-        "wget"
+        "wget",
+        "diffutils"
       ],
       "host": [
         "mpich",
@@ -559,18 +3732,10 @@
         "hdf5 * mpi_openmpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "patches": null,
       "sha256": "ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c",
       "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test ! -f ${PREFIX}/lib/libnetcdf.a",
-        "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
-        "nc-config --all"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -581,6 +3746,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
+        "diffutils",
         "gnuconfig",
         "m4",
         "make",
@@ -622,17 +3788,19 @@
       "dev_url": "https://github.com/Unidata/netcdf-c",
       "home": "http://www.unidata.ucar.edu/software/netcdf/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "COPYRIGHT",
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "4",
-      "run_exports": [
-        "libnetcdf mpi_mpich_*",
-        "libnetcdf",
-        "libnetcdf mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_4"
+      "number": "5",
+      "run_exports": {
+        "weak": [
+          "libnetcdf",
+          "libnetcdf * mpi_mpich_*",
+          "libnetcdf * mpi_openmpi_*"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -647,6 +3815,350 @@
         "zklaus"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_mpich_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "mpich",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_mpich_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf",
+            "libnetcdf * mpi_openmpi_*"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "openmpi",
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * mpi_openmpi_*",
+            "libaec",
+            "libcurl",
+            "libpnetcdf",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      }
+    ],
     "package": {
       "name": "libnetcdf",
       "version": "4.10.0"
@@ -662,7 +4174,8 @@
         "cxx_compiler_stub",
         "unzip",
         "m4",
-        "wget"
+        "wget",
+        "diffutils"
       ],
       "host": [
         "mpich",
@@ -684,18 +4197,10 @@
         "hdf5 * mpi_openmpi_*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "patches": null,
       "sha256": "ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c",
       "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test ! -f ${PREFIX}/lib/libnetcdf.a",
-        "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
-        "nc-config --all"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -706,6 +4211,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
+        "diffutils",
         "gnuconfig",
         "m4",
         "make",
@@ -760,7 +4266,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libnetcdf.json"
   },
-  "raw_meta_yaml": "{% set version = \"4.10.0\" %}\n{% set build = 4 %}\n\n# recipe-lint fails if mpi is undefined\n{% set mpi = mpi or 'nompi' %}\n{% if mpi == \"nompi\" %}\n# prioritize nompi via build number\n{% set build = build + 100 %}\n{% endif %}\n\npackage:\n  name: libnetcdf\n  version: {{ version }}\n\nsource:\n  url: https://github.com/Unidata/netcdf-c/archive/refs/tags/v{{ version }}.tar.gz\n  sha256: ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c\n  patches:\n    - patches/do_not_use_16_processes_in_tests.patch  # [ppc64le]\n    # https://github.com/Unidata/netcdf-c/issues/3362\n    - patches/fix-utf8-public-flag.patch  # [win]\n\nbuild:\n  number: {{ build }}\n  {% if mpi != \"nompi\" %}\n  {% set mpi_prefix = \"mpi_\" + mpi %}\n  {% else %}\n  {% set mpi_prefix = \"nompi\" %}\n  {% endif %}\n  # add build string so packages can depend on\n  # mpi or nompi variants\n  # dependencies:\n  # `PKG_NAME * mpi_mpich_*` for mpich\n  # `PKG_NAME * mpi_*` for any mpi\n  # `PKG_NAME * nompi_*` for no mpi\n  string: {{ mpi_prefix }}_h{{ PKG_HASH }}_{{ build }}\n\n  # mpi builds require the right mpi\n  # non-mpi builds *do not* appear to require non-mpi builds\n  # at least not always\n\n  {% if mpi != 'nompi' %}\n  {% set build_pin = mpi_prefix + '_*' %}\n  {% else %}\n  {% set build_pin = '' %}\n  {% endif %}\n\n  run_exports:\n    #   https://abi-laboratory.pro/tracker/timeline/netcdf/\n    - {{ pin_subpackage('libnetcdf', max_pin='x.x.x') }} {{ build_pin }}\n\nrequirements:\n  build:\n    # Until we get Windows builds fixed, see\n    # https://github.com/conda-forge/libnetcdf-feedstock/pull/199#issuecomment-2820860279\n    - cmake <4.0\n    - make  # [not win]\n    - pkg-config  # [not win]\n    - gnuconfig  # [unix]\n    - {{ compiler('c') }}\n    - {{ stdlib('c') }}\n    - {{ compiler('cxx') }}\n    - {{ mpi }}  # [mpi == 'openmpi' and build_platform != target_platform]\n    - unzip  # [not win]\n    - m2-unzip  # [win]\n    - m4  # [not win]\n    - m2-m4  # [win]\n    - wget  # [not win]\n    - diffutils  # [linux]\n  host:\n    - {{ mpi }}  # [mpi != 'nompi']\n    - blosc\n    - bzip2\n    - hdf4\n    # without this repeat reference, conda-smithy doesn't pin correctly\n    - hdf5\n    - hdf5 * {{ mpi_prefix }}_*\n    - libaec\n    - libcurl\n    - libpnetcdf  # [mpi != 'nompi']\n    - libxml2-devel\n    - libzip\n    # Openssl provides libcrypto which is needed via libcurl, but doesn't get\n    # to the run reqs through run_exports because it is twice removed\n    - openssl  # [unix]\n    - zlib\n    - zstd\n\ntest:\n  commands:\n    - test ! -f ${PREFIX}/lib/libnetcdf.a          # [not win]\n    - test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}  # [not win]\n    - nc-config --all  # [not win]\n\nabout:\n  home: http://www.unidata.ucar.edu/software/netcdf/\n  license: MIT\n  license_file: COPYRIGHT\n  summary: Libraries and data formats that support array-oriented scientific data\n  dev_url: https://github.com/Unidata/netcdf-c\n\nextra:\n  recipe-maintainers:\n    - WardF\n    - groutr\n    - kmuehlbauer\n    - ocefpaf\n    - mingwandroid\n    - msarahan\n    - xylar\n    - dopplershift\n    - zklaus\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"4.10.0\"\n  build_number: 5\n\npackage:\n  name: libnetcdf\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Unidata/netcdf-c/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c\n  patches:\n    - if: ppc64le\n      then: patches/do_not_use_16_processes_in_tests.patch\n    # https://github.com/Unidata/netcdf-c/issues/3362\n    - if: win\n      then: patches/fix-utf8-public-flag.patch\n\nbuild:\n  # add build string so packages can depend on mpi or nompi variants explicitly:\n  # `PKG_NAME * mpi_mpich_*` for mpich\n  # `PKG_NAME * mpi_*` for any mpi\n  # `PKG_NAME * nompi_*` for no mpi\n  # prioritize nompi via build number\n  number: ${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  string: ${{ mpi_prefix }}_h${{ hash }}_${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  variant:\n    # prefer 'nompi' over other mpi variants\n    down_prioritize_variant: ${{ 0 if mpi == \"nompi\" else 1 }}\n  # only nompi is supported on Windows\n  skip: win and mpi != \"nompi\"\n\nrequirements:\n  build:\n    # Until we get Windows builds fixed, see\n    # https://github.com/conda-forge/libnetcdf-feedstock/pull/199#issuecomment-2820860279\n    - cmake <4.0\n    - if: unix\n      then:\n        - make\n        - pkg-config\n    - if: unix\n      then: gnuconfig\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    # for cross compiling using openmpi\n    - if: mpi == \"openmpi\" and build_platform != target_platform\n      then: ${{ mpi }}\n    - if: unix\n      then: unzip\n    - if: win\n      then: m2-unzip\n    - if: unix\n      then: m4\n    - if: win\n      then: m2-m4\n    - if: unix\n      then: wget\n    - if: linux\n      then: diffutils\n  host:\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n    - blosc\n    - bzip2\n    - hdf4\n    # without this repeat reference, conda-smithy doesn't pin correctly\n    - hdf5\n    - hdf5 * ${{ mpi_prefix }}_*\n    - libaec\n    - libcurl\n    - if: mpi != \"nompi\"\n      then: libpnetcdf\n    - libxml2-devel\n    - libzip\n    # Openssl provides libcrypto which is needed via libcurl, but doesn't get\n    # to the run reqs through run_exports because it is twice removed\n    - if: unix\n      then: openssl\n    - zlib\n    - zstd\n  run_exports:\n    #   https://abi-laboratory.pro/tracker/timeline/netcdf/\n    - ${{ pin_subpackage('libnetcdf', upper_bound='x.x.x') }}\n    # mpi builds require the right mpi\n    # non-mpi builds *do not* appear to require non-mpi builds\n    # at least not always\n    - if: mpi != \"nompi\"\n      then: libnetcdf * ${{ mpi_prefix }}_*\n\ntests:\n  - files:\n      recipe:\n        - run_test.sh\n    script:\n      - if: unix\n        then:\n          - test ! -f ${PREFIX}/lib/libnetcdf.a\n          - test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}\n          - nc-config --all\n          - bash run_test.sh\n\nabout:\n  homepage: http://www.unidata.ucar.edu/software/netcdf/\n  license: MIT\n  license_file: COPYRIGHT\n  summary: Libraries and data formats that support array-oriented scientific data\n  repository: https://github.com/Unidata/netcdf-c\n\nextra:\n  recipe-maintainers:\n    - WardF\n    - groutr\n    - kmuehlbauer\n    - ocefpaf\n    - mingwandroid\n    - msarahan\n    - xylar\n    - dopplershift\n    - zklaus\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -779,8 +4285,6 @@
       "libpnetcdf",
       "libxml2-devel",
       "libzip",
-      "m2-m4",
-      "m2-unzip",
       "m4",
       "make",
       "mpich",
@@ -803,8 +4307,6 @@
         "cxx_compiler_stub",
         "diffutils",
         "gnuconfig",
-        "m2-m4",
-        "m2-unzip",
         "m4",
         "make",
         "pkg-config",
@@ -858,8 +4360,6 @@
         "cxx_compiler_stub",
         "diffutils",
         "gnuconfig",
-        "m2-m4",
-        "m2-unzip",
         "m4",
         "make",
         "pkg-config",
@@ -908,15 +4408,17 @@
       "dev_url": "https://github.com/Unidata/netcdf-c",
       "home": "http://www.unidata.ucar.edu/software/netcdf/",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "COPYRIGHT",
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "104",
-      "run_exports": [
-        "libnetcdf"
-      ],
-      "string": "nompi_h1234567_104"
+      "number": "105",
+      "run_exports": {
+        "weak": [
+          "libnetcdf"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -931,6 +4433,118 @@
         "zklaus"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libnetcdf"
+          ]
+        },
+        "name": "libnetcdf",
+        "requirements": {
+          "build": [
+            "cmake <4.0",
+            "make",
+            "pkg-config",
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "unzip",
+            "m4",
+            "wget",
+            "diffutils"
+          ],
+          "host": [
+            "blosc",
+            "bzip2",
+            "hdf4",
+            "hdf5",
+            "hdf5 * nompi_*",
+            "libaec",
+            "libcurl",
+            "libxml2-devel",
+            "libzip",
+            "openssl",
+            "zlib",
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "run_test.sh"
+              ]
+            },
+            "script": [
+              "test ! -f ${PREFIX}/lib/libnetcdf.a",
+              "test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}",
+              "nc-config --all",
+              "bash run_test.sh"
+            ]
+          }
+        ],
+        "version": "4.10.0"
+      }
+    ],
     "package": {
       "name": "libnetcdf",
       "version": "4.10.0"
@@ -938,11 +4552,16 @@
     "requirements": {
       "build": [
         "cmake <4.0",
+        "make",
+        "pkg-config",
+        "gnuconfig",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "m2-unzip",
-        "m2-m4"
+        "unzip",
+        "m4",
+        "wget",
+        "diffutils"
       ],
       "host": [
         "blosc",
@@ -954,20 +4573,15 @@
         "libcurl",
         "libxml2-devel",
         "libzip",
+        "openssl",
         "zlib",
         "zstd"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "patches": [
-        "patches/fix-utf8-public-flag.patch"
-      ],
       "sha256": "ce160f9c1483b32d1ba8b7633d7984510259e4e439c48a218b95a023dc02fd4c",
       "url": "https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.10.0.tar.gz"
-    },
-    "test": {
-      "commands": null
     }
   },
   "win_64_requirements": {
@@ -978,8 +4592,13 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "m2-m4",
-        "m2-unzip"
+        "diffutils",
+        "gnuconfig",
+        "m4",
+        "make",
+        "pkg-config",
+        "unzip",
+        "wget"
       ]
     },
     "host": {
@@ -993,6 +4612,7 @@
         "libcurl",
         "libxml2-devel",
         "libzip",
+        "openssl",
         "zlib",
         "zstd"
       ]
