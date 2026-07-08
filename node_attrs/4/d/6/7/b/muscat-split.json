@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibboost_headers:\n- '1.88'\nlibxml2:\n- '2.14'\nmkl_devel:\n- '2026'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\n- 3.14.* *_cp314\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibboost_headers:\n- '1.90'\nlibxml2:\n- '2.14'\nmkl_devel:\n- '2026'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\n- 3.14.* *_cp314\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "828ea2be1408de62c2419c9f64d5b4407c93787c",
-  "feedstock_hash_ts": 1783427709,
+  "feedstock_hash": "1e4efa0b842ac9f6ccde538b8b5f43058636745d",
+  "feedstock_hash_ts": 1783500316,
   "feedstock_name": "muscat-split",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -26,7 +26,7 @@
       "summary": "Tools for finite element computations"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build_core.sh"
     },
     "extra": {
@@ -529,7 +529,7 @@
       "summary": "Tools for finite element computations"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build_core.sh"
     },
     "extra": {
@@ -1689,7 +1689,7 @@
       "summary": "Tools for finite element computations"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build_core.sh"
     },
     "extra": {
@@ -2199,7 +2199,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/muscat-split.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: Muscat\n  version: 2.5.2\n\nrecipe:\n  name: muscat-split\n  version: ${{ version }}\n\nsource:\n  - url: https://gitlab.com/drti/muscat/-/archive/${{ version }}/${{ name|lower }}-${{ version }}.tar.bz2\n    sha256: f667b180c3c24e33219bf01b651bd145101680aac15f881c47b32b9753f0d98b\n\nbuild:\n  number: 1\n\noutputs:\n  - package:\n      name: muscat-core\n    build:\n      script:\n        - if: linux\n          then: build_core.sh\n        - if: osx\n          then: build_core_OsX.sh\n        - if: win\n          then: bld_core.bat\n\n      python:\n        entry_points:\n          - MeshFileConvert = Muscat.IO.MeshFileConverter:Main\n\n\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - cython\n            - ninja\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n      host:\n        ## Build dependencies only\n        - ninja\n        - pip\n        - setuptools-scm\n        - setuptools\n        - cython\n        - mkl-devel\n        - libboost-headers\n        - libvulkan-headers\n        - libxml2\n        ## Common dependencies between run and build\n        - python\n        - numpy >=2\n        - sympy\n        - eigency =3.4.0.4\n        - eigen =3.4\n        - kokkos =4.7.01 h*\n        - arborx =2.0.1 h*\n        - mmgsuite =5.8\n        - if: osx\n          then: llvm-openmp >=21.1.5\n        - if: linux\n          then: libgomp\n        - if: win\n          then: pywin32\n      run:\n        ## Common dependencies between run and build\n        - python\n        - ${{ pin_compatible('numpy') }}\n        - sympy\n        - eigency =3.4.0.4\n        - eigen =3.4\n        - kokkos =4.7.01 h*\n        - arborx =2.0.1 h*\n        - mmgsuite =5.8\n        - if: osx\n          then: llvm-openmp >=21.1.5\n        - if: linux\n          then: libgomp\n        - if: win\n          then: pywin32\n        ## Run dependencies only for muscat-core\n        - scipy >=1.12\n        - networkx >=3\n        - dill\n        - cvxpy\n        - pycgns-core\n        - h5py\n        - matplotlib-base\n\n    tests:\n      - python:\n          imports:\n            - Muscat\n      - script:\n          - if: osx\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check -k Which -k Mumps\n          - if: linux\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check -k Mumps\n          - if: win\n            then: python -u -m Muscat.Helpers.Check -k AnisotropicMetricComputation -k Mumps\n\n\n  - package:\n      name: muscat\n    requirements:\n      run:\n        - ${{ pin_subpackage('muscat-core', upper_bound='x.x.x') }}\n\n        ## Extensions for muscat that are not in muscat-core\n        - vtk\n        - psutil\n        - meshio\n        - pyvista >=0.47\n        - python-mumps\n\n    tests:\n      ## Testing import for muscat and just added packages\n      - python:\n          imports:\n            - Muscat\n            - psutil\n            - pyvista\n            - meshio\n            - mumps\n\n      ## Same tests than muscat-core but we no longer ignore Mumps\n      - script:\n          - if: osx\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check -k Which\n          - if: linux\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check\n          - if: win\n            then: python -u -m Muscat.Helpers.Check -k AnisotropicMetricComputation\n\nabout:\n  homepage: https://gitlab.com/drti/muscat\n  license: BSD-3-Clause\n  license_file: LICENSE.txt\n  summary: Tools for finite element computations\n\nextra:\n  recipe-maintainers:\n    - fbordeu\n    - laureleen06\n    - casenave\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: Muscat\n  version: 2.5.2\n\nrecipe:\n  name: muscat-split\n  version: ${{ version }}\n\nsource:\n  - url: https://gitlab.com/drti/muscat/-/archive/${{ version }}/${{ name|lower }}-${{ version }}.tar.bz2\n    sha256: f667b180c3c24e33219bf01b651bd145101680aac15f881c47b32b9753f0d98b\n\nbuild:\n  number: 2\n\noutputs:\n  - package:\n      name: muscat-core\n    build:\n      script:\n        - if: linux\n          then: build_core.sh\n        - if: osx\n          then: build_core_OsX.sh\n        - if: win\n          then: bld_core.bat\n\n      python:\n        entry_points:\n          - MeshFileConvert = Muscat.IO.MeshFileConverter:Main\n\n\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - cython\n            - ninja\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n      host:\n        ## Build dependencies only\n        - ninja\n        - pip\n        - setuptools-scm\n        - setuptools\n        - cython\n        - mkl-devel\n        - libboost-headers\n        - libvulkan-headers\n        - libxml2\n        ## Common dependencies between run and build\n        - python\n        - numpy >=2\n        - sympy\n        - eigency =3.4.0.4\n        - eigen =3.4\n        - kokkos =4.7.01 h*\n        - arborx =2.0.1 h*\n        - mmgsuite =5.8\n        - if: osx\n          then: llvm-openmp >=21.1.5\n        - if: linux\n          then: libgomp\n        - if: win\n          then: pywin32\n      run:\n        ## Common dependencies between run and build\n        - python\n        - ${{ pin_compatible('numpy') }}\n        - sympy\n        - eigency =3.4.0.4\n        - eigen =3.4\n        - kokkos =4.7.01 h*\n        - arborx =2.0.1 h*\n        - mmgsuite =5.8\n        - if: osx\n          then: llvm-openmp >=21.1.5\n        - if: linux\n          then: libgomp\n        - if: win\n          then: pywin32\n        ## Run dependencies only for muscat-core\n        - scipy >=1.12\n        - networkx >=3\n        - dill\n        - cvxpy\n        - pycgns-core\n        - h5py\n        - matplotlib-base\n\n    tests:\n      - python:\n          imports:\n            - Muscat\n      - script:\n          - if: osx\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check -k Which -k Mumps\n          - if: linux\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check -k Mumps\n          - if: win\n            then: python -u -m Muscat.Helpers.Check -k AnisotropicMetricComputation -k Mumps\n\n\n  - package:\n      name: muscat\n    requirements:\n      run:\n        - ${{ pin_subpackage('muscat-core', upper_bound='x.x.x') }}\n\n        ## Extensions for muscat that are not in muscat-core\n        - vtk\n        - psutil\n        - meshio\n        - pyvista >=0.47\n        - python-mumps\n\n    tests:\n      ## Testing import for muscat and just added packages\n      - python:\n          imports:\n            - Muscat\n            - psutil\n            - pyvista\n            - meshio\n            - mumps\n\n      ## Same tests than muscat-core but we no longer ignore Mumps\n      - script:\n          - if: osx\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check -k Which\n          - if: linux\n            then:\n              - export OMP_NUM_THREADS=1\n              - python -u -m Muscat.Helpers.Check\n          - if: win\n            then: python -u -m Muscat.Helpers.Check -k AnisotropicMetricComputation\n\nabout:\n  homepage: https://gitlab.com/drti/muscat\n  license: BSD-3-Clause\n  license_file: LICENSE.txt\n  summary: Tools for finite element computations\n\nextra:\n  recipe-maintainers:\n    - fbordeu\n    - laureleen06\n    - casenave\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -2392,7 +2392,7 @@
       "summary": "Tools for finite element computations"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build_core.sh"
     },
     "extra": {
