@@ -19,8 +19,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "7b89663132ee9b4faa64900e0b9e74f068aa30e9",
-  "feedstock_hash_ts": 1783560739,
+  "feedstock_hash": "c6866580b403fe961594d5976cb4780f2a6c4977",
+  "feedstock_hash_ts": 1783566937,
   "feedstock_name": "hydra-image-processor",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -35,9 +35,9 @@
       "summary": "GPU accelerated image processing library"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
-        "content": "python -m pip install . -vv --no-deps --no-build-isolation",
+        "content": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
         "env": {
           "CMAKE_GENERATOR": "Ninja"
         }
@@ -322,9 +322,9 @@
       "summary": "GPU accelerated image processing library"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
-        "content": "python -m pip install . -vv --no-deps --no-build-isolation",
+        "content": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
         "env": {
           "CMAKE_GENERATOR": "Ninja"
         }
@@ -609,9 +609,9 @@
       "summary": "GPU accelerated image processing library"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
-        "content": "python -m pip install . -vv --no-deps --no-build-isolation",
+        "content": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
         "env": {
           "CMAKE_GENERATOR": "Ninja"
         }
@@ -1243,7 +1243,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/hydra-image-processor.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"4.0.0\"\n\npackage:\n  name: \"hydra-image-processor\"\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/ericwait/hydra-image-processor/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: a3e2dd438e9c825d37491ecd2da048dddfe0222bd49f71138fff8a29ed263b15\n\nbuild:\n  skip:\n    - osx\n    - match(cuda_compiler_version, \"==None\")\n  # scikit-build-core drives CMake, compiles the CUDA extension, and installs\n  # the package. conda-forge's compiler activation exports CMAKE_ARGS, which\n  # scikit-build-core forwards to CMake, so NO source patches are required.\n  script:\n    env:\n      # Without this CMake picks the Visual Studio generator on Windows,\n      # which needs the CUDA VS-integration files that the conda-forge nvcc\n      # package does not ship. Ninja drives nvcc directly on all platforms.\n      CMAKE_GENERATOR: Ninja\n    content:\n      # The vs2022 activation exports CMAKE_GENERATOR_PLATFORM/TOOLSET for\n      # the Visual Studio generator when they are unset; Ninja rejects\n      # platform specifications, so clear them after activation.\n      - if: win\n        then:\n          - set CMAKE_GENERATOR_PLATFORM=\n          - set CMAKE_GENERATOR_TOOLSET=\n      - python -m pip install . -vv --no-deps --no-build-isolation\n  string: cuda${{ cuda_compiler_version | version_to_buildstring }}_np${{ numpy | version_to_buildstring }}_py${{ python | version_to_buildstring }}_h${{ hash }}_${{ build_number }}\n  number: 0\n\n# c.f. https://github.com/conda-forge/cuda-feedstock/blob/main/recipe/doc/recipe_guide.md\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ compiler(\"cuda\") }}\n    - if: linux and aarch64\n      then: arm-variant * ${{ arm_variant_type }}\n    - cmake\n    - ninja\n    - if: build_platform != host_platform\n      then:\n        - cross-python_${{ host_platform }}\n        - python\n        - numpy\n  host:\n    - cuda-version ${{ cuda_compiler_version }}.*\n    - python\n    - pip\n    - scikit-build-core\n    - numpy\n    - if: linux\n      then: libgomp\n      else: llvm-openmp\n  run:\n    - ${{ pin_compatible(\"cuda-version\", lower_bound=\"x\", upper_bound=\"x\") }}\n    - python\n    - numpy\n\ntests:\n  - python:\n      imports:\n        - hydra_image_processor\n        - HIP\n        - Hydra\n\nabout:\n  summary: \"GPU accelerated image processing library\"\n  description: |\n    Hydra Image Processor is a hardware accelerated signal processing library\n    written with CUDA. HIP aims to create a signal processing library that can\n    be incorporated into many software tools.\n  license: BSD-3-Clause\n  license_file: license.txt\n  homepage: https://hydraimageprocessor.com/\n  repository: https://github.com/ericwait/hydra-image-processor\n  documentation: https://hydraimageprocessor.com/\n\nextra:\n  recipe-maintainers:\n    - ericwait\n    - matthewfeickert\n",
+  "raw_meta_yaml": "context:\n  version: \"4.0.0\"\n\npackage:\n  name: \"hydra-image-processor\"\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/ericwait/hydra-image-processor/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: a3e2dd438e9c825d37491ecd2da048dddfe0222bd49f71138fff8a29ed263b15\n\nbuild:\n  skip:\n    - osx\n    - match(cuda_compiler_version, \"==None\")\n  # scikit-build-core drives CMake, compiles the CUDA extension, and installs\n  # the package. conda-forge's compiler activation exports CMAKE_ARGS, which\n  # scikit-build-core forwards to CMake, so NO source patches are required.\n  script:\n    env:\n      # Without this CMake picks the Visual Studio generator on Windows,\n      # which needs the CUDA VS-integration files that the conda-forge nvcc\n      # package does not ship. Ninja drives nvcc directly on all platforms.\n      CMAKE_GENERATOR: Ninja\n    content:\n      # The vs2022 activation exports CMAKE_GENERATOR_PLATFORM/TOOLSET for\n      # the Visual Studio generator when they are unset; Ninja rejects\n      # platform specifications, so clear them after activation.\n      - if: win\n        then:\n          - set CMAKE_GENERATOR_PLATFORM=\n          - set CMAKE_GENERATOR_TOOLSET=\n      - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n  string: cuda${{ cuda_compiler_version | version_to_buildstring }}_np${{ numpy | version_to_buildstring }}_py${{ python | version_to_buildstring }}_h${{ hash }}_${{ build_number }}\n  number: 1\n\n# c.f. https://github.com/conda-forge/cuda-feedstock/blob/main/recipe/doc/recipe_guide.md\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ compiler(\"cuda\") }}\n    - if: linux and aarch64\n      then: arm-variant * ${{ arm_variant_type }}\n    - cmake\n    - ninja\n    - if: build_platform != host_platform\n      then:\n        - cross-python_${{ host_platform }}\n        - python\n        - numpy\n  host:\n    - cuda-version ${{ cuda_compiler_version }}.*\n    - python\n    - pip\n    - scikit-build-core\n    - numpy\n    - if: linux\n      then: libgomp\n      else: llvm-openmp\n  run:\n    - ${{ pin_compatible(\"cuda-version\", lower_bound=\"x\", upper_bound=\"x\") }}\n    - python\n    - numpy\n\ntests:\n  - python:\n      imports:\n        - hydra_image_processor\n        - HIP\n        - Hydra\n\nabout:\n  summary: \"GPU accelerated image processing library\"\n  description: |\n    Hydra Image Processor is a hardware accelerated signal processing library\n    written with CUDA. HIP aims to create a signal processing library that can\n    be incorporated into many software tools.\n  license: BSD-3-Clause\n  license_file: license.txt\n  homepage: https://hydraimageprocessor.com/\n  repository: https://github.com/ericwait/hydra-image-processor\n  documentation: https://hydraimageprocessor.com/\n\nextra:\n  recipe-maintainers:\n    - ericwait\n    - matthewfeickert\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1360,9 +1360,9 @@
       "summary": "GPU accelerated image processing library"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
-        "content": "python -m pip install . -vv --no-deps --no-build-isolation",
+        "content": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
         "env": {
           "CMAKE_GENERATOR": "Ninja"
         }
