@@ -1,36 +1,41 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncairo:\n- '1'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nglib:\n- '2'\nlibpng:\n- '1.6'\nlibxml2:\n- '2.13'\npango:\n- '1'\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncairo:\n- '1'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nglib:\n- '2'\nlibpng:\n- '1.6'\nlibxml2_devel:\n- '2.14'\npango:\n- '1'\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "build_platform": {
-      "osx_arm64": "osx_64"
+      "linux_aarch64": "linux_aarch64",
+      "osx_arm64": "osx_arm64"
     },
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "provider": {
-      "linux_aarch64": "travis",
-      "linux_ppc64le": "travis"
+      "linux_aarch64": "default",
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "1ea92e06727aa57b6cbabea13b5dae34734a8855",
-  "feedstock_hash_ts": 1776902045,
+  "feedstock_hash": "f11ba1246d5415b5a6cff16213886e68d7ccaf62",
+  "feedstock_hash_ts": 1783594804,
   "feedstock_name": "rrdtool",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.\n",
+      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.",
       "dev_url": "https://github.com/oetiker/rrdtool-1.x/",
       "doc_url": "https://www.rrdtool.org/doc/index.en.html",
-      "home": "https://www.rrdtool.org",
+      "home": "https://www.rrdtool.org/",
       "license": "GPL-2.0-or-later",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "LICENSE",
       "summary": "Round Robin Database Tool"
     },
@@ -42,9 +47,80 @@
         "chrisburr"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      }
+    ],
     "package": {
       "name": "rrdtool",
-      "version": "1.9.0"
+      "version": "1.10.3"
     },
     "requirements": {
       "build": [
@@ -56,34 +132,26 @@
         "harfbuzz",
         "make",
         "libtool",
+        "gettext-tools",
         "pkg-config",
         "coreutils",
         "bc"
       ],
       "host": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
-        "pango"
-      ],
-      "run": [
+        "libxml2-devel",
         "pango"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "cloexec.patch"
+        "link-libcairo.patch"
       ],
-      "sha256": "405f4ce365e2e37bdeff9bbb844cbedf9b36dde7344b31449e369315a3df5ef0",
-      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.9.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "rrdtool --help"
-      ]
+      "sha256": "3f98a07cf00a16a811716f925e0ccb105a51183743bbd65b997aea11c9e15943",
+      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.10.3.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -96,6 +164,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "coreutils",
+        "gettext-tools",
         "gnuconfig",
         "harfbuzz",
         "libtool",
@@ -107,18 +176,15 @@
       "__set__": true,
       "elements": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
+        "libxml2-devel",
         "pango"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "pango"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -127,11 +193,12 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.\n",
+      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.",
       "dev_url": "https://github.com/oetiker/rrdtool-1.x/",
       "doc_url": "https://www.rrdtool.org/doc/index.en.html",
-      "home": "https://www.rrdtool.org",
+      "home": "https://www.rrdtool.org/",
       "license": "GPL-2.0-or-later",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "LICENSE",
       "summary": "Round Robin Database Tool"
     },
@@ -143,9 +210,80 @@
         "chrisburr"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      }
+    ],
     "package": {
       "name": "rrdtool",
-      "version": "1.9.0"
+      "version": "1.10.3"
     },
     "requirements": {
       "build": [
@@ -157,34 +295,26 @@
         "harfbuzz",
         "make",
         "libtool",
+        "gettext-tools",
         "pkg-config",
         "coreutils",
         "bc"
       ],
       "host": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
-        "pango"
-      ],
-      "run": [
+        "libxml2-devel",
         "pango"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "cloexec.patch"
+        "link-libcairo.patch"
       ],
-      "sha256": "405f4ce365e2e37bdeff9bbb844cbedf9b36dde7344b31449e369315a3df5ef0",
-      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.9.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "rrdtool --help"
-      ]
+      "sha256": "3f98a07cf00a16a811716f925e0ccb105a51183743bbd65b997aea11c9e15943",
+      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.10.3.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -197,6 +327,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "coreutils",
+        "gettext-tools",
         "gnuconfig",
         "harfbuzz",
         "libtool",
@@ -208,119 +339,15 @@
       "__set__": true,
       "elements": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
+        "libxml2-devel",
         "pango"
       ]
     },
     "run": {
-      "__set__": true,
-      "elements": [
-        "pango"
-      ]
-    },
-    "test": {
       "__set__": true,
       "elements": []
-    }
-  },
-  "linux_ppc64le_meta_yaml": {
-    "about": {
-      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.\n",
-      "dev_url": "https://github.com/oetiker/rrdtool-1.x/",
-      "doc_url": "https://www.rrdtool.org/doc/index.en.html",
-      "home": "https://www.rrdtool.org",
-      "license": "GPL-2.0-or-later",
-      "license_file": "LICENSE",
-      "summary": "Round Robin Database Tool"
-    },
-    "build": {
-      "number": "0"
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "chrisburr"
-      ]
-    },
-    "package": {
-      "name": "rrdtool",
-      "version": "1.9.0"
-    },
-    "requirements": {
-      "build": [
-        "gnuconfig",
-        "c_compiler_stub",
-        "c_stdlib_stub",
-        "autoconf",
-        "automake",
-        "harfbuzz",
-        "make",
-        "libtool",
-        "pkg-config",
-        "coreutils",
-        "bc"
-      ],
-      "host": [
-        "cairo",
-        "gettext",
-        "glib",
-        "libpng",
-        "libxml2",
-        "pango"
-      ],
-      "run": [
-        "pango"
-      ]
-    },
-    "schema_version": 0,
-    "source": {
-      "patches": [
-        "cloexec.patch"
-      ],
-      "sha256": "405f4ce365e2e37bdeff9bbb844cbedf9b36dde7344b31449e369315a3df5ef0",
-      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.9.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "rrdtool --help"
-      ]
-    }
-  },
-  "linux_ppc64le_requirements": {
-    "build": {
-      "__set__": true,
-      "elements": [
-        "autoconf",
-        "automake",
-        "bc",
-        "c_compiler_stub",
-        "c_stdlib_stub",
-        "coreutils",
-        "gnuconfig",
-        "harfbuzz",
-        "libtool",
-        "make",
-        "pkg-config"
-      ]
-    },
-    "host": {
-      "__set__": true,
-      "elements": [
-        "cairo",
-        "gettext",
-        "glib",
-        "libpng",
-        "libxml2",
-        "pango"
-      ]
-    },
-    "run": {
-      "__set__": true,
-      "elements": [
-        "pango"
-      ]
     },
     "test": {
       "__set__": true,
@@ -329,77 +356,12 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.\n",
+      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.",
       "dev_url": "https://github.com/oetiker/rrdtool-1.x/",
       "doc_url": "https://www.rrdtool.org/doc/index.en.html",
-      "home": "https://www.rrdtool.org",
+      "home": "https://www.rrdtool.org/",
       "license": "GPL-2.0-or-later",
-      "license_file": "LICENSE",
-      "summary": "Round Robin Database Tool"
-    },
-    "build": {
-      "number": "0",
-      "skip_compile_pyc": [
-        "share/rrdtool/examples/stripes.py"
-      ]
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "chrisburr"
-      ]
-    },
-    "package": {
-      "name": "rrdtool",
-      "version": "1.9.0"
-    },
-    "requirements": {
-      "build": [
-        "gnuconfig",
-        "c_compiler_stub",
-        "c_stdlib_stub",
-        "autoconf",
-        "automake",
-        "harfbuzz",
-        "make",
-        "libtool",
-        "pkg-config",
-        "coreutils",
-        "bc"
-      ],
-      "host": [
-        "cairo",
-        "gettext",
-        "glib",
-        "libpng",
-        "libxml2",
-        "pango"
-      ],
-      "run": [
-        "pango"
-      ]
-    },
-    "schema_version": 0,
-    "source": {
-      "patches": [
-        "cloexec.patch"
-      ],
-      "sha256": "405f4ce365e2e37bdeff9bbb844cbedf9b36dde7344b31449e369315a3df5ef0",
-      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.9.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "rrdtool --help"
-      ]
-    }
-  },
-  "name": "rrdtool",
-  "osx_64_meta_yaml": {
-    "about": {
-      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.\n",
-      "dev_url": "https://github.com/oetiker/rrdtool-1.x/",
-      "doc_url": "https://www.rrdtool.org/doc/index.en.html",
-      "home": "https://www.rrdtool.org",
-      "license": "GPL-2.0-or-later",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "LICENSE",
       "summary": "Round Robin Database Tool"
     },
@@ -411,9 +373,287 @@
         "chrisburr"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      },
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      },
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      },
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      }
+    ],
     "package": {
       "name": "rrdtool",
-      "version": "1.9.0"
+      "version": "1.10.3"
     },
     "requirements": {
       "build": [
@@ -425,34 +665,153 @@
         "harfbuzz",
         "make",
         "libtool",
+        "gettext-tools",
         "pkg-config",
         "coreutils",
         "bc"
       ],
       "host": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
-        "pango"
-      ],
-      "run": [
+        "libxml2-devel",
         "pango"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "cloexec.patch"
+        "link-libcairo.patch"
       ],
-      "sha256": "405f4ce365e2e37bdeff9bbb844cbedf9b36dde7344b31449e369315a3df5ef0",
-      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.9.0.tar.gz"
+      "sha256": "3f98a07cf00a16a811716f925e0ccb105a51183743bbd65b997aea11c9e15943",
+      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.10.3.tar.gz"
+    }
+  },
+  "name": "rrdtool",
+  "osx_64_meta_yaml": {
+    "about": {
+      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.",
+      "dev_url": "https://github.com/oetiker/rrdtool-1.x/",
+      "doc_url": "https://www.rrdtool.org/doc/index.en.html",
+      "home": "https://www.rrdtool.org/",
+      "license": "GPL-2.0-or-later",
+      "license_family": "GPL-2.0-or-later",
+      "license_file": "LICENSE",
+      "summary": "Round Robin Database Tool"
     },
-    "test": {
-      "commands": [
-        "rrdtool --help"
+    "build": {
+      "number": "0"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "chrisburr"
       ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      }
+    ],
+    "package": {
+      "name": "rrdtool",
+      "version": "1.10.3"
+    },
+    "requirements": {
+      "build": [
+        "gnuconfig",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "autoconf",
+        "automake",
+        "harfbuzz",
+        "make",
+        "libtool",
+        "gettext-tools",
+        "pkg-config",
+        "coreutils",
+        "bc"
+      ],
+      "host": [
+        "cairo",
+        "glib",
+        "libpng",
+        "libxml2-devel",
+        "pango"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "link-libcairo.patch"
+      ],
+      "sha256": "3f98a07cf00a16a811716f925e0ccb105a51183743bbd65b997aea11c9e15943",
+      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.10.3.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -465,6 +824,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "coreutils",
+        "gettext-tools",
         "gnuconfig",
         "harfbuzz",
         "libtool",
@@ -476,18 +836,15 @@
       "__set__": true,
       "elements": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
+        "libxml2-devel",
         "pango"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "pango"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -496,28 +853,97 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.\n",
+      "description": "RRDtool is a little program for easily maintaining a database of\ntime-series data. It comes with a charting program for drawing\npretty graphs based on the data stored.",
       "dev_url": "https://github.com/oetiker/rrdtool-1.x/",
       "doc_url": "https://www.rrdtool.org/doc/index.en.html",
-      "home": "https://www.rrdtool.org",
+      "home": "https://www.rrdtool.org/",
       "license": "GPL-2.0-or-later",
+      "license_family": "GPL-2.0-or-later",
       "license_file": "LICENSE",
       "summary": "Round Robin Database Tool"
     },
     "build": {
-      "number": "0",
-      "skip_compile_pyc": [
-        "share/rrdtool/examples/stripes.py"
-      ]
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
         "chrisburr"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rrdtool",
+        "requirements": {
+          "build": [
+            "gnuconfig",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "autoconf",
+            "automake",
+            "harfbuzz",
+            "make",
+            "libtool",
+            "gettext-tools",
+            "pkg-config",
+            "coreutils",
+            "bc"
+          ],
+          "host": [
+            "cairo",
+            "glib",
+            "libpng",
+            "libxml2-devel",
+            "pango"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24",
+              "rrdtool update test.rrd N:42",
+              "rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000",
+              "test -s test.png"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rrdtool",
+                "rrdcached",
+                "rrdcgi",
+                "rrdcreate",
+                "rrdinfo",
+                "rrdupdate"
+              ],
+              "files": [
+                "bin/rrd*",
+                "include/rrd*.h",
+                "lib/librrd.*",
+                "lib/pkgconfig/librrd.pc",
+                "lib/systemd/system/rrdcached.*",
+                "share/locale/*/LC_MESSAGES/*.mo",
+                "share/rrdtool/**"
+              ],
+              "include": [
+                "rrd.h",
+                "rrd_client.h",
+                "rrd_format.h"
+              ],
+              "lib": [
+                "librrd"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.10.3"
+      }
+    ],
     "package": {
       "name": "rrdtool",
-      "version": "1.9.0"
+      "version": "1.10.3"
     },
     "requirements": {
       "build": [
@@ -529,34 +955,26 @@
         "harfbuzz",
         "make",
         "libtool",
+        "gettext-tools",
         "pkg-config",
         "coreutils",
         "bc"
       ],
       "host": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
-        "pango"
-      ],
-      "run": [
+        "libxml2-devel",
         "pango"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "cloexec.patch"
+        "link-libcairo.patch"
       ],
-      "sha256": "405f4ce365e2e37bdeff9bbb844cbedf9b36dde7344b31449e369315a3df5ef0",
-      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.9.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "rrdtool --help"
-      ]
+      "sha256": "3f98a07cf00a16a811716f925e0ccb105a51183743bbd65b997aea11c9e15943",
+      "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.10.3.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -569,6 +987,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "coreutils",
+        "gettext-tools",
         "gnuconfig",
         "harfbuzz",
         "libtool",
@@ -580,18 +999,15 @@
       "__set__": true,
       "elements": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
+        "libxml2-devel",
         "pango"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "pango"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -608,14 +1024,13 @@
   "platforms": [
     "linux_64",
     "linux_aarch64",
-    "linux_ppc64le",
     "osx_64",
     "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/rrdtool.json"
   },
-  "raw_meta_yaml": "{% set name = \"rrdtool\" %}\n{% set version = \"1.9.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/oetiker/rrdtool-1.x/archive/v{{ version }}.tar.gz\n  sha256: 405f4ce365e2e37bdeff9bbb844cbedf9b36dde7344b31449e369315a3df5ef0\n  patches:\n    - cloexec.patch\n\nbuild:\n  number: 0\n  skip: true  # [win]\n  # Fails with \"Bad CPU type in executable\" when cross-compiling\n  skip_compile_pyc:   # [osx and arm64]\n    - share/rrdtool/examples/stripes.py  # [osx and arm64]\n\nrequirements:\n  build:\n    - gnuconfig  # [unix]\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - autoconf\n    - automake\n    - harfbuzz\n    - make\n    - libtool\n    - pkg-config\n    # Required for \"make check\"\n    - coreutils\n    - bc\n  host:\n    - cairo\n    - gettext\n    - glib\n    - libpng\n    - libxml2\n    - pango\n  run:\n    # Looks pretty stable\n    # https://abi-laboratory.pro/index.php?view=timeline&l=pango\n    - {{ pin_compatible('pango') }}\n\ntest:\n  commands:\n    - rrdtool --help\n\nabout:\n  home: https://www.rrdtool.org\n  license: GPL-2.0-or-later\n  license_file: LICENSE\n  summary: Round Robin Database Tool\n  description: |\n    RRDtool is a little program for easily maintaining a database of\n    time-series data. It comes with a charting program for drawing\n    pretty graphs based on the data stored.\n  doc_url: https://www.rrdtool.org/doc/index.en.html\n  dev_url: https://github.com/oetiker/rrdtool-1.x/\n\nextra:\n  recipe-maintainers:\n    - chrisburr\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: rrdtool\n  version: \"1.10.3\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/oetiker/rrdtool-1.x/archive/v${{ version }}.tar.gz\n  sha256: 3f98a07cf00a16a811716f925e0ccb105a51183743bbd65b997aea11c9e15943\n  patches:\n    # Link libcairo directly; rrdtool uses it but only links -lpangocairo\n    - link-libcairo.patch\n\nbuild:\n  # Fails with \"Bad CPU type in executable\" when cross-compiling\n  number: 0\n  skip:\n    - win\n    - ppc64le\n  python:\n    skip_pyc_compilation:\n      - if: osx and arm64\n        then: share/rrdtool/examples/stripes.py\n  dynamic_linking:\n    # Everything librrd links is a declared dependency and every declared\n    # dependency is linked, so hold that line and fail the build if it slips.\n    overlinking_behavior: error\n    overdepending_behavior: error\n\nrequirements:\n  build:\n    - if: unix\n      then: gnuconfig\n    - ${{ compiler('c') }}\n    - ${{ stdlib(\"c\") }}\n    - autoconf\n    - automake\n    - harfbuzz\n    - make\n    - libtool\n    # msgfmt/autopoint to compile & bootstrap the .po catalogs; runs on the\n    # build machine, so build- (not host-) side for correct cross-compilation\n    - gettext-tools\n    - pkg-config\n    # Required for \"make check\"\n    - coreutils\n    - bc\n  host:\n    - cairo\n    - glib\n    - libpng\n    - libxml2-devel\n    - pango\n    # gettext is external (AM_GNU_GETTEXT); libintl is part of glibc on Linux\n    # but a separate library on macOS, so it is only needed there.\n    - if: osx\n      then: libintl-devel\n  run:\n    # pango's run-export already applies a compatible pin; libintl has no\n    # run-export, so the macOS runtime dependency must be listed explicitly.\n    - if: osx\n      then: libintl\n\ntests:\n  - script:\n      # End-to-end: create -> update -> graph. `graph` renders through\n      # cairo/pango, so it also proves libcairo is linked and usable at runtime.\n      - rrdtool create test.rrd --step 300 DS:x:GAUGE:600:U:U RRA:AVERAGE:0.5:1:24\n      - rrdtool update test.rrd N:42\n      - rrdtool graph test.png --start end-2h DEF:x=test.rrd:x:AVERAGE LINE1:x#ff0000\n      - test -s test.png\n  - package_contents:\n      # strict: every packaged file must match a pattern below, so anything\n      # unexpected (e.g. the stray fontconfig cache we now clean up) fails.\n      strict: true\n      bin:\n        - rrdtool\n        - rrdcached\n        - rrdcgi\n        - rrdcreate\n        - rrdinfo\n        - rrdupdate\n      lib:\n        - librrd\n      include:\n        - rrd.h\n        - rrd_client.h\n        - rrd_format.h\n      files:\n        # Broad, directory-level globs so new examples/locales or a soname bump\n        # are absorbed while strict still flags anything outside these paths.\n        - bin/rrd*\n        - include/rrd*.h\n        - lib/librrd.*\n        - lib/pkgconfig/librrd.pc\n        - lib/systemd/system/rrdcached.*\n        - share/locale/*/LC_MESSAGES/*.mo\n        - share/rrdtool/**\n\nabout:\n  license: GPL-2.0-or-later\n  license_file: LICENSE\n  summary: Round Robin Database Tool\n  description: |\n    RRDtool is a little program for easily maintaining a database of\n    time-series data. It comes with a charting program for drawing\n    pretty graphs based on the data stored.\n  homepage: https://www.rrdtool.org\n  repository: https://github.com/oetiker/rrdtool-1.x/\n  documentation: https://www.rrdtool.org/doc/index.en.html\n\nextra:\n  recipe-maintainers:\n    - chrisburr\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -626,13 +1041,13 @@
       "c_stdlib_stub",
       "cairo",
       "coreutils",
-      "gettext",
+      "gettext-tools",
       "glib",
       "gnuconfig",
       "harfbuzz",
       "libpng",
       "libtool",
-      "libxml2",
+      "libxml2-devel",
       "make",
       "pango",
       "pkg-config"
@@ -648,6 +1063,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "coreutils",
+        "gettext-tools",
         "gnuconfig",
         "harfbuzz",
         "libtool",
@@ -661,10 +1077,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
+        "libxml2-devel",
         "pango"
       ]
     },
@@ -672,8 +1087,7 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
-        "pango"
+        "c_stdlib_stub"
       ]
     },
     "test": {
@@ -692,6 +1106,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "coreutils",
+        "gettext-tools",
         "gnuconfig",
         "harfbuzz",
         "libtool",
@@ -703,26 +1118,23 @@
       "__set__": true,
       "elements": [
         "cairo",
-        "gettext",
         "glib",
         "libpng",
-        "libxml2",
+        "libxml2-devel",
         "pango"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "pango"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
       "elements": []
     }
   },
-  "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.9.0.tar.gz",
-  "version": "1.9.0",
+  "url": "https://github.com/oetiker/rrdtool-1.x/archive/v1.10.3.tar.gz",
+  "version": "1.10.3",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/rrdtool.json"
   }
