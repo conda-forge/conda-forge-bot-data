@@ -7,6 +7,7 @@
       "automerge": true
     },
     "conda_build": {
+      "error_overdepending": true,
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
@@ -18,10 +19,11 @@
     },
     "provider": {
       "linux_aarch64": "default"
-    }
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "f89b3c87cad9bd4076afe2c327709429908629d8",
-  "feedstock_hash_ts": 1781977127,
+  "feedstock_hash": "56bf1986713ae9b8b3a30dabdede4715170de6ce",
+  "feedstock_hash_ts": 1783873750,
   "feedstock_name": "shh",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -92,8 +94,7 @@
                 "shh"
               ],
               "files": [
-                "share/man/man1/shh.1",
-                "share/man/man1/shh-*.1",
+                "share/man/man1/shh*.1",
                 "share/bash-completion/completions/shh",
                 "share/fish/vendor_completions.d/shh.fish",
                 "share/zsh/site-functions/_shh"
@@ -223,8 +224,7 @@
                 "shh"
               ],
               "files": [
-                "share/man/man1/shh.1",
-                "share/man/man1/shh-*.1",
+                "share/man/man1/shh*.1",
                 "share/bash-completion/completions/shh",
                 "share/fish/vendor_completions.d/shh.fish",
                 "share/zsh/site-functions/_shh"
@@ -354,8 +354,7 @@
                 "shh"
               ],
               "files": [
-                "share/man/man1/shh.1",
-                "share/man/man1/shh-*.1",
+                "share/man/man1/shh*.1",
                 "share/bash-completion/completions/shh",
                 "share/fish/vendor_completions.d/shh.fish",
                 "share/zsh/site-functions/_shh"
@@ -400,8 +399,7 @@
                 "shh"
               ],
               "files": [
-                "share/man/man1/shh.1",
-                "share/man/man1/shh-*.1",
+                "share/man/man1/shh*.1",
                 "share/bash-completion/completions/shh",
                 "share/fish/vendor_completions.d/shh.fish",
                 "share/zsh/site-functions/_shh"
@@ -450,7 +448,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/shh.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"2026.3.8\"\n\npackage:\n  name: shh\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/desbma/shh/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 2d294e583ccc742095cc211080fb1c4c8b095dd4b30b98d116d36acbb4b5e1b6\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=generate-extras\n      # generate manpage and shell completions\n      - mkdir -p \"$PREFIX\"/share/man/man1 \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n      - '\"$PREFIX\"/bin/shh gen-man-pages                        \"$PREFIX\"/share/man/man1'\n      - '\"$PREFIX\"/bin/shh gen-shell-completions --shell=bash > \"$PREFIX\"/share/bash-completion/completions/shh'\n      - '\"$PREFIX\"/bin/shh gen-shell-completions --shell=fish > \"$PREFIX\"/share/fish/vendor_completions.d/shh.fish'\n      - '\"$PREFIX\"/bin/shh gen-shell-completions --shell=zsh  > \"$PREFIX\"/share/zsh/site-functions/_shh'\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n  skip:\n    - osx\n    - win\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n  host:\n    - strace\n\ntests:\n  - script:\n      - shh --help\n      - shh --version\n    requirements:\n      run:\n        - strace\n  - package_contents:\n      bin:\n        - shh\n      files:\n        - share/man/man1/shh.1\n        - share/man/man1/shh-*.1\n        - share/bash-completion/completions/shh\n        - share/fish/vendor_completions.d/shh.fish\n        - share/zsh/site-functions/_shh\n      strict: true\n\nabout:\n  summary: Automatic systemd service hardening guided by strace profiling\n  description: |\n    Systemd Hardening Helper (SHH) can generate an optimal set of hardening\n    options for systemd services. It profiles service behavior using strace and\n    automatically generates appropriate systemd security options, enabling\n    security hardening without breaking services due to overly restrictive\n    sandboxing.\n  license: GPL-3.0-only\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/desbma/shh\n  repository: https://github.com/desbma/shh\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"2026.3.8\"\n\npackage:\n  name: shh\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/desbma/shh/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 2d294e583ccc742095cc211080fb1c4c8b095dd4b30b98d116d36acbb4b5e1b6\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=generate-extras\n      # generate manpage and shell completions\n      - mkdir -p \"$PREFIX\"/share/man/man1 \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n      - '\"$PREFIX\"/bin/shh gen-man-pages                        \"$PREFIX\"/share/man/man1'\n      - '\"$PREFIX\"/bin/shh gen-shell-completions --shell=bash > \"$PREFIX\"/share/bash-completion/completions/shh'\n      - '\"$PREFIX\"/bin/shh gen-shell-completions --shell=fish > \"$PREFIX\"/share/fish/vendor_completions.d/shh.fish'\n      - '\"$PREFIX\"/bin/shh gen-shell-completions --shell=zsh  > \"$PREFIX\"/share/zsh/site-functions/_shh'\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n  skip:\n    - not linux\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n  host:\n    - strace\n\ntests:\n  - script:\n      - shh --help\n      - shh --version\n    requirements:\n      run:\n        - strace\n  - package_contents:\n      bin:\n        - shh\n      files:\n        - share/man/man1/shh*.1\n        - share/bash-completion/completions/shh\n        - share/fish/vendor_completions.d/shh.fish\n        - share/zsh/site-functions/_shh\n      strict: true\n\nabout:\n  summary: Automatic systemd service hardening guided by strace profiling\n  description: |\n    Systemd Hardening Helper (SHH) can generate an optimal set of hardening\n    options for systemd services. It profiles service behavior using strace and\n    automatically generates appropriate systemd security options, enabling\n    security hardening without breaking services due to overly restrictive\n    sandboxing.\n  license: GPL-3.0-only\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/desbma/shh\n  repository: https://github.com/desbma/shh\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
