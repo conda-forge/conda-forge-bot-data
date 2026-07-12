@@ -7,6 +7,7 @@
       "automerge": true
     },
     "conda_build": {
+      "error_overdepending": true,
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
@@ -20,10 +21,11 @@
       "linux_aarch64": "default",
       "linux_ppc64le": "default",
       "osx_arm64": "default"
-    }
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "1748295019ca31d9d6691ec87b2045f78eaf4936",
-  "feedstock_hash_ts": 1783728194,
+  "feedstock_hash": "0905d107e25d7019ca9e0f5649b0c54cbcdfceab",
+  "feedstock_hash_ts": 1783862569,
   "feedstock_name": "cargo-update",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -41,7 +43,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -170,7 +172,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -299,7 +301,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -428,7 +430,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -748,7 +750,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -877,7 +879,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -1009,7 +1011,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/cargo-update.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"21.0.2\"\n\npackage:\n  name: cargo-update\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/nabijaczleweli/cargo-update/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: e67c56e727c85fbf2c51f0fda687ea153008ac4b9f9b501d2bee8c9e7f981c5e\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      # NOTE: currently, we have to omit `--locked` in `cargo install` since the upstream project has no `Cargo.lock` committed\n      - if: unix\n        then:\n          - cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.\n      - if: win\n        then:\n          - cargo auditable install --no-track --bins --root=\"%LIBRARY_PREFIX%\" --path=.\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n  host:\n    - if: unix\n      then:\n        - libgit2\n        - openssl\n        - pkg-config\n\ntests:\n  - script:\n      - cargo install-update --help\n      - cargo install-update --version\n      - cargo help install-update\n      - cargo install update --help\n    requirements:\n      run:\n        - ${{ compiler('rust') }}\n  - package_contents:\n      bin:\n        - cargo-install-update\n        - cargo-install-update-config\n      strict: true\n\nabout:\n  summary: A cargo subcommand for checking and applying updates to installed executables\n  description: |\n    cargo-update provides the `cargo install-update` subcommand for cargo,\n    allowing you to check for and apply updates to all installed cargo binaries.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/nabijaczleweli/cargo-update\n  documentation: https://github.com/nabijaczleweli/cargo-update/tree/master/man\n  repository: https://github.com/nabijaczleweli/cargo-update\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"21.0.2\"\n\npackage:\n  name: cargo-update\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/nabijaczleweli/cargo-update/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: e67c56e727c85fbf2c51f0fda687ea153008ac4b9f9b501d2bee8c9e7f981c5e\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      # NOTE: we have to omit `--locked` in `cargo install` since the upstream project has no `Cargo.lock` committed\n      - if: unix\n        then:\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins\n      - if: win\n        then:\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --bins\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n  host:\n    - if: unix\n      then:\n        - libgit2\n        - openssl\n        - pkg-config\n\ntests:\n  - script:\n      - cargo install-update --help\n      - cargo install-update --version\n      - cargo help install-update\n      - cargo install update --help\n    requirements:\n      run:\n        - ${{ compiler('rust') }}\n  - package_contents:\n      bin:\n        - cargo-install-update\n        - cargo-install-update-config\n      strict: true\n\nabout:\n  summary: A cargo subcommand for checking and applying updates to installed executables\n  description: |\n    cargo-update provides the `cargo install-update` subcommand for cargo,\n    allowing you to check for and apply updates to all installed cargo binaries.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/nabijaczleweli/cargo-update\n  documentation: https://github.com/nabijaczleweli/cargo-update/tree/master/man\n  repository: https://github.com/nabijaczleweli/cargo-update\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1109,7 +1111,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
