@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_hdf51.14.6mpimpich.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nhdf5:\n- 1.14.6\nlibnetcdf:\n- 4.10.0\nmpi:\n- mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_hdf51.14.6mpimpich.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nhdf5:\n- 1.14.6\nlibnetcdf:\n- 4.10.1\nmpi:\n- mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
@@ -24,8 +24,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "6635b7b6a88ad09718ad72e2c4d9167b9ec5ac6d",
-  "feedstock_hash_ts": 1776857258,
+  "feedstock_hash": "b5b3fd8975b711374118e03adb6fe2f32a306c46",
+  "feedstock_hash_ts": 1783872241,
   "feedstock_name": "netcdf-cxx4",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,7 +38,7 @@
       "summary": "Unidata NetCDF C++ Library"
     },
     "build": {
-      "number": "22",
+      "number": "23",
       "run_exports": {
         "weak": [
           "netcdf-cxx4",
@@ -422,7 +422,7 @@
       "summary": "Unidata NetCDF C++ Library"
     },
     "build": {
-      "number": "22",
+      "number": "23",
       "run_exports": {
         "weak": [
           "netcdf-cxx4",
@@ -806,7 +806,7 @@
       "summary": "Unidata NetCDF C++ Library"
     },
     "build": {
-      "number": "22",
+      "number": "23",
       "run_exports": {
         "weak": [
           "netcdf-cxx4",
@@ -1190,7 +1190,7 @@
       "summary": "Unidata NetCDF C++ Library"
     },
     "build": {
-      "number": "122",
+      "number": "123",
       "run_exports": {
         "weak": [
           "netcdf-cxx4",
@@ -2686,7 +2686,7 @@
       "summary": "Unidata NetCDF C++ Library"
     },
     "build": {
-      "number": "22",
+      "number": "23",
       "run_exports": {
         "weak": [
           "netcdf-cxx4",
@@ -3070,7 +3070,7 @@
       "summary": "Unidata NetCDF C++ Library"
     },
     "build": {
-      "number": "22",
+      "number": "23",
       "run_exports": {
         "weak": [
           "netcdf-cxx4",
@@ -3462,7 +3462,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/netcdf-cxx4.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: netcdf-cxx4\n  version: \"4.3.1\"\n  build: 22\n  # recipe-lint fails if mpi is undefined\n  mpi: ${{ mpi or \"nompi\" }}\n  # prioritize nompi via build number\n  build_number: ${{ build + 100 if mpi == \"nompi\" else build }}\n  # add build string so packages can depend on mpi or nompi variants explicitly:\n  # `netcdf-cxx4 * mpi_mpich_*` for mpich\n  # `netcdf-cxx4 * mpi_*` for any mpi\n  # `netcdf-cxx4 * nompi_*` for no mpi\n  mpi_prefix: ${{ \"mpi_\" + mpi if mpi != \"nompi\" else \"nompi\" }}\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Unidata/netcdf-cxx4/archive/v${{ version }}.tar.gz\n  sha256: e3fe3d2ec06c1c2772555bf1208d220aab5fee186d04bd265219b0bc7a978edc\n  patches:\n    # 2021/12/05 hmaarrfk\n    # Patches were taken by looking at the commit history since the last\n    # release in 2019. The following 4 patches should be removed once\n    # version 4.3.2 is released.\n    # Patches were taken in order, up to the point where the usage of\n    # CHECK_LIBRARY_EXISTS was fixed on linux.\n    # For some reason, hdf5 had a hard time getting found on OSX, so\n    # we decided to manually specify the location of HDF5.\n    - patches/0001-remove_debug_flag.patch\n    - patches/0002-specify_libadd.patch\n    - patches/0003-install_netcdfcxxconfig_cmake.patch\n    - patches/0004-fix_CHECK_LIBRARY_EXISTS.patch\n    - patches/0005-normalize-eols-examples.patch\n    - patches/0006-Use_HAVE_NC_SET_LOG_LEVEL.patch\n\nbuild:\n  number: ${{ build_number }}\n  string: ${{ mpi_prefix }}_h${{ hash }}_${{ build_number }}\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - if: unix\n      then:\n        - gnuconfig\n        - make\n    - if: mpi == \"openmpi\" and build_platform != target_platform\n      then: ${{ mpi }}\n  host:\n    # need to list hdf5 and libnetcdf twice to get version pinning from\n    # conda_build_config and build pinning from ${{ mpi_prefix }}\n    - hdf5\n    - hdf5 * ${{ mpi_prefix }}_*\n    - libnetcdf\n    - libnetcdf * ${{ mpi_prefix }}_*\n    - zlib\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n  run:\n    - hdf5 * ${{ mpi_prefix }}_*\n    - libnetcdf * ${{ mpi_prefix }}_*\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n    - if: mpi == \"openmpi\"\n      then: openssh\n  run_exports:\n    - ${{ pin_subpackage(name, upper_bound=\"x.x\") }}\n    - if: mpi != \"nompi\"\n      then: ${{ name }} * ${{ mpi_prefix }}_*\n\ntests:\n  - script:\n      - if: not win\n        then:\n          - ncxx4-config --all\n          - test -f ${PREFIX}/lib/libnetcdf-cxx4${SHLIB_EXT}\n          - test -f ${PREFIX}/lib/libnetcdf_c++4${SHLIB_EXT}\n          # No static libs should be installed by default on conda-forge.\n          - test ! -f ${PREFIX}/lib/libnetcdf-cxx4.a\n          - test ! -f ${PREFIX}/lib/libnetcdf_c++4.a\n        else:\n          - if not exist %PREFIX%\\Library\\lib\\netcdf-cxx4.lib exit 1\n          - if not exist %PREFIX%\\Library\\lib\\netcdf_c++4.lib exit 1\n          - if not exist %PREFIX%\\Library\\bin\\netcdf-cxx4.dll exit 1\n          - if not exist %PREFIX%\\Library\\bin\\netcdf_c++4.dll exit 1\n\nabout:\n  homepage: https://github.com/Unidata/netcdf-cxx4\n  license: NetCDF\n  license_file: COPYRIGHT\n  summary: Unidata NetCDF C++ Library\n  repository: https://github.com/Unidata/netcdf-cxx4\n\nextra:\n  recipe-maintainers:\n    - kmuehlbauer\n    - ocefpaf\n    - xylar\n    - hmaarrfk\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: netcdf-cxx4\n  version: \"4.3.1\"\n  build: 23\n  # recipe-lint fails if mpi is undefined\n  mpi: ${{ mpi or \"nompi\" }}\n  # prioritize nompi via build number\n  build_number: ${{ build + 100 if mpi == \"nompi\" else build }}\n  # add build string so packages can depend on mpi or nompi variants explicitly:\n  # `netcdf-cxx4 * mpi_mpich_*` for mpich\n  # `netcdf-cxx4 * mpi_*` for any mpi\n  # `netcdf-cxx4 * nompi_*` for no mpi\n  mpi_prefix: ${{ \"mpi_\" + mpi if mpi != \"nompi\" else \"nompi\" }}\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Unidata/netcdf-cxx4/archive/v${{ version }}.tar.gz\n  sha256: e3fe3d2ec06c1c2772555bf1208d220aab5fee186d04bd265219b0bc7a978edc\n  patches:\n    # 2021/12/05 hmaarrfk\n    # Patches were taken by looking at the commit history since the last\n    # release in 2019. The following 4 patches should be removed once\n    # version 4.3.2 is released.\n    # Patches were taken in order, up to the point where the usage of\n    # CHECK_LIBRARY_EXISTS was fixed on linux.\n    # For some reason, hdf5 had a hard time getting found on OSX, so\n    # we decided to manually specify the location of HDF5.\n    - patches/0001-remove_debug_flag.patch\n    - patches/0002-specify_libadd.patch\n    - patches/0003-install_netcdfcxxconfig_cmake.patch\n    - patches/0004-fix_CHECK_LIBRARY_EXISTS.patch\n    - patches/0005-normalize-eols-examples.patch\n    - patches/0006-Use_HAVE_NC_SET_LOG_LEVEL.patch\n\nbuild:\n  number: ${{ build_number }}\n  string: ${{ mpi_prefix }}_h${{ hash }}_${{ build_number }}\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - if: unix\n      then:\n        - gnuconfig\n        - make\n    - if: mpi == \"openmpi\" and build_platform != target_platform\n      then: ${{ mpi }}\n  host:\n    # need to list hdf5 and libnetcdf twice to get version pinning from\n    # conda_build_config and build pinning from ${{ mpi_prefix }}\n    - hdf5\n    - hdf5 * ${{ mpi_prefix }}_*\n    - libnetcdf\n    - libnetcdf * ${{ mpi_prefix }}_*\n    - zlib\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n  run:\n    - hdf5 * ${{ mpi_prefix }}_*\n    - libnetcdf * ${{ mpi_prefix }}_*\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n    - if: mpi == \"openmpi\"\n      then: openssh\n  run_exports:\n    - ${{ pin_subpackage(name, upper_bound=\"x.x\") }}\n    - if: mpi != \"nompi\"\n      then: ${{ name }} * ${{ mpi_prefix }}_*\n\ntests:\n  - script:\n      - if: not win\n        then:\n          - ncxx4-config --all\n          - test -f ${PREFIX}/lib/libnetcdf-cxx4${SHLIB_EXT}\n          - test -f ${PREFIX}/lib/libnetcdf_c++4${SHLIB_EXT}\n          # No static libs should be installed by default on conda-forge.\n          - test ! -f ${PREFIX}/lib/libnetcdf-cxx4.a\n          - test ! -f ${PREFIX}/lib/libnetcdf_c++4.a\n        else:\n          - if not exist %PREFIX%\\Library\\lib\\netcdf-cxx4.lib exit 1\n          - if not exist %PREFIX%\\Library\\lib\\netcdf_c++4.lib exit 1\n          - if not exist %PREFIX%\\Library\\bin\\netcdf-cxx4.dll exit 1\n          - if not exist %PREFIX%\\Library\\bin\\netcdf_c++4.dll exit 1\n\nabout:\n  homepage: https://github.com/Unidata/netcdf-cxx4\n  license: NetCDF\n  license_file: COPYRIGHT\n  summary: Unidata NetCDF C++ Library\n  repository: https://github.com/Unidata/netcdf-cxx4\n\nextra:\n  recipe-maintainers:\n    - kmuehlbauer\n    - ocefpaf\n    - xylar\n    - hmaarrfk\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -3586,7 +3586,7 @@
       "summary": "Unidata NetCDF C++ Library"
     },
     "build": {
-      "number": "122",
+      "number": "123",
       "run_exports": {
         "weak": [
           "netcdf-cxx4"
