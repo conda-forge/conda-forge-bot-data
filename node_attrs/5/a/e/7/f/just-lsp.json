@@ -7,6 +7,7 @@
       "automerge": true
     },
     "conda_build": {
+      "error_overdepending": true,
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
@@ -21,10 +22,11 @@
       "linux_ppc64le": "default",
       "osx_arm64": "default",
       "win_arm64": "default"
-    }
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "31da7ff2e7f91b14d427e00ace68d79a66870a62",
-  "feedstock_hash_ts": 1783663136,
+  "feedstock_hash": "11a9f6a2dc8f16e1280898925809ccc2c4a6c645",
+  "feedstock_hash_ts": 1783867582,
   "feedstock_name": "just-lsp",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -41,7 +43,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -146,7 +148,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -251,7 +253,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -356,7 +358,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -630,7 +632,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -735,7 +737,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -845,7 +847,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/just-lsp.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.4.8\"\n\npackage:\n  name: just-lsp\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/terror/just-lsp/archive/refs/tags/${{ version }}.tar.gz\n  sha256: dd62ebb8da4e1c3e55c915a3ad28b04f8962528c7f0dcc31a1ae0873620ce207\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.\n      - if: win\n        then:\n          # replace broken symlink on Windows with target directory content\n          # TODO: remove workaround once https://github.com/terror/just-lsp/pull/411 is merged and released\n          - 'powershell -Command \"Remove-Item vendor/tree-sitter-just-src; Copy-Item -Recurse vendor/tree-sitter-just/src vendor/tree-sitter-just-src\"'\n          - cargo auditable install --no-track --locked --bins --root=\"%LIBRARY_PREFIX%\" --path=.\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n\ntests:\n  - script:\n      - if: build_platform == host_platform\n        then:\n          - just-lsp --help\n          - just-lsp --version\n  - package_contents:\n      bin:\n        - just-lsp\n      strict: true\n\nabout:\n  summary: A language server for just\n  description: |\n    just-lsp is a server implementation of the language server protocol for\n    just, the command runner. It brings rich editor support to justfiles,\n    including completions, hover docs, jump to definition, diagnostics,\n    rename/find references, code actions, semantic highlighting, folding,\n    and formatting.\n  license: CC0-1.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://terror.github.io/just-lsp/\n  repository: https://github.com/terror/just-lsp\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"0.4.8\"\n\npackage:\n  name: just-lsp\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/terror/just-lsp/archive/refs/tags/${{ version }}.tar.gz\n  sha256: dd62ebb8da4e1c3e55c915a3ad28b04f8962528c7f0dcc31a1ae0873620ce207\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins\n      - if: win\n        then:\n          # replace broken symlink on Windows with target directory content\n          # TODO: remove workaround once https://github.com/terror/just-lsp/pull/411 is merged and released\n          - 'powershell -Command \"Remove-Item vendor/tree-sitter-just-src; Copy-Item -Recurse vendor/tree-sitter-just/src vendor/tree-sitter-just-src\"'\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n\ntests:\n  - script:\n      - just-lsp --help\n      - just-lsp --version\n  - package_contents:\n      bin:\n        - just-lsp\n      strict: true\n\nabout:\n  summary: A language server for just\n  description: |\n    just-lsp is a server implementation of the language server protocol for\n    just, the command runner. It brings rich editor support to justfiles,\n    including completions, hover docs, jump to definition, diagnostics,\n    rename/find references, code actions, semantic highlighting, folding,\n    and formatting.\n  license: CC0-1.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://terror.github.io/just-lsp/\n  repository: https://github.com/terror/just-lsp\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -930,7 +932,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -1035,7 +1037,7 @@
       "number": "0",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
