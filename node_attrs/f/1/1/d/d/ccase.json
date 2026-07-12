@@ -7,6 +7,7 @@
       "automerge": true
     },
     "conda_build": {
+      "error_overdepending": true,
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
@@ -21,10 +22,11 @@
       "linux_ppc64le": "default",
       "osx_arm64": "default",
       "win_arm64": "default"
-    }
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "c6c0eb790a840d4ae5bf7e71bc01c70a5233b0cd",
-  "feedstock_hash_ts": 1781967185,
+  "feedstock_hash": "e897b23e5d2e592fb0fecef818c258c589eb721a",
+  "feedstock_hash_ts": 1783861673,
   "feedstock_name": "ccase",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -41,7 +43,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -146,7 +148,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -251,7 +253,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -356,7 +358,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -630,7 +632,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -735,7 +737,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -845,7 +847,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/ccase.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.5.1\"\n\npackage:\n  name: ccase\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/stringcase/ccase/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 3ec9ba72aa8697bbf4ff2a03c57be0ce6236902959f799bc561e482ed50b91a3\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.\n      - if: win\n        then:\n          - cargo auditable install --no-track --locked --bins --root=\"%LIBRARY_PREFIX%\" --path=.\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n\ntests:\n  - script:\n      # NOTE: the 2nd condition works around a bug on win-64 Azure builders\n      - if: (build_platform == host_platform) and (target_platform != \"win-arm64\")\n        then:\n          - ccase --help\n          - ccase --version\n  - package_contents:\n      bin:\n        - ccase\n      strict: true\n\nabout:\n  summary: Command line interface to convert strings into any case\n  description: |\n    ccase is a command line utility for converting between string cases such as\n    snake_case, kebab-case, camelCase, PascalCase, Title Case, and many more.\n    It is built on top of the `convert_case` Rust library.\n  license: MIT\n  license_file:\n    - LICENSE.md\n    - THIRDPARTY.yml\n  homepage: https://github.com/stringcase/ccase\n  repository: https://github.com/stringcase/ccase\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"0.5.1\"\n\npackage:\n  name: ccase\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/stringcase/ccase/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 3ec9ba72aa8697bbf4ff2a03c57be0ce6236902959f799bc561e482ed50b91a3\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins\n      - if: win\n        then:\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n\ntests:\n  - script:\n      - ccase --help\n      - ccase --version\n  - package_contents:\n      bin:\n        - ccase\n      strict: true\n\nabout:\n  summary: Command line interface to convert strings into any case\n  description: |\n    ccase is a command line utility for converting between string cases such as\n    snake_case, kebab-case, camelCase, PascalCase, Title Case, and many more.\n    It is built on top of the `convert_case` Rust library.\n  license: MIT\n  license_file:\n    - LICENSE.md\n    - THIRDPARTY.yml\n  homepage: https://github.com/stringcase/ccase\n  repository: https://github.com/stringcase/ccase\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -930,7 +932,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -1035,7 +1037,7 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --no-track --locked --bins --root=\"$PREFIX\" --path=.",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
