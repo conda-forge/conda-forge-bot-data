@@ -20,8 +20,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "57dec7d90ad19dbccd7e8c873fa31a22e20d11ef",
-  "feedstock_hash_ts": 1783810836,
+  "feedstock_hash": "427106b9e03f3ffc6796a09617b3f723c73b49f0",
+  "feedstock_hash_ts": 1783981997,
   "feedstock_name": "libnetcdf",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -34,7 +34,7 @@
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libnetcdf",
@@ -499,7 +499,7 @@
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libnetcdf",
@@ -964,7 +964,7 @@
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libnetcdf",
@@ -1429,7 +1429,7 @@
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "100",
+      "number": "101",
       "run_exports": {
         "weak": [
           "libnetcdf",
@@ -3328,7 +3328,7 @@
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libnetcdf",
@@ -3793,7 +3793,7 @@
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libnetcdf",
@@ -4266,7 +4266,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libnetcdf.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"4.10.1\"\n  build_number: 0\n\npackage:\n  name: libnetcdf\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Unidata/netcdf-c/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 33c27231c478c3b35da7c7758fbdd02da1fe407abcb16ddfe195f69d164f930d\n  patches:\n    - if: ppc64le\n      then: patches/do_not_use_16_processes_in_tests.patch\n    # https://github.com/Unidata/netcdf-c/issues/3362\n    - if: win\n      then: patches/fix-utf8-public-flag.patch\n\nbuild:\n  # add build string so packages can depend on mpi or nompi variants explicitly:\n  # `PKG_NAME * mpi_mpich_*` for mpich\n  # `PKG_NAME * mpi_*` for any mpi\n  # `PKG_NAME * nompi_*` for no mpi\n  # prioritize nompi via build number\n  number: ${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  string: ${{ mpi_prefix }}_h${{ hash }}_${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  variant:\n    # prefer 'nompi' over other mpi variants\n    down_prioritize_variant: ${{ 0 if mpi == \"nompi\" else 1 }}\n  # only nompi is supported on Windows\n  skip: win and mpi != \"nompi\"\n\nrequirements:\n  build:\n    # Until we get Windows builds fixed, see\n    # https://github.com/conda-forge/libnetcdf-feedstock/pull/199#issuecomment-2820860279\n    - cmake <4.0\n    - if: unix\n      then:\n        - make\n        - pkg-config\n        - gnuconfig\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    # for cross compiling using openmpi\n    - if: mpi == \"openmpi\" and build_platform != target_platform\n      then: ${{ mpi }}\n    - if: unix\n      then: unzip\n    - if: win\n      then: m2-unzip\n    - if: unix\n      then: m4\n    - if: win\n      then: m2-m4\n    - if: unix\n      then: wget\n    - if: linux\n      then: diffutils\n  host:\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n    - blosc\n    - bzip2\n    - hdf4\n    # without this repeat reference, conda-smithy doesn't pin correctly\n    - hdf5\n    - hdf5 * ${{ mpi_prefix }}_*\n    - libaec\n    - libcurl\n    - if: mpi != \"nompi\"\n      then: libpnetcdf\n    - libxml2-devel\n    - libzip\n    # Openssl provides libcrypto which is needed via libcurl, but doesn't get\n    # to the run reqs through run_exports because it is twice removed\n    - if: unix\n      then: openssl\n    - zlib\n    - zstd\n  run_exports:\n    #   https://abi-laboratory.pro/tracker/timeline/netcdf/\n    - ${{ pin_subpackage('libnetcdf', upper_bound='x.x.x') }}\n    # mpi builds require the right mpi\n    # non-mpi builds *do not* appear to require non-mpi builds\n    # at least not always\n    - if: mpi != \"nompi\"\n      then: libnetcdf * ${{ mpi_prefix }}_*\n\ntests:\n  - files:\n      recipe:\n        - run_test.sh\n    script:\n      - if: unix\n        then:\n          - test ! -f ${PREFIX}/lib/libnetcdf.a\n          - test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}\n          - nc-config --all\n          - bash run_test.sh\n\nabout:\n  homepage: http://www.unidata.ucar.edu/software/netcdf/\n  license: MIT\n  license_file: COPYRIGHT\n  summary: Libraries and data formats that support array-oriented scientific data\n  repository: https://github.com/Unidata/netcdf-c\n\nextra:\n  recipe-maintainers:\n    - WardF\n    - groutr\n    - kmuehlbauer\n    - ocefpaf\n    - mingwandroid\n    - msarahan\n    - xylar\n    - dopplershift\n    - zklaus\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"4.10.1\"\n  build_number: 1\n\npackage:\n  name: libnetcdf\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Unidata/netcdf-c/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 33c27231c478c3b35da7c7758fbdd02da1fe407abcb16ddfe195f69d164f930d\n  patches:\n    - if: ppc64le\n      then: patches/do_not_use_16_processes_in_tests.patch\n\nbuild:\n  # add build string so packages can depend on mpi or nompi variants explicitly:\n  # `PKG_NAME * mpi_mpich_*` for mpich\n  # `PKG_NAME * mpi_*` for any mpi\n  # `PKG_NAME * nompi_*` for no mpi\n  # prioritize nompi via build number\n  number: ${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  string: ${{ mpi_prefix }}_h${{ hash }}_${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  variant:\n    # prefer 'nompi' over other mpi variants\n    down_prioritize_variant: ${{ 0 if mpi == \"nompi\" else 1 }}\n  # only nompi is supported on Windows\n  skip: win and mpi != \"nompi\"\n\nrequirements:\n  build:\n    # Until we get Windows builds fixed, see\n    # https://github.com/conda-forge/libnetcdf-feedstock/pull/199#issuecomment-2820860279\n    - cmake <4.0\n    - if: unix\n      then:\n        - make\n        - pkg-config\n        - gnuconfig\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    # for cross compiling using openmpi\n    - if: mpi == \"openmpi\" and build_platform != target_platform\n      then: ${{ mpi }}\n    - if: unix\n      then: unzip\n    - if: win\n      then: m2-unzip\n    - if: unix\n      then: m4\n    - if: win\n      then: m2-m4\n    - if: unix\n      then: wget\n    - if: linux\n      then: diffutils\n  host:\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n    - blosc\n    - bzip2\n    - hdf4\n    # without this repeat reference, conda-smithy doesn't pin correctly\n    - hdf5\n    - hdf5 * ${{ mpi_prefix }}_*\n    - libaec\n    - libcurl\n    - if: mpi != \"nompi\"\n      then: libpnetcdf\n    - libxml2-devel\n    - libzip\n    # Openssl provides libcrypto which is needed via libcurl, but doesn't get\n    # to the run reqs through run_exports because it is twice removed\n    - if: unix\n      then: openssl\n    - zlib\n    - zstd\n  run_exports:\n    #   https://abi-laboratory.pro/tracker/timeline/netcdf/\n    - ${{ pin_subpackage('libnetcdf', upper_bound='x.x.x') }}\n    # mpi builds require the right mpi\n    # non-mpi builds *do not* appear to require non-mpi builds\n    # at least not always\n    - if: mpi != \"nompi\"\n      then: libnetcdf * ${{ mpi_prefix }}_*\n\ntests:\n  - files:\n      recipe:\n        - run_test.sh\n    script:\n      - if: unix\n        then:\n          - test ! -f ${PREFIX}/lib/libnetcdf.a\n          - test -f ${PREFIX}/lib/libnetcdf${SHLIB_EXT}\n          - nc-config --all\n          - bash run_test.sh\n\nabout:\n  homepage: http://www.unidata.ucar.edu/software/netcdf/\n  license: MIT\n  license_file: COPYRIGHT\n  summary: Libraries and data formats that support array-oriented scientific data\n  repository: https://github.com/Unidata/netcdf-c\n\nextra:\n  recipe-maintainers:\n    - WardF\n    - groutr\n    - kmuehlbauer\n    - ocefpaf\n    - mingwandroid\n    - msarahan\n    - xylar\n    - dopplershift\n    - zklaus\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -4413,7 +4413,7 @@
       "summary": "Libraries and data formats that support array-oriented scientific data"
     },
     "build": {
-      "number": "100",
+      "number": "101",
       "run_exports": {
         "weak": [
           "libnetcdf"
