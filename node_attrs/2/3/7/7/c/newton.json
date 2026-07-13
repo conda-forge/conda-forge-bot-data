@@ -17,8 +17,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "07082443cf75e0c05e525f10f3aae48dfa65ce6a",
-  "feedstock_hash_ts": 1781708697,
+  "feedstock_hash": "d6a5722f246255e2e24e287059fb1aea16ea34b4",
+  "feedstock_hash_ts": 1783973272,
   "feedstock_name": "newton",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -32,7 +32,7 @@
     },
     "build": {
       "noarch": "python",
-      "number": "0",
+      "number": "1",
       "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
     },
     "extra": {
@@ -167,8 +167,7 @@
             "rerun-sdk >=0.27.1",
             "jupyterlab >=4.5.7",
             "jupyter-server-proxy >=4.5.0",
-            "viser ==1.0.26",
-            "ipykernel <7"
+            "viser ==1.0.26"
           ]
         },
         "tests": [],
@@ -257,7 +256,6 @@
         "gitpython",
         "imgui-bundle",
         "importlib_resources",
-        "ipykernel",
         "jupyter-server-proxy",
         "jupyterlab",
         "meshio",
@@ -307,7 +305,7 @@
     },
     "build": {
       "noarch": "python",
-      "number": "0",
+      "number": "1",
       "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
     },
     "extra": {
@@ -442,8 +440,7 @@
             "rerun-sdk >=0.27.1",
             "jupyterlab >=4.5.7",
             "jupyter-server-proxy >=4.5.0",
-            "viser ==1.0.26",
-            "ipykernel <7"
+            "viser ==1.0.26"
           ]
         },
         "tests": [],
@@ -529,7 +526,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/newton.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: newton\n  version: \"1.3.0\"\n  build_number: 0\n\nrecipe:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/newton-physics/newton/archive/refs/tags/v${{ version }}.zip\n  sha256: 0540dde9204732d9630d8226982747fc68a3d6eb9e25846745cfc4c8ea0b220d\n\nbuild:\n  noarch: python\n  number: ${{ build_number }}\n\n# https://github.com/newton-physics/newton/blob/main/pyproject.toml\noutputs:\n  # ======\n  # newton\n  # ======\n  - package:\n      name: newton\n    build:\n      script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n        - pip\n        - uv-build >=0.11.0\n      run:\n        - python >=${{ python_min }}\n        - warp-lang >=1.14.0\n  # ===========\n  # newton[all]\n  # ===========\n  - package:\n      name: newton-all\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      # Any modifications to the subpackages pin should be propagated also\n      # to the newton[examples] run dependencies.\n      # We cannot use `newton-all` because it would be a dependency cycle.\n      run:\n        - python >=${{ python_min }}\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - ${{ pin_subpackage('newton-sim', exact=True) }}\n        - ${{ pin_subpackage('newton-importers', exact=True) }}\n        - ${{ pin_subpackage('newton-remesh', exact=True) }}\n        - ${{ pin_subpackage('newton-examples', exact=True) }}\n        - ${{ pin_subpackage('newton-notebook', exact=True) }}\n    tests:\n      - python:\n          imports:\n            - newton\n          pip_check: true\n          # There are deps solver problems on Python 3.10, and the environment cannot be solved.\n          # Testing imports on Python 3.11 until those problems are resolved.\n          python_version: 3.11.*\n      - script:\n          - python -m newton.tests\n        requirements:\n          run:\n            - python 3.11.*\n  # ===========\n  # newton[sim]\n  # ===========\n  - package:\n      name: newton-sim\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - python >=${{ python_min }}\n        - mujoco-warp >=3.8.0.3,<3.9.0\n        - mujoco >=3.8.0,<3.9.0\n  # =================\n  # newton[importers]\n  # =================\n  - package:\n      name: newton-importers\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - python >=${{ python_min }}\n        - requests >=2.25.0\n        - scipy >=1.11.0\n        - fast-simplification >=0.1.11\n        - alphashape >=1.3.1\n        - coacd >=1.0.7\n        - trimesh >=4.6.8\n        - meshio >=5.3.5\n        - pycollada >=0.9\n        - resolve-robotics-uri-py >=0.4.0\n        - open3d >=0.19.0\n        - openusd >=25.5,<26.5\n        - usd-exchange >=2.2.0\n        - newton-usd-schemas >=0.3.1\n  # ==============\n  # newton[remesh]\n  # ==============\n  - package:\n      name: newton-remesh\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - python >=${{ python_min }}\n        - open3d >=0.19.0\n        - pyfqmr >=0.5.0\n  # ================\n  # newton[examples]\n  # ================\n  - package:\n      name: newton-examples\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - ${{ pin_subpackage('newton-sim', exact=True) }}\n        - ${{ pin_subpackage('newton-importers', exact=True) }}\n        - python >=${{ python_min }}\n        - pyglet >=2.1.6,<3\n        - gitpython >=3.1.47\n        - imgui-bundle >=1.92.0\n        - pyyaml >=6.0.2\n        - cbor2 >=5.7.0\n        - pillow >= 11.3.0\n        # Additional deps to run examples.\n        - importlib_resources\n      run_constraints:\n        - pytorch >=2.7.0\n  # ================\n  # newton[notebook]\n  # ================\n  - package:\n      name: newton-notebook\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - ${{ pin_subpackage('newton-examples', exact=True) }}\n        - python >=${{ python_min }}\n        - rerun-sdk >=0.27.1\n        - jupyterlab >=4.5.7\n        - jupyter-server-proxy >=4.5.0\n        - viser ==1.0.26\n        # Fix missing rerun-notebook dependencies (for pip check).\n        - ipykernel <7\n\nabout:\n  homepage: https://newton-physics.github.io/newton/\n  license: Apache-2.0\n  license_file: LICENSE.md\n  repository: https://github.com/newton-physics/newton\n  summary: An open-source, GPU-accelerated physics simulation engine built upon NVIDIA Warp, specifically targeting roboticists and simulation researchers.\n\nextra:\n  feedstock-name: newton\n  recipe-maintainers:\n    - adenzler-nvidia\n    - diegoferigo\n    - eric-heiden\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: newton\n  version: \"1.3.0\"\n  build_number: 1\n\nrecipe:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/newton-physics/newton/archive/refs/tags/v${{ version }}.zip\n  sha256: 0540dde9204732d9630d8226982747fc68a3d6eb9e25846745cfc4c8ea0b220d\n\nbuild:\n  noarch: python\n  number: ${{ build_number }}\n\n# https://github.com/newton-physics/newton/blob/main/pyproject.toml\noutputs:\n  # ======\n  # newton\n  # ======\n  - package:\n      name: newton\n    build:\n      script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n        - pip\n        - uv-build >=0.11.0\n      run:\n        - python >=${{ python_min }}\n        - warp-lang >=1.14.0\n  # ===========\n  # newton[all]\n  # ===========\n  - package:\n      name: newton-all\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      # Any modifications to the subpackages pin should be propagated also\n      # to the newton[examples] run dependencies.\n      # We cannot use `newton-all` because it would be a dependency cycle.\n      run:\n        - python >=${{ python_min }}\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - ${{ pin_subpackage('newton-sim', exact=True) }}\n        - ${{ pin_subpackage('newton-importers', exact=True) }}\n        - ${{ pin_subpackage('newton-remesh', exact=True) }}\n        - ${{ pin_subpackage('newton-examples', exact=True) }}\n        - ${{ pin_subpackage('newton-notebook', exact=True) }}\n    tests:\n      - python:\n          imports:\n            - newton\n          pip_check: true\n          # There are deps solver problems on Python 3.10, and the environment cannot be solved.\n          # Testing imports on Python 3.11 until those problems are resolved.\n          python_version: 3.11.*\n      - script:\n          - python -m newton.tests\n        requirements:\n          run:\n            - python 3.11.*\n  # ===========\n  # newton[sim]\n  # ===========\n  - package:\n      name: newton-sim\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - python >=${{ python_min }}\n        - mujoco-warp >=3.8.0.3,<3.9.0\n        - mujoco >=3.8.0,<3.9.0\n  # =================\n  # newton[importers]\n  # =================\n  - package:\n      name: newton-importers\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - python >=${{ python_min }}\n        - requests >=2.25.0\n        - scipy >=1.11.0\n        - fast-simplification >=0.1.11\n        - alphashape >=1.3.1\n        - coacd >=1.0.7\n        - trimesh >=4.6.8\n        - meshio >=5.3.5\n        - pycollada >=0.9\n        - resolve-robotics-uri-py >=0.4.0\n        - open3d >=0.19.0\n        - openusd >=25.5,<26.5\n        - usd-exchange >=2.2.0\n        - newton-usd-schemas >=0.3.1\n  # ==============\n  # newton[remesh]\n  # ==============\n  - package:\n      name: newton-remesh\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - python >=${{ python_min }}\n        - open3d >=0.19.0\n        - pyfqmr >=0.5.0\n  # ================\n  # newton[examples]\n  # ================\n  - package:\n      name: newton-examples\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - ${{ pin_subpackage('newton-sim', exact=True) }}\n        - ${{ pin_subpackage('newton-importers', exact=True) }}\n        - python >=${{ python_min }}\n        - pyglet >=2.1.6,<3\n        - gitpython >=3.1.47\n        - imgui-bundle >=1.92.0\n        - pyyaml >=6.0.2\n        - cbor2 >=5.7.0\n        - pillow >= 11.3.0\n        # Additional deps to run examples.\n        - importlib_resources\n      run_constraints:\n        - pytorch >=2.7.0\n  # ================\n  # newton[notebook]\n  # ================\n  - package:\n      name: newton-notebook\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n      run:\n        - ${{ pin_subpackage('newton', exact=True) }}\n        - ${{ pin_subpackage('newton-examples', exact=True) }}\n        - python >=${{ python_min }}\n        - rerun-sdk >=0.27.1\n        - jupyterlab >=4.5.7\n        - jupyter-server-proxy >=4.5.0\n        - viser ==1.0.26\n\nabout:\n  homepage: https://newton-physics.github.io/newton/\n  license: Apache-2.0\n  license_file: LICENSE.md\n  repository: https://github.com/newton-physics/newton\n  summary: An open-source, GPU-accelerated physics simulation engine built upon NVIDIA Warp, specifically targeting roboticists and simulation researchers.\n\nextra:\n  feedstock-name: newton\n  recipe-maintainers:\n    - adenzler-nvidia\n    - diegoferigo\n    - eric-heiden\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -540,7 +537,6 @@
       "gitpython",
       "imgui-bundle",
       "importlib_resources",
-      "ipykernel",
       "jupyter-server-proxy",
       "jupyterlab",
       "meshio",
@@ -596,7 +592,6 @@
         "gitpython",
         "imgui-bundle",
         "importlib_resources",
-        "ipykernel",
         "jupyter-server-proxy",
         "jupyterlab",
         "meshio",
@@ -659,7 +654,6 @@
         "gitpython >=3.1.47",
         "imgui-bundle >=1.92.0",
         "importlib_resources",
-        "ipykernel <7",
         "jupyter-server-proxy >=4.5.0",
         "jupyterlab >=4.5.7",
         "meshio >=5.3.5",
