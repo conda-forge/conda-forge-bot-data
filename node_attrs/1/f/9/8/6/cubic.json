@@ -20,12 +20,13 @@
     "provider": {
       "linux_aarch64": "default",
       "linux_ppc64le": "default",
-      "osx_arm64": "default"
+      "osx_arm64": "default",
+      "win_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "4d9ac32b712a4d2f202f420e1fff987b1a7e2e0b",
-  "feedstock_hash_ts": 1783985397,
+  "feedstock_hash": "243c679f519c5d29cc864505566ae55708ac9d4a",
+  "feedstock_hash_ts": 1783987323,
   "feedstock_name": "cubic",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -50,6 +51,7 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -164,6 +166,7 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -278,6 +281,7 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -392,6 +396,7 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -403,6 +408,43 @@
       ]
     },
     "outputs": [
+      {
+        "build": null,
+        "name": "cubic",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "cubic --help",
+              "cubic --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "cubic"
+              ],
+              "files": [
+                "share/bash-completion/completions/cubic",
+                "share/fish/vendor_completions.d/cubic.fish",
+                "share/zsh/site-functions/_cubic"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "0.24.1"
+      },
       {
         "build": null,
         "name": "cubic",
@@ -668,6 +710,7 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -782,6 +825,7 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -887,12 +931,13 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/cubic.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.24.1\"\n  # NOTE: The `qemu-sandbox` feature makes Cubic pass the `-sandbox on` flag to the `qemu-system-*` executable, which in turn enables the Seccomp mode 2 system call filter (cf. https://www.qemu.org/docs/master/system/qemu-manpage.html) that is a Linux-only technology. Usually, `qemu-system-*` Linux distribution packages (incl. Debian, Fedora, openSUSE, Ubuntu) are built with sandbox support, so we enable the feature for Linux.\n  extra_features: ${{ \"qemu-sandbox\" if linux else \"\" }}\n\npackage:\n  name: cubic\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/cubic-vm/cubic/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 708418cfa4fb9b03e4aea28ef582277fa87bdc519f4e1e9e6468bf0e893c5a5c\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=${{ extra_features }}\n          # generate shell completions\n          - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n          - 'XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions bash > \"$PREFIX\"/share/bash-completion/completions/cubic'\n          - 'XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions fish > \"$PREFIX\"/share/fish/vendor_completions.d/cubic.fish'\n          - 'XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions zsh  > \"$PREFIX\"/share/zsh/site-functions/_cubic'\n      - if: win\n        then:\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=${{ extra_features }}\n          # generate shell completions\n          - mkdir \"%LIBRARY_PREFIX%\\share\\bash-completion\\completions\"\n          - mkdir \"%LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d\"\n          - mkdir \"%LIBRARY_PREFIX%\\share\\zsh\\site-functions\"\n          - '\"%LIBRARY_BIN%\"\\cubic.exe completions bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\cubic'\n          - '\"%LIBRARY_BIN%\"\\cubic.exe completions fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\cubic.fish'\n          - '\"%LIBRARY_BIN%\"\\cubic.exe completions zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_cubic'\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - if: win\n      then: nasm\n\ntests:\n  - script:\n      - cubic --help\n      - cubic --version\n  - package_contents:\n      bin:\n        - cubic\n      files:\n        - if: unix\n          then:\n            - share/bash-completion/completions/cubic\n            - share/fish/vendor_completions.d/cubic.fish\n            - share/zsh/site-functions/_cubic\n        - if: win\n          then:\n            - Library/share/bash-completion/completions/cubic\n            - Library/share/fish/vendor_completions.d/cubic.fish\n            - Library/share/zsh/site-functions/_cubic\n      strict: true\n\nabout:\n  summary: A lightweight command line manager for virtual machines\n  description: |\n    Cubic is a lightweight command line manager for virtual machines. It has a\n    simple, daemonless and rootless design. All Cubic virtual machines run isolated\n    in the user context. Cubic is built on top of QEMU, KVM and cloud-init.\n  license: MIT OR Apache-2.0\n  license_file:\n    - LICENSE-APACHE\n    - LICENSE-MIT\n    - THIRDPARTY.yml\n  homepage: https://cubic-vm.org\n  repository: https://github.com/cubic-vm/cubic\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"0.24.1\"\n  # NOTE: The `qemu-sandbox` feature makes Cubic pass the `-sandbox on` flag to the `qemu-system-*` executable, which in turn enables the Seccomp mode 2 system call filter (cf. https://www.qemu.org/docs/master/system/qemu-manpage.html) that is a Linux-only technology. Usually, `qemu-system-*` Linux distribution packages (incl. Debian, Fedora, openSUSE, Ubuntu) are built with sandbox support, so we enable the feature for Linux.\n  extra_features: ${{ \"qemu-sandbox\" if linux else \"\" }}\n\npackage:\n  name: cubic\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/cubic-vm/cubic/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 708418cfa4fb9b03e4aea28ef582277fa87bdc519f4e1e9e6468bf0e893c5a5c\n\nbuild:\n  number: 0\n  script:\n    env:\n      AWS_LC_SYS_CMAKE_BUILDER: ${{ \"1\" if win else \"0\" }} # force CMake builder for `aws-lc-sys` native C/C++ code on Windows\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=${{ extra_features }}\n          # generate shell completions\n          - if: build_platform == host_platform\n            then:\n              - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n              - 'XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions bash > \"$PREFIX\"/share/bash-completion/completions/cubic'\n              - 'XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions fish > \"$PREFIX\"/share/fish/vendor_completions.d/cubic.fish'\n              - 'XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions zsh  > \"$PREFIX\"/share/zsh/site-functions/_cubic'\n      - if: win\n        then:\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=${{ extra_features }}\n          # generate shell completions\n          - if: build_platform == host_platform\n            then:\n              - mkdir \"%LIBRARY_PREFIX%\\share\\bash-completion\\completions\"\n              - mkdir \"%LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d\"\n              - mkdir \"%LIBRARY_PREFIX%\\share\\zsh\\site-functions\"\n              - '\"%LIBRARY_BIN%\"\\cubic.exe completions bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\cubic'\n              - '\"%LIBRARY_BIN%\"\\cubic.exe completions fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\cubic.fish'\n              - '\"%LIBRARY_BIN%\"\\cubic.exe completions zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_cubic'\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - if: win\n      then:\n        - cmake\n        - nasm\n\ntests:\n  - script:\n      - cubic --help\n      - cubic --version\n  - package_contents:\n      bin:\n        - cubic\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/cubic\n            - share/fish/vendor_completions.d/cubic.fish\n            - share/zsh/site-functions/_cubic\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/cubic\n            - Library/share/fish/vendor_completions.d/cubic.fish\n            - Library/share/zsh/site-functions/_cubic\n      strict: true\n\nabout:\n  summary: A lightweight command line manager for virtual machines\n  description: |\n    Cubic is a lightweight command line manager for virtual machines. It has a\n    simple, daemonless and rootless design. All Cubic virtual machines run isolated\n    in the user context. Cubic is built on top of QEMU, KVM and cloud-init.\n  license: MIT OR Apache-2.0\n  license_file:\n    - LICENSE-APACHE\n    - LICENSE-MIT\n    - THIRDPARTY.yml\n  homepage: https://cubic-vm.org\n  repository: https://github.com/cubic-vm/cubic\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -985,6 +1030,7 @@
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -1054,6 +1100,121 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "Cubic is a lightweight command line manager for virtual machines. It has a\nsimple, daemonless and rootless design. All Cubic virtual machines run isolated\nin the user context. Cubic is built on top of QEMU, KVM and cloud-init.",
+      "dev_url": "https://github.com/cubic-vm/cubic",
+      "home": "https://cubic-vm.org/",
+      "license": "MIT OR Apache-2.0",
+      "license_family": "MIT OR Apache-2.0",
+      "license_file": "LICENSE-APACHE",
+      "summary": "A lightweight command line manager for virtual machines"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=${{ extra_features }}",
+          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
+          "XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions bash > \"$PREFIX\"/share/bash-completion/completions/cubic",
+          "XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions fish > \"$PREFIX\"/share/fish/vendor_completions.d/cubic.fish",
+          "XDG_RUNTIME_DIR=/tmp/runtime \"$PREFIX\"/bin/cubic completions zsh  > \"$PREFIX\"/share/zsh/site-functions/_cubic",
+          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+        ],
+        "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "salim-b"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cubic",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "cubic --help",
+              "cubic --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "cubic"
+              ],
+              "files": [
+                "share/bash-completion/completions/cubic",
+                "share/fish/vendor_completions.d/cubic.fish",
+                "share/zsh/site-functions/_cubic"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "0.24.1"
+      }
+    ],
+    "package": {
+      "name": "cubic",
+      "version": "0.24.1"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "708418cfa4fb9b03e4aea28ef582277fa87bdc519f4e1e9e6468bf0e893c5a5c",
+      "url": "https://github.com/cubic-vm/cubic/archive/refs/tags/v0.24.1.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
