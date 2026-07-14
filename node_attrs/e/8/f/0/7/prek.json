@@ -16,10 +16,13 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "win_arm64": "default"
+    },
     "test": "native"
   },
-  "feedstock_hash": "cdf71c7778037a1f8d6d42c6ba5599a0f5d9d94a",
-  "feedstock_hash_ts": 1783791355,
+  "feedstock_hash": "d18a29079fd2b2c9b442013d01ea12cb18e70fdb",
+  "feedstock_hash_ts": 1784039154,
   "feedstock_name": "prek",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -39,8 +42,10 @@
           "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
         ],
         "env": {
+          "AR_aarch64_pc_windows_msvc": "llvm-lib",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "CC_aarch64_pc_windows_msvc": "clang-cl"
         }
       }
     },
@@ -133,8 +138,10 @@
           "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
         ],
         "env": {
+          "AR_aarch64_pc_windows_msvc": "llvm-lib",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "CC_aarch64_pc_windows_msvc": "clang-cl"
         }
       }
     },
@@ -227,8 +234,10 @@
           "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
         ],
         "env": {
+          "AR_aarch64_pc_windows_msvc": "llvm-lib",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "CC_aarch64_pc_windows_msvc": "clang-cl"
         }
       }
     },
@@ -239,6 +248,27 @@
       ]
     },
     "outputs": [
+      {
+        "build": null,
+        "name": "prek",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "prek --help"
+          }
+        ],
+        "version": "0.4.9"
+      },
       {
         "build": null,
         "name": "prek",
@@ -382,8 +412,10 @@
           "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
         ],
         "env": {
+          "AR_aarch64_pc_windows_msvc": "llvm-lib",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "CC_aarch64_pc_windows_msvc": "clang-cl"
         }
       }
     },
@@ -476,8 +508,10 @@
           "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
         ],
         "env": {
+          "AR_aarch64_pc_windows_msvc": "llvm-lib",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "CC_aarch64_pc_windows_msvc": "clang-cl"
         }
       }
     },
@@ -565,12 +599,13 @@
     "linux_aarch64",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/prek.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: prek\n  version: \"0.4.9\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/j178/${{ name }}/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: c98edc2d545755b43a04097ad5f2eb69af30a7fea694d8163aa7a0128a166852\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content:\n      - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path crates/prek\n      - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n\ntests:\n  - script:\n      - prek --help\n\nabout:\n  homepage: https://prek.j178.dev\n  summary: Better `pre-commit`, re-engineered in Rust\n  repository: https://github.com/j178/prek\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n    - licenses/LICENSE.pre-commit.txt\n    - licenses/LICENSE.identify.txt\n    - crates/prek-pty/LICENSE\n\nextra:\n  recipe-maintainers:\n    - weiji14\n    - ocefpaf\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: prek\n  version: \"0.4.9\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/j178/${{ name }}/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: c98edc2d545755b43a04097ad5f2eb69af30a7fea694d8163aa7a0128a166852\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n      # aws-lc-sys (pulled in via reqwest/rustls) requires clang-cl to assemble\n      # its ARM64 perlasm `.S` files on Windows; MSVC's cl.exe silently drops\n      # them, producing a link error. Harmless no-op on other targets.\n      # https://aws.github.io/aws-lc-rs/requirements/windows.html\n      CC_aarch64_pc_windows_msvc: clang-cl\n      AR_aarch64_pc_windows_msvc: llvm-lib\n    content:\n      - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path crates/prek\n      - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    - if: win and arm64\n      then: clang # provides clang-cl, required by aws-lc-sys on win-arm64\n\ntests:\n  - script:\n      - prek --help\n\nabout:\n  homepage: https://prek.j178.dev\n  summary: Better `pre-commit`, re-engineered in Rust\n  repository: https://github.com/j178/prek\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n    - licenses/LICENSE.pre-commit.txt\n    - licenses/LICENSE.identify.txt\n    - crates/prek-pty/LICENSE\n\nextra:\n  recipe-maintainers:\n    - weiji14\n    - ocefpaf\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -658,8 +693,10 @@
           "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
         ],
         "env": {
+          "AR_aarch64_pc_windows_msvc": "llvm-lib",
           "CARGO_PROFILE_RELEASE_LTO": "fat",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "CC_aarch64_pc_windows_msvc": "clang-cl"
         }
       }
     },
@@ -712,6 +749,102 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/j178/prek",
+      "home": "https://prek.j178.dev/",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Better `pre-commit`, re-engineered in Rust"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path crates/prek",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "AR_aarch64_pc_windows_msvc": "llvm-lib",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "CC_aarch64_pc_windows_msvc": "clang-cl"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "weiji14",
+        "ocefpaf"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "prek",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "prek --help"
+          }
+        ],
+        "version": "0.4.9"
+      }
+    ],
+    "package": {
+      "name": "prek",
+      "version": "0.4.9"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "c98edc2d545755b43a04097ad5f2eb69af30a7fea694d8163aa7a0128a166852",
+      "url": "https://github.com/j178/prek/archive/refs/tags/v0.4.9.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
