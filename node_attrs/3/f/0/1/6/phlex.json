@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "8922b0b1eab956c334499697e8c10fd1b39339e3",
-  "feedstock_hash_ts": 1783576943,
+  "feedstock_hash": "df5490b6d112002ce408421f8d117af5a82924e4",
+  "feedstock_hash_ts": 1784120895,
   "feedstock_name": "phlex",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -28,7 +28,7 @@
       "summary": "Parallel, Hierarchical, and Layered Execution of data-processing algorithms"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "phlex"
@@ -338,6 +338,9 @@
     },
     "schema_version": 1,
     "source": {
+      "patches": [
+        "patches/form-rntuple-fixes.patch"
+      ],
       "sha256": "1689fced4229b82be54269b2e785ad75f65869dbbbe0275194620294bc9b9095",
       "url": "https://github.com/Framework-R-D/phlex/archive/refs/tags/v0.3.1.tar.gz"
     }
@@ -391,7 +394,7 @@
       "summary": "Parallel, Hierarchical, and Layered Execution of data-processing algorithms"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "phlex"
@@ -701,6 +704,9 @@
     },
     "schema_version": 1,
     "source": {
+      "patches": [
+        "patches/form-rntuple-fixes.patch"
+      ],
       "sha256": "1689fced4229b82be54269b2e785ad75f65869dbbbe0275194620294bc9b9095",
       "url": "https://github.com/Framework-R-D/phlex/archive/refs/tags/v0.3.1.tar.gz"
     }
@@ -719,7 +725,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/phlex.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.3.1\"\n\npackage:\n  name: phlex\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Framework-R-D/phlex/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 1689fced4229b82be54269b2e785ad75f65869dbbbe0275194620294bc9b9095\n\nbuild:\n  number: 0\n  skip:\n    # phlex requires GCC 15 (libstdc++ 15 for std::vector(from_range, ...))\n    # and is not yet supported on macOS (libc++ lacks std::jthread)\n    - win\n    - osx\n    - match(root_cxx_standard, \"<23\")\n    # the python/numba plugin requires find_package(Python 3.12 ...)\n    - match(python, \"<3.12\")\n  script: build.sh\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - make\n    - pkg-config\n  host:\n    - cetmodules\n    - libboost-devel\n    - fmt\n    - tbb-devel\n    - spdlog\n    - libjsonnet\n    # required by the python/numba plugin (plugins/python)\n    - libffi\n    - python\n    - numpy\n    - root_base\n    - root_cxx_standard\n  run:\n    - python\n  run_exports:\n    - ${{ pin_subpackage('phlex', upper_bound='x.x') }}\n\ntests:\n  - package_contents:\n      lib:\n        - phlex_core\n\nabout:\n  homepage: https://github.com/Framework-R-D/phlex\n  repository: https://github.com/Framework-R-D/phlex\n  summary: Parallel, Hierarchical, and Layered Execution of data-processing algorithms\n  description: |\n    Phlex is a framework for the Parallel, Hierarchical, and Layered\n    Execution of data-processing algorithms. It lets users implement\n    algorithms and organise them into multi-threaded workflows\n    structured around hierarchical event/data tiers, building on\n    Intel TBB for task parallelism and on the patterns established by\n    Fermilab's art framework.\n  license: Apache-2.0\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - olantwin\n",
+  "raw_meta_yaml": "context:\n  version: \"0.3.1\"\n\npackage:\n  name: phlex\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Framework-R-D/phlex/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 1689fced4229b82be54269b2e785ad75f65869dbbbe0275194620294bc9b9095\n  patches:\n    # Fixes for FORM's RNTuple backend (to be offered upstream): the\n    # RRawPtrWriteEntry forward declaration predates ROOT 6.40's namespace\n    # move (now version-conditional so both root_base variants build), and\n    # the reader mixed 1-based rows with 0-based RNTuple entries.\n    - patches/form-rntuple-fixes.patch\n\nbuild:\n  number: 1\n  skip:\n    # phlex requires GCC 15 (libstdc++ 15 for std::vector(from_range, ...))\n    # and is not yet supported on macOS (libc++ lacks std::jthread)\n    - win\n    - osx\n    - match(root_cxx_standard, \"<23\")\n    # the python/numba plugin requires find_package(Python 3.12 ...)\n    - match(python, \"<3.12\")\n  script: build.sh\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - make\n    - pkg-config\n  host:\n    - cetmodules\n    - libboost-devel\n    - fmt\n    - tbb-devel\n    - spdlog\n    - libjsonnet\n    # required by the python/numba plugin (plugins/python)\n    - libffi\n    - python\n    - numpy\n    - root_base\n    - root_cxx_standard\n  run:\n    - python\n  run_exports:\n    - ${{ pin_subpackage('phlex', upper_bound='x.x') }}\n\ntests:\n  - package_contents:\n      lib:\n        - phlex_core\n\nabout:\n  homepage: https://github.com/Framework-R-D/phlex\n  repository: https://github.com/Framework-R-D/phlex\n  summary: Parallel, Hierarchical, and Layered Execution of data-processing algorithms\n  description: |\n    Phlex is a framework for the Parallel, Hierarchical, and Layered\n    Execution of data-processing algorithms. It lets users implement\n    algorithms and organise them into multi-threaded workflows\n    structured around hierarchical event/data tiers, building on\n    Intel TBB for task parallelism and on the patterns established by\n    Fermilab's art framework.\n  license: Apache-2.0\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - olantwin\n",
   "req": {
     "__set__": true,
     "elements": [
