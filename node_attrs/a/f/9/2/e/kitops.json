@@ -1,10 +1,13 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
+    },
+    "build_platform": {
+      "win_arm64": "win_64"
     },
     "conda_build": {
       "error_overdepending": true,
@@ -24,8 +27,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "2713c88aa923ecf552049d8ffdd925a904717e76",
-  "feedstock_hash_ts": 1783869962,
+  "feedstock_hash": "c0c3b2af0b4488f15d14154ce3ae2cc6a6a30b4a",
+  "feedstock_hash_ts": 1784362972,
   "feedstock_name": "kitops",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -567,6 +570,40 @@
           }
         ],
         "version": "1.15.0"
+      },
+      {
+        "build": null,
+        "name": "kitops",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "kit --help",
+              "kit version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "kit"
+              ],
+              "files": [
+                "share/bash-completion/completions/kit",
+                "share/fish/vendor_completions.d/kit.fish",
+                "share/zsh/site-functions/_kit"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.15.0"
       }
     ],
     "package": {
@@ -803,12 +840,13 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/kitops.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.15.0\"\n\npackage:\n  name: kitops\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/kitops-ml/kitops/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 956a3d526eb45848e66a49089fcc7867c7df4c2e019a3126219e8f1d7163f7e5\n\nbuild:\n  number: 0\n  script:\n    - go-licenses save . --save_path=library_licenses\n    - if: unix\n      then:\n        - BUILD_TIME=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"\n        - SHORT_COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/kitops-ml/kitops/commits/v${{ version }}\" | jq -r '.sha' | cut -c 1-7)\"\n        - go build -v -o \"$PREFIX\"/bin/kit -ldflags=\"-s -w -X github.com/kitops-ml/kitops/pkg/lib/constants.Version=${{ version }} -X github.com/kitops-ml/kitops/pkg/lib/constants.BuildTime=${BUILD_TIME} -X github.com/kitops-ml/kitops/pkg/lib/constants.GitCommit=${SHORT_COMMIT_HASH}\" -trimpath .\n        # generate shell completions\n        - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n        - '\"$PREFIX\"/bin/kit completion bash > \"$PREFIX\"/share/bash-completion/completions/kit'\n        - '\"$PREFIX\"/bin/kit completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/kit.fish'\n        - '\"$PREFIX\"/bin/kit completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_kit'\n    - if: win\n      then:\n        - for /f \"usebackq delims=\" %%T in (`powershell -Command \"[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')\"`) do set BUILD_TIME=%%T\n        - for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/kitops-ml/kitops/commits/v${{ version }}').sha).Substring(0, 7)\"`) do set SHORT_COMMIT_HASH=%%T\n        - go build -v -o \"%LIBRARY_BIN%\"\\kit.exe -ldflags=\"-s -w -X github.com/kitops-ml/kitops/pkg/lib/constants.Version=${{ version }} -X github.com/kitops-ml/kitops/pkg/lib/constants.BuildTime=%BUILD_TIME% -X github.com/kitops-ml/kitops/pkg/lib/constants.GitCommit=%SHORT_COMMIT_HASH%\" -trimpath .\n        # generate shell completions\n        - mkdir \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\n        - mkdir \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\n        - mkdir \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\n        - '\"%LIBRARY_BIN%\"\\kit.exe completion bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\kit'\n        - '\"%LIBRARY_BIN%\"\\kit.exe completion fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\kit.fish'\n        - '\"%LIBRARY_BIN%\"\\kit.exe completion zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_kit'\n\nrequirements:\n  build:\n    - ${{ compiler(\"go-nocgo\") }}\n    - go-licenses\n\ntests:\n  - script:\n      - kit --help\n      - kit version\n  - package_contents:\n      bin:\n        - kit\n      files:\n        - if: unix\n          then:\n            - share/bash-completion/completions/kit\n            - share/fish/vendor_completions.d/kit.fish\n            - share/zsh/site-functions/_kit\n        - if: win\n          then:\n            - Library/share/bash-completion/completions/kit\n            - Library/share/fish/vendor_completions.d/kit.fish\n            - Library/share/zsh/site-functions/_kit\n      strict: true\n\nabout:\n  summary: An open source MLOps tool for packaging, versioning, and sharing AI/ML projects\n  description: |\n    KitOps is an open source tool that allows to package, version, share, and\n    deploy AI/ML models and their associated artifacts using familiar DevOps\n    practices and OCI standards. It facilitates collaborative work on\n    self-hosted AI/ML models and makes sharing, automating, and deploying those\n    models as simple as managing containerized apps.\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - library_licenses/\n  homepage: https://kitops.org\n  documentation: https://kitops.org/docs\n  repository: https://github.com/kitops-ml/kitops\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"1.15.0\"\n\npackage:\n  name: kitops\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/kitops-ml/kitops/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 956a3d526eb45848e66a49089fcc7867c7df4c2e019a3126219e8f1d7163f7e5\n\nbuild:\n  number: 0\n  script:\n    - go-licenses save . --save_path=library_licenses\n    - if: unix\n      then:\n        - BUILD_TIME=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"\n        - SHORT_COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/kitops-ml/kitops/commits/v${{ version }}\" | jq -r '.sha' | cut -c 1-7)\"\n        - go build -v -o \"$PREFIX\"/bin/kit -ldflags=\"-s -w -X github.com/kitops-ml/kitops/pkg/lib/constants.Version=${{ version }} -X github.com/kitops-ml/kitops/pkg/lib/constants.BuildTime=${BUILD_TIME} -X github.com/kitops-ml/kitops/pkg/lib/constants.GitCommit=${SHORT_COMMIT_HASH}\" -trimpath .\n        # generate shell completions\n        - if: build_platform == host_platform\n          then:\n            - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n            - '\"$PREFIX\"/bin/kit completion bash > \"$PREFIX\"/share/bash-completion/completions/kit'\n            - '\"$PREFIX\"/bin/kit completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/kit.fish'\n            - '\"$PREFIX\"/bin/kit completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_kit'\n    - if: win\n      then:\n        - for /f \"usebackq delims=\" %%T in (`powershell -Command \"[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')\"`) do set BUILD_TIME=%%T\n        - for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/kitops-ml/kitops/commits/v${{ version }}').sha).Substring(0, 7)\"`) do set SHORT_COMMIT_HASH=%%T\n        - go build -v -o \"%LIBRARY_BIN%\"\\kit.exe -ldflags=\"-s -w -X github.com/kitops-ml/kitops/pkg/lib/constants.Version=${{ version }} -X github.com/kitops-ml/kitops/pkg/lib/constants.BuildTime=%BUILD_TIME% -X github.com/kitops-ml/kitops/pkg/lib/constants.GitCommit=%SHORT_COMMIT_HASH%\" -trimpath .\n        # generate shell completions\n        - if: build_platform == host_platform\n          then:\n            - mkdir \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\n            - mkdir \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\n            - mkdir \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\n            - '\"%LIBRARY_BIN%\"\\kit.exe completion bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\kit'\n            - '\"%LIBRARY_BIN%\"\\kit.exe completion fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\kit.fish'\n            - '\"%LIBRARY_BIN%\"\\kit.exe completion zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_kit'\n\nrequirements:\n  build:\n    - ${{ compiler(\"go-nocgo\") }}\n    - go-licenses\n\ntests:\n  - script:\n      - kit --help\n      - kit version\n  - package_contents:\n      bin:\n        - kit\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/kit\n            - share/fish/vendor_completions.d/kit.fish\n            - share/zsh/site-functions/_kit\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/kit\n            - Library/share/fish/vendor_completions.d/kit.fish\n            - Library/share/zsh/site-functions/_kit\n      strict: true\n\nabout:\n  summary: An open source MLOps tool for packaging, versioning, and sharing AI/ML projects\n  description: |\n    KitOps is an open source tool that allows to package, version, share, and\n    deploy AI/ML models and their associated artifacts using familiar DevOps\n    practices and OCI standards. It facilitates collaborative work on\n    self-hosted AI/ML models and makes sharing, automating, and deploying those\n    models as simple as managing containerized apps.\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - library_licenses/\n  homepage: https://kitops.org\n  documentation: https://kitops.org/docs\n  repository: https://github.com/kitops-ml/kitops\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -946,6 +984,108 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "go-licenses",
+        "go-nocgo_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "KitOps is an open source tool that allows to package, version, share, and\ndeploy AI/ML models and their associated artifacts using familiar DevOps\npractices and OCI standards. It facilitates collaborative work on\nself-hosted AI/ML models and makes sharing, automating, and deploying those\nmodels as simple as managing containerized apps.",
+      "dev_url": "https://github.com/kitops-ml/kitops",
+      "doc_url": "https://kitops.org/docs",
+      "home": "https://kitops.org/",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "An open source MLOps tool for packaging, versioning, and sharing AI/ML projects"
+    },
+    "build": {
+      "number": "0",
+      "script": [
+        "go-licenses save . --save_path=library_licenses",
+        "BUILD_TIME=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"",
+        "SHORT_COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/kitops-ml/kitops/commits/v${{ version }}\" | jq -r '.sha' | cut -c 1-7)\"",
+        "go build -v -o \"$PREFIX\"/bin/kit -ldflags=\"-s -w -X github.com/kitops-ml/kitops/pkg/lib/constants.Version=${{ version }} -X github.com/kitops-ml/kitops/pkg/lib/constants.BuildTime=${BUILD_TIME} -X github.com/kitops-ml/kitops/pkg/lib/constants.GitCommit=${SHORT_COMMIT_HASH}\" -trimpath .",
+        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
+        "\"$PREFIX\"/bin/kit completion bash > \"$PREFIX\"/share/bash-completion/completions/kit",
+        "\"$PREFIX\"/bin/kit completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/kit.fish",
+        "\"$PREFIX\"/bin/kit completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_kit"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "salim-b"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kitops",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "kit --help",
+              "kit version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "kit"
+              ],
+              "files": [
+                "share/bash-completion/completions/kit",
+                "share/fish/vendor_completions.d/kit.fish",
+                "share/zsh/site-functions/_kit"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.15.0"
+      }
+    ],
+    "package": {
+      "name": "kitops",
+      "version": "1.15.0"
+    },
+    "requirements": {
+      "build": [
+        "go-nocgo_compiler_stub",
+        "go-licenses"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "956a3d526eb45848e66a49089fcc7867c7df4c2e019a3126219e8f1d7163f7e5",
+      "url": "https://github.com/kitops-ml/kitops/archive/refs/tags/v1.15.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
