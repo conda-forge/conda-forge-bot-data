@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_ares:\n- '1'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibcap:\n- '2.78'\nlibcurl:\n- '8'\nlibprotobuf:\n- 6.33.5\nlibsqlite:\n- '3'\nlibuuid:\n- '2'\nopenssl:\n- '3.5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "c_ares:\n- '1'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibcap:\n- '2.78'\nlibcurl:\n- '8'\nlibprotobuf:\n- 7.35.1\nlibsqlite:\n- '3'\nlibuuid:\n- '2'\nopenssl:\n- '3.5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "855e26411326f814d8c98ba75c97814bfb766f6a",
-  "feedstock_hash_ts": 1784564132,
+  "feedstock_hash": "0b1d018f1b8b8e2f0c0ab14797e181a7052d314b",
+  "feedstock_hash_ts": 1784575474,
   "feedstock_name": "cvmfs",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -29,7 +29,7 @@
       "summary": "CernVM-FS client library for embedding a CernVM-FS client without FUSE"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libcvmfs"
@@ -207,7 +207,7 @@
       "summary": "CernVM-FS client library for embedding a CernVM-FS client without FUSE"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libcvmfs"
@@ -416,7 +416,7 @@
       "summary": "CernVM-FS client library for embedding a CernVM-FS client without FUSE"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "libcvmfs"
@@ -596,7 +596,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/cvmfs.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"2.14.0\"\n\npackage:\n  name: libcvmfs\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/cvmfs/cvmfs/archive/refs/tags/cvmfs-${{ version }}.tar.gz\n  sha256: c3ccc07d0873043e5035557704acbd50f8c4d223867564087f9001f92e65421d\n  patches:\n    # Search for libcap in every configuration that builds libcvmfs-util\n    # https://github.com/cvmfs/cvmfs/pull/4338\n    - patches/4338.patch\n    # Support building libcvmfs-crypto against the system OpenSSL\n    # https://github.com/cvmfs/cvmfs/pull/4339\n    - patches/4339.patch\n    # Let the environment select the macOS SDK and deployment target\n    # https://github.com/cvmfs/cvmfs/pull/4340\n    - patches/4340.patch\n    # Preserve the configured CMAKE_BUILD_TYPE across the externals setup\n    # https://github.com/cvmfs/cvmfs/pull/4341\n    - patches/4341.patch\n    # Respect an explicitly configured CMAKE_INSTALL_LIBDIR\n    # https://github.com/cvmfs/cvmfs/pull/4342\n    - patches/4342.patch\n\nbuild:\n  number: 0\n  skip:\n    - win\n  dynamic_linking:\n    overlinking_behavior: error\n    overdepending_behavior: error\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - make\n    - patch\n    # protoc is executed at build time to generate cache.pb.cc\n    - if: build_platform != target_platform\n      then:\n        - libprotobuf\n  host:\n    - c-ares\n    - leveldb\n    - libcurl\n    - libprotobuf\n    - libsqlite\n    - nlohmann_json\n    - openssl\n    - pacparser\n    - sparsehash\n    - zlib\n    - if: linux\n      then:\n        # util/capabilities.cc needs libcap on Linux, but upstream only\n        # searches for it when the FUSE client or server tools are built\n        - libcap\n        - libuuid\n  run_exports:\n    # upstream sets a full-version SONAME (libcvmfs_client.so.2.14.0), so\n    # every release is a linker-level ABI change\n    - ${{ pin_subpackage('libcvmfs', upper_bound='x.x.x') }}\n\ntests:\n  - package_contents:\n      strict: true\n      lib:\n        - cvmfs_client\n        - cvmfs_crypto\n        - cvmfs_util\n      include:\n        - libcvmfs.h\n      files:\n        - share/doc/cvmfs-${{ version }}/*\n        # support files for the compilation test below\n        - etc/conda/test-files/**\n  - script:\n      - $CC $CFLAGS $LDFLAGS tests/test_libcvmfs.c -lcvmfs_client -o test_libcvmfs\n      - ./test_libcvmfs\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n    files:\n      recipe:\n        - tests/\n\nabout:\n  homepage: https://cernvm.cern.ch/fs/\n  license: BSD-3-Clause AND CC0-1.0\n  license_file:\n    - COPYING\n    - vendored-licenses/\n  summary: CernVM-FS client library for embedding a CernVM-FS client without FUSE\n  description: |\n    The CernVM File System (CernVM-FS) provides a scalable, reliable and\n    low-maintenance software distribution service. libcvmfs allows\n    applications to mount and access CernVM-FS repositories in\n    user space without a FUSE kernel module.\n\n    The package contains the libcvmfs_client library together with its\n    companion libraries libcvmfs_util and libcvmfs_crypto. The Keccak\n    reference SHA-3 implementation (CC0-1.0) is statically linked into\n    the package; unlike upstream's binary packages, libcvmfs_crypto is\n    built against OpenSSL rather than a bundled static LibreSSL.\n  documentation: https://cvmfs.readthedocs.io/\n  repository: https://github.com/cvmfs/cvmfs\n\nextra:\n  feedstock-name: cvmfs\n  recipe-maintainers:\n    - chrisburr\n",
+  "raw_meta_yaml": "context:\n  version: \"2.14.0\"\n\npackage:\n  name: libcvmfs\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/cvmfs/cvmfs/archive/refs/tags/cvmfs-${{ version }}.tar.gz\n  sha256: c3ccc07d0873043e5035557704acbd50f8c4d223867564087f9001f92e65421d\n  patches:\n    # Search for libcap in every configuration that builds libcvmfs-util\n    # https://github.com/cvmfs/cvmfs/pull/4338\n    - patches/4338.patch\n    # Support building libcvmfs-crypto against the system OpenSSL\n    # https://github.com/cvmfs/cvmfs/pull/4339\n    - patches/4339.patch\n    # Let the environment select the macOS SDK and deployment target\n    # https://github.com/cvmfs/cvmfs/pull/4340\n    - patches/4340.patch\n    # Preserve the configured CMAKE_BUILD_TYPE across the externals setup\n    # https://github.com/cvmfs/cvmfs/pull/4341\n    - patches/4341.patch\n    # Respect an explicitly configured CMAKE_INSTALL_LIBDIR\n    # https://github.com/cvmfs/cvmfs/pull/4342\n    - patches/4342.patch\n\nbuild:\n  number: 1\n  skip:\n    - win\n  dynamic_linking:\n    overlinking_behavior: error\n    overdepending_behavior: error\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - make\n    - patch\n    # protoc is executed at build time to generate cache.pb.cc\n    - if: build_platform != target_platform\n      then:\n        - libprotobuf\n  host:\n    - c-ares\n    - leveldb\n    - libcurl\n    - libprotobuf\n    - libsqlite\n    - nlohmann_json\n    - openssl\n    - pacparser\n    - sparsehash\n    - zlib\n    - if: linux\n      then:\n        # util/capabilities.cc needs libcap on Linux, but upstream only\n        # searches for it when the FUSE client or server tools are built\n        - libcap\n        - libuuid\n  run_exports:\n    # upstream sets a full-version SONAME (libcvmfs_client.so.2.14.0), so\n    # every release is a linker-level ABI change\n    - ${{ pin_subpackage('libcvmfs', upper_bound='x.x.x') }}\n\ntests:\n  - package_contents:\n      strict: true\n      lib:\n        - cvmfs_client\n        - cvmfs_crypto\n        - cvmfs_util\n      include:\n        - libcvmfs.h\n      files:\n        - share/doc/cvmfs-${{ version }}/*\n        # support files for the compilation test below\n        - etc/conda/test-files/**\n  - script:\n      - $CC $CFLAGS $LDFLAGS tests/test_libcvmfs.c -lcvmfs_client -o test_libcvmfs\n      - ./test_libcvmfs\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n    files:\n      recipe:\n        - tests/\n\nabout:\n  homepage: https://cernvm.cern.ch/fs/\n  license: BSD-3-Clause AND CC0-1.0\n  license_file:\n    - COPYING\n    - vendored-licenses/\n  summary: CernVM-FS client library for embedding a CernVM-FS client without FUSE\n  description: |\n    The CernVM File System (CernVM-FS) provides a scalable, reliable and\n    low-maintenance software distribution service. libcvmfs allows\n    applications to mount and access CernVM-FS repositories in\n    user space without a FUSE kernel module.\n\n    The package contains the libcvmfs_client library together with its\n    companion libraries libcvmfs_util and libcvmfs_crypto. The Keccak\n    reference SHA-3 implementation (CC0-1.0) is statically linked into\n    the package; unlike upstream's binary packages, libcvmfs_crypto is\n    built against OpenSSL rather than a bundled static LibreSSL.\n  documentation: https://cvmfs.readthedocs.io/\n  repository: https://github.com/cvmfs/cvmfs\n\nextra:\n  feedstock-name: cvmfs\n  recipe-maintainers:\n    - chrisburr\n",
   "req": {
     "__set__": true,
     "elements": [
