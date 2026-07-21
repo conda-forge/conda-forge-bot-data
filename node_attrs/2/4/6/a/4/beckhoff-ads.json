@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "8174f8b7431a9ce1069571e109a9b5520d5d71b7",
-  "feedstock_hash_ts": 1781620309,
+  "feedstock_hash": "2acd8fac8ee13cf80ff817e8e804b45989aedf5c",
+  "feedstock_hash_ts": 1784629804,
   "feedstock_name": "beckhoff-ads",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -29,7 +29,7 @@
       "summary": "Beckhoff protocol to communicate with TwinCAT devices"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "beckhoff-ads"
@@ -105,7 +105,23 @@
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsDef.h\"",
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsLib.h\"",
               "test -f \"${PREFIX}/lib/libAdsLib.so\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncSetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncGetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsPortOpenEx\"",
               "adstool --help"
+            ]
+          },
+          {
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "echo '#include <AdsLib.h>' > /tmp/test_sym.cpp",
+              "echo 'void test(){ AdsSyncSetTimeoutEx(0, 5000); }' >> /tmp/test_sym.cpp",
+              "$CXX $(pkg-config --cflags AdsLib) -fPIC -shared /tmp/test_sym.cpp $(pkg-config --libs AdsLib) -o /tmp/test_sym.so"
             ]
           }
         ],
@@ -147,7 +163,8 @@
     "schema_version": 1,
     "source": {
       "patches": [
-        "meson-build-install-executables.patch"
+        "meson-build-install-executables.patch",
+        "meson-build-fix-extern-c-export.patch"
       ],
       "sha256": "2523bbdf90b153992ced68a689c02943516ec93260b4eddd3108edc710a63596",
       "url": "https://github.com/Beckhoff/ADS/archive/refs/tags/113.0.34-1.tar.gz"
@@ -173,7 +190,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cxx_compiler_stub",
+        "pkg-config"
+      ]
     }
   },
   "meta_yaml": {
@@ -188,7 +208,7 @@
       "summary": "Beckhoff protocol to communicate with TwinCAT devices"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "beckhoff-ads"
@@ -264,7 +284,23 @@
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsDef.h\"",
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsLib.h\"",
               "test -f \"${PREFIX}/lib/libAdsLib.so\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncSetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncGetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsPortOpenEx\"",
               "adstool --help"
+            ]
+          },
+          {
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "echo '#include <AdsLib.h>' > /tmp/test_sym.cpp",
+              "echo 'void test(){ AdsSyncSetTimeoutEx(0, 5000); }' >> /tmp/test_sym.cpp",
+              "$CXX $(pkg-config --cflags AdsLib) -fPIC -shared /tmp/test_sym.cpp $(pkg-config --libs AdsLib) -o /tmp/test_sym.so"
             ]
           }
         ],
@@ -350,7 +386,23 @@
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsDef.h\"",
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsLib.h\"",
               "test -f \"${PREFIX}/lib/libAdsLib.so\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncSetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncGetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsPortOpenEx\"",
               "adstool --help"
+            ]
+          },
+          {
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "echo '#include <AdsLib.h>' > /tmp/test_sym.cpp",
+              "echo 'void test(){ AdsSyncSetTimeoutEx(0, 5000); }' >> /tmp/test_sym.cpp",
+              "$CXX $(pkg-config --cflags AdsLib) -fPIC -shared /tmp/test_sym.cpp $(pkg-config --libs AdsLib) -o /tmp/test_sym.so"
             ]
           }
         ],
@@ -392,7 +444,8 @@
     "schema_version": 1,
     "source": {
       "patches": [
-        "meson-build-install-executables.patch"
+        "meson-build-install-executables.patch",
+        "meson-build-fix-extern-c-export.patch"
       ],
       "sha256": "2523bbdf90b153992ced68a689c02943516ec93260b4eddd3108edc710a63596",
       "url": "https://github.com/Beckhoff/ADS/archive/refs/tags/113.0.34-1.tar.gz"
@@ -411,7 +464,7 @@
       "summary": "Beckhoff protocol to communicate with TwinCAT devices"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "beckhoff-ads"
@@ -487,7 +540,23 @@
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsDef.h\"",
               "test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsLib.h\"",
               "test -f \"${PREFIX}/lib/libAdsLib.so\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncSetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncGetTimeoutEx\"",
+              "nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsPortOpenEx\"",
               "adstool --help"
+            ]
+          },
+          {
+            "requirements": {
+              "build": [
+                "cxx_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "echo '#include <AdsLib.h>' > /tmp/test_sym.cpp",
+              "echo 'void test(){ AdsSyncSetTimeoutEx(0, 5000); }' >> /tmp/test_sym.cpp",
+              "$CXX $(pkg-config --cflags AdsLib) -fPIC -shared /tmp/test_sym.cpp $(pkg-config --libs AdsLib) -o /tmp/test_sym.so"
             ]
           }
         ],
@@ -529,7 +598,8 @@
     "schema_version": 1,
     "source": {
       "patches": [
-        "meson-build-install-executables.patch"
+        "meson-build-install-executables.patch",
+        "meson-build-fix-extern-c-export.patch"
       ],
       "sha256": "2523bbdf90b153992ced68a689c02943516ec93260b4eddd3108edc710a63596",
       "url": "https://github.com/Beckhoff/ADS/archive/refs/tags/113.0.34-1.tar.gz"
@@ -555,7 +625,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cxx_compiler_stub",
+        "pkg-config"
+      ]
     }
   },
   "outputs_names": {
@@ -573,7 +646,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/beckhoff-ads.json"
   },
-  "raw_meta_yaml": "context:\n  name: beckhoff-ads\n  tag: 113.0.34-1\n  version: ${{ tag | replace('-', '.') }}\n\nrecipe:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Beckhoff/ADS/archive/refs/tags/${{ tag }}.tar.gz\n  sha256: 2523bbdf90b153992ced68a689c02943516ec93260b4eddd3108edc710a63596\n  patches: \n    - meson-build-install-executables.patch\n\nbuild:\n  number: 0\n  skip:\n    - win\n  script: |\n    meson setup build --prefix=\"$PREFIX\" -Dlibdir=\"$PREFIX/lib\" -Dwerror=false\n    ninja -C build install\n\noutputs:\n  - package:\n      name: ${{ name }}\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - meson\n        - ninja\n      run_exports:\n        - ${{ pin_subpackage(name, upper_bound='x.x.x') }}\n    build:\n      files:\n        - include\n        - bin\n        - if: linux\n          then:\n            - lib/*.so*\n        - if: osx\n          then:\n            - lib/*.dylib*\n        - lib/pkgconfig\n    tests:\n      - script:\n          - test -d \"${PREFIX}/include/AdsLib\"\n          - test -d \"${PREFIX}/include/AdsLib/bhf\"\n          - test -d \"${PREFIX}/include/AdsLib/standalone\"\n          - test -d \"${PREFIX}/include/AdsLib/TwinCAT\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsDef.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsNotification.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsPort.h\"\n          - test -f \"${PREFIX}/include/AdsLib/NotificationDispatcher.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RouterAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsDevice.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsNotificationOOI.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsRouter.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RTimeAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Semaphore.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsException.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsVariable.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Frame.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RegistryAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Sockets.h\"\n          - test -f \"${PREFIX}/include/AdsLib/wrap_endian.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsFile.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsConnection.h\"\n          - test -f \"${PREFIX}/include/AdsLib/LicenseAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RingBuffer.h\"\n          - test -f \"${PREFIX}/include/AdsLib/SymbolAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/wrap_registry.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsLib.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsHeader.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Log.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Router.h\"\n          - test -f \"${PREFIX}/include/AdsLib/wrap_socket.h\"\n          - test -f \"${PREFIX}/include/AdsLib/bhf/ParameterList.h\"\n          - test -f \"${PREFIX}/include/AdsLib/bhf/StringToInteger.h\"\n          - test -f \"${PREFIX}/include/AdsLib/bhf/WindowsQuirks.h\"\n          - test -f \"${PREFIX}/include/AdsLib/standalone/AdsDef.h\"\n          - test -f \"${PREFIX}/include/AdsLib/standalone/AdsLib.h\"\n          - test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsDef.h\"\n          - test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsLib.h\"\n          - if: linux\n            then:\n              - test -f \"${PREFIX}/lib/libAdsLib.so\"\n          - if: osx\n            then:\n              - test -f \"${PREFIX}/lib/libAdsLib.dylib\"\n          - adstool --help\n\n  - package:\n      name: ${{ name }}-static\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - meson\n        - ninja\n    build:\n      files:\n        - lib/*.a\n    tests:\n      - script:\n          - test -f \"${PREFIX}/lib/libAdsLib.a\"\n\nabout:\n  homepage: https://github.com/Beckhoff/ADS\n  license: MIT\n  license_file: LICENSE\n  summary: Beckhoff protocol to communicate with TwinCAT devices\n  description: |\n    This library is intended to provide easy use as ADS client applications running on non-windows systems \n    (e.g. FreeBSD, Linux, ...) to communicate with TwinCAT devices via TCP/IP.\n  documentation: https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_ads_intro/index.html\n  repository: https://github.com/Beckhoff/ADS\n\nextra:\n  recipe-maintainers:\n    - AndreFavotto\n    - mac-kan\n    - javicereijo\n",
+  "raw_meta_yaml": "context:\n  name: beckhoff-ads\n  tag: 113.0.34-1\n  version: ${{ tag | replace('-', '.') }}\n\nrecipe:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Beckhoff/ADS/archive/refs/tags/${{ tag }}.tar.gz\n  sha256: 2523bbdf90b153992ced68a689c02943516ec93260b4eddd3108edc710a63596\n  patches:\n    - meson-build-install-executables.patch\n    - meson-build-fix-extern-c-export.patch\n\nbuild:\n  number: 1\n  skip:\n    - win\n  script: |\n    meson setup build --prefix=\"$PREFIX\" -Dlibdir=\"$PREFIX/lib\" -Dwerror=false\n    ninja -C build install\n\noutputs:\n  - package:\n      name: ${{ name }}\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - meson\n        - ninja\n      run_exports:\n        - ${{ pin_subpackage(name, upper_bound='x.x.x') }}\n    build:\n      files:\n        - include\n        - bin\n        - if: linux\n          then:\n            - lib/*.so*\n        - if: osx\n          then:\n            - lib/*.dylib*\n        - lib/pkgconfig\n    tests:\n      - script:\n          - test -d \"${PREFIX}/include/AdsLib\"\n          - test -d \"${PREFIX}/include/AdsLib/bhf\"\n          - test -d \"${PREFIX}/include/AdsLib/standalone\"\n          - test -d \"${PREFIX}/include/AdsLib/TwinCAT\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsDef.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsNotification.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsPort.h\"\n          - test -f \"${PREFIX}/include/AdsLib/NotificationDispatcher.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RouterAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsDevice.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsNotificationOOI.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsRouter.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RTimeAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Semaphore.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsException.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsVariable.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Frame.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RegistryAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Sockets.h\"\n          - test -f \"${PREFIX}/include/AdsLib/wrap_endian.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsFile.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsConnection.h\"\n          - test -f \"${PREFIX}/include/AdsLib/LicenseAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/RingBuffer.h\"\n          - test -f \"${PREFIX}/include/AdsLib/SymbolAccess.h\"\n          - test -f \"${PREFIX}/include/AdsLib/wrap_registry.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AdsLib.h\"\n          - test -f \"${PREFIX}/include/AdsLib/AmsHeader.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Log.h\"\n          - test -f \"${PREFIX}/include/AdsLib/Router.h\"\n          - test -f \"${PREFIX}/include/AdsLib/wrap_socket.h\"\n          - test -f \"${PREFIX}/include/AdsLib/bhf/ParameterList.h\"\n          - test -f \"${PREFIX}/include/AdsLib/bhf/StringToInteger.h\"\n          - test -f \"${PREFIX}/include/AdsLib/bhf/WindowsQuirks.h\"\n          - test -f \"${PREFIX}/include/AdsLib/standalone/AdsDef.h\"\n          - test -f \"${PREFIX}/include/AdsLib/standalone/AdsLib.h\"\n          - test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsDef.h\"\n          - test -f \"${PREFIX}/include/AdsLib/TwinCAT/AdsLib.h\"\n          - if: linux\n            then:\n              - test -f \"${PREFIX}/lib/libAdsLib.so\"\n              - nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncSetTimeoutEx\"\n              - nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsSyncGetTimeoutEx\"\n              - nm -D \"${PREFIX}/lib/libAdsLib.so\" | grep -q \" T AdsPortOpenEx\"\n          - if: osx\n            then:\n              - test -f \"${PREFIX}/lib/libAdsLib.dylib\"\n              - nm \"${PREFIX}/lib/libAdsLib.dylib\" | grep -q \"_AdsSyncSetTimeoutEx\"\n              - nm \"${PREFIX}/lib/libAdsLib.dylib\" | grep -q \"_AdsSyncGetTimeoutEx\"\n              - nm \"${PREFIX}/lib/libAdsLib.dylib\" | grep -q \"_AdsPortOpenEx\"\n          - adstool --help\n      - requirements:\n          build:\n            - ${{ compiler('cxx') }}\n            - pkg-config\n        script:\n          - if: linux or osx\n            then:\n              - echo '#include <AdsLib.h>' > /tmp/test_sym.cpp\n              - echo 'void test(){ AdsSyncSetTimeoutEx(0, 5000); }' >> /tmp/test_sym.cpp\n              - $CXX $(pkg-config --cflags AdsLib) -fPIC -shared /tmp/test_sym.cpp $(pkg-config --libs AdsLib) -o /tmp/test_sym.so\n\n  - package:\n      name: ${{ name }}-static\n    requirements:\n      build:\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - meson\n        - ninja\n    build:\n      files:\n        - lib/*.a\n    tests:\n      - script:\n          - test -f \"${PREFIX}/lib/libAdsLib.a\"\n\nabout:\n  homepage: https://github.com/Beckhoff/ADS\n  license: MIT\n  license_file: LICENSE\n  summary: Beckhoff protocol to communicate with TwinCAT devices\n  description: |\n    This library is intended to provide easy use as ADS client applications running on non-windows systems \n    (e.g. FreeBSD, Linux, ...) to communicate with TwinCAT devices via TCP/IP.\n  documentation: https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_ads_intro/index.html\n  repository: https://github.com/Beckhoff/ADS\n\nextra:\n  recipe-maintainers:\n    - AndreFavotto\n    - mac-kan\n    - javicereijo\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -609,7 +682,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cxx_compiler_stub",
+        "pkg-config"
+      ]
     }
   },
   "strong_exports": false,
@@ -633,7 +709,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cxx_compiler_stub",
+        "pkg-config"
+      ]
     }
   },
   "url": "https://github.com/Beckhoff/ADS/archive/refs/tags/113.0.34-1.tar.gz",
