@@ -3,6 +3,11 @@
   "branch": "main",
   "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
+    "build_platform": {
+      "linux_aarch64": "linux_aarch64",
+      "linux_ppc64le": "linux_ppc64le",
+      "osx_arm64": "osx_arm64"
+    },
     "conda_build": {
       "error_overlinking": true
     },
@@ -11,10 +16,15 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     }
   },
-  "feedstock_hash": "ddff615ee8cbf72e5e2b2378735fcd8612f66025",
-  "feedstock_hash_ts": 1784818705,
+  "feedstock_hash": "409fd1c80a52c15d12fb4cdef8bf6b089d6cd2a3",
+  "feedstock_hash_ts": 1784845402,
   "feedstock_name": "libtraceevent",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -149,7 +159,7 @@
       ]
     }
   },
-  "meta_yaml": {
+  "linux_aarch64_meta_yaml": {
     "about": {
       "description": "libtraceevent is a library that parses the binary data of Linux kernel\ntracepoint events and converts it into a human readable format. It was\noriginally part of the Linux kernel source tree (used by perf and\ntrace-cmd) and is now maintained as a standalone library.",
       "doc_url": "https://www.trace-cmd.org/Documentation/libtraceevent/",
@@ -255,6 +265,388 @@
       "url": "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/snapshot/libtraceevent-1.9.0.tar.gz"
     }
   },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "make",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "pkg-config"
+      ]
+    }
+  },
+  "linux_ppc64le_meta_yaml": {
+    "about": {
+      "description": "libtraceevent is a library that parses the binary data of Linux kernel\ntracepoint events and converts it into a human readable format. It was\noriginally part of the Linux kernel source tree (used by perf and\ntrace-cmd) and is now maintained as a standalone library.",
+      "doc_url": "https://www.trace-cmd.org/Documentation/libtraceevent/",
+      "home": "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/",
+      "license": "LGPL-2.1-only AND GPL-2.0-only",
+      "license_family": "LGPL-2.1-only AND GPL-2.0-only",
+      "license_file": "LICENSES/LGPL-2.1",
+      "summary": "Linux kernel trace event library"
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtraceevent"
+        ]
+      },
+      "script": [
+        "make -j\"${CPU_COUNT}\" \\\n  prefix=\"${PREFIX}\" \\\n  libdir_relative=lib \\\n  pkgconfig_dir=\"${PREFIX}/lib/pkgconfig\" \\\n  LDCONFIG=false \\\n  EXTRA_CFLAGS=\"${CFLAGS} -I${SRC_DIR}/uapi-shim\" \\\n  install\n",
+        "rm \"${PREFIX}/lib/libtraceevent.a\""
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "chrisburr"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libtraceevent"
+          ]
+        },
+        "name": "libtraceevent",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "pkg-config"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtraceevent.so*",
+                "include/traceevent/*.h",
+                "lib/pkgconfig/libtraceevent.pc",
+                "lib/traceevent/plugins/plugin_*.so",
+                "etc/conda/test-files/**"
+              ],
+              "include": [
+                "traceevent/event-parse.h"
+              ],
+              "lib": [
+                "traceevent"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_program.c"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --exists --print-errors libtraceevent",
+              "test \"$(pkg-config --modversion libtraceevent)\" = \"${{ version }}\"",
+              "${CC} test_program.c $(pkg-config --cflags --libs libtraceevent) -o test_program",
+              "./test_program"
+            ]
+          }
+        ],
+        "version": "1.9.0"
+      }
+    ],
+    "package": {
+      "name": "libtraceevent",
+      "version": "1.9.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "make",
+        "pkg-config"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "e6d82cb2392d04866203387fa092692e4282ccc36c8235dc129afd1ceba12684",
+      "url": "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/snapshot/libtraceevent-1.9.0.tar.gz"
+    }
+  },
+  "linux_ppc64le_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "make",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "pkg-config"
+      ]
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "description": "libtraceevent is a library that parses the binary data of Linux kernel\ntracepoint events and converts it into a human readable format. It was\noriginally part of the Linux kernel source tree (used by perf and\ntrace-cmd) and is now maintained as a standalone library.",
+      "doc_url": "https://www.trace-cmd.org/Documentation/libtraceevent/",
+      "home": "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/",
+      "license": "LGPL-2.1-only AND GPL-2.0-only",
+      "license_family": "LGPL-2.1-only AND GPL-2.0-only",
+      "license_file": "LICENSES/LGPL-2.1",
+      "summary": "Linux kernel trace event library"
+    },
+    "build": {
+      "number": "0",
+      "run_exports": {
+        "weak": [
+          "libtraceevent"
+        ]
+      },
+      "script": [
+        "make -j\"${CPU_COUNT}\" \\\n  prefix=\"${PREFIX}\" \\\n  libdir_relative=lib \\\n  pkgconfig_dir=\"${PREFIX}/lib/pkgconfig\" \\\n  LDCONFIG=false \\\n  EXTRA_CFLAGS=\"${CFLAGS} -I${SRC_DIR}/uapi-shim\" \\\n  install\n",
+        "rm \"${PREFIX}/lib/libtraceevent.a\""
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "chrisburr"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libtraceevent"
+          ]
+        },
+        "name": "libtraceevent",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "pkg-config"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtraceevent.so*",
+                "include/traceevent/*.h",
+                "lib/pkgconfig/libtraceevent.pc",
+                "lib/traceevent/plugins/plugin_*.so",
+                "etc/conda/test-files/**"
+              ],
+              "include": [
+                "traceevent/event-parse.h"
+              ],
+              "lib": [
+                "traceevent"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_program.c"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --exists --print-errors libtraceevent",
+              "test \"$(pkg-config --modversion libtraceevent)\" = \"${{ version }}\"",
+              "${CC} test_program.c $(pkg-config --cflags --libs libtraceevent) -o test_program",
+              "./test_program"
+            ]
+          }
+        ],
+        "version": "1.9.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libtraceevent"
+          ]
+        },
+        "name": "libtraceevent",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "pkg-config"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtraceevent.so*",
+                "include/traceevent/*.h",
+                "lib/pkgconfig/libtraceevent.pc",
+                "lib/traceevent/plugins/plugin_*.so",
+                "etc/conda/test-files/**"
+              ],
+              "include": [
+                "traceevent/event-parse.h"
+              ],
+              "lib": [
+                "traceevent"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_program.c"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --exists --print-errors libtraceevent",
+              "test \"$(pkg-config --modversion libtraceevent)\" = \"${{ version }}\"",
+              "${CC} test_program.c $(pkg-config --cflags --libs libtraceevent) -o test_program",
+              "./test_program"
+            ]
+          }
+        ],
+        "version": "1.9.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libtraceevent"
+          ]
+        },
+        "name": "libtraceevent",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "make",
+            "pkg-config"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtraceevent.so*",
+                "include/traceevent/*.h",
+                "lib/pkgconfig/libtraceevent.pc",
+                "lib/traceevent/plugins/plugin_*.so",
+                "etc/conda/test-files/**"
+              ],
+              "include": [
+                "traceevent/event-parse.h"
+              ],
+              "lib": [
+                "traceevent"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_program.c"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --exists --print-errors libtraceevent",
+              "test \"$(pkg-config --modversion libtraceevent)\" = \"${{ version }}\"",
+              "${CC} test_program.c $(pkg-config --cflags --libs libtraceevent) -o test_program",
+              "./test_program"
+            ]
+          }
+        ],
+        "version": "1.9.0"
+      }
+    ],
+    "package": {
+      "name": "libtraceevent",
+      "version": "1.9.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "make",
+        "pkg-config"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "e6d82cb2392d04866203387fa092692e4282ccc36c8235dc129afd1ceba12684",
+      "url": "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/snapshot/libtraceevent-1.9.0.tar.gz"
+    }
+  },
   "name": "libtraceevent",
   "outputs_names": {
     "__set__": true,
@@ -264,7 +656,9 @@
   },
   "parsing_error": false,
   "platforms": [
-    "linux_64"
+    "linux_64",
+    "linux_aarch64",
+    "linux_ppc64le"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/libtraceevent.json"
