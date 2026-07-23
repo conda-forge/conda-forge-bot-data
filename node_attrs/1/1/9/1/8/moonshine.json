@@ -1,0 +1,421 @@
+{
+  "archived": false,
+  "branch": "main",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.28'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "conda-forge.yml": {
+    "conda_build": {
+      "error_overlinking": true
+    },
+    "conda_build_tool": "rattler-build",
+    "conda_forge_output_validation": true,
+    "github": {
+      "branch_name": "main",
+      "tooling_branch_name": "main"
+    }
+  },
+  "feedstock_hash": "2493c30837e298ca02abeba9f3d9c2d470771942",
+  "feedstock_hash_ts": 1784783018,
+  "feedstock_name": "moonshine",
+  "hash_type": "sha256",
+  "linux_64_meta_yaml": {
+    "about": {
+      "description": "Moonshine lets you stream games from a Linux PC to any device running\nMoonlight. Each stream runs in its own isolated compositor, separate\nfrom the desktop environment, so no monitor or active desktop session\nis required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\nHDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\nThe package also ships the Moonshine Vulkan WSI layer\n(share/vulkan/implicit_layer.d) and reference systemd/udev integration\nfiles (share/moonshine).",
+      "dev_url": "https://github.com/hgaiser/moonshine",
+      "home": "https://github.com/hgaiser/moonshine",
+      "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
+      "license_file": "LICENSE",
+      "summary": "Headless streaming server for Moonlight clients, written in Rust"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": "export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n# bindgen needs clang's builtin headers (stdbool.h etc.)\nexport BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\ncargo auditable build --release --locked -p moonshine -p moonshine-wsi\nRELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\ninstall -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\ninstall -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n# The Vulkan loader resolves relative library_path entries relative to the manifest location\nsed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n  dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\ninstall -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\ninstall -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\ninstall -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\ninstall -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\ncargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "tdejager"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "moonshine",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "cmake",
+            "make",
+            "pkg-config",
+            "git",
+            "clang",
+            "clangdev",
+            "libclang"
+          ],
+          "host": [
+            "libcxx-devel",
+            "libevdev",
+            "libopus",
+            "libdrm",
+            "libgbm",
+            "wayland",
+            "libxkbcommon"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "moonshine --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "moonshine"
+              ],
+              "files": [
+                "lib/moonshine/vulkan-layers/libmoonshine_wsi.so",
+                "share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json",
+                "share/moonshine/60-moonshine.rules",
+                "share/moonshine/moonshine-modules.conf",
+                "share/moonshine/moonshine@.service"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "0.12.0"
+      }
+    ],
+    "package": {
+      "name": "moonshine",
+      "version": "0.12.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cmake",
+        "make",
+        "pkg-config",
+        "git",
+        "clang",
+        "clangdev",
+        "libclang"
+      ],
+      "host": [
+        "libcxx-devel",
+        "libevdev",
+        "libopus",
+        "libdrm",
+        "libgbm",
+        "wayland",
+        "libxkbcommon"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "3358beafdbeff78f155a0e161468838a683fd6bec03824147ae16986be6bfd56",
+      "url": "https://github.com/hgaiser/moonshine/archive/refs/tags/v0.12.0.tar.gz"
+    }
+  },
+  "linux_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "clangdev",
+        "cmake",
+        "cxx_compiler_stub",
+        "git",
+        "libclang",
+        "make",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libcxx-devel",
+        "libdrm",
+        "libevdev",
+        "libgbm",
+        "libopus",
+        "libxkbcommon",
+        "wayland"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "description": "Moonshine lets you stream games from a Linux PC to any device running\nMoonlight. Each stream runs in its own isolated compositor, separate\nfrom the desktop environment, so no monitor or active desktop session\nis required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\nHDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\nThe package also ships the Moonshine Vulkan WSI layer\n(share/vulkan/implicit_layer.d) and reference systemd/udev integration\nfiles (share/moonshine).",
+      "dev_url": "https://github.com/hgaiser/moonshine",
+      "home": "https://github.com/hgaiser/moonshine",
+      "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
+      "license_file": "LICENSE",
+      "summary": "Headless streaming server for Moonlight clients, written in Rust"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": "export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n# bindgen needs clang's builtin headers (stdbool.h etc.)\nexport BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\ncargo auditable build --release --locked -p moonshine -p moonshine-wsi\nRELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\ninstall -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\ninstall -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n# The Vulkan loader resolves relative library_path entries relative to the manifest location\nsed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n  dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\ninstall -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\ninstall -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\ninstall -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\ninstall -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\ncargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "tdejager"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "moonshine",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "cmake",
+            "make",
+            "pkg-config",
+            "git",
+            "clang",
+            "clangdev",
+            "libclang"
+          ],
+          "host": [
+            "libcxx-devel",
+            "libevdev",
+            "libopus",
+            "libdrm",
+            "libgbm",
+            "wayland",
+            "libxkbcommon"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "moonshine --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "moonshine"
+              ],
+              "files": [
+                "lib/moonshine/vulkan-layers/libmoonshine_wsi.so",
+                "share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json",
+                "share/moonshine/60-moonshine.rules",
+                "share/moonshine/moonshine-modules.conf",
+                "share/moonshine/moonshine@.service"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "0.12.0"
+      }
+    ],
+    "package": {
+      "name": "moonshine",
+      "version": "0.12.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cmake",
+        "make",
+        "pkg-config",
+        "git",
+        "clang",
+        "clangdev",
+        "libclang"
+      ],
+      "host": [
+        "libcxx-devel",
+        "libevdev",
+        "libopus",
+        "libdrm",
+        "libgbm",
+        "wayland",
+        "libxkbcommon"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "3358beafdbeff78f155a0e161468838a683fd6bec03824147ae16986be6bfd56",
+      "url": "https://github.com/hgaiser/moonshine/archive/refs/tags/v0.12.0.tar.gz"
+    }
+  },
+  "name": "moonshine",
+  "outputs_names": {
+    "__set__": true,
+    "elements": [
+      "moonshine"
+    ]
+  },
+  "parsing_error": false,
+  "platforms": [
+    "linux_64"
+  ],
+  "pr_info": {
+    "__lazy_json__": "pr_info/moonshine.json"
+  },
+  "raw_meta_yaml": "context:\n  version: \"0.12.0\"\n\npackage:\n  name: moonshine\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/hgaiser/moonshine/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 3358beafdbeff78f155a0e161468838a683fd6bec03824147ae16986be6bfd56\n\nbuild:\n  number: 0\n  skip:\n    - not linux\n  script:\n    env:\n      # LTO is disabled upstream (see the AUR PKGBUILD's !lto option)\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content: |\n      export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n      # bindgen needs clang's builtin headers (stdbool.h etc.)\n      export BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\n      cargo auditable build --release --locked -p moonshine -p moonshine-wsi\n      RELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\n      install -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\n      install -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n      # The Vulkan loader resolves relative library_path entries relative to the manifest location\n      sed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n        dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\n      install -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\n      install -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\n      install -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\n      install -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\n      cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - cmake\n    - make\n    - pkg-config\n    - git\n    - clang\n    - clangdev\n    - libclang\n  host:\n    # inputtino-sys emits link-lib=c++ unconditionally; --as-needed drops it\n    # again at runtime since no libc++ symbols are used\n    - libcxx-devel\n    - libevdev\n    - libopus\n    - libdrm\n    - libgbm\n    - wayland\n    - libxkbcommon\n\ntests:\n  - script: moonshine --help\n  - package_contents:\n      strict: true\n      bin:\n        - moonshine\n      files:\n        exists:\n          - lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n          - share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\n          - share/moonshine/60-moonshine.rules\n          - share/moonshine/moonshine-modules.conf\n          - share/moonshine/moonshine@.service\n\nabout:\n  homepage: https://github.com/hgaiser/moonshine\n  summary: Headless streaming server for Moonlight clients, written in Rust\n  description: |\n    Moonshine lets you stream games from a Linux PC to any device running\n    Moonlight. Each stream runs in its own isolated compositor, separate\n    from the desktop environment, so no monitor or active desktop session\n    is required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\n    HDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\n    The package also ships the Moonshine Vulkan WSI layer\n    (share/vulkan/implicit_layer.d) and reference systemd/udev integration\n    files (share/moonshine).\n  license: BSD-2-Clause\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  repository: https://github.com/hgaiser/moonshine\n\nextra:\n  recipe-maintainers:\n    - tdejager\n",
+  "req": {
+    "__set__": true,
+    "elements": [
+      "c_compiler_stub",
+      "c_stdlib_stub",
+      "cargo-auditable",
+      "cargo-bundle-licenses",
+      "clang",
+      "clangdev",
+      "cmake",
+      "cxx_compiler_stub",
+      "git",
+      "libclang",
+      "libcxx-devel",
+      "libdrm",
+      "libevdev",
+      "libgbm",
+      "libopus",
+      "libxkbcommon",
+      "make",
+      "pkg-config",
+      "rust_compiler_stub",
+      "wayland"
+    ]
+  },
+  "requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "clangdev",
+        "cmake",
+        "cxx_compiler_stub",
+        "git",
+        "libclang",
+        "make",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "libcxx-devel",
+        "libdrm",
+        "libevdev",
+        "libgbm",
+        "libopus",
+        "libxkbcommon",
+        "wayland"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "strong_exports": false,
+  "total_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "clangdev",
+        "cmake",
+        "cxx_compiler_stub",
+        "git",
+        "libclang",
+        "make",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libcxx-devel",
+        "libdrm",
+        "libevdev",
+        "libgbm",
+        "libopus",
+        "libxkbcommon",
+        "wayland"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "url": "https://github.com/hgaiser/moonshine/archive/refs/tags/v0.12.0.tar.gz",
+  "version": "0.12.0",
+  "version_pr_info": {
+    "__lazy_json__": "version_pr_info/moonshine.json"
+  }
+}
