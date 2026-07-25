@@ -1,12 +1,11 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nexpat:\n- '2'\nlibxcb:\n- '1'\nspirv_tools:\n- '2026'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nexpat:\n- '2'\nlibxcb:\n- '1'\nspirv_tools:\n- '2026'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "linux_ppc64le": "linux_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -19,12 +18,13 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "25e7afa123190f3250975583d4d087bb27881e85",
-  "feedstock_hash_ts": 1776834960,
+  "feedstock_hash": "c3d912851db28000fb194bef8406cd2d916b16c0",
+  "feedstock_hash_ts": 1785006146,
   "feedstock_name": "mesalib",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -41,9 +41,10 @@
       "number": "0",
       "run_exports": {
         "weak": [
-          "mesalib"
+          "mesa-lavapipe"
         ]
-      }
+      },
+      "script": "build_lavapipe"
     },
     "extra": {
       "recipe-maintainers": [
@@ -63,10 +64,10 @@
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -105,24 +106,101 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       }
     ],
     "package": {
-      "name": "mesalib",
-      "version": "26.0.3"
+      "name": "mesa-lavapipe",
+      "version": "26.0.8"
     },
     "requirements": {
       "build": [
@@ -155,8 +233,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134",
-      "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz"
+      "sha256": "caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc",
+      "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz"
     }
   },
   "linux_64_requirements": {
@@ -181,13 +259,18 @@
       "elements": [
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -195,7 +278,10 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
+      ]
     },
     "test": {
       "__set__": true,
@@ -218,9 +304,10 @@
       "number": "0",
       "run_exports": {
         "weak": [
-          "mesalib"
+          "mesa-lavapipe"
         ]
-      }
+      },
+      "script": "build_lavapipe"
     },
     "extra": {
       "recipe-maintainers": [
@@ -240,10 +327,10 @@
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -282,24 +369,101 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       }
     ],
     "package": {
-      "name": "mesalib",
-      "version": "26.0.3"
+      "name": "mesa-lavapipe",
+      "version": "26.0.8"
     },
     "requirements": {
       "build": [
@@ -332,8 +496,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134",
-      "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz"
+      "sha256": "caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc",
+      "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz"
     }
   },
   "linux_aarch64_requirements": {
@@ -358,13 +522,18 @@
       "elements": [
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -372,7 +541,10 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
+      ]
     },
     "test": {
       "__set__": true,
@@ -395,9 +567,10 @@
       "number": "0",
       "run_exports": {
         "weak": [
-          "mesalib"
+          "mesa-lavapipe"
         ]
-      }
+      },
+      "script": "build_lavapipe"
     },
     "extra": {
       "recipe-maintainers": [
@@ -417,10 +590,10 @@
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -459,24 +632,101 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       }
     ],
     "package": {
-      "name": "mesalib",
-      "version": "26.0.3"
+      "name": "mesa-lavapipe",
+      "version": "26.0.8"
     },
     "requirements": {
       "build": [
@@ -509,8 +759,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134",
-      "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz"
+      "sha256": "caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc",
+      "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -535,13 +785,18 @@
       "elements": [
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -549,7 +804,10 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
+      ]
     },
     "test": {
       "__set__": true,
@@ -572,9 +830,10 @@
       "number": "0",
       "run_exports": {
         "weak": [
-          "mesalib"
+          "mesa-lavapipe"
         ]
-      }
+      },
+      "script": "build_lavapipe"
     },
     "extra": {
       "recipe-maintainers": [
@@ -594,10 +853,10 @@
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -636,19 +895,68 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       },
       {
         "build": {
@@ -659,65 +967,33 @@
         },
         "name": "mesalib",
         "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cxx_compiler_stub",
-            "meson",
-            "pyyaml",
-            "mako",
-            "packaging",
-            "flex",
-            "bison",
-            "pkg-config",
-            "glslang"
-          ],
-          "host": [
-            "expat",
-            "zlib",
-            "zstd",
-            "libdrm",
-            "spirv-tools",
-            "llvm",
-            "llvmdev",
-            "libxcb",
-            "xorg-libx11",
-            "xorg-xorgproto",
-            "xorg-libxrandr",
-            "xorg-libxshmfence"
-          ],
-          "run": []
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
         },
         "tests": [
           {
-            "requirements": {
-              "run": [
-                "pkg-config"
-              ]
-            },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
-              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
       },
       {
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -756,19 +1032,68 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       },
       {
         "build": {
@@ -778,6 +1103,34 @@
           ]
         },
         "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-lavapipe"
+          ]
+        },
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -816,19 +1169,68 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       },
       {
         "build": {
@@ -838,6 +1240,34 @@
           ]
         },
         "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-lavapipe"
+          ]
+        },
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -876,19 +1306,68 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       },
       {
         "build": {
@@ -898,6 +1377,34 @@
           ]
         },
         "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-lavapipe"
+          ]
+        },
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -936,24 +1443,238 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-lavapipe"
+          ]
+        },
+        "name": "mesa-lavapipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "libdrm",
+            "spirv-tools",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       }
     ],
     "package": {
-      "name": "mesalib",
-      "version": "26.0.3"
+      "name": "mesa-lavapipe",
+      "version": "26.0.8"
     },
     "requirements": {
       "build": [
@@ -986,11 +1707,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134",
-      "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz"
+      "sha256": "caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc",
+      "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz"
     }
   },
-  "name": "mesalib",
+  "name": "mesa-lavapipe",
   "osx_64_meta_yaml": {
     "about": {
       "dev_url": "https://gitlab.freedesktop.org/mesa/mesa",
@@ -1005,9 +1726,10 @@
       "number": "0",
       "run_exports": {
         "weak": [
-          "mesalib"
+          "mesa-lavapipe"
         ]
-      }
+      },
+      "script": "build_lavapipe"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1027,10 +1749,10 @@
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -1069,24 +1791,101 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       }
     ],
     "package": {
-      "name": "mesalib",
-      "version": "26.0.3"
+      "name": "mesa-lavapipe",
+      "version": "26.0.8"
     },
     "requirements": {
       "build": [
@@ -1119,8 +1918,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134",
-      "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz"
+      "sha256": "caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc",
+      "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz"
     }
   },
   "osx_64_requirements": {
@@ -1145,13 +1944,18 @@
       "elements": [
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -1159,7 +1963,10 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
+      ]
     },
     "test": {
       "__set__": true,
@@ -1182,9 +1989,10 @@
       "number": "0",
       "run_exports": {
         "weak": [
-          "mesalib"
+          "mesa-lavapipe"
         ]
-      }
+      },
+      "script": "build_lavapipe"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1204,10 +2012,10 @@
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -1246,24 +2054,101 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       }
     ],
     "package": {
-      "name": "mesalib",
-      "version": "26.0.3"
+      "name": "mesa-lavapipe",
+      "version": "26.0.8"
     },
     "requirements": {
       "build": [
@@ -1296,8 +2181,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134",
-      "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz"
+      "sha256": "caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc",
+      "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz"
     }
   },
   "osx_arm64_requirements": {
@@ -1322,13 +2207,18 @@
       "elements": [
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -1336,7 +2226,10 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
+      ]
     },
     "test": {
       "__set__": true,
@@ -1348,6 +2241,8 @@
   "outputs_names": {
     "__set__": true,
     "elements": [
+      "mesa-lavapipe",
+      "mesa-llvmpipe",
       "mesalib"
     ]
   },
@@ -1363,7 +2258,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/mesalib.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"26.0.3\"\n\npackage:\n  name: mesalib\n  version: ${{ version }}\n\nsource:\n  url: https://archive.mesa3d.org/mesa-${{ version }}.tar.xz\n  sha256: ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134\n  patches:\n    - if: win\n      then:\n        - patches/0001-Add-inteljitevents-module.patch\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    - meson\n    - pyyaml\n    - mako\n    - packaging\n    - if: unix\n      then:\n        - flex\n        - bison\n    - if: win\n      then: winflexbison\n    - pkg-config\n    - if: build_platform != target_platform\n      then:\n        - llvm\n        - llvmdev\n        - if: linux\n          then: libdrm\n    - glslang\n  host:\n    - if: unix\n      then: expat\n    - zlib\n    - zstd\n    - if: linux\n      then: libdrm\n    - spirv-tools\n    - llvm\n    - llvmdev\n    - if: linux\n      then:\n        - libxcb\n        - xorg-libx11\n        - xorg-xorgproto\n        - xorg-libxrandr\n        - xorg-libxshmfence\n    - if: win\n      then:\n        - libxml2-devel\n  run_exports:\n    - ${{ pin_subpackage('mesalib', upper_bound='x.x') }}\n\ntests:\n  - requirements:\n      run:\n        - pkg-config\n    script:\n      - if: linux\n        then:\n          - test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/libGL${SHLIB_EXT}\n      - if: unix\n        then:\n          - test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}\n          - if: x86_64\n            then:\n              - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json\n      - if: aarch64\n        then:\n          - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.aarch64.json\n      - if: ppc64le\n        then:\n          - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.ppc64le.json\n      - if: osx\n        then:\n          - test ! -f $PREFIX/lib/libGLESv1_CM.1${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/libGLESv2.2${SHLIB_EXT}\n          - test ! -f $PREFIX/lib/libGL.1${SHLIB_EXT}\n      - if: win\n        then:\n          - if not exist %LIBRARY_PREFIX%\\lib\\vulkan_lvp.lib exit 1\n          - if not exist %LIBRARY_PREFIX%\\bin\\vulkan_lvp.dll exit 1\n          - if not exist %LIBRARY_PREFIX%\\share\\vulkan\\icd.d\\lvp_icd.x86_64.json exit 1\n\nabout:\n  homepage: https://www.mesa3d.org\n  license: MIT\n  license_family: MIT\n  license_file: docs/license.rst\n  summary: Mesa is an open-source implementation of the OpenGL specification - a system for rendering interactive 3D graphics.\n  repository: https://gitlab.freedesktop.org/mesa/mesa\n  documentation: https://docs.mesa3d.org/\n\nextra:\n  recipe-maintainers:\n    - dnadeau4\n    - doutriaux1\n    - sankhesh\n    - danlipsa\n    - hmaarrfk\n    - downiec\n    - jasonb5\n    - matthiasdiener\n    - JarrettSJohnson\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"26.0.8\"\n\nrecipe:\n  name: mesalib\n  version: ${{ version }}\n\nsource:\n  url: https://archive.mesa3d.org/mesa-${{ version }}.tar.xz\n  sha256: caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc\n  patches:\n    - if: win\n      then:\n        - patches/0001-Add-inteljitevents-module.patch\n        - patches/0002-nir-mark-assert-only-variable.patch\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: mesa-lavapipe\n      version: ${{ version }}\n    build:\n      script: build_lavapipe\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib('c') }}\n        - ${{ compiler('cxx') }}\n        - meson\n        - pyyaml\n        - mako\n        - packaging\n        - if: unix\n          then:\n            - flex\n            - bison\n        - if: win\n          then: winflexbison\n        - pkg-config\n        - if: build_platform != host_platform\n          then:\n            - llvm\n            - llvmdev\n            - if: linux\n              then: libdrm\n        - glslang\n      host:\n        - if: unix\n          then: expat\n        - zlib\n        - zstd\n        - if: linux\n          then: libdrm\n        - spirv-tools\n        - llvm\n        - llvmdev\n        - if: linux\n          then:\n            - libxcb\n            - xorg-libx11\n            - xorg-xorgproto\n            - xorg-libxrandr\n            - xorg-libxshmfence\n        - if: win\n          then:\n            - libxml2-devel\n      run_exports:\n        - ${{ pin_subpackage('mesa-lavapipe', upper_bound='x.x') }}\n    tests:\n      - requirements:\n          run:\n            - pkg-config\n        script:\n          - if: unix\n            then:\n              - test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}\n              - if: x86_64\n                then:\n                  - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json\n          - if: aarch64\n            then:\n              - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.aarch64.json\n          - if: ppc64le\n            then:\n              - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.ppc64le.json\n          - if: win\n            then:\n              - if not exist %LIBRARY_PREFIX%\\lib\\vulkan_lvp.lib exit 1\n              - if not exist %LIBRARY_PREFIX%\\bin\\vulkan_lvp.dll exit 1\n              - if not exist %LIBRARY_PREFIX%\\share\\vulkan\\icd.d\\lvp_icd.x86_64.json exit 1\n\n  - package:\n      name: mesa-kosmickrisp\n      version: ${{ version }}\n    build:\n      skip:\n        - not (osx and arm64)\n      script: build_kosmickrisp\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib('c') }}\n        - ${{ compiler('cxx') }}\n        - meson\n        - pyyaml\n        - mako\n        - packaging\n        - flex\n        - bison\n        - pkg-config\n        - glslang\n      host:\n        - expat\n        - zlib\n        - zstd\n        - spirv-tools\n        - llvm\n        - llvmdev\n        - clangdev\n        - libclc\n        - llvm-spirv\n        - libllvmspirv\n      run_exports:\n        - ${{ pin_subpackage('mesa-kosmickrisp', upper_bound='x.x') }}\n    tests:\n      - script:\n          - test -f $PREFIX/share/vulkan/icd.d/kosmickrisp_mesa_icd.aarch64.json\n\n  - package:\n      name: mesa-llvmpipe\n      version: ${{ version }}\n    build:\n      skip:\n        - osx\n      script: build_llvmpipe\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib('c') }}\n        - ${{ compiler('cxx') }}\n        - meson\n        - pyyaml\n        - mako\n        - packaging\n        - if: unix\n          then:\n            - flex\n            - bison\n        - if: win\n          then: winflexbison\n        - pkg-config\n        - if: build_platform != host_platform\n          then:\n            - llvm\n            - llvmdev\n            - if: linux\n              then: libdrm\n        - glslang\n      host:\n        - if: unix\n          then: expat\n        - zlib\n        - zstd\n        - spirv-tools\n        - if: linux\n          then: libdrm\n        - llvm\n        - llvmdev\n        - if: linux\n          then:\n            - libxcb\n            - xorg-libx11\n            - xorg-libxext\n            - xorg-libxxf86vm\n            - xorg-xorgproto\n            - xorg-libxrandr\n            - xorg-libxshmfence\n            - libglvnd-devel\n            - libegl-devel\n            - libglx-devel\n        - if: win\n          then:\n            - libxml2-devel\n      run_exports:\n        - ${{ pin_subpackage('mesa-llvmpipe', upper_bound='x.x') }}\n    tests:\n      - script:\n          - if: linux\n            then:\n              - test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}\n              - test -f $PREFIX/lib/libgbm.so.1\n              - test -f $PREFIX/lib/libGLX_mesa.so.0\n              - test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}\n              - test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}\n          - if: win\n            then:\n              - if not exist %LIBRARY_PREFIX%\\bin\\opengl32.dll exit 1\n              - if not exist %LIBRARY_PREFIX%\\bin\\libgallium_wgl.dll exit 1\n\n  - package:\n      name: mesalib\n      version: ${{ version }}\n    requirements:\n      run:\n        - ${{ pin_subpackage('mesa-lavapipe', exact=True) }}\n        - if: not osx\n          then:\n            - ${{ pin_subpackage('mesa-llvmpipe', exact=True) }}\n        - if: osx and arm64\n          then:\n            - ${{ pin_subpackage('mesa-kosmickrisp', exact=True) }}\n      run_exports:\n        - ${{ pin_subpackage('mesalib', upper_bound='x.x') }}\n    tests:\n      - script:\n          - if: unix\n            then:\n              - test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}\n              - if: x86_64\n                then:\n                  - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json\n              - if: aarch64\n                then:\n                  - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.aarch64.json\n              - if: ppc64le\n                then:\n                  - test -f $PREFIX/share/vulkan/icd.d/lvp_icd.ppc64le.json\n          - if: linux\n            then:\n              - test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}\n              - test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}\n          - if: osx and arm64\n            then:\n              - test -f $PREFIX/share/vulkan/icd.d/kosmickrisp_mesa_icd.aarch64.json\n          - if: win\n            then:\n              - if not exist %LIBRARY_PREFIX%\\bin\\vulkan_lvp.dll exit 1\n              - if not exist %LIBRARY_PREFIX%\\share\\vulkan\\icd.d\\lvp_icd.x86_64.json exit 1\n              - if not exist %LIBRARY_PREFIX%\\bin\\opengl32.dll exit 1\n              - if not exist %LIBRARY_PREFIX%\\bin\\libgallium_wgl.dll exit 1\n\nabout:\n  homepage: https://www.mesa3d.org\n  license: MIT\n  license_family: MIT\n  license_file: docs/license.rst\n  summary: Mesa is an open-source implementation of the OpenGL specification - a system for rendering interactive 3D graphics.\n  repository: https://gitlab.freedesktop.org/mesa/mesa\n  documentation: https://docs.mesa3d.org/\n\nextra:\n  recipe-maintainers:\n    - dnadeau4\n    - doutriaux1\n    - sankhesh\n    - danlipsa\n    - hmaarrfk\n    - downiec\n    - jasonb5\n    - matthiasdiener\n    - JarrettSJohnson\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1375,18 +2270,25 @@
       "flex",
       "glslang",
       "libdrm",
+      "libegl-devel",
+      "libglvnd-devel",
+      "libglx-devel",
       "libxcb",
       "llvm",
       "llvmdev",
       "mako",
+      "mesa-lavapipe",
+      "mesa-llvmpipe",
       "meson",
       "packaging",
       "pkg-config",
       "pyyaml",
       "spirv-tools",
       "xorg-libx11",
+      "xorg-libxext",
       "xorg-libxrandr",
       "xorg-libxshmfence",
+      "xorg-libxxf86vm",
       "xorg-xorgproto",
       "zlib",
       "zstd"
@@ -1417,13 +2319,18 @@
         "cxx_compiler_stub",
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -1434,7 +2341,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
       ]
     },
     "test": {
@@ -1467,13 +2376,18 @@
       "elements": [
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -1481,7 +2395,10 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
+      ]
     },
     "test": {
       "__set__": true,
@@ -1490,8 +2407,8 @@
       ]
     }
   },
-  "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz",
-  "version": "26.0.3",
+  "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz",
+  "version": "26.0.8",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/mesalib.json"
   },
@@ -1509,9 +2426,10 @@
       "number": "0",
       "run_exports": {
         "weak": [
-          "mesalib"
+          "mesa-lavapipe"
         ]
-      }
+      },
+      "script": "build_lavapipe"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1531,10 +2449,10 @@
         "build": {
           "strong": [],
           "weak": [
-            "mesalib"
+            "mesa-lavapipe"
           ]
         },
-        "name": "mesalib",
+        "name": "mesa-lavapipe",
         "requirements": {
           "build": [
             "c_compiler_stub",
@@ -1573,24 +2491,101 @@
               ]
             },
             "script": [
-              "test ! -f $PREFIX/lib/dri/kms_swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libgbm${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv1_CM${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGLESv2${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libEGL${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libGL${SHLIB_EXT}",
               "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
               "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json"
             ]
           }
         ],
-        "version": "26.0.3"
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesa-llvmpipe"
+          ]
+        },
+        "name": "mesa-llvmpipe",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "meson",
+            "pyyaml",
+            "mako",
+            "packaging",
+            "flex",
+            "bison",
+            "pkg-config",
+            "glslang"
+          ],
+          "host": [
+            "expat",
+            "zlib",
+            "zstd",
+            "spirv-tools",
+            "libdrm",
+            "llvm",
+            "llvmdev",
+            "libxcb",
+            "xorg-libx11",
+            "xorg-libxext",
+            "xorg-libxxf86vm",
+            "xorg-xorgproto",
+            "xorg-libxrandr",
+            "xorg-libxshmfence",
+            "libglvnd-devel",
+            "libegl-devel",
+            "libglx-devel"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/dri/swrast_dri${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgbm.so.1",
+              "test -f $PREFIX/lib/libGLX_mesa.so.0",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "mesalib"
+          ]
+        },
+        "name": "mesalib",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "mesa-lavapipe",
+            "mesa-llvmpipe"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f $PREFIX/lib/libvulkan_lvp${SHLIB_EXT}",
+              "test -f $PREFIX/share/vulkan/icd.d/lvp_icd.x86_64.json",
+              "test -f $PREFIX/lib/libEGL_mesa${SHLIB_EXT}",
+              "test -f $PREFIX/lib/libgallium-*${SHLIB_EXT}"
+            ]
+          }
+        ],
+        "version": "26.0.8"
       }
     ],
     "package": {
-      "name": "mesalib",
-      "version": "26.0.3"
+      "name": "mesa-lavapipe",
+      "version": "26.0.8"
     },
     "requirements": {
       "build": [
@@ -1623,8 +2618,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "ddb7443d328e89aa45b4b6b80f077bf937f099daeca8ba48cabe32aab769e134",
-      "url": "https://archive.mesa3d.org/mesa-26.0.3.tar.xz"
+      "sha256": "caf1c0061a68e88dfa74967a7e780c0e85d65b6c4e334cd69095a5dc54ad78bc",
+      "url": "https://archive.mesa3d.org/mesa-26.0.8.tar.xz"
     }
   },
   "win_64_requirements": {
@@ -1649,13 +2644,18 @@
       "elements": [
         "expat",
         "libdrm",
+        "libegl-devel",
+        "libglvnd-devel",
+        "libglx-devel",
         "libxcb",
         "llvm",
         "llvmdev",
         "spirv-tools",
         "xorg-libx11",
+        "xorg-libxext",
         "xorg-libxrandr",
         "xorg-libxshmfence",
+        "xorg-libxxf86vm",
         "xorg-xorgproto",
         "zlib",
         "zstd"
@@ -1663,7 +2663,10 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "mesa-lavapipe",
+        "mesa-llvmpipe"
+      ]
     },
     "test": {
       "__set__": true,
