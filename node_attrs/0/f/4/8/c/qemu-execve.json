@@ -20,8 +20,8 @@
       "linux_aarch64": "default"
     }
   },
-  "feedstock_hash": "1ca4364b36f74063f684fa60f04113e06e716638",
-  "feedstock_hash_ts": 1785004131,
+  "feedstock_hash": "63a6b5f9c0b725fe4d5f7133cc0b03b2bc504079",
+  "feedstock_hash_ts": 1785096321,
   "feedstock_name": "qemu-execve",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -34,7 +34,7 @@
       "summary": "QEMU linux-user emulator with execve interception for conda cross-compilation"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "env": {
           "CONDA_QEMU_TARGET": "s390x"
@@ -462,7 +462,7 @@
       "summary": "QEMU linux-user emulator with execve interception for conda cross-compilation"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "env": {
           "CONDA_QEMU_TARGET": "s390x"
@@ -477,86 +477,6 @@
       ]
     },
     "outputs": [
-      {
-        "build": null,
-        "name": "qemu-execve-aarch64",
-        "requirements": {
-          "build": [
-            "zig_compiler_stub",
-            "bash >=5.2",
-            "git",
-            "meson",
-            "ninja",
-            "pip",
-            "pkg-config",
-            "python 3.12.*",
-            "qemu.qmp ==0.0.5",
-            "setuptools",
-            "wheel"
-          ],
-          "host": [
-            "glib",
-            "libcapstone",
-            "libslirp",
-            "zlib"
-          ],
-          "run": [
-            "libcapstone",
-            "libglib"
-          ]
-        },
-        "tests": [
-          {
-            "package_contents": {
-              "bin": [
-                "qemu-aarch64",
-                "qemu-execve-aarch64"
-              ],
-              "files": [
-                "etc/conda/activate.d/qemu-execve-aarch64-activate.sh",
-                "etc/conda/deactivate.d/qemu-execve-aarch64-deactivate.sh",
-                "etc/conda/test-files/qemu-execve-aarch64/*"
-              ],
-              "strict": true
-            }
-          },
-          {
-            "files": {
-              "recipe": [
-                "tests/hello_from.c",
-                "tests/execve_call.c"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "zig_linux-aarch64"
-              ]
-            },
-            "script": [
-              "test -n \"${QEMU_LD_PREFIX}\"",
-              "test -n \"${QEMU_EXECVE}\"",
-              "qemu-${{ tg_ }} --version | grep ${{ version }}",
-              "qemu-execve-${{ tg_ }} --version | grep ${{ version }}",
-              "export QEMU_CPU=${{ \"power9\" if tg_ == \"ppc64le\" else \"max\" }}",
-              "export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)",
-              "${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o hello_from tests/hello_from.c",
-              "${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o execve_call tests/execve_call.c",
-              "qemu-${{ tg_ }} ./hello_from ${{ tg_ }} > output.txt",
-              "grep -q ${{ tg_ }} output.txt && { echo 'QEMU vanilla executes binary: OK'; }",
-              "qemu-execve-${{ tg_ }} ./hello_from ${{ tg_ }} > output_execve.txt",
-              "grep -q ${{ tg_ }} output_execve.txt && { echo 'QEMU execve executes binary: OK'; }",
-              "QEMU_EXECVE= qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_host.txt 2>&1 || true",
-              "grep -q 'hello_from' ls_host.txt && { echo 'execve() calls native ld without QEMU_EXECVE: OK'; }",
-              "qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_redirect.txt 2>&1 || true",
-              "! grep -q 'hello_from' ls_redirect.txt",
-              "grep -q Invalid ls_redirect.txt && { echo 'Invalid exec for native /bin/ls with EXECVE flag: OK'; }",
-              "qemu-execve-${{ tg_ }} ./execve_call ./hello_from EXECVE > execve_test.txt 2>&1 || true",
-              "grep -q 'EXECVE' execve_test.txt && { echo 'execve() calls emulated arch ld with QEMU_EXECVE set: OK'; }"
-            ]
-          }
-        ],
-        "version": "11.0.3"
-      },
       {
         "build": null,
         "name": "qemu-execve-ppc64le",
@@ -875,7 +795,6 @@
       "elements": [
         "gcc_linux-ppc64le",
         "gcc_linux-s390x",
-        "zig_linux-aarch64",
         "zig_linux-riscv64"
       ]
     }
@@ -890,7 +809,7 @@
       "summary": "QEMU linux-user emulator with execve interception for conda cross-compilation"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "env": {
           "CONDA_QEMU_TARGET": "s390x"
@@ -1225,86 +1144,6 @@
       },
       {
         "build": null,
-        "name": "qemu-execve-aarch64",
-        "requirements": {
-          "build": [
-            "zig_compiler_stub",
-            "bash >=5.2",
-            "git",
-            "meson",
-            "ninja",
-            "pip",
-            "pkg-config",
-            "python 3.12.*",
-            "qemu.qmp ==0.0.5",
-            "setuptools",
-            "wheel"
-          ],
-          "host": [
-            "glib",
-            "libcapstone",
-            "libslirp",
-            "zlib"
-          ],
-          "run": [
-            "libcapstone",
-            "libglib"
-          ]
-        },
-        "tests": [
-          {
-            "package_contents": {
-              "bin": [
-                "qemu-aarch64",
-                "qemu-execve-aarch64"
-              ],
-              "files": [
-                "etc/conda/activate.d/qemu-execve-aarch64-activate.sh",
-                "etc/conda/deactivate.d/qemu-execve-aarch64-deactivate.sh",
-                "etc/conda/test-files/qemu-execve-aarch64/*"
-              ],
-              "strict": true
-            }
-          },
-          {
-            "files": {
-              "recipe": [
-                "tests/hello_from.c",
-                "tests/execve_call.c"
-              ]
-            },
-            "requirements": {
-              "run": [
-                "zig_linux-aarch64"
-              ]
-            },
-            "script": [
-              "test -n \"${QEMU_LD_PREFIX}\"",
-              "test -n \"${QEMU_EXECVE}\"",
-              "qemu-${{ tg_ }} --version | grep ${{ version }}",
-              "qemu-execve-${{ tg_ }} --version | grep ${{ version }}",
-              "export QEMU_CPU=${{ \"power9\" if tg_ == \"ppc64le\" else \"max\" }}",
-              "export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)",
-              "${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o hello_from tests/hello_from.c",
-              "${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o execve_call tests/execve_call.c",
-              "qemu-${{ tg_ }} ./hello_from ${{ tg_ }} > output.txt",
-              "grep -q ${{ tg_ }} output.txt && { echo 'QEMU vanilla executes binary: OK'; }",
-              "qemu-execve-${{ tg_ }} ./hello_from ${{ tg_ }} > output_execve.txt",
-              "grep -q ${{ tg_ }} output_execve.txt && { echo 'QEMU execve executes binary: OK'; }",
-              "QEMU_EXECVE= qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_host.txt 2>&1 || true",
-              "grep -q 'hello_from' ls_host.txt && { echo 'execve() calls native ld without QEMU_EXECVE: OK'; }",
-              "qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_redirect.txt 2>&1 || true",
-              "! grep -q 'hello_from' ls_redirect.txt",
-              "grep -q Invalid ls_redirect.txt && { echo 'Invalid exec for native /bin/ls with EXECVE flag: OK'; }",
-              "qemu-execve-${{ tg_ }} ./execve_call ./hello_from EXECVE > execve_test.txt 2>&1 || true",
-              "grep -q 'EXECVE' execve_test.txt && { echo 'execve() calls emulated arch ld with QEMU_EXECVE set: OK'; }"
-            ]
-          }
-        ],
-        "version": "11.0.3"
-      },
-      {
-        "build": null,
         "name": "qemu-execve-ppc64le",
         "requirements": {
           "build": [
@@ -1601,7 +1440,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/qemu-execve.json"
   },
-  "raw_meta_yaml": "context:\n  build_number: 0\n  version: \"11.0.3\"\n\n  # Computed from tg_ variant (target architecture)\n  qemu_user_sysroot: ${{ \"powerpc64le\" if tg_ == \"ppc64le\" else tg_ }}\n\nrecipe:\n  name: qemu-execve-split\n  version: ${{ version }}\n\nsource:\n  url: https://download.qemu.org/qemu-${{ version }}.tar.xz\n  sha256: da5fcffc32762820568b828ed430a728864d34d50b6d2f30358597760cbb0523\n  target_directory: qemu_source\n  patches:\n    - patches/base/missing-RESOLVE_CACHED.patch\n    - patches/base/0001-linux-user-signal-fixes.patch\n    - patches/base/0002-linux-user-syscall-fixes.patch\n    - patches/base/configure-host-os-override.patch\n\nbuild:\n  number: ${{ build_number }}\n  skip: not linux\n\noutputs:\n  # =========================================================================\n  # qemu-execve-{arch}: QEMU linux-user with vanilla + execve-patched binaries\n  # =========================================================================\n  - package:\n      name: qemu-execve-${{ tg_ }}\n    build:\n      skip: not linux\n      script:\n        file: build.sh\n        env:\n          CONDA_QEMU_TARGET: \"${{ tg_ }}\"\n      files:\n        include:\n          - bin/qemu-${{ tg_ }}\n          - bin/qemu-execve-${{ tg_ }}\n          - etc/conda/activate.d/qemu-execve-${{ tg_ }}-activate.sh\n          - etc/conda/deactivate.d/qemu-execve-${{ tg_ }}-deactivate.sh\n      dynamic_linking:\n        overdepending_behavior: \"error\"\n        overlinking_behavior: \"error\"\n        missing_dso_allowlist:\n          - if: build_platform == \"linux-64\"\n            then:\n              - ld-linux-x86-64.so.2\n          - if: build_platform == \"linux-aarch64\"\n            then:\n              - ld-linux-aarch64.so.1\n          - libc.so.6\n          - libm.so.6\n          - libpthread.so.0\n          - librt.so.1\n          - libdl.so.2\n          - libresolv.so.2\n          - libutil.so.1\n    requirements:\n      ignore_run_exports:\n        from_package:\n          - libslirp\n          - if: tg_ != \"aarch64\"\n            then:\n              - zlib\n      build:\n        - ${{ compiler('zig') }}\n        - bash >=5.2\n        - git\n        - meson\n        - ninja\n        - pip\n        - pkg-config\n        - python 3.12.*\n        # - if: build_platform != host_platform\n        #   then:\n        #     - cross-python_${{ host_platform }} 3.12.*\n        - qemu.qmp ==0.0.5\n        - setuptools\n        - wheel\n      host:\n        - if: not riscv64\n          then:\n            - glib\n            - libcapstone\n            - libslirp\n            - zlib\n      run:\n        - if: not riscv64\n          then:\n            - libcapstone\n            - libglib\n    tests:\n      - package_contents:\n          strict: true\n          bin:\n            - qemu-${{ tg_ }}\n            - qemu-execve-${{ tg_ }}\n          files:\n            - etc/conda/activate.d/qemu-execve-${{ tg_ }}-activate.sh\n            - etc/conda/deactivate.d/qemu-execve-${{ tg_ }}-deactivate.sh\n            # Testing artifacts\n            - etc/conda/test-files/qemu-execve-${{ tg_ }}/*\n      - script:\n          - test -n \"${QEMU_LD_PREFIX}\"\n          - test -n \"${QEMU_EXECVE}\"\n\n          # Vanilla binary tests\n          - qemu-${{ tg_ }} --version | grep ${{ version }}\n\n          # Execve binary tests\n          - qemu-execve-${{ tg_ }} --version | grep ${{ version }}\n\n          - export QEMU_CPU=${{ \"power9\" if tg_ == \"ppc64le\" else \"max\" }}\n\n          - if: tg_ != \"ppc64le\" and tg_ != \"s390x\"\n            then:\n              - export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o hello_from tests/hello_from.c\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o execve_call tests/execve_call.c\n            else:\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-gcc -static -o hello_from tests/hello_from.c\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-gcc -static -o execve_call tests/execve_call.c\n\n          # Test 1: Normal execution via vanilla binary\n          - qemu-${{ tg_ }} ./hello_from ${{ tg_ }} > output.txt\n          - \"grep -q ${{ tg_ }} output.txt && { echo 'QEMU vanilla executes binary: OK'; }\"\n\n          # Test 2: Normal execution via execve binary\n          - qemu-execve-${{ tg_ }} ./hello_from ${{ tg_ }} > output_execve.txt\n          - \"grep -q ${{ tg_ }} output_execve.txt && { echo 'QEMU execve executes binary: OK'; }\"\n\n          # Test 3: execve() without QEMU_EXECVE (should work - runs on host)\n          - \"QEMU_EXECVE= qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_host.txt 2>&1 || true\"\n          - \"grep -q 'hello_from' ls_host.txt && { echo 'execve() calls native ld without QEMU_EXECVE: OK'; }\"\n\n          # Test 4: execve() with QEMU_EXECVE (should fail - wrong ELF)\n          - qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_redirect.txt 2>&1 || true\n          - \"! grep -q 'hello_from' ls_redirect.txt\"\n          - \"grep -q Invalid ls_redirect.txt && { echo 'Invalid exec for native /bin/ls with EXECVE flag: OK'; }\"\n\n          # Test 5: execve() of cross-compiled binary with QEMU_EXECVE\n          - qemu-execve-${{ tg_ }} ./execve_call ./hello_from EXECVE > execve_test.txt 2>&1 || true\n          - \"grep -q 'EXECVE' execve_test.txt && { echo 'execve() calls emulated arch ld with QEMU_EXECVE set: OK'; }\"\n\n        requirements:\n          run:\n            - if: tg_ != \"ppc64le\" and tg_ != \"s390x\"\n              then:\n                - zig_linux-${{ tg_ }}\n              else:\n                - gcc_linux-${{ tg_ }}\n        files:\n          recipe:\n            - tests/hello_from.c\n            - tests/execve_call.c\n\nabout:\n  homepage: https://gitlab.com/qemu-project/qemu\n  summary: 'QEMU linux-user emulator with execve interception for conda cross-compilation'\n  description: |\n    Ships two binaries per target architecture:\n    - qemu-{arch}: vanilla QEMU linux-user with stability patches\n    - qemu-execve-{arch}: adds execve interception for conda cross-compile workflows\n  license: GPL-2.0-only\n  license_file:\n    - qemu_source/LICENSE\n\nextra:\n  recipe-maintainers:\n    - MementoRC\n",
+  "raw_meta_yaml": "context:\n  build_number: 1\n  version: \"11.0.3\"\n\n  # Computed from tg_ variant (target architecture)\n  qemu_user_sysroot: ${{ \"powerpc64le\" if tg_ == \"ppc64le\" else tg_ }}\n  x_target: ${{ \"linux-\" ~ (\"64\" if tg_ == \"x86_64\" else tg_) }}\n  \nrecipe:\n  name: qemu-execve-split\n  version: ${{ version }}\n\nsource:\n  url: https://download.qemu.org/qemu-${{ version }}.tar.xz\n  sha256: da5fcffc32762820568b828ed430a728864d34d50b6d2f30358597760cbb0523\n  target_directory: qemu_source\n  patches:\n    - patches/base/missing-RESOLVE_CACHED.patch\n    - patches/base/0001-linux-user-signal-fixes.patch\n    - patches/base/0002-linux-user-syscall-fixes.patch\n    - patches/base/configure-host-os-override.patch\n\nbuild:\n  number: ${{ build_number }}\n  skip: not linux or x_target == build_platform or x_target == \"linux-64\"\n\noutputs:\n  # =========================================================================\n  # qemu-execve-{arch}: QEMU linux-user with vanilla + execve-patched binaries\n  # =========================================================================\n  - package:\n      name: qemu-execve-${{ tg_ }}\n    build:\n      script:\n        file: build.sh\n        env:\n          CONDA_QEMU_TARGET: \"${{ tg_ }}\"\n      files:\n        include:\n          - bin/qemu-${{ tg_ }}\n          - bin/qemu-execve-${{ tg_ }}\n          - etc/conda/activate.d/qemu-execve-${{ tg_ }}-activate.sh\n          - etc/conda/deactivate.d/qemu-execve-${{ tg_ }}-deactivate.sh\n      dynamic_linking:\n        overdepending_behavior: \"error\"\n        overlinking_behavior: \"error\"\n        missing_dso_allowlist:\n          - if: build_platform == \"linux-64\"\n            then:\n              - ld-linux-x86-64.so.2\n          - if: build_platform == \"linux-aarch64\"\n            then:\n              - ld-linux-aarch64.so.1\n          - libc.so.6\n          - libm.so.6\n          - libpthread.so.0\n          - librt.so.1\n          - libdl.so.2\n          - libresolv.so.2\n          - libutil.so.1\n    requirements:\n      ignore_run_exports:\n        from_package:\n          - libslirp\n          - if: tg_ != \"aarch64\"\n            then:\n              - zlib\n      build:\n        - ${{ compiler('zig') }}\n        - bash >=5.2\n        - git\n        - meson\n        - ninja\n        - pip\n        - pkg-config\n        - python 3.12.*\n        # - if: build_platform != host_platform\n        #   then:\n        #     - cross-python_${{ host_platform }} 3.12.*\n        - qemu.qmp ==0.0.5\n        - setuptools\n        - wheel\n      host:\n        - if: not riscv64\n          then:\n            - glib\n            - libcapstone\n            - libslirp\n            - zlib\n      run:\n        - if: not riscv64\n          then:\n            - libcapstone\n            - libglib\n    tests:\n      - package_contents:\n          strict: true\n          bin:\n            - qemu-${{ tg_ }}\n            - qemu-execve-${{ tg_ }}\n          files:\n            - etc/conda/activate.d/qemu-execve-${{ tg_ }}-activate.sh\n            - etc/conda/deactivate.d/qemu-execve-${{ tg_ }}-deactivate.sh\n            # Testing artifacts\n            - etc/conda/test-files/qemu-execve-${{ tg_ }}/*\n      - script:\n          - test -n \"${QEMU_LD_PREFIX}\"\n          - test -n \"${QEMU_EXECVE}\"\n\n          # Vanilla binary tests\n          - qemu-${{ tg_ }} --version | grep ${{ version }}\n\n          # Execve binary tests\n          - qemu-execve-${{ tg_ }} --version | grep ${{ version }}\n\n          - export QEMU_CPU=${{ \"power9\" if tg_ == \"ppc64le\" else \"max\" }}\n\n          - if: tg_ != \"ppc64le\" and tg_ != \"s390x\"\n            then:\n              - export ZIG_GLOBAL_CACHE_DIR=$(mktemp -d)\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o hello_from tests/hello_from.c\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-zig cc -target ${{ qemu_user_sysroot }}-linux-musl -o execve_call tests/execve_call.c\n            else:\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-gcc -static -o hello_from tests/hello_from.c\n              - ${{ qemu_user_sysroot }}-conda-linux-gnu-gcc -static -o execve_call tests/execve_call.c\n\n          # Test 1: Normal execution via vanilla binary\n          - qemu-${{ tg_ }} ./hello_from ${{ tg_ }} > output.txt\n          - \"grep -q ${{ tg_ }} output.txt && { echo 'QEMU vanilla executes binary: OK'; }\"\n\n          # Test 2: Normal execution via execve binary\n          - qemu-execve-${{ tg_ }} ./hello_from ${{ tg_ }} > output_execve.txt\n          - \"grep -q ${{ tg_ }} output_execve.txt && { echo 'QEMU execve executes binary: OK'; }\"\n\n          # Test 3: execve() without QEMU_EXECVE (should work - runs on host)\n          - \"QEMU_EXECVE= qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_host.txt 2>&1 || true\"\n          - \"grep -q 'hello_from' ls_host.txt && { echo 'execve() calls native ld without QEMU_EXECVE: OK'; }\"\n\n          # Test 4: execve() with QEMU_EXECVE (should fail - wrong ELF)\n          - qemu-execve-${{ tg_ }} ./execve_call /bin/ls > ls_redirect.txt 2>&1 || true\n          - \"! grep -q 'hello_from' ls_redirect.txt\"\n          - \"grep -q Invalid ls_redirect.txt && { echo 'Invalid exec for native /bin/ls with EXECVE flag: OK'; }\"\n\n          # Test 5: execve() of cross-compiled binary with QEMU_EXECVE\n          - qemu-execve-${{ tg_ }} ./execve_call ./hello_from EXECVE > execve_test.txt 2>&1 || true\n          - \"grep -q 'EXECVE' execve_test.txt && { echo 'execve() calls emulated arch ld with QEMU_EXECVE set: OK'; }\"\n\n        requirements:\n          run:\n            - if: tg_ != \"ppc64le\" and tg_ != \"s390x\"\n              then:\n                - zig_${{ x_target }}\n              else:\n                - gcc_${{ x_target }}\n        files:\n          recipe:\n            - tests/hello_from.c\n            - tests/execve_call.c\n\nabout:\n  homepage: https://gitlab.com/qemu-project/qemu\n  summary: 'QEMU linux-user emulator with execve interception for conda cross-compilation'\n  description: |\n    Ships two binaries per target architecture:\n    - qemu-{arch}: vanilla QEMU linux-user with stability patches\n    - qemu-execve-{arch}: adds execve interception for conda cross-compile workflows\n  license: GPL-2.0-only\n  license_file:\n    - qemu_source/LICENSE\n\nextra:\n  recipe-maintainers:\n    - MementoRC\n",
   "req": {
     "__set__": true,
     "elements": [
