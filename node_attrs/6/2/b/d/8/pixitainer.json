@@ -1,20 +1,28 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\n",
   "conda-forge.yml": {
+    "bot": {
+      "automerge": true,
+      "check_solvable": true,
+      "inspection": "update-grayskull",
+      "run_deps_from_wheel": true
+    },
     "conda_build": {
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "3c8557d9f985a480d1921582c320f32edf9353b7",
-  "feedstock_hash_ts": 1780936197,
+  "feedstock_hash": "d71583d6d05c9eb38c374be05c5ce08b4307022e",
+  "feedstock_hash_ts": 1785091274,
   "feedstock_name": "pixitainer",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -29,7 +37,7 @@
     },
     "build": {
       "noarch": "generic",
-      "number": "0",
+      "number": "1",
       "script": [
         "mkdir -p $PREFIX/bin",
         "mkdir -p $PREFIX/opt/pixitainer",
@@ -148,7 +156,7 @@
     },
     "build": {
       "noarch": "generic",
-      "number": "0",
+      "number": "1",
       "script": [
         "mkdir -p $PREFIX/bin",
         "mkdir -p $PREFIX/opt/pixitainer",
@@ -247,7 +255,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pixitainer.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  name: pixitainer\n  version: \"0.7.1\"\n\nrecipe:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/RaphaelRibes/pixitainer/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: c1c1827782509a2b38b52f833517f81a4826871126f8784a6a70e1a3e5cf7054\n\nbuild:\n  number: 0\n  # Both outputs depend on Linux-only runtimes (apptainer for the SIF\n  # variant, docker-cli for the docker variant — neither has osx-* or\n  # win-* conda-forge builds). __linux runtime constraint already prevents\n  # install on non-Linux; \n  skip: not linux\n\noutputs:\n  - package:\n      name: ${{ name }}\n    build:\n      noarch: generic\n      script:\n        - mkdir -p $PREFIX/bin\n        - mkdir -p $PREFIX/opt/pixitainer\n        - cp lib/common.sh $PREFIX/opt/pixitainer/common.sh\n        - cp lib/sif.sh $PREFIX/opt/pixitainer/sif.sh\n        - cp lib/bootstrap.sh $PREFIX/opt/pixitainer/bootstrap.sh\n        - cp pixi-containerize $PREFIX/bin/pixi-containerize\n        - chmod +x $PREFIX/bin/pixi-containerize\n    requirements:\n      run:\n        - __linux\n        - apptainer >=1.4.5\n        - bash\n    tests:\n      - script:\n          - test -x ${PREFIX}/bin/pixi-containerize\n          - test -f ${PREFIX}/opt/pixitainer/common.sh\n          - test -f ${PREFIX}/opt/pixitainer/sif.sh\n          - test -f ${PREFIX}/opt/pixitainer/bootstrap.sh\n          - pixi-containerize --help\n    about:\n      summary: Containerize Pixi workspaces into Apptainer/SIF images with a single command\n      description: |\n        Pixitainer wraps Apptainer to build SIF images from a `pixi.toml`\n        workspace with a single command. The `pixi-containerize` CLI handles\n        bootstrap, build, and metadata so reproducible-research pipelines can\n        be shipped as portable container images without writing a Dockerfile\n        or Singularity definition file by hand.\n\n  - package:\n      name: ${{ name }}-docker\n    build:\n      noarch: generic\n      script:\n        - mkdir -p $PREFIX/bin\n        - mkdir -p $PREFIX/opt/pixitainer\n        - cp lib/common.sh $PREFIX/opt/pixitainer/common.sh\n        - cp lib/bootstrap.sh $PREFIX/opt/pixitainer/bootstrap.sh\n        - cp pixi-containerize-docker $PREFIX/bin/pixi-containerize-docker\n        - chmod +x $PREFIX/bin/pixi-containerize-docker\n    requirements:\n      run:\n        - __linux\n        - docker-cli >=29.0.0\n        - bash\n    tests:\n      - script:\n          - test -x ${PREFIX}/bin/pixi-containerize-docker\n          - test -f ${PREFIX}/opt/pixitainer/common.sh\n          - test -f ${PREFIX}/opt/pixitainer/bootstrap.sh\n          - pixi-containerize-docker --help\n    about:\n      summary: Containerize Pixi workspaces into Docker images with a single command\n      description: |\n        `pixitainer-docker` is the Docker-backed sibling of `pixitainer`. It\n        wraps `docker build` to produce a container image from a `pixi.toml`\n        workspace with a single command, handling bootstrap, build, and\n        metadata so reproducible-research pipelines can be shipped as portable\n        Docker images without writing a Dockerfile by hand.\n\nabout:\n  summary: Containerize Pixi workspaces into Apptainer/SIF or Docker images with a single command\n  license: BSD-3-Clause\n  license_file: LICENSE\n  homepage: https://github.com/RaphaelRibes/pixitainer\n  repository: https://github.com/RaphaelRibes/pixitainer\n  description: |\n    Pixitainer ships two CLIs that turn a Pixi workspace into a portable\n    container image. `pixi-containerize` builds an Apptainer/SIF image;\n    `pixi-containerize-docker` builds a Docker image. Both wrap their\n    respective runtimes so reproducible-research pipelines can be shipped\n    without hand-writing a Dockerfile or Singularity definition file.\n\nextra:\n  recipe-maintainers:\n    - rxm7706\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  name: pixitainer\n  version: \"0.7.1\"\n\nrecipe:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/RaphaelRibes/pixitainer/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: c1c1827782509a2b38b52f833517f81a4826871126f8784a6a70e1a3e5cf7054\n\nbuild:\n  number: 1\n  # Both outputs depend on Linux-only runtimes (apptainer for the SIF\n  # variant, docker-cli for the docker variant — neither has osx-* or\n  # win-* conda-forge builds). __linux runtime constraint already prevents\n  # install on non-Linux; \n  skip: not linux\n\noutputs:\n  - package:\n      name: ${{ name }}\n    build:\n      noarch: generic\n      script:\n        - mkdir -p $PREFIX/bin\n        - mkdir -p $PREFIX/opt/pixitainer\n        - cp lib/common.sh $PREFIX/opt/pixitainer/common.sh\n        - cp lib/sif.sh $PREFIX/opt/pixitainer/sif.sh\n        - cp lib/bootstrap.sh $PREFIX/opt/pixitainer/bootstrap.sh\n        - cp pixi-containerize $PREFIX/bin/pixi-containerize\n        - chmod +x $PREFIX/bin/pixi-containerize\n    requirements:\n      run:\n        - __linux\n        - apptainer >=1.4.5\n        - bash\n    tests:\n      - script:\n          - test -x ${PREFIX}/bin/pixi-containerize\n          - test -f ${PREFIX}/opt/pixitainer/common.sh\n          - test -f ${PREFIX}/opt/pixitainer/sif.sh\n          - test -f ${PREFIX}/opt/pixitainer/bootstrap.sh\n          - pixi-containerize --help\n    about:\n      summary: Containerize Pixi workspaces into Apptainer/SIF images with a single command\n      description: |\n        Pixitainer wraps Apptainer to build SIF images from a `pixi.toml`\n        workspace with a single command. The `pixi-containerize` CLI handles\n        bootstrap, build, and metadata so reproducible-research pipelines can\n        be shipped as portable container images without writing a Dockerfile\n        or Singularity definition file by hand.\n\n  - package:\n      name: ${{ name }}-docker\n    build:\n      noarch: generic\n      script:\n        - mkdir -p $PREFIX/bin\n        - mkdir -p $PREFIX/opt/pixitainer\n        - cp lib/common.sh $PREFIX/opt/pixitainer/common.sh\n        - cp lib/bootstrap.sh $PREFIX/opt/pixitainer/bootstrap.sh\n        - cp pixi-containerize-docker $PREFIX/bin/pixi-containerize-docker\n        - chmod +x $PREFIX/bin/pixi-containerize-docker\n    requirements:\n      run:\n        - __linux\n        - docker-cli >=29.0.0\n        - bash\n    tests:\n      - script:\n          - test -x ${PREFIX}/bin/pixi-containerize-docker\n          - test -f ${PREFIX}/opt/pixitainer/common.sh\n          - test -f ${PREFIX}/opt/pixitainer/bootstrap.sh\n          - pixi-containerize-docker --help\n    about:\n      summary: Containerize Pixi workspaces into Docker images with a single command\n      description: |\n        `pixitainer-docker` is the Docker-backed sibling of `pixitainer`. It\n        wraps `docker build` to produce a container image from a `pixi.toml`\n        workspace with a single command, handling bootstrap, build, and\n        metadata so reproducible-research pipelines can be shipped as portable\n        Docker images without writing a Dockerfile by hand.\n\nabout:\n  summary: Containerize Pixi workspaces into Apptainer/SIF or Docker images with a single command\n  license: BSD-3-Clause\n  license_file: LICENSE\n  homepage: https://github.com/RaphaelRibes/pixitainer\n  repository: https://github.com/RaphaelRibes/pixitainer\n  description: |\n    Pixitainer ships two CLIs that turn a Pixi workspace into a portable\n    container image. `pixi-containerize` builds an Apptainer/SIF image;\n    `pixi-containerize-docker` builds a Docker image. Both wrap their\n    respective runtimes so reproducible-research pipelines can be shipped\n    without hand-writing a Dockerfile or Singularity definition file.\n\nextra:\n  recipe-maintainers:\n    - rxm7706\n",
   "req": {
     "__set__": true,
     "elements": [
