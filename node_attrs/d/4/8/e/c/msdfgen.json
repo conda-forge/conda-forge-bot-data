@@ -16,8 +16,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "0dec69e4639b2644213052f173261f727667b35f",
-  "feedstock_hash_ts": 1785147453,
+  "feedstock_hash": "15a2fb5c06866d722013463fc5cd3f113a3a24f2",
+  "feedstock_hash_ts": 1785158675,
   "feedstock_name": "msdfgen",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -31,7 +31,7 @@
       "summary": "Multi-channel signed distance field generator"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "msdfgen"
@@ -170,7 +170,7 @@
       "summary": "Multi-channel signed distance field generator"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "msdfgen"
@@ -309,7 +309,7 @@
       "summary": "Multi-channel signed distance field generator"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "msdfgen"
@@ -448,7 +448,7 @@
       "summary": "Multi-channel signed distance field generator"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "msdfgen"
@@ -822,7 +822,7 @@
       "summary": "Multi-channel signed distance field generator"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "msdfgen"
@@ -961,7 +961,7 @@
       "summary": "Multi-channel signed distance field generator"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "msdfgen"
@@ -1107,7 +1107,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/msdfgen.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.13\"\n  # conda-forge has no standalone skia package. The skia-pathops sdist\n  # vendors a pinned, self-contained Skia snapshot (no network access\n  # needed at build time) that the skia-pathops feedstock already builds\n  # on every platform this feedstock targets; msdfgen only needs the\n  # same PathOps subset, so those sources are reused here.\n  skia_pathops_version: \"0.9.1\"\n\npackage:\n  name: msdfgen\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/Chlumsky/msdfgen/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: 93cd1ad8918c1a78c5c96e82d4f4c77f0eb86c2e7e8579a0967e54196c4b7167\n    patches:\n      # Upstream da07a9c (Chlumsky/msdfgen#250), first release after\n      # 1.13: v1.13 predates the SkPathBuilder API of the Skia snapshot\n      # built below. Drop when the recipe moves past 1.13.\n      - patches/0001-adapt-to-the-new-version-of-the-skia-api.patch\n  # Fetched on every platform so the license path always resolves; only\n  # built where Skia is enabled (see build.sh).\n  - url: https://pypi.org/packages/source/s/skia-pathops/skia_pathops-${{ skia_pathops_version }}.tar.gz\n    sha256: f1273ef4da23570f33e76e7753908484e5a4a2468f7b1089f9110ccee6293f99\n    target_directory: skia-pathops\n\nbuild:\n  number: 2\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - ninja\n    - if: not ppc64le\n      then:\n        # gn + python drive the trimmed static Skia build\n        - gn\n        - python\n  host:\n    - freetype\n    - tinyxml2\n    - libpng\n    - zlib\n  run_exports:\n    weak:\n      - ${{ pin_subpackage('msdfgen', upper_bound='x.x') }}\n\ntests:\n  - package_contents:\n      include:\n        - msdfgen/msdfgen.h\n      lib:\n        - msdfgen-core\n        - msdfgen-ext\n      bin:\n        - msdfgen\n  - script:\n      - msdfgen --help\n  - if: not ppc64le\n    then:\n      script:\n        # The -nopreprocess option only exists in Skia-enabled builds\n        - if: unix\n          then: msdfgen --help | grep nopreprocess\n        - if: win\n          then: msdfgen --help | findstr nopreprocess\n        # Overlapping squares; resolving them exercises Skia's PathOps.\n        # (Single-quoted so YAML does not treat the '#' contour\n        # terminators as comments.)\n        - 'msdfgen msdf -defineshape \"{ 0, 0; 6, 0; 6, 6; 0, 6; # } { 3, 3; 9, 3; 9, 9; 3, 9; # }\" -dimensions 16 16 -o test-skia.png'\n\nabout:\n  homepage: https://github.com/Chlumsky/msdfgen\n  repository: https://github.com/Chlumsky/msdfgen\n  summary: Multi-channel signed distance field generator\n  description: |\n    This is a utility for generating signed distance fields from vector shapes\n    and font glyphs, which serve as a texture representation that can be used\n    in real-time graphics to efficiently reproduce said shapes. Although it can\n    also be used to generate conventional signed distance fields best known\n    from this Valve paper and perpendicular distance fields, its primary\n    purpose is to generate multi-channel distance fields, using a method I have\n    developed. Unlike monochrome distance fields, they have the ability to\n    reproduce sharp corners almost perfectly by utilizing all three color\n    channels.\n\n    Built with Skia geometry preprocessing (MSDFGEN_USE_SKIA, resolving\n    self-intersections and overlapping contours) on all platforms except\n    linux-ppc64le, matching upstream's default (vcpkg) configuration.\n  license: MIT AND BSD-3-Clause\n  license_file:\n    - LICENSE.txt\n    - skia-pathops/src/cpp/skia-builder/skia/LICENSE\n\nextra:\n  recipe-maintainers:\n    - hmaarrfk\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.13\"\n  # conda-forge has no standalone skia package. A trimmed Skia (m143) is\n  # built from the official sources at the commit the skia-pathops\n  # project pins (via fonttools/skia-builder), a snapshot known to build\n  # self-contained -- a GitHub tarball needs no DEPS fetching.\n  skia_commit: \"da51f0d60ea2b14e845a823dc11b405dbeef42d8\"\n\npackage:\n  name: msdfgen\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/Chlumsky/msdfgen/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: 93cd1ad8918c1a78c5c96e82d4f4c77f0eb86c2e7e8579a0967e54196c4b7167\n    patches:\n      # Upstream da07a9c (Chlumsky/msdfgen#250), first release after\n      # 1.13: v1.13 predates the SkPathBuilder API of the Skia snapshot\n      # built below. Drop when the recipe moves past 1.13.\n      - patches/0001-adapt-to-the-new-version-of-the-skia-api.patch\n  # Fetched on every platform so the license path always resolves; only\n  # built where Skia is enabled (see build.sh).\n  - url: https://github.com/google/skia/archive/${{ skia_commit }}.tar.gz\n    sha256: 63eee9235414e0171dec6b47d54a5b55057c4b38fce4514bdfc8003b5713a761\n    target_directory: skia\n    patches:\n      - patches/0002-include-pathops-in-libskia.patch\n\nbuild:\n  number: 3\n\nrequirements:\n  build:\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - ninja\n    - if: not ppc64le\n      then:\n        # gn + python drive the trimmed static Skia build\n        - gn\n        - python\n  host:\n    - freetype\n    - tinyxml2\n    - libpng\n    - zlib\n  run_exports:\n    weak:\n      - ${{ pin_subpackage('msdfgen', upper_bound='x.x') }}\n\ntests:\n  - package_contents:\n      include:\n        - msdfgen/msdfgen.h\n      lib:\n        - msdfgen-core\n        - msdfgen-ext\n      bin:\n        - msdfgen\n  - script:\n      - msdfgen --help\n  - if: not ppc64le\n    then:\n      script:\n        # The -nopreprocess option only exists in Skia-enabled builds\n        - if: unix\n          then: msdfgen --help | grep nopreprocess\n        - if: win\n          then: msdfgen --help | findstr nopreprocess\n        # Overlapping squares; resolving them exercises Skia's PathOps.\n        # (Single-quoted so YAML does not treat the '#' contour\n        # terminators as comments.)\n        - 'msdfgen msdf -defineshape \"{ 0, 0; 6, 0; 6, 6; 0, 6; # } { 3, 3; 9, 3; 9, 9; 3, 9; # }\" -dimensions 16 16 -o test-skia.png'\n\nabout:\n  homepage: https://github.com/Chlumsky/msdfgen\n  repository: https://github.com/Chlumsky/msdfgen\n  summary: Multi-channel signed distance field generator\n  description: |\n    This is a utility for generating signed distance fields from vector shapes\n    and font glyphs, which serve as a texture representation that can be used\n    in real-time graphics to efficiently reproduce said shapes. Although it can\n    also be used to generate conventional signed distance fields best known\n    from this Valve paper and perpendicular distance fields, its primary\n    purpose is to generate multi-channel distance fields, using a method I have\n    developed. Unlike monochrome distance fields, they have the ability to\n    reproduce sharp corners almost perfectly by utilizing all three color\n    channels.\n\n    Built with Skia geometry preprocessing (MSDFGEN_USE_SKIA, resolving\n    self-intersections and overlapping contours) on all platforms except\n    linux-ppc64le, matching upstream's default (vcpkg) configuration.\n  license: MIT AND BSD-3-Clause\n  license_file:\n    - LICENSE.txt\n    - skia/LICENSE\n\nextra:\n  recipe-maintainers:\n    - hmaarrfk\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1210,7 +1210,7 @@
       "summary": "Multi-channel signed distance field generator"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "msdfgen"
