@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npytorch:\n- '2.12'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
+  "ci_support_linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npytorch:\n- '2.13'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
@@ -32,8 +32,8 @@
       ]
     }
   },
-  "feedstock_hash": "04c04839ef2bb63885601cc3c495b3e00135d29e",
-  "feedstock_hash_ts": 1784797059,
+  "feedstock_hash": "aade5096fd3184b77a60a236a3ac62694e0eb15e",
+  "feedstock_hash_ts": 1785261201,
   "feedstock_name": "torchani",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -45,7 +45,7 @@
       "summary": "Accurate Neural Network Potential on PyTorch"
     },
     "build": {
-      "number": "4",
+      "number": "5",
       "script": [
         "export SETUPTOOLS_SCM_PRETEND_VERSION=\"${PKG_VERSION}\"",
         "export CPATH=\"${PREFIX}/include\"",
@@ -1402,7 +1402,7 @@
       "summary": "Accurate Neural Network Potential on PyTorch"
     },
     "build": {
-      "number": "4",
+      "number": "5",
       "script": [
         "export SETUPTOOLS_SCM_PRETEND_VERSION=\"${PKG_VERSION}\"",
         "export CPATH=\"${PREFIX}/include\"",
@@ -2759,7 +2759,7 @@
       "summary": "Accurate Neural Network Potential on PyTorch"
     },
     "build": {
-      "number": "4",
+      "number": "5",
       "script": [
         "export SETUPTOOLS_SCM_PRETEND_VERSION=\"${PKG_VERSION}\"",
         "export CPATH=\"${PREFIX}/include\"",
@@ -6029,7 +6029,7 @@
       "summary": "Accurate Neural Network Potential on PyTorch"
     },
     "build": {
-      "number": "4",
+      "number": "5",
       "script": [
         "export SETUPTOOLS_SCM_PRETEND_VERSION=\"${PKG_VERSION}\"",
         "export CPATH=\"${PREFIX}/include\"",
@@ -6553,7 +6553,7 @@
       "summary": "Accurate Neural Network Potential on PyTorch"
     },
     "build": {
-      "number": "4",
+      "number": "5",
       "script": [
         "export SETUPTOOLS_SCM_PRETEND_VERSION=\"${PKG_VERSION}\"",
         "export CPATH=\"${PREFIX}/include\"",
@@ -7084,7 +7084,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/torchani.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: torchani\n  version: \"2.8.4\"\n  build_number: 4\n  torch_proc_type: ${{ \"cuda\" if cuda_compiler_version != \"None\" else \"cpu\" }}\n  torch_proc_type_with_cuda_version: ${{ \"cuda\" ~ cuda_compiler_version | replace(\".\", \"\") if cuda_compiler_version != \"None\" else \"cpu\" }}\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/aiqm/torchani/archive/refs/tags/${{ version }}.tar.gz\n    sha256: dd27f69df811fc94fa324f7cc7223805b4d0819aec0d1809a82e4694804b1262\n    patches:\n      - patches/0001-make-download-robust.patch\n      # Keep pip check enabled while satisfying the tool dependency through\n      # conda's executable ninja package instead of PyPI's Python metadata.\n      - patches/0004-remove-ninja-python-metadata.patch\n      - if: match(cuda_compiler_version, \"13.*\")\n        then: patches/0003-CUDA-13.0-GPU-arch-fix.patch\n\nbuild:\n  number: ${{ build_number }}\n  skip:\n    - win\n  string: ${{ torch_proc_type_with_cuda_version ~ \"_py\" ~ (python | version_to_buildstring) ~ \"h\" ~ hash ~ \"_\" ~ build_number }}\n  script:\n    - export SETUPTOOLS_SCM_PRETEND_VERSION=\"${PKG_VERSION}\"\n    # TorchANI setup.py does not search the conda include directory; this lets\n    # nvcc find headers such as $PREFIX/include/crypt.h.\n    - export CPATH=\"${PREFIX}/include\"\n    - if: cuda_compiler_version != \"None\"\n      then: $PYTHON -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms\n    - if: cuda_compiler_version == \"None\"\n      then: $PYTHON -m pip install . -vvv --no-deps\n    - mkdir -p \"${SP_DIR}/torchani/resources\"\n    - cp -R ./torchani/resources/* \"${SP_DIR}/torchani/resources\"\n    - cp ./torchani/datasets/builtin_datasets.json \"${SP_DIR}/torchani/datasets/builtin_datasets.json\"\n    - cp ./torchani/datasets/md5s.csv \"${SP_DIR}/torchani/datasets/md5s.csv\"\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - if: cuda_compiler_version != \"None\"\n      then: ${{ compiler(\"cuda\") }}\n    - if: build_platform != target_platform\n      then:\n        - cross-python_${{ target_platform }}\n        - python\n        - cython\n        - pytorch\n        - pytorch * ${{ torch_proc_type }}*\n    - if: cuda_compiler_version != \"None\"\n      then: cuda-version ==${{ cuda_compiler_version }}\n    - setuptools_scm\n  host:\n    - python\n    - pip\n    - setuptools\n    - setuptools_scm\n    - importlib-metadata\n    - pytorch\n    - pytorch * ${{ torch_proc_type }}*\n    - if: cuda_compiler_version != \"None\"\n      then:\n        - cuda-version ==${{ cuda_compiler_version }}\n        - cuda-cudart-dev\n  run:\n    - python\n    - pip\n    - setuptools\n    - setuptools_scm\n    - ase\n    - h5py\n    - huggingface_hub\n    - ninja\n    - numpy\n    - pandas\n    - pyarrow\n    - requests\n    - rich\n    - tqdm\n    - typer\n    - typing_extensions >=4.0\n    - zarr <3\n  run_constraints:\n    # Add a flavor constraint on top of PyTorch's version-only run export.\n    - pytorch * ${{ torch_proc_type }}*\n\ntests:\n  - python:\n      imports:\n        - torchani\n  - requirements:\n      run:\n        - wget\n        - unzip\n        - tensorboard\n        - parameterized\n        - pillow\n        - pyyaml\n        - pytest\n        - expecttest\n        - pkbar\n    files:\n      source:\n        - tests/\n        - tools/\n        - download-dev-data.sh\n    script:\n      - ninja --version\n      # CUDA builds must ship every extension produced by ext-all-sms.\n      - if: cuda_compiler_version != \"None\"\n        then: python -c \"import torchani.csrc as csrc; assert all((csrc.CUAEV_IS_INSTALLED, csrc.MNP_IS_INSTALLED, csrc.CLIST_IS_INSTALLED))\"\n      - if: unix\n        then:\n          - ./download-dev-data.sh\n          - pytest -v tests/ -k \"not (_not_a_real_test or testANIr2s or testBuiltins)\"\n\nabout:\n  homepage: https://github.com/aiqm/torchani\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE\n  summary: Accurate Neural Network Potential on PyTorch\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n    - yueyericardo\n    - mikemhenry\n    - h-vetinari\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: torchani\n  version: \"2.8.4\"\n  build_number: 5\n  torch_proc_type: ${{ \"cuda\" if cuda_compiler_version != \"None\" else \"cpu\" }}\n  torch_proc_type_with_cuda_version: ${{ \"cuda\" ~ cuda_compiler_version | replace(\".\", \"\") if cuda_compiler_version != \"None\" else \"cpu\" }}\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/aiqm/torchani/archive/refs/tags/${{ version }}.tar.gz\n    sha256: dd27f69df811fc94fa324f7cc7223805b4d0819aec0d1809a82e4694804b1262\n    patches:\n      - patches/0001-make-download-robust.patch\n      # Keep pip check enabled while satisfying the tool dependency through\n      # conda's executable ninja package instead of PyPI's Python metadata.\n      - patches/0004-remove-ninja-python-metadata.patch\n      - if: match(cuda_compiler_version, \"13.*\")\n        then: patches/0003-CUDA-13.0-GPU-arch-fix.patch\n\nbuild:\n  number: ${{ build_number }}\n  skip:\n    - win\n  string: ${{ torch_proc_type_with_cuda_version ~ \"_py\" ~ (python | version_to_buildstring) ~ \"h\" ~ hash ~ \"_\" ~ build_number }}\n  script:\n    - export SETUPTOOLS_SCM_PRETEND_VERSION=\"${PKG_VERSION}\"\n    # TorchANI setup.py does not search the conda include directory; this lets\n    # nvcc find headers such as $PREFIX/include/crypt.h.\n    - export CPATH=\"${PREFIX}/include\"\n    - if: cuda_compiler_version != \"None\"\n      then: $PYTHON -m pip install . -vvv --no-deps --config-settings=--global-option=ext-all-sms\n      else: $PYTHON -m pip install . -vvv --no-deps\n    - mkdir -p \"${SP_DIR}/torchani/resources\"\n    - cp -R ./torchani/resources/* \"${SP_DIR}/torchani/resources\"\n    - cp ./torchani/datasets/builtin_datasets.json \"${SP_DIR}/torchani/datasets/builtin_datasets.json\"\n    - cp ./torchani/datasets/md5s.csv \"${SP_DIR}/torchani/datasets/md5s.csv\"\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - if: cuda_compiler_version != \"None\"\n      then: ${{ compiler(\"cuda\") }}\n    - if: build_platform != target_platform\n      then:\n        - cross-python_${{ target_platform }}\n        - python\n        - cython\n        - pytorch\n        - pytorch * ${{ torch_proc_type }}*\n    - if: cuda_compiler_version != \"None\"\n      then: cuda-version ==${{ cuda_compiler_version }}\n    - setuptools_scm\n  host:\n    - python\n    - pip\n    - setuptools\n    - setuptools_scm\n    - importlib-metadata\n    - pytorch\n    - pytorch * ${{ torch_proc_type }}*\n    - if: cuda_compiler_version != \"None\"\n      then:\n        - cuda-version ==${{ cuda_compiler_version }}\n        - cuda-cudart-dev\n  run:\n    - python\n    - pip\n    - setuptools\n    - setuptools_scm\n    - ase\n    - h5py\n    - huggingface_hub\n    - ninja\n    - numpy\n    - pandas\n    - pyarrow\n    - requests\n    - rich\n    - tqdm\n    - typer\n    - typing_extensions >=4.0\n    - zarr <3\n  run_constraints:\n    # Add a flavor constraint on top of PyTorch's version-only run export.\n    - pytorch * ${{ torch_proc_type }}*\n\ntests:\n  - python:\n      imports:\n        - torchani\n  - requirements:\n      run:\n        - wget\n        - unzip\n        - tensorboard\n        - parameterized\n        - pillow\n        - pyyaml\n        - pytest\n        - expecttest\n        - pkbar\n    files:\n      source:\n        - tests/\n        - tools/\n        - download-dev-data.sh\n    script:\n      - ninja --version\n      # CUDA builds must ship every extension produced by ext-all-sms.\n      - if: cuda_compiler_version != \"None\"\n        then: python -c \"import torchani.csrc as csrc; assert all((csrc.CUAEV_IS_INSTALLED, csrc.MNP_IS_INSTALLED, csrc.CLIST_IS_INSTALLED))\"\n      - if: unix\n        then:\n          - ./download-dev-data.sh\n          - pytest -v tests/ -k \"not (_not_a_real_test or testANIr2s or testBuiltins)\"\n\nabout:\n  homepage: https://github.com/aiqm/torchani\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE\n  summary: Accurate Neural Network Potential on PyTorch\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n    - yueyericardo\n    - mikemhenry\n    - h-vetinari\n",
   "req": {
     "__set__": true,
     "elements": [
