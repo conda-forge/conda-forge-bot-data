@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_c_stdlib_version2.17cuda_compiler_version12.9python3.10.____cpython.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
+  "ci_support_linux_64_c_stdlib_version2.17cuda_compiler_version12.9.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\n- 3.14.* *_cp314\n- 3.14.* *_cp314t\ntarget_platform:\n- linux-64\nzip_keys:\n- - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true,
@@ -26,8 +26,8 @@
     },
     "test": "native"
   },
-  "feedstock_hash": "05230997474890a67b18fed1a60c616d979b47be",
-  "feedstock_hash_ts": 1776915185,
+  "feedstock_hash": "d228e97d4b0667aedd61a22807b0b9b0c217e0da",
+  "feedstock_hash_ts": 1785225920,
   "feedstock_name": "astra-toolbox",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -42,15 +42,7 @@
       "summary": "The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n"
     },
     "build": {
-      "ignore_run_exports_from": [
-        "cuda_compiler_stub"
-      ],
-      "number": "0",
-      "script_env": [
-        "ASTRA_USE_CUDA=ON",
-        "ASTRA_USE_CUDA=OFF"
-      ],
-      "string": "cudapyh1234567_100"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -58,52 +50,260 @@
         "carterbox"
       ]
     },
+    "outputs": [
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda12.9h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 12.9",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda13.0h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "astra-toolbox",
-      "version": "2.4.1"
-    },
-    "requirements": {
-      "build": [
-        "cxx_compiler_stub",
-        "cuda_compiler_stub",
-        "c_stdlib_stub",
-        "cython >=0.13"
-      ],
-      "host": [
-        "cuda-version 12.9",
-        "cython >=0.13",
-        "libastra ==2.4.1",
-        "libastra =*=cuda*",
-        "numpy",
-        "pip",
-        "python",
-        "setuptools",
-        "libastra =*=h*",
-        "cuda-version 13.0"
-      ],
-      "run": [
-        "python",
-        "scipy"
-      ]
+      "name": "astra-toolbox-split",
+      "version": "2.5.0"
     },
     "schema_version": 0,
     "source": {
       "patches": [
         "cmake.patch"
       ],
-      "sha256": "f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268",
-      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "python -c \"import astra; astra.test()\""
-      ],
-      "imports": [
-        "astra"
-      ],
-      "requires": [
-        "nomkl"
-      ]
+      "sha256": "41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98",
+      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -111,17 +311,20 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake",
         "cuda_compiler_stub",
         "cxx_compiler_stub",
-        "cython"
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "cuda-cudart-dev",
         "cuda-version",
         "cython",
         "libastra",
+        "libcufft-dev",
         "numpy",
         "pip",
         "python",
@@ -131,15 +334,15 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__cuda",
+        "libastra",
         "python",
         "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "nomkl"
-      ]
+      "elements": []
     }
   },
   "linux_aarch64_meta_yaml": {
@@ -154,15 +357,7 @@
       "summary": "The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n"
     },
     "build": {
-      "ignore_run_exports_from": [
-        "cuda_compiler_stub"
-      ],
-      "number": "0",
-      "script_env": [
-        "ASTRA_USE_CUDA=ON",
-        "ASTRA_USE_CUDA=OFF"
-      ],
-      "string": "cudapyh1234567_100"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -170,52 +365,260 @@
         "carterbox"
       ]
     },
+    "outputs": [
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda12.9h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 12.9",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda13.0h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "astra-toolbox",
-      "version": "2.4.1"
-    },
-    "requirements": {
-      "build": [
-        "cxx_compiler_stub",
-        "cuda_compiler_stub",
-        "c_stdlib_stub",
-        "cython >=0.13"
-      ],
-      "host": [
-        "cuda-version 12.9",
-        "cython >=0.13",
-        "libastra ==2.4.1",
-        "libastra =*=cuda*",
-        "numpy",
-        "pip",
-        "python",
-        "setuptools",
-        "libastra =*=h*",
-        "cuda-version 13.0"
-      ],
-      "run": [
-        "python",
-        "scipy"
-      ]
+      "name": "astra-toolbox-split",
+      "version": "2.5.0"
     },
     "schema_version": 0,
     "source": {
       "patches": [
         "cmake.patch"
       ],
-      "sha256": "f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268",
-      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "python -c \"import astra; astra.test()\""
-      ],
-      "imports": [
-        "astra"
-      ],
-      "requires": [
-        "nomkl"
-      ]
+      "sha256": "41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98",
+      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -223,17 +626,20 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake",
         "cuda_compiler_stub",
         "cxx_compiler_stub",
-        "cython"
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "cuda-cudart-dev",
         "cuda-version",
         "cython",
         "libastra",
+        "libcufft-dev",
         "numpy",
         "pip",
         "python",
@@ -243,15 +649,15 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__cuda",
+        "libastra",
         "python",
         "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "nomkl"
-      ]
+      "elements": []
     }
   },
   "linux_ppc64le_meta_yaml": {
@@ -266,13 +672,7 @@
       "summary": "The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n"
     },
     "build": {
-      "ignore_run_exports_from": [
-        "cuda_compiler_stub"
-      ],
-      "number": "0",
-      "script_env": [
-        "ASTRA_USE_CUDA=OFF"
-      ]
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -280,48 +680,94 @@
         "carterbox"
       ]
     },
+    "outputs": [
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "astra-toolbox",
-      "version": "2.4.1"
-    },
-    "requirements": {
-      "build": [
-        "cxx_compiler_stub",
-        "c_stdlib_stub",
-        "cython >=0.13"
-      ],
-      "host": [
-        "cython >=0.13",
-        "libastra ==2.4.1",
-        "libastra =*=h*",
-        "numpy",
-        "pip",
-        "python",
-        "setuptools"
-      ],
-      "run": [
-        "python",
-        "scipy"
-      ]
+      "name": "astra-toolbox-split",
+      "version": "2.5.0"
     },
     "schema_version": 0,
     "source": {
       "patches": [
         "cmake.patch"
       ],
-      "sha256": "f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268",
-      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "python -c \"import astra; astra.test()\""
-      ],
-      "imports": [
-        "astra"
-      ],
-      "requires": [
-        "nomkl"
-      ]
+      "sha256": "41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98",
+      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -329,8 +775,9 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake",
         "cxx_compiler_stub",
-        "cython"
+        "ninja"
       ]
     },
     "host": {
@@ -347,15 +794,14 @@
     "run": {
       "__set__": true,
       "elements": [
+        "libastra",
         "python",
         "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "nomkl"
-      ]
+      "elements": []
     }
   },
   "meta_yaml": {
@@ -370,15 +816,7 @@
       "summary": "The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n"
     },
     "build": {
-      "ignore_run_exports_from": [
-        "cuda_compiler_stub"
-      ],
-      "number": "0",
-      "script_env": [
-        "ASTRA_USE_CUDA=ON",
-        "ASTRA_USE_CUDA=OFF"
-      ],
-      "string": "cudapyh1234567_100"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -386,53 +824,959 @@
         "carterbox"
       ]
     },
+    "outputs": [
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda12.9h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 12.9",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda13.0h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda12.9h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 12.9",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda13.0h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0",
+            "test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": null
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": null
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda12.9h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 12.9",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\\\astra.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\\\astra.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.bat",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda13.0h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\\\astra.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\\\astra.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.bat",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\\\astra.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\\\astra.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.bat",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "astra-toolbox",
-      "version": "2.4.1"
-    },
-    "requirements": {
-      "build": [
-        "cxx_compiler_stub",
-        "cuda_compiler_stub",
-        "c_stdlib_stub",
-        "cython >=0.13"
-      ],
-      "host": [
-        "cuda-version 12.9",
-        "cython >=0.13",
-        "libastra ==2.4.1",
-        "libastra =*=cuda*",
-        "numpy",
-        "pip",
-        "python",
-        "setuptools",
-        "libastra =*=h*",
-        "cuda-version 13.0"
-      ],
-      "run": [
-        "python",
-        "scipy"
-      ]
+      "name": "astra-toolbox-split",
+      "version": "2.5.0"
     },
     "schema_version": 0,
     "source": {
       "patches": [
         "cmake.patch"
       ],
-      "sha256": "f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268",
-      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "python -c \"import astra; astra.test()\""
-      ],
-      "imports": [
-        "astra"
-      ],
-      "requires": null
+      "sha256": "41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98",
+      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz"
     }
   },
-  "name": "astra-toolbox",
+  "name": "astra-toolbox-split",
   "osx_64_meta_yaml": {
     "about": {
       "home": "http://www.astra-toolbox.com",
@@ -445,13 +1789,7 @@
       "summary": "The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n"
     },
     "build": {
-      "ignore_run_exports_from": [
-        "cuda_compiler_stub"
-      ],
-      "number": "0",
-      "script_env": [
-        "ASTRA_USE_CUDA=OFF"
-      ]
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -459,48 +1797,90 @@
         "carterbox"
       ]
     },
+    "outputs": [
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": null
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "astra-toolbox",
-      "version": "2.4.1"
-    },
-    "requirements": {
-      "build": [
-        "cxx_compiler_stub",
-        "c_stdlib_stub",
-        "cython >=0.13"
-      ],
-      "host": [
-        "cython >=0.13",
-        "libastra ==2.4.1",
-        "libastra =*=h*",
-        "numpy",
-        "pip",
-        "python",
-        "setuptools"
-      ],
-      "run": [
-        "python",
-        "scipy"
-      ]
+      "name": "astra-toolbox-split",
+      "version": "2.5.0"
     },
     "schema_version": 0,
     "source": {
       "patches": [
         "cmake.patch"
       ],
-      "sha256": "f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268",
-      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "python -c \"import astra; astra.test()\""
-      ],
-      "imports": [
-        "astra"
-      ],
-      "requires": [
-        "nomkl"
-      ]
+      "sha256": "41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98",
+      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -508,8 +1888,9 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake",
         "cxx_compiler_stub",
-        "cython"
+        "ninja"
       ]
     },
     "host": {
@@ -526,15 +1907,14 @@
     "run": {
       "__set__": true,
       "elements": [
+        "libastra",
         "python",
         "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "nomkl"
-      ]
+      "elements": []
     }
   },
   "osx_arm64_meta_yaml": {
@@ -549,13 +1929,7 @@
       "summary": "The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n"
     },
     "build": {
-      "ignore_run_exports_from": [
-        "cuda_compiler_stub"
-      ],
-      "number": "0",
-      "script_env": [
-        "ASTRA_USE_CUDA=OFF"
-      ]
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -563,48 +1937,90 @@
         "carterbox"
       ]
     },
+    "outputs": [
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.sh",
+        "test": {
+          "commands": null
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.sh",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "astra-toolbox",
-      "version": "2.4.1"
-    },
-    "requirements": {
-      "build": [
-        "cxx_compiler_stub",
-        "c_stdlib_stub",
-        "cython >=0.13"
-      ],
-      "host": [
-        "cython >=0.13",
-        "libastra ==2.4.1",
-        "libastra =*=h*",
-        "numpy",
-        "pip",
-        "python",
-        "setuptools"
-      ],
-      "run": [
-        "python",
-        "scipy"
-      ]
+      "name": "astra-toolbox-split",
+      "version": "2.5.0"
     },
     "schema_version": 0,
     "source": {
       "patches": [
         "cmake.patch"
       ],
-      "sha256": "f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268",
-      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "python -c \"import astra; astra.test()\""
-      ],
-      "imports": [
-        "astra"
-      ],
-      "requires": [
-        "nomkl"
-      ]
+      "sha256": "41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98",
+      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -612,8 +2028,9 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake",
         "cxx_compiler_stub",
-        "cython"
+        "ninja"
       ]
     },
     "host": {
@@ -630,21 +2047,21 @@
     "run": {
       "__set__": true,
       "elements": [
+        "libastra",
         "python",
         "scipy"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "nomkl"
-      ]
+      "elements": []
     }
   },
   "outputs_names": {
     "__set__": true,
     "elements": [
-      "astra-toolbox"
+      "astra-toolbox",
+      "libastra"
     ]
   },
   "parsing_error": false,
@@ -659,16 +2076,21 @@
   "pr_info": {
     "__lazy_json__": "pr_info/astra-toolbox.json"
   },
-  "raw_meta_yaml": "{% set version = \"2.4.1\" %}\n{% set commit = \"4f82d206545920b80429869970ee8c04270ca3c9\" %}  # https://github.com/astra-toolbox/astra-toolbox/releases/tag/v2.4.1\n{% set build = 0 %}\n\npackage:\n  name: astra-toolbox\n  version: {{ version }}\n\nsource:\n  url: https://github.com/astra-toolbox/astra-toolbox/archive/{{ commit }}.tar.gz\n  sha256: f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268\n  patches:\n  # patch created from askorikov/astra-toolbox@release_2.4.1_cmake\n    - cmake.patch\n\n# The libastra ABI is the same for all CUDA versions, but different for CUDA vs\n# non-CUDA, so we build only with the latest CUDA version. We don't actually\n# need the CUDA compiler, but we need conda-forge to assign a build environment\n# with the __cuda attribute.\n\nbuild:\n  number: {{ build }}\n  string: \"cudapy{{ py }}h{{ PKG_HASH }}_{{ build + 100 }}\"  # [cuda_compiler_version != \"None\"]\n  script_env:\n    - ASTRA_USE_CUDA=ON   # [cuda_compiler_version != \"None\"]\n    - ASTRA_USE_CUDA=OFF  # [cuda_compiler_version == \"None\"]\n  ignore_run_exports_from:\n    - {{ compiler('cuda') }}\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n    - {{ compiler('cxx') }}\n    - {{ compiler('cuda') }}                 # [cuda_compiler_version != \"None\"]\n    - {{ stdlib('c') }}\n    - cython >=0.13\n  host:\n    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != \"None\"]\n    - cython >=0.13\n    - libastra =={{ version }}\n    - libastra =*=cuda*  # [cuda_compiler_version != \"None\"]\n    - libastra =*=h*     # [cuda_compiler_version == \"None\"]\n    - numpy\n    - pip\n    - python\n    - setuptools\n  run:\n    - python\n    - scipy\n\ntest:\n  imports:\n    - astra\n  requires:\n    # To avoid large downloads just for testing after build phase\n    - nomkl  # [not win]\n  commands:\n    - python -c \"import astra; astra.test()\"\n\nabout:\n  home: http://www.astra-toolbox.com\n  license: GPL-3.0-only\n  license_file:\n    - COPYING\n    - lib/licenses/rapidxml.txt\n    - lib/licenses/dlpack.txt\n  summary: >\n    The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n\nextra:\n  recipe-maintainers:\n    - askorikov\n    - carterbox\n",
+  "raw_meta_yaml": "{% set version = \"2.5.0\" %}\n{% set commit = \"934920a46781142c2b8f0177007c395eae601783\" %}  # https://github.com/astra-toolbox/astra-toolbox/releases/tag/v2.5.0\n{% set build = 0 %}\n\npackage:\n  name: astra-toolbox-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/astra-toolbox/astra-toolbox/archive/{{ commit }}.tar.gz\n  sha256: 41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98\n  patches:\n  # patch created from askorikov/astra-toolbox@release_2.5.0_cmake\n    - cmake.patch\n\nbuild:\n  number: {{ build }}\n\noutputs:\n  - name: libastra\n    script: build_libastra.bat  # [win]\n    script: build_libastra.sh   # [unix]\n    build:\n      number: {{ build }}\n      string: \"cuda{{ cuda_compiler_version|string }}h{{ PKG_HASH }}_{{ build + 100 }}\"  # [cuda_compiler_version != \"None\"]\n      track_features:\n        # Mark CPU-only version as an extra feature to deprioritize it in favor of\n        # CUDA-enabled version when both are available.\n        - nocuda_la6JwwDGF7  # [cuda_compiler_version == \"None\"]\n      run_exports:\n        - {{ pin_subpackage('libastra', max_pin='x.x.x') }}\n        - libastra =*=cuda*  # [cuda_compiler_version != \"None\"]\n        - libastra =*=h*     # [cuda_compiler_version == \"None\"]\n      script_env:\n        - ASTRA_USE_CUDA=ON   # [cuda_compiler_version != \"None\"]\n        - ASTRA_USE_CUDA=OFF  # [cuda_compiler_version == \"None\"]\n        - CUDAARCHS=all       # [cuda_compiler_version != \"None\"]\n        - CMAKE_GENERATOR=Ninja\n    requirements:\n      build:\n        - {{ compiler('cuda') }}  # [cuda_compiler_version != \"None\"]\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake >=3.23\n        - ninja\n      host:\n        - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != \"None\"]\n        - cuda-cudart-dev  # [cuda_compiler_version != \"None\"]\n        - libcufft-dev     # [cuda_compiler_version != \"None\"]\n      run:\n        # cuda-version only includes __cuda in run_constrained, but we want it to be stronger\n        - __cuda  # [cuda_compiler_version != \"None\"]\n    test:\n      commands:\n        - test -f $PREFIX/lib/libastra${SHLIB_EXT}                          # [linux]\n        - test -f $PREFIX/lib/libastra${SHLIB_EXT}.0                        # [linux]\n        - test -f $PREFIX/lib/libastra${SHLIB_EXT}.0.0.0                    # [linux]\n        # Library named differently from upstream because it makes linking\n        # consistent between platforms. File links don't work on Windows.\n        - if not exist %LIBRARY_LIB%\\\\astra.lib exit 1  # [win]\n        - if not exist %LIBRARY_BIN%\\\\astra.dll exit 1  # [win]\n    about:\n      summary: >\n        libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n\n  - name: astra-toolbox\n    script: build_python_interface.bat  # [win]\n    script: build_python_interface.sh   # [unix]\n    build:\n      number: {{ build }}\n      string: \"cudapy{{ py }}h{{ PKG_HASH }}_{{ build + 100 }}\"  # [cuda_compiler_version != \"None\"]\n      script_env:\n        - ASTRA_USE_CUDA=ON   # [cuda_compiler_version != \"None\"]\n        - ASTRA_USE_CUDA=OFF  # [cuda_compiler_version == \"None\"]\n    requirements:\n      build:\n        - python                                 # [build_platform != target_platform]\n        - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n        - cython >=3.1                           # [build_platform != target_platform]\n        - numpy                                  # [build_platform != target_platform]\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n      host:\n        - {{ pin_subpackage('libastra', exact=True) }}\n        - cython >=3.1\n        - numpy\n        - pip\n        - python\n        - setuptools\n      run:\n        # Need another pin here because run_exports doesn't work in-between subpackages\n        - {{ pin_subpackage('libastra', exact=True) }}\n        - python\n        - scipy\n    test:\n      imports:\n        - astra\n      commands:\n        - python -c \"import astra; astra.test()\"\n\nabout:\n  home: http://www.astra-toolbox.com\n  license: GPL-3.0-only\n  license_file:\n    - COPYING\n    - lib/licenses/rapidxml.txt\n    - lib/licenses/dlpack.txt\n  summary: >\n    The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n\nextra:\n  recipe-maintainers:\n    - askorikov\n    - carterbox\n",
   "req": {
     "__set__": true,
     "elements": [
+      "__cuda",
       "c_stdlib_stub",
+      "cmake",
+      "cuda-cudart-dev",
       "cuda-version",
       "cuda_compiler_stub",
       "cxx_compiler_stub",
       "cython",
       "libastra",
+      "libcufft-dev",
+      "ninja",
       "numpy",
       "pip",
       "python",
@@ -681,20 +2103,23 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake",
         "cuda_compiler_stub",
         "cxx_compiler_stub",
-        "cython"
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cuda-cudart-dev",
         "cuda-version",
         "cuda_compiler_stub",
         "cxx_compiler_stub",
         "cython",
         "libastra",
+        "libcufft-dev",
         "numpy",
         "pip",
         "python",
@@ -704,9 +2129,11 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__cuda",
         "c_stdlib_stub",
         "cuda_compiler_stub",
         "cxx_compiler_stub",
+        "libastra",
         "python",
         "scipy"
       ]
@@ -722,20 +2149,21 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake >=3.23",
         "cuda_compiler_stub",
         "cxx_compiler_stub",
-        "cython >=0.13"
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "cuda-cudart-dev",
         "cuda-version 12.9",
         "cuda-version 13.0",
-        "cython >=0.13",
-        "libastra =*=cuda*",
-        "libastra =*=h*",
-        "libastra ==2.4.1",
+        "cython >=3.1",
+        "libastra",
+        "libcufft-dev",
         "numpy",
         "pip",
         "python",
@@ -745,6 +2173,8 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__cuda",
+        "libastra",
         "python",
         "scipy"
       ]
@@ -754,8 +2184,8 @@
       "elements": []
     }
   },
-  "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz",
-  "version": "2.4.1",
+  "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz",
+  "version": "2.5.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/astra-toolbox.json"
   },
@@ -771,15 +2201,7 @@
       "summary": "The ASTRA Toolbox is a Python toolbox of high-performance GPU primitives for 2D and 3D tomography.\n"
     },
     "build": {
-      "ignore_run_exports_from": [
-        "cuda_compiler_stub"
-      ],
-      "number": "0",
-      "script_env": [
-        "ASTRA_USE_CUDA=ON",
-        "ASTRA_USE_CUDA=OFF"
-      ],
-      "string": "cudapyh1234567_100"
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -787,50 +2209,257 @@
         "carterbox"
       ]
     },
+    "outputs": [
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda12.9h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 12.9",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\\\astra.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\\\astra.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.bat",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=cuda*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=ON",
+            "CUDAARCHS=all",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "string": "cuda13.0h1234567_100",
+          "track_features": null
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cuda_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "cuda-cudart-dev",
+            "libcufft-dev"
+          ],
+          "run": [
+            "__cuda"
+          ]
+        },
+        "script": "build_libastra.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\\\astra.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\\\astra.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=ON"
+          ],
+          "string": "cudapyh1234567_100"
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.bat",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      },
+      {
+        "about": {
+          "summary": "libastra is a C++ library of high-performance GPU primitives for 2D and 3D tomography.\n"
+        },
+        "build": {
+          "number": "0",
+          "run_exports": [
+            "libastra",
+            "libastra =*=h*"
+          ],
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF",
+            "CMAKE_GENERATOR=Ninja"
+          ],
+          "track_features": [
+            "nocuda_la6JwwDGF7"
+          ]
+        },
+        "name": "libastra",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.23",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "script": "build_libastra.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_LIB%\\\\astra.lib exit 1",
+            "if not exist %LIBRARY_BIN%\\\\astra.dll exit 1"
+          ]
+        }
+      },
+      {
+        "build": {
+          "number": "0",
+          "script_env": [
+            "ASTRA_USE_CUDA=OFF"
+          ]
+        },
+        "name": "astra-toolbox",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "libastra",
+            "cython >=3.1",
+            "numpy",
+            "pip",
+            "python",
+            "setuptools"
+          ],
+          "run": [
+            "libastra",
+            "python",
+            "scipy"
+          ]
+        },
+        "script": "build_python_interface.bat",
+        "test": {
+          "commands": [
+            "python -c \"import astra; astra.test()\""
+          ],
+          "imports": [
+            "astra"
+          ]
+        }
+      }
+    ],
     "package": {
-      "name": "astra-toolbox",
-      "version": "2.4.1"
-    },
-    "requirements": {
-      "build": [
-        "cxx_compiler_stub",
-        "cuda_compiler_stub",
-        "c_stdlib_stub",
-        "cython >=0.13"
-      ],
-      "host": [
-        "cuda-version 12.9",
-        "cython >=0.13",
-        "libastra ==2.4.1",
-        "libastra =*=cuda*",
-        "numpy",
-        "pip",
-        "python",
-        "setuptools",
-        "cuda-version 13.0",
-        "libastra =*=h*"
-      ],
-      "run": [
-        "python",
-        "scipy"
-      ]
+      "name": "astra-toolbox-split",
+      "version": "2.5.0"
     },
     "schema_version": 0,
     "source": {
       "patches": [
         "cmake.patch"
       ],
-      "sha256": "f9f7b1ac66ba0fdb84f24078ea103f64392e6fb46403cec26ca948d0f93ab268",
-      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/4f82d206545920b80429869970ee8c04270ca3c9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "python -c \"import astra; astra.test()\""
-      ],
-      "imports": [
-        "astra"
-      ],
-      "requires": null
+      "sha256": "41ceab45a118df92e1d9c7ffaf17a1eb4441d8450f35ddc5b75d8545a6af4d98",
+      "url": "https://github.com/astra-toolbox/astra-toolbox/archive/934920a46781142c2b8f0177007c395eae601783.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -838,17 +2467,20 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cmake",
         "cuda_compiler_stub",
         "cxx_compiler_stub",
-        "cython"
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "cuda-cudart-dev",
         "cuda-version",
         "cython",
         "libastra",
+        "libcufft-dev",
         "numpy",
         "pip",
         "python",
@@ -858,6 +2490,8 @@
     "run": {
       "__set__": true,
       "elements": [
+        "__cuda",
+        "libastra",
         "python",
         "scipy"
       ]
