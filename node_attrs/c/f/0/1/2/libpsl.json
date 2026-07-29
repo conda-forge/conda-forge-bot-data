@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nicu:\n- '78'\nlibpsl:\n- '0.22'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nicu:\n- '78'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
@@ -11,6 +11,7 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
@@ -22,12 +23,13 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "5bf9be70c7e57b176f1436a2ef45dab849bacd0d",
-  "feedstock_hash_ts": 1785337542,
+  "feedstock_hash": "6aebce8f5b06a40abc94a6e4715f54f9191622d9",
+  "feedstock_hash_ts": 1785342594,
   "feedstock_name": "libpsl",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/rockdaboot/libpsl",
       "home": "https://github.com/rockdaboot/libpsl",
       "license": "MIT",
       "license_family": "MIT",
@@ -35,55 +37,78 @@
       "summary": "A C library to handle the Public Suffix List"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpsl"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "libpsl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
-        "JohanMabille",
-        "tschoonj"
+        "tschoonj",
+        "JohanMabille"
       ]
     },
     "outputs": [
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl.so*"
-        ],
-        "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.so",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
           ]
-        }
+        },
+        "name": "libpsl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a",
-            "test -f ${PREFIX}/lib/libpsl.so"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       }
     ],
     "package": {
@@ -103,7 +128,7 @@
         "icu"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722",
       "url": "https://github.com/rockdaboot/libpsl/releases/download/0.22.0/libpsl-0.22.0.tar.gz"
@@ -124,8 +149,7 @@
     "host": {
       "__set__": true,
       "elements": [
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
@@ -141,6 +165,7 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/rockdaboot/libpsl",
       "home": "https://github.com/rockdaboot/libpsl",
       "license": "MIT",
       "license_family": "MIT",
@@ -148,55 +173,78 @@
       "summary": "A C library to handle the Public Suffix List"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpsl"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "libpsl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
-        "JohanMabille",
-        "tschoonj"
+        "tschoonj",
+        "JohanMabille"
       ]
     },
     "outputs": [
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl.so*"
-        ],
-        "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.so",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
           ]
-        }
+        },
+        "name": "libpsl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a",
-            "test -f ${PREFIX}/lib/libpsl.so"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       }
     ],
     "package": {
@@ -216,7 +264,7 @@
         "icu"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722",
       "url": "https://github.com/rockdaboot/libpsl/releases/download/0.22.0/libpsl-0.22.0.tar.gz"
@@ -237,8 +285,7 @@
     "host": {
       "__set__": true,
       "elements": [
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
@@ -254,6 +301,7 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/rockdaboot/libpsl",
       "home": "https://github.com/rockdaboot/libpsl",
       "license": "MIT",
       "license_family": "MIT",
@@ -261,55 +309,78 @@
       "summary": "A C library to handle the Public Suffix List"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpsl"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "libpsl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
-        "JohanMabille",
-        "tschoonj"
+        "tschoonj",
+        "JohanMabille"
       ]
     },
     "outputs": [
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl.so*"
-        ],
-        "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.so",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
           ]
-        }
+        },
+        "name": "libpsl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a",
-            "test -f ${PREFIX}/lib/libpsl.so"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       }
     ],
     "package": {
@@ -329,7 +400,7 @@
         "icu"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722",
       "url": "https://github.com/rockdaboot/libpsl/releases/download/0.22.0/libpsl-0.22.0.tar.gz"
@@ -350,8 +421,7 @@
     "host": {
       "__set__": true,
       "elements": [
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
@@ -367,6 +437,7 @@
   },
   "meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/rockdaboot/libpsl",
       "home": "https://github.com/rockdaboot/libpsl",
       "license": "MIT",
       "license_family": "MIT",
@@ -374,243 +445,368 @@
       "summary": "A C library to handle the Public Suffix List"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpsl"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "libpsl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
-        "JohanMabille",
-        "tschoonj"
+        "tschoonj",
+        "JohanMabille"
       ]
     },
     "outputs": [
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl.so*"
-        ],
-        "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.so",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
           ]
-        }
+        },
+        "name": "libpsl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a",
-            "test -f ${PREFIX}/lib/libpsl.so"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl.so*"
-        ],
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
+          ]
+        },
         "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.so",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
-          ]
-        }
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a",
-            "test -f ${PREFIX}/lib/libpsl.so"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl.so*"
-        ],
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
+          ]
+        },
         "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.so",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
-          ]
-        }
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a",
-            "test -f ${PREFIX}/lib/libpsl.so"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl*.dylib"
-        ],
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
+          ]
+        },
         "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.dylib",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
-          ]
-        }
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl*.dylib"
-        ],
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
+          ]
+        },
         "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.dylib",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
-          ]
-        }
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "Library/include/libpsl.h",
-          "Library/lib/pkgconfig/libpsl.pc",
-          "Library/bin/psl-*.dll",
-          "Library/lib/psl.lib"
-        ],
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
+          ]
+        },
         "name": "libpsl",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_INC%\\\\libpsl.h exit 1",
-            "if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\libpsl.pc exit 1",
-            "if not exist %LIBRARY_LIB%\\\\psl.lib exit 1",
-            "if not exist %LIBRARY_BIN%\\\\psl-*.dll exit 1"
-          ]
-        }
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "Library/lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_INC%\\\\libpsl.h exit 1",
-            "if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\libpsl.pc exit 1",
-            "if not exist %LIBRARY_LIB%\\libpsl.a exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       }
     ],
     "package": {
@@ -630,7 +826,7 @@
         "icu"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722",
       "url": "https://github.com/rockdaboot/libpsl/releases/download/0.22.0/libpsl-0.22.0.tar.gz"
@@ -639,6 +835,7 @@
   "name": "libpsl",
   "osx_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/rockdaboot/libpsl",
       "home": "https://github.com/rockdaboot/libpsl",
       "license": "MIT",
       "license_family": "MIT",
@@ -646,54 +843,78 @@
       "summary": "A C library to handle the Public Suffix List"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpsl"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "libpsl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
-        "JohanMabille",
-        "tschoonj"
+        "tschoonj",
+        "JohanMabille"
       ]
     },
     "outputs": [
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl*.dylib"
-        ],
-        "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.dylib",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
           ]
-        }
+        },
+        "name": "libpsl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       }
     ],
     "package": {
@@ -713,7 +934,7 @@
         "icu"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722",
       "url": "https://github.com/rockdaboot/libpsl/releases/download/0.22.0/libpsl-0.22.0.tar.gz"
@@ -734,8 +955,7 @@
     "host": {
       "__set__": true,
       "elements": [
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
@@ -751,6 +971,7 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/rockdaboot/libpsl",
       "home": "https://github.com/rockdaboot/libpsl",
       "license": "MIT",
       "license_family": "MIT",
@@ -758,54 +979,78 @@
       "summary": "A C library to handle the Public Suffix List"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpsl"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "libpsl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
-        "JohanMabille",
-        "tschoonj"
+        "tschoonj",
+        "JohanMabille"
       ]
     },
     "outputs": [
       {
-        "files": [
-          "include/libpsl.h",
-          "lib/pkgconfig/libpsl.pc",
-          "lib/libpsl*.dylib"
-        ],
-        "name": "libpsl",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f ${PREFIX}/lib/libpsl.dylib",
-            "test ! -f ${PREFIX}/lib/libpsl.a"
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
           ]
-        }
+        },
+        "name": "libpsl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/libpsl.h",
-            "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
-            "test -f $PREFIX/lib/libpsl.a"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       }
     ],
     "package": {
@@ -825,7 +1070,7 @@
         "icu"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722",
       "url": "https://github.com/rockdaboot/libpsl/releases/download/0.22.0/libpsl-0.22.0.tar.gz"
@@ -846,8 +1091,7 @@
     "host": {
       "__set__": true,
       "elements": [
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
@@ -880,7 +1124,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libpsl.json"
   },
-  "raw_meta_yaml": "{% set name = \"libpsl\" %}\n{% set version = \"0.22.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/rockdaboot/{{ name }}/releases/download/{{ version }}/{{ name }}-{{ version }}.tar.gz\n  sha256: c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722\n\nbuild:\n  number: 1\n  run_exports:\n    # Just a guess\n    - {{ pin_subpackage('libpsl', max_pin='x.x') }}\n\nrequirements:\n    build:\n        - {{ compiler('c') }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cxx') }}\n        - ninja\n        - pkg-config\n        - meson\n    host:\n        - icu\noutputs:\n  - name: libpsl\n    files:\n      - include/libpsl.h                 # [unix]\n      - lib/pkgconfig/libpsl.pc          # [unix]\n      - lib/libpsl.so*                   # [linux]\n      - lib/libpsl*.dylib                # [osx]\n      - Library/include/libpsl.h         # [win]\n      - Library/lib/pkgconfig/libpsl.pc  # [win]\n      - Library/bin/psl-*.dll            # [win]\n      - Library/lib/psl.lib              # [win]\n    test:\n      commands:\n        - test -f ${PREFIX}/include/libpsl.h                       # [unix]\n        - test -f ${PREFIX}/lib/pkgconfig/libpsl.pc                # [unix]\n        - test -f ${PREFIX}/lib/libpsl.so                          # [linux]\n        - test -f ${PREFIX}/lib/libpsl.dylib                       # [osx]\n        - test ! -f ${PREFIX}/lib/libpsl.a                         # [unix]\n        - if not exist %LIBRARY_INC%\\\\libpsl.h exit 1              # [win]\n        - if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\libpsl.pc exit 1  # [win]\n        - if not exist %LIBRARY_LIB%\\\\psl.lib exit 1               # [win]\n        - if not exist %LIBRARY_BIN%\\\\psl-*.dll exit 1             # [win]\n\n  - name: libpsl-static\n    requirements:\n      host:\n        - {{ pin_subpackage('libpsl', exact=True) }}\n      run:\n        - {{ pin_subpackage('libpsl', exact=True) }}\n\n    files:\n      - lib/libpsl.a                    # [unix]\n      - Library/lib/libpsl.a            # [win]\n    test:\n      commands:\n          - test -f ${PREFIX}/include/libpsl.h                       # [unix]\n          - test -f ${PREFIX}/lib/pkgconfig/libpsl.pc                # [unix]\n          - test -f $PREFIX/lib/libpsl.a                             # [unix]\n          - test -f ${PREFIX}/lib/libpsl.so                          # [linux]\n          - if not exist %LIBRARY_INC%\\\\libpsl.h exit 1              # [win]\n          - if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\libpsl.pc exit 1  # [win]\n          - if not exist %LIBRARY_LIB%\\libpsl.a exit 1               # [win]\n\nabout:\n  home: https://github.com/rockdaboot/libpsl\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE\n  summary: A C library to handle the Public Suffix List\n\nextra:\n  recipe-maintainers:\n    - JohanMabille\n    - tschoonj\n",
+  "raw_meta_yaml": "context:\n  version: \"0.22.0\"\n  build_number: 2\n\nrecipe:\n  name: libpsl-packages\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/rockdaboot/libpsl/releases/download/${{ version }}/libpsl-${{ version }}.tar.gz\n  sha256: c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722\n\nbuild:\n  number: ${{ build_number }}\n\noutputs:\n  - package:\n      name: libpsl\n      version: ${{ version }}\n    build:\n      script: build\n      files:\n        - ${{ \"Library/\" if win }}include/libpsl.h\n        - ${{ \"Library/\" if win }}lib/pkgconfig/libpsl.pc\n        - if: linux\n          then:\n            - lib/libpsl.so*\n        - if: osx\n          then:\n            - lib/libpsl*.dylib\n        - if: win\n          then:\n            - Library/bin/psl-*.dll\n            - Library/lib/psl.lib\n    requirements:\n      run_exports:\n        # Just a guess\n        - ${{ pin_subpackage('libpsl', upper_bound='x.x') }}\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - ninja\n        - pkg-config\n        - meson\n      host:\n        - icu\n    tests:\n      - script:\n          - if: unix\n            then:\n              - test -f ${PREFIX}/include/libpsl.h\n              - test -f ${PREFIX}/lib/pkgconfig/libpsl.pc\n              - test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}\n              - test ! -f ${PREFIX}/lib/libpsl.a\n          - if: win\n            then:\n              - if not exist %LIBRARY_PREFIX%\\include\\libpsl.h (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\pkgconfig\\libpsl.pc (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\bin\\psl-*.dll (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\psl.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\libpsl.a (exit 1)\n  - package:\n      name: libpsl-static\n      version: ${{ version }}\n    build:\n      script: build\n      files:\n        - ${{ \"Library/\" if win }}lib/libpsl.a\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - ninja\n        - pkg-config\n        - meson\n      run:\n        - ${{ pin_subpackage('libpsl', exact=True) }}\n    tests:\n      - script:\n          - if: unix\n            then:\n              - test -f ${PREFIX}/lib/libpsl.a\n          - if: win\n            then:\n              - if not exist %LIBRARY_PREFIX%\\lib\\libpsl.a (exit 1)\nabout:\n  homepage: https://github.com/rockdaboot/libpsl\n  repository: https://github.com/rockdaboot/libpsl\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE\n  summary: A C library to handle the Public Suffix List\n\nextra:\n  recipe-maintainers:\n    - tschoonj\n    - JohanMabille\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -912,8 +1156,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
@@ -946,8 +1189,7 @@
     "host": {
       "__set__": true,
       "elements": [
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
@@ -968,6 +1210,7 @@
   },
   "win_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/rockdaboot/libpsl",
       "home": "https://github.com/rockdaboot/libpsl",
       "license": "MIT",
       "license_family": "MIT",
@@ -975,55 +1218,78 @@
       "summary": "A C library to handle the Public Suffix List"
     },
     "build": {
-      "number": "1",
-      "run_exports": [
-        "libpsl"
-      ]
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "libpsl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
       "recipe-maintainers": [
-        "JohanMabille",
-        "tschoonj"
+        "tschoonj",
+        "JohanMabille"
       ]
     },
     "outputs": [
       {
-        "files": [
-          "Library/include/libpsl.h",
-          "Library/lib/pkgconfig/libpsl.pc",
-          "Library/bin/psl-*.dll",
-          "Library/lib/psl.lib"
-        ],
-        "name": "libpsl",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_INC%\\\\libpsl.h exit 1",
-            "if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\libpsl.pc exit 1",
-            "if not exist %LIBRARY_LIB%\\\\psl.lib exit 1",
-            "if not exist %LIBRARY_BIN%\\\\psl-*.dll exit 1"
+        "build": {
+          "strong": [],
+          "weak": [
+            "libpsl"
           ]
-        }
+        },
+        "name": "libpsl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
+          ],
+          "host": [
+            "icu"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/include/libpsl.h",
+              "test -f ${PREFIX}/lib/pkgconfig/libpsl.pc",
+              "test -f ${PREFIX}/lib/libpsl${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libpsl.a"
+            ]
+          }
+        ],
+        "version": "0.22.0"
       },
       {
-        "files": [
-          "Library/lib/libpsl.a"
-        ],
+        "build": null,
         "name": "libpsl-static",
         "requirements": {
-          "host": [
-            "libpsl"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "ninja",
+            "pkg-config",
+            "meson"
           ],
+          "host": [],
           "run": [
             "libpsl"
           ]
         },
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_INC%\\\\libpsl.h exit 1",
-            "if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\libpsl.pc exit 1",
-            "if not exist %LIBRARY_LIB%\\libpsl.a exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test -f ${PREFIX}/lib/libpsl.a"
+          }
+        ],
+        "version": "0.22.0"
       }
     ],
     "package": {
@@ -1043,7 +1309,7 @@
         "icu"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "c45c3aa17576b99873e05a9b09a44041b065bbfa390e6d474d06fbfaeb9c7722",
       "url": "https://github.com/rockdaboot/libpsl/releases/download/0.22.0/libpsl-0.22.0.tar.gz"
@@ -1064,8 +1330,7 @@
     "host": {
       "__set__": true,
       "elements": [
-        "icu",
-        "libpsl"
+        "icu"
       ]
     },
     "run": {
