@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_cross_target_platformosx-64version19.1.7.yaml": "MACOSX_DEPLOYMENT_TARGET:\n- '10.9'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncross_target_platform:\n- osx-64\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nmacos_machine:\n- x86_64-apple-darwin13.4.0\nmeson_cpu_family:\n- x86_64\ntarget_platform:\n- linux-64\nuname_kernel_release:\n- 13.4.0\nuname_machine:\n- x86_64\nversion:\n- 19.1.7\nzip_keys:\n- - cross_target_platform\n  - macos_machine\n  - meson_cpu_family\n  - uname_kernel_release\n  - uname_machine\n",
+  "ci_support_linux_64_channel_targetsconda-forge_llvm_rccross_target_platformosx-64version23.1.0.rc1.yaml": "MACOSX_DEPLOYMENT_TARGET:\n- '10.9'\nchannel_sources:\n- conda-forge/label/llvm_rc,conda-forge\nchannel_targets:\n- conda-forge llvm_rc\ncross_target_platform:\n- osx-64\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nmacos_machine:\n- x86_64-apple-darwin13.4.0\nmeson_cpu_family:\n- x86_64\ntarget_platform:\n- linux-64\nuname_kernel_release:\n- 13.4.0\nuname_machine:\n- x86_64\nversion:\n- 23.1.0.rc1\nzip_keys:\n- - cross_target_platform\n  - macos_machine\n  - meson_cpu_family\n  - uname_kernel_release\n  - uname_machine\n- - version\n  - channel_sources\n  - channel_targets\n",
   "conda-forge.yml": {
     "channel_priority": "flexible",
     "conda_build": {
@@ -17,8 +17,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "a9fe69bc67017780d49d405685fe44c188721c85",
-  "feedstock_hash_ts": 1785271884,
+  "feedstock_hash": "5a9bc94f9d4870b8eb5ae476f169c3947b5d75d9",
+  "feedstock_hash_ts": 1785308119,
   "feedstock_name": "clang-compiler-activation",
   "linux_64_meta_yaml": {
     "about": {
@@ -39,6 +39,267 @@
       ]
     },
     "outputs": [
+      {
+        "build": null,
+        "name": "clang_impl_osx-64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-64",
+          "ld64_osx-64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1",
+          "compiler-rt_osx-64 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-64 23.1.0.rc1",
+            "clang_impl_linux-64 23.1.0.rc1",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 10.9",
+            "echo 13.4.0",
+            "echo x86_64",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clangxx_impl_linux-64 23.1.0.rc1",
+            "clang_osx-64",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-64",
+            "clangxx_osx-64"
+          ],
+          "skip": true
+        },
+        "name": "clang_bootstrap_osx-64",
+        "requirements": {
+          "build": [],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-64",
+            "ld64_osx-64",
+            "clang_osx-64",
+            "clangxx_osx-64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clang_impl_osx-arm64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-arm64",
+          "ld64_osx-arm64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1",
+          "compiler-rt_osx-arm64 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "clang_impl_linux-64 23.1.0.rc1",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 10.9",
+            "echo 20.0.0",
+            "echo arm64",
+            "echo aarch64",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-arm64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clangxx_impl_linux-64 23.1.0.rc1",
+            "clang_osx-arm64",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64"
+          ],
+          "skip": true
+        },
+        "name": "clang_bootstrap_osx-arm64",
+        "requirements": {
+          "build": [],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-arm64",
+            "ld64_osx-arm64",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
       {
         "build": null,
         "name": "clang_impl_osx-64",
@@ -1100,8 +1361,9 @@
     },
     "requirements": {
       "build": [
-        "libcxx 19",
+        "libcxx 23",
         "gcc_linux-64",
+        "libcxx 19",
         "libcxx 20",
         "libcxx 21",
         "libcxx 22"
@@ -1133,7 +1395,8 @@
         "libllvm19",
         "libllvm20",
         "libllvm21",
-        "libllvm22"
+        "libllvm22",
+        "libllvm23"
       ]
     },
     "run": {
@@ -1148,6 +1411,7 @@
         "clang-20",
         "clang-21",
         "clang-22",
+        "clang-23",
         "clang_impl_linux-64",
         "clang_impl_osx-64",
         "clang_impl_osx-arm64",
@@ -1196,6 +1460,267 @@
         "build": null,
         "name": "clang_impl_osx-64",
         "requirements": [
+          "clang-23",
+          "cctools_impl_osx-64",
+          "ld64_osx-64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1",
+          "compiler-rt_osx-64 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-64 23.1.0.rc1",
+            "clang_impl_linux-64 23.1.0.rc1",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 10.9",
+            "echo 13.4.0",
+            "echo x86_64",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clangxx_impl_linux-64 23.1.0.rc1",
+            "clang_osx-64",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-64",
+            "clangxx_osx-64"
+          ],
+          "skip": true
+        },
+        "name": "clang_bootstrap_osx-64",
+        "requirements": {
+          "build": [],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-64",
+            "ld64_osx-64",
+            "clang_osx-64",
+            "clangxx_osx-64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clang_impl_osx-arm64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-arm64",
+          "ld64_osx-arm64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1",
+          "compiler-rt_osx-arm64 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "clang_impl_linux-64 23.1.0.rc1",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 10.9",
+            "echo 20.0.0",
+            "echo arm64",
+            "echo aarch64",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-arm64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clangxx_impl_linux-64 23.1.0.rc1",
+            "clang_osx-arm64",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64"
+          ],
+          "skip": true
+        },
+        "name": "clang_bootstrap_osx-arm64",
+        "requirements": {
+          "build": [],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-arm64",
+            "ld64_osx-arm64",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clang_impl_osx-64",
+        "requirements": [
           "clang-19",
           "clang 19.*",
           "llvm-tools 19.1.7",
@@ -2252,6 +2777,267 @@
         },
         "name": "clang_impl_osx-64",
         "requirements": [
+          "clang-23",
+          "cctools_impl_osx-64",
+          "ld64_osx-64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-64 23.1.0.rc1",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clangxx_impl_osx-64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 13.4.0",
+            "echo x86_64",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clang_osx-64",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-64",
+            "clangxx_osx-64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-64",
+            "ld64_osx-64",
+            "clang_osx-64",
+            "clangxx_osx-64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clang_impl_osx-arm64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-arm64",
+          "ld64_osx-arm64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 20.0.0",
+            "echo arm64",
+            "echo aarch64",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-arm64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clang_osx-arm64",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-arm64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-arm64",
+            "ld64_osx-arm64",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clang_impl_osx-64",
+        "requirements": [
           "clang-19",
           "clang 19.*",
           "llvm-tools 19.1.7",
@@ -3289,6 +4075,267 @@
             "clang_osx-arm64",
             "clangxx_osx-arm64",
             "libllvm22 22.1.8"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clang_impl_osx-64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-64",
+          "ld64_osx-64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-64 23.1.0.rc1",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 13.4.0",
+            "echo x86_64",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clang_osx-64",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-64",
+            "clangxx_osx-64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-arm64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-64",
+            "ld64_osx-64",
+            "clang_osx-64",
+            "clangxx_osx-64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clang_impl_osx-arm64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-arm64",
+          "ld64_osx-arm64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clangxx_impl_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 20.0.0",
+            "echo arm64",
+            "echo aarch64",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-arm64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clang_osx-arm64",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-arm64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-arm64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-arm64",
+            "ld64_osx-arm64",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64",
+            "libllvm23 23.1.0.rc1"
           ]
         },
         "script": "install-clang-bootstrap.sh",
@@ -4361,12 +5408,14 @@
     },
     "requirements": {
       "build": [
-        "libcxx 19",
+        "libcxx 23",
         "gcc_linux-64",
+        "libcxx 19",
         "libcxx 20",
         "libcxx 21",
         "libcxx 22",
         "cctools_osx-64",
+        "clang 23.1.0.rc1",
         "clang 19.1.7",
         "clang 20.1.8",
         "clang 21.1.8",
@@ -4402,6 +5451,267 @@
         },
         "name": "clang_impl_osx-64",
         "requirements": [
+          "clang-23",
+          "cctools_impl_osx-64",
+          "ld64_osx-64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-64 23.1.0.rc1",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clangxx_impl_osx-64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 13.4.0",
+            "echo x86_64",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clang_osx-64",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-64",
+            "clangxx_osx-64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-64",
+            "ld64_osx-64",
+            "clang_osx-64",
+            "clangxx_osx-64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clang_impl_osx-arm64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-arm64",
+          "ld64_osx-arm64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 20.0.0",
+            "echo arm64",
+            "echo aarch64",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-arm64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clang_osx-arm64",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-arm64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-arm64",
+            "ld64_osx-arm64",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clang_impl_osx-64",
+        "requirements": [
           "clang-19",
           "clang 19.*",
           "llvm-tools 19.1.7",
@@ -5458,6 +6768,8 @@
     "requirements": {
       "build": [
         "cctools_osx-64",
+        "libcxx 23",
+        "clang 23.1.0.rc1",
         "libcxx 19",
         "clang 19.1.7",
         "libcxx 20",
@@ -5496,7 +6808,8 @@
         "libllvm19",
         "libllvm20",
         "libllvm21",
-        "libllvm22"
+        "libllvm22",
+        "libllvm23"
       ]
     },
     "run": {
@@ -5511,6 +6824,7 @@
         "clang-20",
         "clang-21",
         "clang-22",
+        "clang-23",
         "clang_impl_osx-64",
         "clang_impl_osx-arm64",
         "clang_osx-64",
@@ -5555,6 +6869,267 @@
         "build": null,
         "name": "clang_impl_osx-64",
         "requirements": [
+          "clang-23",
+          "cctools_impl_osx-64",
+          "ld64_osx-64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-64 23.1.0.rc1",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clangxx_impl_osx-64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 13.4.0",
+            "echo x86_64",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-64 23.1.0.rc1",
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clang_osx-64",
+            "cctools_osx-64",
+            "sdkroot_env_osx-64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-64",
+            "clangxx_osx-64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-arm64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-64",
+            "ld64_osx-64",
+            "clang_osx-64",
+            "clangxx_osx-64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "x86_64-apple-darwin13.4.0-clang --version",
+            "x86_64-apple-darwin13.4.0-clang-cpp --version",
+            "x86_64-apple-darwin13.4.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clang_impl_osx-arm64",
+        "requirements": [
+          "clang-23",
+          "cctools_impl_osx-arm64",
+          "ld64_osx-arm64 * llvm23_1_*",
+          "compiler-rt 23.1.0.rc1"
+        ],
+        "script": "install-clang_impl.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version"
+          ]
+        }
+      },
+      {
+        "name": "clang_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clang.sh",
+        "test": {
+          "commands": [
+            "${CC} --version",
+            "${CPP} --version",
+            "${CC_FOR_BUILD} --version",
+            "${CPP_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "skip": true
+        },
+        "name": "clangxx_impl_osx-arm64",
+        "requirements": {
+          "run": [
+            "clang-23",
+            "clang_impl_osx-arm64 23.1.0.rc1",
+            "libcxx-devel 23.1"
+          ]
+        },
+        "script": "install-clangxx_impl.sh",
+        "test": {
+          "commands": [
+            "echo 20.0.0",
+            "echo arm64",
+            "echo aarch64",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": {
+            "strong": [
+              "libcxx >=23"
+            ]
+          }
+        },
+        "name": "clangxx_osx-arm64",
+        "requirements": {
+          "run": [
+            "clangxx_impl_osx-arm64 23.1.0.rc1",
+            "clang_osx-arm64",
+            "cctools_osx-arm64",
+            "sdkroot_env_osx-arm64"
+          ]
+        },
+        "script": "install-clangxx.sh",
+        "test": {
+          "commands": [
+            "${CXX} --version",
+            "${CXX_FOR_BUILD} --version"
+          ]
+        }
+      },
+      {
+        "about": {
+          "home": "https://llvm.org",
+          "license": "Apache-2.0",
+          "license_family": "Apache",
+          "license_file": "LLVM_LICENSE.txt",
+          "summary": "clang compiler components in one package for bootstrapping clang"
+        },
+        "build": {
+          "always_include_files": [
+            "bin/",
+            "etc/",
+            "include/",
+            "lib/",
+            "libexec/",
+            "share/"
+          ],
+          "ignore_run_exports_from": [
+            "libllvm23",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64"
+          ]
+        },
+        "name": "clang_bootstrap_osx-arm64",
+        "requirements": {
+          "build": [
+            "cctools_impl_osx-arm64"
+          ],
+          "host": [
+            "clangxx 23.1.0.rc1",
+            "libcxx 23",
+            "cctools_impl_osx-arm64",
+            "ld64_osx-arm64",
+            "clang_osx-arm64",
+            "clangxx_osx-arm64",
+            "libllvm23 23.1.0.rc1"
+          ]
+        },
+        "script": "install-clang-bootstrap.sh",
+        "test": {
+          "commands": [
+            "arm64-apple-darwin20.0.0-clang --version",
+            "arm64-apple-darwin20.0.0-clang-cpp --version",
+            "arm64-apple-darwin20.0.0-clang++ --version"
+          ]
+        }
+      },
+      {
+        "build": null,
+        "name": "clang_impl_osx-64",
+        "requirements": [
           "clang-19",
           "clang 19.*",
           "llvm-tools 19.1.7",
@@ -6613,6 +8188,8 @@
     "requirements": {
       "build": [
         "cctools_osx-arm64",
+        "libcxx 23",
+        "clang 23.1.0.rc1",
         "libcxx 19",
         "clang 19.1.7",
         "libcxx 20",
@@ -6651,7 +8228,8 @@
         "libllvm19",
         "libllvm20",
         "libllvm21",
-        "libllvm22"
+        "libllvm22",
+        "libllvm23"
       ]
     },
     "run": {
@@ -6666,6 +8244,7 @@
         "clang-20",
         "clang-21",
         "clang-22",
+        "clang-23",
         "clang_impl_osx-64",
         "clang_impl_osx-arm64",
         "clang_osx-64",
@@ -6711,7 +8290,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/clang-compiler-activation.json"
   },
-  "raw_meta_yaml": "{% if version is not defined %}\n{% set version = \"22.1.7\" %}\n{% endif %}\n{% set major_ver = version.split(\".\")[0] %}\n{% set maj_min = major_ver ~ \".\" ~ version.split(\".\")[1] %}\n# in the past we've had to uncouple the compiler version from the version\n# of the C++ stdlib; keep the variable in case this happens again\n{% set libcxx_major = major_ver %}\n\n{% set build_number = 34 %}\n\npackage:\n  name: clang-compiler-activation\n  version: {{ version }}\n\n# # Originally this was to enable automatic updates from the bot,\n# # but that doesn't work with several LLVM versions at the same time\n# source:\n#   url: https://github.com/llvm/llvm-project/releases/download/llvmorg-{{ version.replace(\".rc\", \"-rc\") }}/llvm-project-{{ version.replace(\".rc\", \"rc\") }}.src.tar.xz\n#   sha256: 326335a830f2e32d06d0a36393b5455d17dc73e0bd1211065227ee014f92cbf8  # [version == \"13.0.1\"]\n\nbuild:\n  skip: true  # [win]\n  number: {{ build_number }}\n\nrequirements:\n  build:\n    - cctools_{{ target_platform }}  # [osx]\n    - libcxx {{ libcxx_major }}\n    - gcc_{{ target_platform }}      # [linux]\n    - clang {{ version }}            # [osx]\n\noutputs:\n  - name: clang_impl_{{ cross_target_platform }}\n    script: install-clang_impl.sh\n    build:\n      # native package is built in clangdev-feedstock\n      skip: true  # [cross_target_platform == target_platform]\n    requirements:\n      - clang-{{ major_ver }}\n      {% if major_ver == \"19\" %}\n      # This is strictly not necessary, but added here for backwards\n      # compatibility reasons\n      - clang 19.*\n      # Not sure why this was added in https://github.com/conda-forge/clang-compiler-activation-feedstock/pull/16\n      # Keep it in 19 for backwards compatibility\n      - llvm-tools {{ version }}\n      {% endif %}\n      - cctools_impl_{{ cross_target_platform }}\n      - ld64_{{ cross_target_platform }} * llvm{{ maj_min.replace(\".\", \"_\") }}_*\n      # This brings in libraries for linux too. Split this again?\n      - compiler-rt {{ version }}\n      # For OSX, compiler-rt library includes both x86_64 and arm64.\n      # Therefore `compiler-rt_osx-64` and `compiler-rt_osx-arm64` are basically the same\n      # and clobber each other. Don't bring both here.\n      - compiler-rt_{{ cross_target_platform }} {{ version }}     # [linux]\n    test:\n      commands:\n        - {{ macos_machine }}-clang --version\n        - {{ macos_machine }}-clang-cpp --version\n\n  - name: clang_{{ cross_target_platform }}\n    script: install-clang.sh\n    requirements:\n      run:\n        - clang_impl_{{ cross_target_platform }} {{ version }}\n        - clang_impl_{{ target_platform }} {{ version }}\n        - cctools_{{ cross_target_platform }}\n        - sdkroot_env_{{ cross_target_platform }}\n        {% if major_ver == \"19\" %}\n        # This is strictly not necessary, but added here for backwards\n        # compatibility reasons\n        - clang 19.*\n        {% endif %}\n    test:\n      commands:\n        - ${CC} --version\n        - ${CPP} --version\n        - ${CC_FOR_BUILD} --version\n        - ${CPP_FOR_BUILD} --version\n\n  - name: clangxx_impl_{{ cross_target_platform }}\n    script: install-clangxx_impl.sh\n    build:\n      # native package is built in clangdev-feedstock\n      skip: true  # [cross_target_platform == target_platform]\n    requirements:\n      run:\n        {% if major_ver == \"19\" %}\n        # This is strictly not necessary, but added here for backwards\n        # compatibility reasons\n        - clangxx 19.*\n        {% endif %}\n        - clang-{{ major_ver }}\n        - clang_impl_{{ cross_target_platform }} {{ version }}\n        - libcxx-devel {{ maj_min }}\n    test:\n      commands:\n        - echo {{ MACOSX_DEPLOYMENT_TARGET }}  # [linux]\n        - echo {{ uname_kernel_release }}\n        - echo {{ uname_machine }}\n        - echo {{ meson_cpu_family }}\n        - {{ macos_machine }}-clang++ --version\n\n  - name: clangxx_{{ cross_target_platform }}\n    script: install-clangxx.sh\n    build:\n      # Since transitive run_exports are not currently possible\n      # (here I would like the run dependency on clangxx to pull in the run_exports from it).\n      run_exports:\n        strong:\n          - libcxx >={{ libcxx_major }}\n    requirements:\n      run:\n        {% if major_ver == \"19\" %}\n        # This is strictly not necessary, but added here for backwards\n        # compatibility reasons\n        - clangxx 19.*\n        {% endif %}\n        - clangxx_impl_{{ cross_target_platform }} {{ version }}\n        - clangxx_impl_{{ target_platform }} {{ version }}\n        - {{ pin_subpackage(\"clang_\" ~ cross_target_platform, exact=True) }}\n        - cctools_{{ cross_target_platform }}\n        - sdkroot_env_{{ cross_target_platform }}\n    test:\n      commands:\n        - ${CXX} --version\n        - ${CXX_FOR_BUILD} --version\n\n  - name: clang_bootstrap_{{ cross_target_platform }}\n    script: install-clang-bootstrap.sh\n    requirements:\n      build:\n        - cctools_impl_{{ target_platform }}  # [osx]\n      host:\n        - clangxx {{ version }}\n        - libcxx {{ libcxx_major }}      # [cross_target_platform in (\"osx-64\", \"osx-arm64\")]\n        - cctools_impl_{{ cross_target_platform }}\n        - ld64_{{ cross_target_platform }}\n        - {{ pin_subpackage('clang_' ~ cross_target_platform, exact=True) }}\n        - {{ pin_subpackage('clangxx_' ~ cross_target_platform, exact=True) }}\n        # hack to force the solver to work\n        - libllvm{{ major_ver }} {{ version }}\n    build:\n      always_include_files:\n        - bin/\n        - etc/\n        - include/\n        - lib/\n        - libexec/\n        - share/\n      ignore_run_exports_from:\n        - libllvm{{ major_ver }}\n        - {{ pin_subpackage('clang_' ~ cross_target_platform, exact=True) }}\n        - {{ pin_subpackage('clangxx_' ~ cross_target_platform, exact=True) }}\n      skip: true  # [not osx]\n    test:\n      commands:\n        - {{ macos_machine }}-clang --version\n        - {{ macos_machine }}-clang-cpp --version\n        - {{ macos_machine }}-clang++ --version\n    about:\n      home: https://llvm.org\n      license: Apache-2.0\n      license_family: Apache\n      license_file: LLVM_LICENSE.txt\n      summary: clang compiler components in one package for bootstrapping clang\n\nabout:\n  home: http://github.com/conda-forge/clang-compiler-activation-feedstock\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE.txt\n  summary: clang compilers for conda-build 3\n\nextra:\n  recipe-maintainers:\n    - isuruf\n    - katietz\n    - h-vetinari\n",
+  "raw_meta_yaml": "{% if version is not defined %}\n{% set version = \"23.1.0.rc1\" %}\n{% endif %}\n{% set major_ver = version.split(\".\")[0] %}\n{% set maj_min = major_ver ~ \".\" ~ version.split(\".\")[1] %}\n# in the past we've had to uncouple the compiler version from the version\n# of the C++ stdlib; keep the variable in case this happens again\n{% set libcxx_major = major_ver %}\n\n{% set build_number = 34 %}\n\npackage:\n  name: clang-compiler-activation\n  version: {{ version }}\n\n# # Originally this was to enable automatic updates from the bot,\n# # but that doesn't work with several LLVM versions at the same time\n# source:\n#   url: https://github.com/llvm/llvm-project/releases/download/llvmorg-{{ version.replace(\".rc\", \"-rc\") }}/llvm-project-{{ version.replace(\".rc\", \"rc\") }}.src.tar.xz\n#   sha256: 326335a830f2e32d06d0a36393b5455d17dc73e0bd1211065227ee014f92cbf8  # [version == \"13.0.1\"]\n\nbuild:\n  skip: true  # [win]\n  number: {{ build_number }}\n\nrequirements:\n  build:\n    - cctools_{{ target_platform }}  # [osx]\n    - libcxx {{ libcxx_major }}\n    - gcc_{{ target_platform }}      # [linux]\n    - clang {{ version }}            # [osx]\n\noutputs:\n  - name: clang_impl_{{ cross_target_platform }}\n    script: install-clang_impl.sh\n    build:\n      # native package is built in clangdev-feedstock\n      skip: true  # [cross_target_platform == target_platform]\n    requirements:\n      - clang-{{ major_ver }}\n      {% if major_ver == \"19\" %}\n      # This is strictly not necessary, but added here for backwards\n      # compatibility reasons\n      - clang 19.*\n      # Not sure why this was added in https://github.com/conda-forge/clang-compiler-activation-feedstock/pull/16\n      # Keep it in 19 for backwards compatibility\n      - llvm-tools {{ version }}\n      {% endif %}\n      - cctools_impl_{{ cross_target_platform }}\n      - ld64_{{ cross_target_platform }} * llvm{{ maj_min.replace(\".\", \"_\") }}_*\n      # This brings in libraries for linux too. Split this again?\n      - compiler-rt {{ version }}\n      # For OSX, compiler-rt library includes both x86_64 and arm64.\n      # Therefore `compiler-rt_osx-64` and `compiler-rt_osx-arm64` are basically the same\n      # and clobber each other. Don't bring both here.\n      - compiler-rt_{{ cross_target_platform }} {{ version }}     # [linux]\n    test:\n      commands:\n        - {{ macos_machine }}-clang --version\n        - {{ macos_machine }}-clang-cpp --version\n\n  - name: clang_{{ cross_target_platform }}\n    script: install-clang.sh\n    requirements:\n      run:\n        - clang_impl_{{ cross_target_platform }} {{ version }}\n        - clang_impl_{{ target_platform }} {{ version }}\n        - cctools_{{ cross_target_platform }}\n        - sdkroot_env_{{ cross_target_platform }}\n        {% if major_ver == \"19\" %}\n        # This is strictly not necessary, but added here for backwards\n        # compatibility reasons\n        - clang 19.*\n        {% endif %}\n    test:\n      commands:\n        - ${CC} --version\n        - ${CPP} --version\n        - ${CC_FOR_BUILD} --version\n        - ${CPP_FOR_BUILD} --version\n\n  - name: clangxx_impl_{{ cross_target_platform }}\n    script: install-clangxx_impl.sh\n    build:\n      # native package is built in clangdev-feedstock\n      skip: true  # [cross_target_platform == target_platform]\n    requirements:\n      run:\n        {% if major_ver == \"19\" %}\n        # This is strictly not necessary, but added here for backwards\n        # compatibility reasons\n        - clangxx 19.*\n        {% endif %}\n        - clang-{{ major_ver }}\n        - clang_impl_{{ cross_target_platform }} {{ version }}\n        - libcxx-devel {{ maj_min }}\n    test:\n      commands:\n        - echo {{ MACOSX_DEPLOYMENT_TARGET }}  # [linux]\n        - echo {{ uname_kernel_release }}\n        - echo {{ uname_machine }}\n        - echo {{ meson_cpu_family }}\n        - {{ macos_machine }}-clang++ --version\n\n  - name: clangxx_{{ cross_target_platform }}\n    script: install-clangxx.sh\n    build:\n      # Since transitive run_exports are not currently possible\n      # (here I would like the run dependency on clangxx to pull in the run_exports from it).\n      run_exports:\n        strong:\n          - libcxx >={{ libcxx_major }}\n    requirements:\n      run:\n        {% if major_ver == \"19\" %}\n        # This is strictly not necessary, but added here for backwards\n        # compatibility reasons\n        - clangxx 19.*\n        {% endif %}\n        - clangxx_impl_{{ cross_target_platform }} {{ version }}\n        - clangxx_impl_{{ target_platform }} {{ version }}\n        - {{ pin_subpackage(\"clang_\" ~ cross_target_platform, exact=True) }}\n        - cctools_{{ cross_target_platform }}\n        - sdkroot_env_{{ cross_target_platform }}\n    test:\n      commands:\n        - ${CXX} --version\n        - ${CXX_FOR_BUILD} --version\n\n  - name: clang_bootstrap_{{ cross_target_platform }}\n    script: install-clang-bootstrap.sh\n    requirements:\n      build:\n        - cctools_impl_{{ target_platform }}  # [osx]\n      host:\n        - clangxx {{ version }}\n        - libcxx {{ libcxx_major }}      # [cross_target_platform in (\"osx-64\", \"osx-arm64\")]\n        - cctools_impl_{{ cross_target_platform }}\n        - ld64_{{ cross_target_platform }}\n        - {{ pin_subpackage('clang_' ~ cross_target_platform, exact=True) }}\n        - {{ pin_subpackage('clangxx_' ~ cross_target_platform, exact=True) }}\n        # hack to force the solver to work\n        - libllvm{{ major_ver }} {{ version }}\n    build:\n      always_include_files:\n        - bin/\n        - etc/\n        - include/\n        - lib/\n        - libexec/\n        - share/\n      ignore_run_exports_from:\n        - libllvm{{ major_ver }}\n        - {{ pin_subpackage('clang_' ~ cross_target_platform, exact=True) }}\n        - {{ pin_subpackage('clangxx_' ~ cross_target_platform, exact=True) }}\n      skip: true  # [not osx]\n    test:\n      commands:\n        - {{ macos_machine }}-clang --version\n        - {{ macos_machine }}-clang-cpp --version\n        - {{ macos_machine }}-clang++ --version\n    about:\n      home: https://llvm.org\n      license: Apache-2.0\n      license_family: Apache\n      license_file: LLVM_LICENSE.txt\n      summary: clang compiler components in one package for bootstrapping clang\n\nabout:\n  home: http://github.com/conda-forge/clang-compiler-activation-feedstock\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE.txt\n  summary: clang compilers for conda-build 3\n\nextra:\n  recipe-maintainers:\n    - isuruf\n    - katietz\n    - h-vetinari\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -6724,6 +8303,7 @@
       "clang-20",
       "clang-21",
       "clang-22",
+      "clang-23",
       "clang_impl_linux-64",
       "clang_impl_osx-64",
       "clang_impl_osx-arm64",
@@ -6747,6 +8327,7 @@
       "libllvm20",
       "libllvm21",
       "libllvm22",
+      "libllvm23",
       "llvm-tools",
       "sdkroot_env_osx-64",
       "sdkroot_env_osx-arm64"
@@ -6784,6 +8365,7 @@
         "libllvm20",
         "libllvm21",
         "libllvm22",
+        "libllvm23",
         "osx-sysroot"
       ]
     },
@@ -6799,6 +8381,7 @@
         "clang-20",
         "clang-21",
         "clang-22",
+        "clang-23",
         "clang-compiler-activation",
         "clang_impl_linux-64",
         "clang_impl_osx-64",
@@ -6841,11 +8424,13 @@
         "clang 20.1.8",
         "clang 21.1.8",
         "clang 22.1.8",
+        "clang 23.1.0.rc1",
         "gcc_linux-64",
         "libcxx 19",
         "libcxx 20",
         "libcxx 21",
-        "libcxx 22"
+        "libcxx 22",
+        "libcxx 23"
       ]
     },
     "host": {
@@ -6859,6 +8444,7 @@
         "clangxx 20.1.8",
         "clangxx 21.1.8",
         "clangxx 22.1.8",
+        "clangxx 23.1.0.rc1",
         "clangxx_osx-64",
         "clangxx_osx-arm64",
         "ld64_osx-64",
@@ -6867,10 +8453,12 @@
         "libcxx 20",
         "libcxx 21",
         "libcxx 22",
+        "libcxx 23",
         "libllvm19 19.1.7",
         "libllvm20 20.1.8",
         "libllvm21 21.1.8",
-        "libllvm22 22.1.8"
+        "libllvm22 22.1.8",
+        "libllvm23 23.1.0.rc1"
       ]
     },
     "run": {
@@ -6885,18 +8473,22 @@
         "clang-20",
         "clang-21",
         "clang-22",
+        "clang-23",
         "clang_impl_linux-64 19.1.7",
         "clang_impl_linux-64 20.1.8",
         "clang_impl_linux-64 21.1.8",
         "clang_impl_linux-64 22.1.8",
+        "clang_impl_linux-64 23.1.0.rc1",
         "clang_impl_osx-64 19.1.7",
         "clang_impl_osx-64 20.1.8",
         "clang_impl_osx-64 21.1.8",
         "clang_impl_osx-64 22.1.8",
+        "clang_impl_osx-64 23.1.0.rc1",
         "clang_impl_osx-arm64 19.1.7",
         "clang_impl_osx-arm64 20.1.8",
         "clang_impl_osx-arm64 21.1.8",
         "clang_impl_osx-arm64 22.1.8",
+        "clang_impl_osx-arm64 23.1.0.rc1",
         "clang_osx-64",
         "clang_osx-arm64",
         "clangxx 19.*",
@@ -6904,38 +8496,47 @@
         "clangxx_impl_linux-64 20.1.8",
         "clangxx_impl_linux-64 21.1.8",
         "clangxx_impl_linux-64 22.1.8",
+        "clangxx_impl_linux-64 23.1.0.rc1",
         "clangxx_impl_osx-64 19.1.7",
         "clangxx_impl_osx-64 20.1.8",
         "clangxx_impl_osx-64 21.1.8",
         "clangxx_impl_osx-64 22.1.8",
+        "clangxx_impl_osx-64 23.1.0.rc1",
         "clangxx_impl_osx-arm64 19.1.7",
         "clangxx_impl_osx-arm64 20.1.8",
         "clangxx_impl_osx-arm64 21.1.8",
         "clangxx_impl_osx-arm64 22.1.8",
+        "clangxx_impl_osx-arm64 23.1.0.rc1",
         "compiler-rt 19.1.7",
         "compiler-rt 20.1.8",
         "compiler-rt 21.1.8",
         "compiler-rt 22.1.8",
+        "compiler-rt 23.1.0.rc1",
         "compiler-rt_osx-64 19.1.7",
         "compiler-rt_osx-64 20.1.8",
         "compiler-rt_osx-64 21.1.8",
         "compiler-rt_osx-64 22.1.8",
+        "compiler-rt_osx-64 23.1.0.rc1",
         "compiler-rt_osx-arm64 19.1.7",
         "compiler-rt_osx-arm64 20.1.8",
         "compiler-rt_osx-arm64 21.1.8",
         "compiler-rt_osx-arm64 22.1.8",
+        "compiler-rt_osx-arm64 23.1.0.rc1",
         "ld64_osx-64 * llvm19_1_*",
         "ld64_osx-64 * llvm20_1_*",
         "ld64_osx-64 * llvm21_1_*",
         "ld64_osx-64 * llvm22_1_*",
+        "ld64_osx-64 * llvm23_1_*",
         "ld64_osx-arm64 * llvm19_1_*",
         "ld64_osx-arm64 * llvm20_1_*",
         "ld64_osx-arm64 * llvm21_1_*",
         "ld64_osx-arm64 * llvm22_1_*",
+        "ld64_osx-arm64 * llvm23_1_*",
         "libcxx-devel 19.1",
         "libcxx-devel 20.1",
         "libcxx-devel 21.1",
         "libcxx-devel 22.1",
+        "libcxx-devel 23.1",
         "llvm-tools 19.1.7",
         "sdkroot_env_osx-64",
         "sdkroot_env_osx-arm64"
