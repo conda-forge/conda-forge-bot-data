@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\ntbb:\n- '2022'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\ntbb:\n- '2023'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "bot": {
       "abi_migration_branches": [
@@ -9,6 +9,7 @@
       ]
     },
     "build_platform": {
+      "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
       "osx_64": "osx_arm64"
     },
@@ -27,8 +28,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "6de5523a21280cdf5ce65806c8ca52921815eb1f",
-  "feedstock_hash_ts": 1784208952,
+  "feedstock_hash": "b3675c6decb19e0fb87d40e04d6312613fff2642",
+  "feedstock_hash_ts": 1785418250,
   "feedstock_name": "numba",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -49,7 +50,7 @@
       "ignore_run_exports": [
         "tbb"
       ],
-      "number": "0",
+      "number": "1",
       "script": [
         "export CC=\"${CC} -pthread\"",
         "export CXX=\"${CXX} -pthread\"",
@@ -212,7 +213,7 @@
       "ignore_run_exports": [
         "tbb"
       ],
-      "number": "0",
+      "number": "1",
       "script": [
         "export CC=\"${CC} -pthread\"",
         "export CXX=\"${CXX} -pthread\"",
@@ -372,7 +373,7 @@
       "ignore_run_exports": [
         "tbb"
       ],
-      "number": "0",
+      "number": "1",
       "script": [
         "export CC=\"${CC} -pthread\"",
         "export CXX=\"${CXX} -pthread\"",
@@ -532,7 +533,7 @@
       "ignore_run_exports": [
         "tbb"
       ],
-      "number": "0",
+      "number": "1",
       "script": [
         "export CC=\"${CC} -pthread\"",
         "export CXX=\"${CXX} -pthread\"",
@@ -653,7 +654,7 @@
       "ignore_run_exports": [
         "tbb"
       ],
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . --no-deps --ignore-installed -vvv"
       ]
@@ -812,7 +813,7 @@
       "ignore_run_exports": [
         "tbb"
       ],
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . --no-deps --ignore-installed -vvv"
       ]
@@ -971,7 +972,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/numba.json"
   },
-  "raw_meta_yaml": "{% set name = \"numba\" %}\n{% set version = \"0.66.0\" %}\n\npackage:\n  name: numba\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz\n  sha256: b900e63a0e26c05ea9a6d5a3a5a0a177cb64c5011887bf43edb8c3ed2c38d363\n\nbuild:\n  number: 0\n  entry_points:\n    - numba = numba.misc.numba_entry:main\n  script:\n    - export CC=\"${CC} -pthread\"  # [linux]\n    - export CXX=\"${CXX} -pthread\"  # [linux]\n    - {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vvv\n  ignore_run_exports:\n    # tbb-devel triggers hard dependency on tbb, this is not the case.\n    - tbb\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - numpy >=1.24,<2.5                      # [build_platform != target_platform]\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    # llvm is needed for the headers\n    - llvm-openmp  # [osx]\n    - libgomp      # [linux]\n\n  host:\n    - python\n    - pip\n    - setuptools\n    - llvmlite 0.48.*\n    - llvm-openmp  # [osx]\n    - libgomp      # [linux]\n    - numpy >=1.24,<2.5\n    - tbb-devel 2021.6.0\n\n  run:\n    - python\n    - {{ pin_compatible('llvmlite', max_pin='x.x') }}\n    # NumPy has lower and upper limits\n    - numpy >=1.22.3,<2.5\n\n  run_constrained:\n    - {{ pin_compatible('tbb', max_pin=None) }}\n    # avoid confusion from openblas bugs\n    - libopenblas !=0.3.6             # [x86_64]\n    - libopenblas >=0.3.18,!=0.3.20   # [arm64]\n    # CUDA 11.2 or later is required for CUDA support\n    - cuda-version >=11.2\n    - cudatoolkit >=11.2\n    # scipy 1.0 or later\n    - scipy >=1.0\n    # CUDA Python 11.6 or later\n    - cuda-python >=11.6\n\ntest:\n  requires:\n    - pip\n    # Required to test optional Numba features\n    - jinja2\n    - cffi\n    - scipy\n    # At least NumPy 1.26.0 has an issue with arctanh on glibc<=2.17.\n    # ref: https://github.com/numpy/numpy/issues/25087\n    - numpy !=1.26.0  # [linux and x86_64]\n    - ipython\n    - setuptools\n    - tbb\n    # Need these for AOT.\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n\n  imports:\n    - numba\n    - numba.core.annotations\n    - numba.core.datamodel\n    - numba.core.rewrites\n    - numba.core.runtime\n    - numba.core.typeconv\n    - numba.core.typing\n    - numba.core.unsafe\n    - numba.cuda\n    - numba.cuda.cudadrv\n    - numba.cuda.kernels\n    - numba.cuda.simulator\n    - numba.cuda.simulator.cudadrv\n    - numba.cuda.tests\n    - numba.cuda.tests.cudadrv\n    - numba.cuda.tests.cudapy\n    - numba.cuda.tests.cudasim\n    - numba.cuda.tests.nocuda\n    - numba.experimental.jitclass\n    - numba.np.ufunc\n    - numba.scripts\n    - numba.testing\n    - numba.tests\n    - numba.tests.npyufunc\n\nabout:\n  home: http://numba.pydata.org\n  license: BSD-2-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: NumPy aware dynamic Python compiler using LLVM\n  description: |\n    Numba is an Open Source NumPy-aware optimizing compiler for Python \n    sponsored by Anaconda, Inc. It uses the remarkable LLVM compiler \n    infrastructure to compile Python syntax to machine code.\"\n  doc_url: http://numba.pydata.org/\n  dev_url: https://github.com/numba/numba\n\nextra:\n  recipe-maintainers:\n    - souravsingh\n    - marcelotrevisani\n    - henryiii\n    - mbargull\n    - jakirkham\n    - step21\n    - esc\n    - MementoRC\n",
+  "raw_meta_yaml": "{% set name = \"numba\" %}\n{% set version = \"0.66.0\" %}\n\npackage:\n  name: numba\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz\n  sha256: b900e63a0e26c05ea9a6d5a3a5a0a177cb64c5011887bf43edb8c3ed2c38d363\n\nbuild:\n  number: 1\n  entry_points:\n    - numba = numba.misc.numba_entry:main\n  script:\n    - export CC=\"${CC} -pthread\"  # [linux]\n    - export CXX=\"${CXX} -pthread\"  # [linux]\n    - {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vvv\n  ignore_run_exports:\n    # tbb-devel triggers hard dependency on tbb, this is not the case.\n    - tbb\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - numpy >=1.24,<2.5                      # [build_platform != target_platform]\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    # llvm is needed for the headers\n    - llvm-openmp  # [osx]\n    - libgomp      # [linux]\n\n  host:\n    - python\n    - pip\n    - setuptools\n    - llvmlite 0.48.*\n    - llvm-openmp  # [osx]\n    - libgomp      # [linux]\n    - numpy >=1.24,<2.5\n    - tbb-devel 2021.6.0\n\n  run:\n    - python\n    - {{ pin_compatible('llvmlite', max_pin='x.x') }}\n    # NumPy has lower and upper limits\n    - numpy >=1.22.3,<2.5\n\n  run_constrained:\n    - {{ pin_compatible('tbb', max_pin=None) }}\n    # avoid confusion from openblas bugs\n    - libopenblas !=0.3.6             # [x86_64]\n    - libopenblas >=0.3.18,!=0.3.20   # [arm64]\n    # CUDA 11.2 or later is required for CUDA support\n    - cuda-version >=11.2\n    - cudatoolkit >=11.2\n    # scipy 1.0 or later\n    - scipy >=1.0\n    # CUDA Python 11.6 or later\n    - cuda-python >=11.6\n\ntest:\n  requires:\n    - pip\n    # Required to test optional Numba features\n    - jinja2\n    - cffi\n    - scipy\n    # At least NumPy 1.26.0 has an issue with arctanh on glibc<=2.17.\n    # ref: https://github.com/numpy/numpy/issues/25087\n    - numpy !=1.26.0  # [linux and x86_64]\n    - ipython\n    - setuptools\n    - tbb\n    # Need these for AOT.\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n\n  imports:\n    - numba\n    - numba.core.annotations\n    - numba.core.datamodel\n    - numba.core.rewrites\n    - numba.core.runtime\n    - numba.core.typeconv\n    - numba.core.typing\n    - numba.core.unsafe\n    - numba.cuda\n    - numba.cuda.cudadrv\n    - numba.cuda.kernels\n    - numba.cuda.simulator\n    - numba.cuda.simulator.cudadrv\n    - numba.cuda.tests\n    - numba.cuda.tests.cudadrv\n    - numba.cuda.tests.cudapy\n    - numba.cuda.tests.cudasim\n    - numba.cuda.tests.nocuda\n    - numba.experimental.jitclass\n    - numba.np.ufunc\n    - numba.scripts\n    - numba.testing\n    - numba.tests\n    - numba.tests.npyufunc\n\nabout:\n  home: http://numba.pydata.org\n  license: BSD-2-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: NumPy aware dynamic Python compiler using LLVM\n  description: |\n    Numba is an Open Source NumPy-aware optimizing compiler for Python \n    sponsored by Anaconda, Inc. It uses the remarkable LLVM compiler \n    infrastructure to compile Python syntax to machine code.\"\n  doc_url: http://numba.pydata.org/\n  dev_url: https://github.com/numba/numba\n\nextra:\n  recipe-maintainers:\n    - souravsingh\n    - marcelotrevisani\n    - henryiii\n    - mbargull\n    - jakirkham\n    - step21\n    - esc\n    - MementoRC\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1118,7 +1119,7 @@
       "ignore_run_exports": [
         "tbb"
       ],
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . --no-deps --ignore-installed -vvv"
       ]
