@@ -13,13 +13,13 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "08f959beef4b3c1636b085ea0f7ee4ae1aadbab8",
-  "feedstock_hash_ts": 1785429249,
+  "feedstock_hash": "24140f23535304333fa78d93a74463a95068fbd7",
+  "feedstock_hash_ts": 1785509005,
   "feedstock_name": "moonshine",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "Moonshine lets you stream games from a Linux PC to any device running\nMoonlight. Each stream runs in its own isolated compositor, separate\nfrom the desktop environment, so no monitor or active desktop session\nis required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\nHDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\nThe package also ships the Moonshine Vulkan WSI layer\n(share/vulkan/implicit_layer.d) and reference systemd/udev integration\nfiles (share/moonshine).",
+      "description": "Moonshine lets you stream games from a Linux PC to any device running\nMoonlight. Each stream runs in its own isolated compositor, separate\nfrom the desktop environment, so no monitor or active desktop session\nis required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\nHDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\nThe package also ships the Moonshine Vulkan WSI layer\n(share/vulkan/implicit_layer.d) and a moonshine-steamos-setup helper for\ninstalling the systemd, udev, modules-load, sysusers, Vulkan, polkit, and\natomic-update integration files needed on SteamOS.\n\nInstall and configure it with:\n\n  pixi global install moonshine\n  moonshine-steamos-setup\n\nRemove the privileged integration before uninstalling the Pixi environment:\n\n  moonshine-steamos-setup --uninstall\n  pixi global uninstall moonshine",
       "dev_url": "https://github.com/hgaiser/moonshine",
       "home": "https://github.com/hgaiser/moonshine",
       "license": "BSD-2-Clause",
@@ -28,9 +28,9 @@
       "summary": "Headless streaming server for Moonlight clients, written in Rust"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
-        "content": "export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n# bindgen needs clang's builtin headers (stdbool.h etc.)\nexport BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\ncargo auditable build --release --locked -p moonshine -p moonshine-wsi\nRELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\ninstall -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\ninstall -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n# The Vulkan loader resolves relative library_path entries relative to the manifest location\nsed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n  dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\ninstall -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\ninstall -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\ninstall -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\ninstall -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\ncargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n",
+        "content": "export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n# bindgen needs clang's builtin headers (stdbool.h etc.)\nexport BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\ncargo auditable build --release --locked -p moonshine -p moonshine-wsi\nRELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\ninstall -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\ninstall -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n# The Vulkan loader resolves relative library_path entries relative to the manifest location\nsed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n  dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\ninstall -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\ninstall -Dm755 \"${RECIPE_DIR}/moonshine-steamos-setup.sh\" ${PREFIX}/bin/moonshine-steamos-setup\ninstall -Dm755 dist/start-moonshine.sh ${PREFIX}/share/moonshine/start-moonshine.sh\ninstall -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\ninstall -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\ninstall -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\ninstall -Dm644 dist/moonshine-sysusers.conf ${PREFIX}/share/moonshine/moonshine-sysusers.conf\ninstall -Dm644 dist/50-moonshine-inhibit-sleep.rules ${PREFIX}/share/moonshine/50-moonshine-inhibit-sleep.rules\ninstall -Dm644 dist/VkLayer_moonshine_wsi.json ${PREFIX}/share/moonshine/VkLayer_moonshine_wsi.json\ninstall -Dm644 \"${RECIPE_DIR}/moonshine-atomic-update.conf\" ${PREFIX}/share/moonshine/moonshine-atomic-update.conf\ncargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n",
         "env": {
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -70,23 +70,31 @@
             "wayland",
             "libxkbcommon"
           ],
-          "run": []
+          "run": [
+            "bash"
+          ]
         },
         "tests": [
           {
-            "script": "moonshine --help"
+            "script": "moonshine --help\nmoonshine-steamos-setup --help\nif [ \"$(id -u)\" -ne 0 ]; then\n  dry_run_output=$(moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger)\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Prefix: ${CONDA_PREFIX}\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Wrapper: /opt/moonshine-pixi/start-moonshine.sh\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Moonshine binary: ${CONDA_PREFIX}/bin/moonshine\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"WSI library: ${CONDA_PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Vulkan manifest: /etc/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Templates: validated and rendered successfully\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Enable service: false\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Start service: false\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"sudo was not invoked\"\n  uninstall_output=$(moonshine-steamos-setup --uninstall --dry-run)\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Stop and disable: moonshine@$(id -un).service\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Preserve Pixi/Conda prefix: ${CONDA_PREFIX}\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Preserve standalone installation: /opt/moonshine\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Lingering: unchanged\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"sudo was not invoked\"\n  if env -u CONDA_PREFIX moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger; then\n    echo \"setup unexpectedly accepted a missing CONDA_PREFIX\" >&2\n    exit 1\n  fi\n  empty_prefix=$(mktemp -d)\n  if CONDA_PREFIX=\"$empty_prefix\" moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger; then\n    echo \"setup unexpectedly accepted a prefix with missing assets\" >&2\n    exit 1\n  fi\n  rm -rf \"$empty_prefix\"\n  if moonshine-steamos-setup --dry-run --user moonshine-user-that-does-not-exist; then\n    echo \"setup unexpectedly accepted an invalid user\" >&2\n    exit 1\n  fi\nfi\n"
           },
           {
             "package_contents": {
               "bin": [
-                "moonshine"
+                "moonshine",
+                "moonshine-steamos-setup"
               ],
               "files": [
                 "lib/moonshine/vulkan-layers/libmoonshine_wsi.so",
                 "share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json",
+                "share/moonshine/50-moonshine-inhibit-sleep.rules",
                 "share/moonshine/60-moonshine.rules",
+                "share/moonshine/VkLayer_moonshine_wsi.json",
+                "share/moonshine/moonshine-atomic-update.conf",
                 "share/moonshine/moonshine-modules.conf",
-                "share/moonshine/moonshine@.service"
+                "share/moonshine/moonshine-sysusers.conf",
+                "share/moonshine/moonshine@.service",
+                "share/moonshine/start-moonshine.sh"
               ],
               "strict": true
             }
@@ -123,6 +131,9 @@
         "libgbm",
         "wayland",
         "libxkbcommon"
+      ],
+      "run": [
+        "bash"
       ]
     },
     "schema_version": 1,
@@ -164,7 +175,9 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "bash"
+      ]
     },
     "test": {
       "__set__": true,
@@ -173,7 +186,7 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "Moonshine lets you stream games from a Linux PC to any device running\nMoonlight. Each stream runs in its own isolated compositor, separate\nfrom the desktop environment, so no monitor or active desktop session\nis required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\nHDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\nThe package also ships the Moonshine Vulkan WSI layer\n(share/vulkan/implicit_layer.d) and reference systemd/udev integration\nfiles (share/moonshine).",
+      "description": "Moonshine lets you stream games from a Linux PC to any device running\nMoonlight. Each stream runs in its own isolated compositor, separate\nfrom the desktop environment, so no monitor or active desktop session\nis required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\nHDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\nThe package also ships the Moonshine Vulkan WSI layer\n(share/vulkan/implicit_layer.d) and a moonshine-steamos-setup helper for\ninstalling the systemd, udev, modules-load, sysusers, Vulkan, polkit, and\natomic-update integration files needed on SteamOS.\n\nInstall and configure it with:\n\n  pixi global install moonshine\n  moonshine-steamos-setup\n\nRemove the privileged integration before uninstalling the Pixi environment:\n\n  moonshine-steamos-setup --uninstall\n  pixi global uninstall moonshine",
       "dev_url": "https://github.com/hgaiser/moonshine",
       "home": "https://github.com/hgaiser/moonshine",
       "license": "BSD-2-Clause",
@@ -182,9 +195,9 @@
       "summary": "Headless streaming server for Moonlight clients, written in Rust"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
-        "content": "export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n# bindgen needs clang's builtin headers (stdbool.h etc.)\nexport BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\ncargo auditable build --release --locked -p moonshine -p moonshine-wsi\nRELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\ninstall -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\ninstall -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n# The Vulkan loader resolves relative library_path entries relative to the manifest location\nsed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n  dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\ninstall -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\ninstall -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\ninstall -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\ninstall -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\ncargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n",
+        "content": "export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n# bindgen needs clang's builtin headers (stdbool.h etc.)\nexport BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\ncargo auditable build --release --locked -p moonshine -p moonshine-wsi\nRELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\ninstall -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\ninstall -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n# The Vulkan loader resolves relative library_path entries relative to the manifest location\nsed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n  dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\ninstall -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\ninstall -Dm755 \"${RECIPE_DIR}/moonshine-steamos-setup.sh\" ${PREFIX}/bin/moonshine-steamos-setup\ninstall -Dm755 dist/start-moonshine.sh ${PREFIX}/share/moonshine/start-moonshine.sh\ninstall -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\ninstall -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\ninstall -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\ninstall -Dm644 dist/moonshine-sysusers.conf ${PREFIX}/share/moonshine/moonshine-sysusers.conf\ninstall -Dm644 dist/50-moonshine-inhibit-sleep.rules ${PREFIX}/share/moonshine/50-moonshine-inhibit-sleep.rules\ninstall -Dm644 dist/VkLayer_moonshine_wsi.json ${PREFIX}/share/moonshine/VkLayer_moonshine_wsi.json\ninstall -Dm644 \"${RECIPE_DIR}/moonshine-atomic-update.conf\" ${PREFIX}/share/moonshine/moonshine-atomic-update.conf\ncargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n",
         "env": {
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
         }
@@ -224,23 +237,31 @@
             "wayland",
             "libxkbcommon"
           ],
-          "run": []
+          "run": [
+            "bash"
+          ]
         },
         "tests": [
           {
-            "script": "moonshine --help"
+            "script": "moonshine --help\nmoonshine-steamos-setup --help\nif [ \"$(id -u)\" -ne 0 ]; then\n  dry_run_output=$(moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger)\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Prefix: ${CONDA_PREFIX}\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Wrapper: /opt/moonshine-pixi/start-moonshine.sh\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Moonshine binary: ${CONDA_PREFIX}/bin/moonshine\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"WSI library: ${CONDA_PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Vulkan manifest: /etc/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Templates: validated and rendered successfully\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Enable service: false\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"Start service: false\"\n  printf '%s\\n' \"$dry_run_output\" | grep -F \"sudo was not invoked\"\n  uninstall_output=$(moonshine-steamos-setup --uninstall --dry-run)\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Stop and disable: moonshine@$(id -un).service\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Preserve Pixi/Conda prefix: ${CONDA_PREFIX}\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Preserve standalone installation: /opt/moonshine\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"Lingering: unchanged\"\n  printf '%s\\n' \"$uninstall_output\" | grep -F \"sudo was not invoked\"\n  if env -u CONDA_PREFIX moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger; then\n    echo \"setup unexpectedly accepted a missing CONDA_PREFIX\" >&2\n    exit 1\n  fi\n  empty_prefix=$(mktemp -d)\n  if CONDA_PREFIX=\"$empty_prefix\" moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger; then\n    echo \"setup unexpectedly accepted a prefix with missing assets\" >&2\n    exit 1\n  fi\n  rm -rf \"$empty_prefix\"\n  if moonshine-steamos-setup --dry-run --user moonshine-user-that-does-not-exist; then\n    echo \"setup unexpectedly accepted an invalid user\" >&2\n    exit 1\n  fi\nfi\n"
           },
           {
             "package_contents": {
               "bin": [
-                "moonshine"
+                "moonshine",
+                "moonshine-steamos-setup"
               ],
               "files": [
                 "lib/moonshine/vulkan-layers/libmoonshine_wsi.so",
                 "share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json",
+                "share/moonshine/50-moonshine-inhibit-sleep.rules",
                 "share/moonshine/60-moonshine.rules",
+                "share/moonshine/VkLayer_moonshine_wsi.json",
+                "share/moonshine/moonshine-atomic-update.conf",
                 "share/moonshine/moonshine-modules.conf",
-                "share/moonshine/moonshine@.service"
+                "share/moonshine/moonshine-sysusers.conf",
+                "share/moonshine/moonshine@.service",
+                "share/moonshine/start-moonshine.sh"
               ],
               "strict": true
             }
@@ -277,6 +298,9 @@
         "libgbm",
         "wayland",
         "libxkbcommon"
+      ],
+      "run": [
+        "bash"
       ]
     },
     "schema_version": 1,
@@ -299,10 +323,11 @@
   "pr_info": {
     "__lazy_json__": "pr_info/moonshine.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.14.5\"\n\npackage:\n  name: moonshine\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/hgaiser/moonshine/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 474922701d2364ab034b7ddfc129974246bf9fbe97854b93938d856c9aa25794\n\nbuild:\n  number: 0\n  skip:\n    - not linux\n  script:\n    env:\n      # LTO is disabled upstream (see the AUR PKGBUILD's !lto option)\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content: |\n      export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n      # bindgen needs clang's builtin headers (stdbool.h etc.)\n      export BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\n      cargo auditable build --release --locked -p moonshine -p moonshine-wsi\n      RELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\n      install -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\n      install -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n      # The Vulkan loader resolves relative library_path entries relative to the manifest location\n      sed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n        dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\n      install -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\n      install -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\n      install -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\n      install -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\n      cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - cmake\n    - make\n    - pkg-config\n    - git\n    - clang\n    - clangdev\n    - libclang\n  host:\n    # inputtino-sys emits link-lib=c++ unconditionally; --as-needed drops it\n    # again at runtime since no libc++ symbols are used\n    - libcxx-devel\n    - libevdev\n    - libopus\n    - libdrm\n    - libgbm\n    - wayland\n    - libxkbcommon\n\ntests:\n  - script: moonshine --help\n  - package_contents:\n      strict: true\n      bin:\n        - moonshine\n      files:\n        exists:\n          - lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n          - share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\n          - share/moonshine/60-moonshine.rules\n          - share/moonshine/moonshine-modules.conf\n          - share/moonshine/moonshine@.service\n\nabout:\n  homepage: https://github.com/hgaiser/moonshine\n  summary: Headless streaming server for Moonlight clients, written in Rust\n  description: |\n    Moonshine lets you stream games from a Linux PC to any device running\n    Moonlight. Each stream runs in its own isolated compositor, separate\n    from the desktop environment, so no monitor or active desktop session\n    is required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\n    HDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\n    The package also ships the Moonshine Vulkan WSI layer\n    (share/vulkan/implicit_layer.d) and reference systemd/udev integration\n    files (share/moonshine).\n  license: BSD-2-Clause\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  repository: https://github.com/hgaiser/moonshine\n\nextra:\n  recipe-maintainers:\n    - tdejager\n",
+  "raw_meta_yaml": "context:\n  version: \"0.14.5\"\n\npackage:\n  name: moonshine\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/hgaiser/moonshine/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 474922701d2364ab034b7ddfc129974246bf9fbe97854b93938d856c9aa25794\n\nbuild:\n  number: 1\n  skip:\n    - not linux\n  script:\n    env:\n      # LTO is disabled upstream (see the AUR PKGBUILD's !lto option)\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content: |\n      export LIBCLANG_PATH=${BUILD_PREFIX}/lib\n      # bindgen needs clang's builtin headers (stdbool.h etc.)\n      export BINDGEN_EXTRA_CLANG_ARGS=\"-resource-dir=$(${BUILD_PREFIX}/bin/clang -print-resource-dir)\"\n      cargo auditable build --release --locked -p moonshine -p moonshine-wsi\n      RELEASE_DIR=\"target/${CARGO_BUILD_TARGET:+${CARGO_BUILD_TARGET}/}release\"\n      install -Dm755 ${RELEASE_DIR}/moonshine ${PREFIX}/bin/moonshine\n      install -Dm755 ${RELEASE_DIR}/libmoonshine_wsi.so ${PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n      # The Vulkan loader resolves relative library_path entries relative to the manifest location\n      sed 's|/usr/lib/moonshine/vulkan-layers/libmoonshine_wsi.so|../../../lib/moonshine/vulkan-layers/libmoonshine_wsi.so|' \\\n        dist/VkLayer_moonshine_wsi.json > VkLayer_moonshine_wsi.json\n      install -Dm644 VkLayer_moonshine_wsi.json ${PREFIX}/share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\n      install -Dm755 \"${RECIPE_DIR}/moonshine-steamos-setup.sh\" ${PREFIX}/bin/moonshine-steamos-setup\n      install -Dm755 dist/start-moonshine.sh ${PREFIX}/share/moonshine/start-moonshine.sh\n      install -Dm644 dist/moonshine@.service ${PREFIX}/share/moonshine/moonshine@.service\n      install -Dm644 dist/60-moonshine.rules ${PREFIX}/share/moonshine/60-moonshine.rules\n      install -Dm644 dist/moonshine-modules.conf ${PREFIX}/share/moonshine/moonshine-modules.conf\n      install -Dm644 dist/moonshine-sysusers.conf ${PREFIX}/share/moonshine/moonshine-sysusers.conf\n      install -Dm644 dist/50-moonshine-inhibit-sleep.rules ${PREFIX}/share/moonshine/50-moonshine-inhibit-sleep.rules\n      install -Dm644 dist/VkLayer_moonshine_wsi.json ${PREFIX}/share/moonshine/VkLayer_moonshine_wsi.json\n      install -Dm644 \"${RECIPE_DIR}/moonshine-atomic-update.conf\" ${PREFIX}/share/moonshine/moonshine-atomic-update.conf\n      cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - cmake\n    - make\n    - pkg-config\n    - git\n    - clang\n    - clangdev\n    - libclang\n  host:\n    # inputtino-sys emits link-lib=c++ unconditionally; --as-needed drops it\n    # again at runtime since no libc++ symbols are used\n    - libcxx-devel\n    - libevdev\n    - libopus\n    - libdrm\n    - libgbm\n    - wayland\n    - libxkbcommon\n  run:\n    - bash\n\ntests:\n  - script: |\n      moonshine --help\n      moonshine-steamos-setup --help\n      if [ \"$(id -u)\" -ne 0 ]; then\n        dry_run_output=$(moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger)\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"Prefix: ${CONDA_PREFIX}\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"Wrapper: /opt/moonshine-pixi/start-moonshine.sh\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"Moonshine binary: ${CONDA_PREFIX}/bin/moonshine\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"WSI library: ${CONDA_PREFIX}/lib/moonshine/vulkan-layers/libmoonshine_wsi.so\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"Vulkan manifest: /etc/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"Templates: validated and rendered successfully\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"Enable service: false\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"Start service: false\"\n        printf '%s\\n' \"$dry_run_output\" | grep -F \"sudo was not invoked\"\n        uninstall_output=$(moonshine-steamos-setup --uninstall --dry-run)\n        printf '%s\\n' \"$uninstall_output\" | grep -F \"Stop and disable: moonshine@$(id -un).service\"\n        printf '%s\\n' \"$uninstall_output\" | grep -F \"Preserve Pixi/Conda prefix: ${CONDA_PREFIX}\"\n        printf '%s\\n' \"$uninstall_output\" | grep -F \"Preserve standalone installation: /opt/moonshine\"\n        printf '%s\\n' \"$uninstall_output\" | grep -F \"Lingering: unchanged\"\n        printf '%s\\n' \"$uninstall_output\" | grep -F \"sudo was not invoked\"\n        if env -u CONDA_PREFIX moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger; then\n          echo \"setup unexpectedly accepted a missing CONDA_PREFIX\" >&2\n          exit 1\n        fi\n        empty_prefix=$(mktemp -d)\n        if CONDA_PREFIX=\"$empty_prefix\" moonshine-steamos-setup --dry-run --no-enable --no-start --no-linger; then\n          echo \"setup unexpectedly accepted a prefix with missing assets\" >&2\n          exit 1\n        fi\n        rm -rf \"$empty_prefix\"\n        if moonshine-steamos-setup --dry-run --user moonshine-user-that-does-not-exist; then\n          echo \"setup unexpectedly accepted an invalid user\" >&2\n          exit 1\n        fi\n      fi\n  - package_contents:\n      strict: true\n      bin:\n        - moonshine\n        - moonshine-steamos-setup\n      files:\n        exists:\n          - lib/moonshine/vulkan-layers/libmoonshine_wsi.so\n          - share/vulkan/implicit_layer.d/VkLayer_moonshine_wsi.json\n          - share/moonshine/50-moonshine-inhibit-sleep.rules\n          - share/moonshine/60-moonshine.rules\n          - share/moonshine/VkLayer_moonshine_wsi.json\n          - share/moonshine/moonshine-atomic-update.conf\n          - share/moonshine/moonshine-modules.conf\n          - share/moonshine/moonshine-sysusers.conf\n          - share/moonshine/moonshine@.service\n          - share/moonshine/start-moonshine.sh\n\nabout:\n  homepage: https://github.com/hgaiser/moonshine\n  summary: Headless streaming server for Moonlight clients, written in Rust\n  description: |\n    Moonshine lets you stream games from a Linux PC to any device running\n    Moonlight. Each stream runs in its own isolated compositor, separate\n    from the desktop environment, so no monitor or active desktop session\n    is required. It supports hardware H.264/H.265/AV1 encoding via Vulkan,\n    HDR, surround-sound audio, and full mouse, keyboard, and gamepad input.\n\n    The package also ships the Moonshine Vulkan WSI layer\n    (share/vulkan/implicit_layer.d) and a moonshine-steamos-setup helper for\n    installing the systemd, udev, modules-load, sysusers, Vulkan, polkit, and\n    atomic-update integration files needed on SteamOS.\n\n    Install and configure it with:\n\n      pixi global install moonshine\n      moonshine-steamos-setup\n\n    Remove the privileged integration before uninstalling the Pixi environment:\n\n      moonshine-steamos-setup --uninstall\n      pixi global uninstall moonshine\n  license: BSD-2-Clause\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  repository: https://github.com/hgaiser/moonshine\n\nextra:\n  recipe-maintainers:\n    - tdejager\n",
   "req": {
     "__set__": true,
     "elements": [
+      "bash",
       "c_compiler_stub",
       "c_stdlib_stub",
       "cargo-auditable",
@@ -362,6 +387,7 @@
     "run": {
       "__set__": true,
       "elements": [
+        "bash",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub"
@@ -406,7 +432,9 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "bash"
+      ]
     },
     "test": {
       "__set__": true,
