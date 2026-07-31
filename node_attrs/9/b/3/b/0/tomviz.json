@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\npython_min:\n- '3.10'\ntarget_platform:\n- linux-64\ntbb_devel:\n- '2023'\nvtk:\n- '9.6'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_python3.11.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibprotobuf:\n- 6.33.5\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\npython_min:\n- '3.10'\ntarget_platform:\n- linux-64\ntbb_devel:\n- '2023'\nvtk:\n- '9.6'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
@@ -18,8 +18,8 @@
       "win_64": "azure"
     }
   },
-  "feedstock_hash": "bb5df02093a1e43b9955a40318eee1f9635d31de",
-  "feedstock_hash_ts": 1781076986,
+  "feedstock_hash": "c59b510b6e800ff8ca32e5a8baacb5d524f60830",
+  "feedstock_hash_ts": 1785464034,
   "feedstock_name": "tomviz",
   "linux_64_meta_yaml": {
     "about": {
@@ -34,7 +34,7 @@
       "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
     },
     "build": {
-      "number": "9"
+      "number": "0"
     },
     "extra": {
       "feedstock-name": "tomviz",
@@ -58,8 +58,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -73,10 +72,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -129,19 +129,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -165,7 +168,263 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
+            "pip"
+          ]
+        }
+      },
+      {
+        "about": {
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
+        },
+        "build": {
+          "number": "0"
+        },
+        "name": "tomviz",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "git"
+          ],
+          "host": [
+            "python",
+            "paraview ==6.1.1",
+            "vtk",
+            "tbb-devel",
+            "libxml2-devel 2.14*",
+            "libprotobuf"
+          ],
+          "run": [
+            "python",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw",
+            "pygments"
+          ]
+        },
+        "script": "build_tomviz.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/bin/tomviz",
+            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
+            "! ldd $PREFIX/bin/tomviz | grep 'not found'",
+            "! ldd $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'"
+          ],
+          "imports": [
+            "paraview",
+            "paraview.simple",
+            "paraview.numpy_support",
+            "tomviz",
+            "tomviz.cli",
+            "tomviz._wrapping",
+            "tomviz._realtime.ctvlib"
+          ],
+          "requires": null
+        }
+      },
+      {
+        "about": {
+          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Python pipeline execution tools for tomviz"
+        },
+        "build": {
+          "entry_points": [
+            "tomviz-pipeline = tomviz.cli:main"
+          ],
+          "force_use_keys": [
+            "python"
+          ],
+          "noarch": "python",
+          "number": "0",
+          "skip": true
+        },
+        "name": "tomviz-pipeline",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.11",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw"
+          ]
+        },
+        "script": "build_tomviz-pipeline.sh",
+        "test": {
+          "commands": [
+            "tomviz-pipeline --help",
+            "python -c \"import tomviz; print('tomviz imported successfully')\""
+          ],
+          "imports": [
+            "tomviz",
+            "tomviz.cli",
+            "tomviz.operators"
+          ],
+          "requires": [
+            "python 3.11",
+            "pip"
+          ]
+        }
+      },
+      {
+        "about": {
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
+        },
+        "build": {
+          "number": "0"
+        },
+        "name": "tomviz",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "git"
+          ],
+          "host": [
+            "python",
+            "paraview ==6.1.1",
+            "vtk",
+            "tbb-devel",
+            "libxml2-devel 2.14*",
+            "libprotobuf"
+          ],
+          "run": [
+            "python",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw",
+            "pygments"
+          ]
+        },
+        "script": "build_tomviz.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/bin/tomviz",
+            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
+            "! ldd $PREFIX/bin/tomviz | grep 'not found'",
+            "! ldd $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'"
+          ],
+          "imports": [
+            "paraview",
+            "paraview.simple",
+            "paraview.numpy_support",
+            "tomviz",
+            "tomviz.cli",
+            "tomviz._wrapping",
+            "tomviz._realtime.ctvlib"
+          ],
+          "requires": null
+        }
+      },
+      {
+        "about": {
+          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Python pipeline execution tools for tomviz"
+        },
+        "build": {
+          "entry_points": [
+            "tomviz-pipeline = tomviz.cli:main"
+          ],
+          "force_use_keys": [
+            "python"
+          ],
+          "noarch": "python",
+          "number": "0",
+          "skip": true
+        },
+        "name": "tomviz-pipeline",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.11",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw"
+          ]
+        },
+        "script": "build_tomviz-pipeline.sh",
+        "test": {
+          "commands": [
+            "tomviz-pipeline --help",
+            "python -c \"import tomviz; print('tomviz imported successfully')\""
+          ],
+          "imports": [
+            "tomviz",
+            "tomviz.cli",
+            "tomviz.operators"
+          ],
+          "requires": [
+            "python 3.11",
             "pip"
           ]
         }
@@ -173,17 +432,24 @@
     ],
     "package": {
       "name": "tomviz-split",
-      "version": "2.3.1"
+      "version": "3.0.0"
     },
     "schema_version": 0,
     "source": [
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
+      },
+      {
+        "folder": "tomviz",
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
+      },
+      {
+        "folder": "tomviz",
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       }
     ]
   },
@@ -202,6 +468,7 @@
     "host": {
       "__set__": true,
       "elements": [
+        "libprotobuf",
         "libxml2-devel",
         "paraview",
         "pip",
@@ -248,7 +515,7 @@
       "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
     },
     "build": {
-      "number": "9"
+      "number": "0"
     },
     "extra": {
       "feedstock-name": "tomviz",
@@ -272,8 +539,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -287,10 +553,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -343,19 +610,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -379,7 +649,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -397,8 +667,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -412,10 +681,267 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
+          ],
+          "run": [
+            "python",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw",
+            "pygments"
+          ]
+        },
+        "script": "build_tomviz.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/bin/tomviz",
+            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
+            "! ldd $PREFIX/bin/tomviz | grep 'not found'",
+            "! ldd $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'"
+          ],
+          "imports": [
+            "paraview",
+            "paraview.simple",
+            "paraview.numpy_support",
+            "tomviz",
+            "tomviz.cli",
+            "tomviz._wrapping",
+            "tomviz._realtime.ctvlib"
+          ],
+          "requires": null
+        }
+      },
+      {
+        "about": {
+          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Python pipeline execution tools for tomviz"
+        },
+        "build": {
+          "entry_points": [
+            "tomviz-pipeline = tomviz.cli:main"
+          ],
+          "force_use_keys": [
+            "python"
+          ],
+          "noarch": "python",
+          "number": "0",
+          "skip": true
+        },
+        "name": "tomviz-pipeline",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.11",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw"
+          ]
+        },
+        "script": "build_tomviz-pipeline.sh",
+        "test": {
+          "commands": [
+            "tomviz-pipeline --help",
+            "python -c \"import tomviz; print('tomviz imported successfully')\""
+          ],
+          "imports": [
+            "tomviz",
+            "tomviz.cli",
+            "tomviz.operators"
+          ],
+          "requires": [
+            "python 3.11",
+            "pip"
+          ]
+        }
+      },
+      {
+        "about": {
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
+        },
+        "build": {
+          "number": "0"
+        },
+        "name": "tomviz",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "git"
+          ],
+          "host": [
+            "python",
+            "paraview ==6.1.1",
+            "vtk",
+            "tbb-devel",
+            "libxml2-devel 2.14*",
+            "libprotobuf"
+          ],
+          "run": [
+            "python",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw",
+            "pygments"
+          ]
+        },
+        "script": "build_tomviz.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/bin/tomviz",
+            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
+            "! ldd $PREFIX/bin/tomviz | grep 'not found'",
+            "! ldd $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'"
+          ],
+          "imports": [
+            "paraview",
+            "paraview.simple",
+            "paraview.numpy_support",
+            "tomviz",
+            "tomviz.cli",
+            "tomviz._wrapping",
+            "tomviz._realtime.ctvlib"
+          ],
+          "requires": null
+        }
+      },
+      {
+        "about": {
+          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Python pipeline execution tools for tomviz"
+        },
+        "build": {
+          "entry_points": [
+            "tomviz-pipeline = tomviz.cli:main"
+          ],
+          "force_use_keys": [
+            "python"
+          ],
+          "noarch": "python",
+          "number": "0",
+          "skip": true
+        },
+        "name": "tomviz-pipeline",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools"
+          ],
+          "run": [
+            "python >=3.11",
+            "numpy",
+            "scipy",
+            "h5py",
+            "click",
+            "tqdm",
+            "marshmallow",
+            "jsonpatch",
+            "jsonpointer",
+            "pyfftw"
+          ]
+        },
+        "script": "build_tomviz-pipeline.sh",
+        "test": {
+          "commands": [
+            "tomviz-pipeline --help",
+            "python -c \"import tomviz; print('tomviz imported successfully')\""
+          ],
+          "imports": [
+            "tomviz",
+            "tomviz.cli",
+            "tomviz.operators"
+          ],
+          "requires": [
+            "python 3.11",
+            "pip"
+          ]
+        }
+      },
+      {
+        "about": {
+          "dev_url": "https://github.com/OpenChemistry/tomviz",
+          "doc_url": "https://tomviz.readthedocs.io/",
+          "home": "https://github.com/OpenChemistry/tomviz",
+          "license": "BSD-3-Clause",
+          "license_family": "BSD",
+          "license_file": [
+            "tomviz/LICENSE"
+          ],
+          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
+        },
+        "build": {
+          "number": "0"
+        },
+        "name": "tomviz",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "git"
+          ],
+          "host": [
+            "python",
+            "paraview ==6.1.1",
+            "vtk",
+            "tbb-devel",
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -471,19 +997,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -507,7 +1036,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -525,8 +1054,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -540,10 +1068,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -599,19 +1128,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -635,7 +1167,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -653,8 +1185,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -668,10 +1199,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -727,19 +1259,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -763,7 +1298,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -781,8 +1316,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -796,10 +1330,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -855,19 +1390,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -891,7 +1429,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -909,8 +1447,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -924,10 +1461,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -983,19 +1521,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -1019,7 +1560,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -1037,8 +1578,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -1052,10 +1592,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -1111,19 +1652,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -1147,7 +1691,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -1165,8 +1709,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -1180,266 +1723,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
-          ],
-          "run": [
-            "python",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw",
-            "pygments"
-          ]
-        },
-        "script": "build_tomviz.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/bin/tomviz",
-            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
-            "! otool -L $PREFIX/bin/tomviz | grep 'not found'",
-            "! otool -L $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'",
-            "timeout 20 tomviz || test $? -eq 124"
-          ],
-          "imports": [
-            "paraview",
-            "paraview.simple",
-            "paraview.numpy_support",
-            "tomviz",
-            "tomviz.cli",
-            "tomviz._wrapping",
-            "tomviz._realtime.ctvlib"
-          ],
-          "requires": [
-            "coreutils"
-          ]
-        }
-      },
-      {
-        "about": {
-          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Python pipeline execution tools for tomviz"
-        },
-        "build": {
-          "entry_points": [
-            "tomviz-pipeline = tomviz.cli:main"
-          ],
-          "noarch": "python",
-          "number": "9",
-          "skip": true
-        },
-        "name": "tomviz-pipeline",
-        "requirements": {
-          "host": [
-            "python 3.10",
-            "pip",
-            "setuptools"
-          ],
-          "run": [
-            "python >=3.10",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw"
-          ]
-        },
-        "script": "build_tomviz-pipeline.sh",
-        "test": {
-          "commands": [
-            "tomviz-pipeline --help",
-            "python -c \"import tomviz; print('tomviz imported successfully')\""
-          ],
-          "imports": [
-            "tomviz",
-            "tomviz.cli",
-            "tomviz.operators"
-          ],
-          "requires": [
-            "python 3.10",
-            "pip"
-          ]
-        }
-      },
-      {
-        "about": {
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
-        },
-        "build": {
-          "number": "9",
-          "skip": false
-        },
-        "name": "tomviz",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "git"
-          ],
-          "host": [
-            "python",
-            "paraview ==6.1.0",
-            "vtk",
-            "tbb-devel",
-            "libxml2-devel 2.14*"
-          ],
-          "run": [
-            "python",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw",
-            "pygments"
-          ]
-        },
-        "script": "build_tomviz.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/bin/tomviz",
-            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
-            "! otool -L $PREFIX/bin/tomviz | grep 'not found'",
-            "! otool -L $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'",
-            "timeout 20 tomviz || test $? -eq 124"
-          ],
-          "imports": [
-            "paraview",
-            "paraview.simple",
-            "paraview.numpy_support",
-            "tomviz",
-            "tomviz.cli",
-            "tomviz._wrapping",
-            "tomviz._realtime.ctvlib"
-          ],
-          "requires": [
-            "coreutils"
-          ]
-        }
-      },
-      {
-        "about": {
-          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Python pipeline execution tools for tomviz"
-        },
-        "build": {
-          "entry_points": [
-            "tomviz-pipeline = tomviz.cli:main"
-          ],
-          "noarch": "python",
-          "number": "9",
-          "skip": true
-        },
-        "name": "tomviz-pipeline",
-        "requirements": {
-          "host": [
-            "python 3.10",
-            "pip",
-            "setuptools"
-          ],
-          "run": [
-            "python >=3.10",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw"
-          ]
-        },
-        "script": "build_tomviz-pipeline.sh",
-        "test": {
-          "commands": [
-            "tomviz-pipeline --help",
-            "python -c \"import tomviz; print('tomviz imported successfully')\""
-          ],
-          "imports": [
-            "tomviz",
-            "tomviz.cli",
-            "tomviz.operators"
-          ],
-          "requires": [
-            "python 3.10",
-            "pip"
-          ]
-        }
-      },
-      {
-        "about": {
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
-        },
-        "build": {
-          "number": "9",
-          "skip": false
-        },
-        "name": "tomviz",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "git"
-          ],
-          "host": [
-            "python",
-            "paraview ==6.1.0",
-            "vtk",
-            "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -1491,19 +1779,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -1527,7 +1818,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -1545,8 +1836,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -1560,10 +1850,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -1615,19 +1906,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -1651,7 +1945,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -1669,8 +1963,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -1684,10 +1977,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -1739,19 +2033,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -1775,131 +2072,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
-            "pip"
-          ]
-        }
-      },
-      {
-        "about": {
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
-        },
-        "build": {
-          "number": "9",
-          "skip": false
-        },
-        "name": "tomviz",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "git"
-          ],
-          "host": [
-            "python",
-            "paraview ==6.1.0",
-            "vtk",
-            "tbb-devel",
-            "libxml2-devel 2.14*"
-          ],
-          "run": [
-            "python",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw",
-            "pygments"
-          ]
-        },
-        "script": "build_tomviz.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_BIN%\\\\tomviz.exe exit 1",
-            "if not exist %LIBRARY_BIN%\\\\tomvizcore.dll exit 1",
-            "powershell -Command \"$p = Start-Process tomviz -PassThru; Start-Sleep 20; if ($p.HasExited) { exit 1 } else { Stop-Process $p; exit 0 }\""
-          ],
-          "imports": [
-            "paraview",
-            "paraview.simple",
-            "paraview.numpy_support",
-            "tomviz",
-            "tomviz.cli",
-            "tomviz._wrapping",
-            "tomviz._realtime.ctvlib"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "about": {
-          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Python pipeline execution tools for tomviz"
-        },
-        "build": {
-          "entry_points": [
-            "tomviz-pipeline = tomviz.cli:main"
-          ],
-          "noarch": "python",
-          "number": "9",
-          "skip": true
-        },
-        "name": "tomviz-pipeline",
-        "requirements": {
-          "host": [
-            "python 3.10",
-            "pip",
-            "setuptools"
-          ],
-          "run": [
-            "python >=3.10",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw"
-          ]
-        },
-        "script": "build_tomviz-pipeline.bat",
-        "test": {
-          "commands": [
-            "tomviz-pipeline --help",
-            "python -c \"import tomviz; print('tomviz imported successfully')\""
-          ],
-          "imports": [
-            "tomviz",
-            "tomviz.cli",
-            "tomviz.operators"
-          ],
-          "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -1907,113 +2080,69 @@
     ],
     "package": {
       "name": "tomviz-split",
-      "version": "2.3.1"
+      "version": "3.0.0"
     },
     "schema_version": 0,
     "source": [
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
-      },
-      {
-        "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       }
     ]
   },
@@ -2031,7 +2160,7 @@
       "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
     },
     "build": {
-      "number": "9"
+      "number": "0"
     },
     "extra": {
       "feedstock-name": "tomviz",
@@ -2055,8 +2184,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -2070,10 +2198,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -2129,19 +2258,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -2165,7 +2297,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -2183,8 +2315,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -2198,10 +2329,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -2257,19 +2389,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -2293,7 +2428,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -2311,8 +2446,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -2326,10 +2460,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -2385,19 +2520,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -2421,135 +2559,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
-            "pip"
-          ]
-        }
-      },
-      {
-        "about": {
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
-        },
-        "build": {
-          "number": "9",
-          "skip": false
-        },
-        "name": "tomviz",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "git"
-          ],
-          "host": [
-            "python",
-            "paraview ==6.1.0",
-            "vtk",
-            "tbb-devel",
-            "libxml2-devel 2.14*"
-          ],
-          "run": [
-            "python",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw",
-            "pygments"
-          ]
-        },
-        "script": "build_tomviz.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/bin/tomviz",
-            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
-            "! otool -L $PREFIX/bin/tomviz | grep 'not found'",
-            "! otool -L $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'",
-            "timeout 20 tomviz || test $? -eq 124"
-          ],
-          "imports": [
-            "paraview",
-            "paraview.simple",
-            "paraview.numpy_support",
-            "tomviz",
-            "tomviz.cli",
-            "tomviz._wrapping",
-            "tomviz._realtime.ctvlib"
-          ],
-          "requires": [
-            "coreutils"
-          ]
-        }
-      },
-      {
-        "about": {
-          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Python pipeline execution tools for tomviz"
-        },
-        "build": {
-          "entry_points": [
-            "tomviz-pipeline = tomviz.cli:main"
-          ],
-          "noarch": "python",
-          "number": "9",
-          "skip": true
-        },
-        "name": "tomviz-pipeline",
-        "requirements": {
-          "host": [
-            "python 3.10",
-            "pip",
-            "setuptools"
-          ],
-          "run": [
-            "python >=3.10",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw"
-          ]
-        },
-        "script": "build_tomviz-pipeline.sh",
-        "test": {
-          "commands": [
-            "tomviz-pipeline --help",
-            "python -c \"import tomviz; print('tomviz imported successfully')\""
-          ],
-          "imports": [
-            "tomviz",
-            "tomviz.cli",
-            "tomviz.operators"
-          ],
-          "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -2557,41 +2567,24 @@
     ],
     "package": {
       "name": "tomviz-split",
-      "version": "2.3.1"
+      "version": "3.0.0"
     },
     "schema_version": 0,
     "source": [
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
-      },
-      {
-        "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       }
     ]
   },
@@ -2610,6 +2603,7 @@
     "host": {
       "__set__": true,
       "elements": [
+        "libprotobuf",
         "libxml2-devel",
         "paraview",
         "pip",
@@ -2657,7 +2651,7 @@
       "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
     },
     "build": {
-      "number": "9"
+      "number": "0"
     },
     "extra": {
       "feedstock-name": "tomviz",
@@ -2681,8 +2675,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -2696,10 +2689,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -2755,19 +2749,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -2791,7 +2788,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -2809,8 +2806,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -2824,10 +2820,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -2883,19 +2880,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -2919,7 +2919,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -2937,8 +2937,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -2952,10 +2951,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -3011,19 +3011,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -3047,135 +3050,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
-            "pip"
-          ]
-        }
-      },
-      {
-        "about": {
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
-        },
-        "build": {
-          "number": "9",
-          "skip": false
-        },
-        "name": "tomviz",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "git"
-          ],
-          "host": [
-            "python",
-            "paraview ==6.1.0",
-            "vtk",
-            "tbb-devel",
-            "libxml2-devel 2.14*"
-          ],
-          "run": [
-            "python",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw",
-            "pygments"
-          ]
-        },
-        "script": "build_tomviz.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/bin/tomviz",
-            "test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}",
-            "! otool -L $PREFIX/bin/tomviz | grep 'not found'",
-            "! otool -L $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'",
-            "timeout 20 tomviz || test $? -eq 124"
-          ],
-          "imports": [
-            "paraview",
-            "paraview.simple",
-            "paraview.numpy_support",
-            "tomviz",
-            "tomviz.cli",
-            "tomviz._wrapping",
-            "tomviz._realtime.ctvlib"
-          ],
-          "requires": [
-            "coreutils"
-          ]
-        }
-      },
-      {
-        "about": {
-          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Python pipeline execution tools for tomviz"
-        },
-        "build": {
-          "entry_points": [
-            "tomviz-pipeline = tomviz.cli:main"
-          ],
-          "noarch": "python",
-          "number": "9",
-          "skip": true
-        },
-        "name": "tomviz-pipeline",
-        "requirements": {
-          "host": [
-            "python 3.10",
-            "pip",
-            "setuptools"
-          ],
-          "run": [
-            "python >=3.10",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw"
-          ]
-        },
-        "script": "build_tomviz-pipeline.sh",
-        "test": {
-          "commands": [
-            "tomviz-pipeline --help",
-            "python -c \"import tomviz; print('tomviz imported successfully')\""
-          ],
-          "imports": [
-            "tomviz",
-            "tomviz.cli",
-            "tomviz.operators"
-          ],
-          "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -3183,41 +3058,24 @@
     ],
     "package": {
       "name": "tomviz-split",
-      "version": "2.3.1"
+      "version": "3.0.0"
     },
     "schema_version": 0,
     "source": [
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
-      },
-      {
-        "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       }
     ]
   },
@@ -3236,6 +3094,7 @@
     "host": {
       "__set__": true,
       "elements": [
+        "libprotobuf",
         "libxml2-devel",
         "paraview",
         "pip",
@@ -3287,7 +3146,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/tomviz.json"
   },
-  "raw_meta_yaml": "{% set name = \"tomviz\" %}\n{% set version = \"2.3.1\" %}\n{% set paraview_version = \"6.1.0\" %}\n{% set python_min = \"3.10\" %}\n{% set build_number = 9 %}\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  - git_url: https://github.com/OpenChemistry/tomviz\n    git_rev: {{ version }}\n    folder: tomviz\n    patches:\n      - conda-fixes.patch\n  # Submodules updated in build.sh: pybind11\n\nbuild:\n  number: {{ build_number }}\n\noutputs:\n  # First output: main tomviz desktop application\n  - name: tomviz\n    script: build_tomviz.sh   # [unix]\n    script: build_tomviz.bat  # [win]\n    build:\n      number: {{ build_number }}\n      skip: false\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n        - git\n      host:\n        - python\n        - paraview =={{ paraview_version }}\n        - vtk\n        - tbb-devel\n        - libxml2-devel 2.14*\n      run:\n        - python\n        - numpy\n        - scipy\n        - h5py\n        - click\n        - tqdm\n        - marshmallow\n        - jsonpatch\n        - jsonpointer\n        - pyfftw\n        - pygments\n    test:\n      imports:\n        - paraview\n        - paraview.simple\n        - paraview.numpy_support\n        - tomviz\n        - tomviz.cli\n        - tomviz._wrapping\n        - tomviz._realtime.ctvlib\n      commands:\n        - test -f $PREFIX/bin/tomviz  # [unix]\n        - test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}  # [unix]\n        - \"! ldd $PREFIX/bin/tomviz | grep 'not found'\"  # [linux]\n        - \"! ldd $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'\"  # [linux]\n        - \"! otool -L $PREFIX/bin/tomviz | grep 'not found'\"  # [osx]\n        - \"! otool -L $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'\"  # [osx]\n        - \"timeout 20 tomviz || test $? -eq 124\"  # [osx]\n        - if not exist %LIBRARY_BIN%\\\\tomviz.exe exit 1  # [win]\n        - if not exist %LIBRARY_BIN%\\\\tomvizcore.dll exit 1  # [win]\n        - powershell -Command \"$p = Start-Process tomviz -PassThru; Start-Sleep 20; if ($p.HasExited) { exit 1 } else { Stop-Process $p; exit 0 }\"  # [win]\n      requires:\n        - coreutils  # [osx]\n    about:\n      home: https://github.com/OpenChemistry/tomviz\n      license: BSD-3-Clause\n      license_family: BSD\n      license_file:\n        - tomviz/LICENSE\n      summary: 'Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data'\n      doc_url: https://tomviz.readthedocs.io/\n      dev_url: https://github.com/OpenChemistry/tomviz\n\n  # Second output: tomviz-pipeline Python package\n  - name: tomviz-pipeline\n    script: build_tomviz-pipeline.sh   # [unix]\n    script: build_tomviz-pipeline.bat  # [win]\n    build:\n      number: {{ build_number }}\n      noarch: python\n      skip: true  # [not linux or py != 310]  # Only build once on py310 for Linux\n      entry_points:\n        - tomviz-pipeline = tomviz.cli:main\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools\n      run:\n        - python >={{ python_min }}\n        - numpy\n        - scipy\n        - h5py\n        - click\n        - tqdm\n        - marshmallow\n        - jsonpatch\n        - jsonpointer\n        - pyfftw\n    test:\n      imports:\n        - tomviz\n        - tomviz.cli\n        - tomviz.operators\n      commands:\n        - tomviz-pipeline --help\n        - python -c \"import tomviz; print('tomviz imported successfully')\"\n      requires:\n        - python {{ python_min }}\n        - pip\n    about:\n      home: https://github.com/OpenChemistry/tomviz\n      license: BSD-3-Clause\n      license_family: BSD\n      license_file:\n        - tomviz/LICENSE\n      summary: 'Python pipeline execution tools for tomviz'\n      description: |\n        This package provides the Python pipeline execution tools from the Tomviz\n        project, enabling command-line execution of tomviz operators and pipelines\n        without the full GUI application. It includes the tomviz Python library and\n        the tomviz-pipeline command-line tool for processing tomographic data.\n\n        This package is also required when using the Tomviz Desktop application's\n        ExternalPython execution mode, where pipelines run in a separate conda\n        environment from the main application. The package must be installed\n        in that separate conda environment.\n      doc_url: https://tomviz.readthedocs.io/en/latest/pipelines.html\n      dev_url: https://github.com/OpenChemistry/tomviz\n\n# This extra \"about\" section is a requirement by conda-forge, even\n# though it's not actually used.\nabout:\n  home: https://github.com/OpenChemistry/tomviz\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file:\n    - tomviz/LICENSE\n  summary: 'Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data'\n  doc_url: https://tomviz.readthedocs.io/\n  dev_url: https://github.com/OpenChemistry/tomviz\n\nextra:\n  feedstock-name: tomviz\n  recipe-maintainers:\n    - cjh1\n    - psavery\n    - conda-forge/event-model\n",
+  "raw_meta_yaml": "{% set name = \"tomviz\" %}\n{% set version = \"3.0.0\" %}\n{% set paraview_version = \"6.1.1\" %}\n{% set python_min = \"3.11\" %}\n{% set build_number = 0 %}\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  - git_url: https://github.com/OpenChemistry/tomviz\n    git_rev: {{ version }}\n    folder: tomviz\n  # Submodules updated in build.sh: pybind11\n  # conda-fixes.patch was dropped for 3.0: every hunk is now upstream, or\n  # targeted a file that no longer exists.\n\nbuild:\n  number: {{ build_number }}\n\noutputs:\n  # First output: main tomviz desktop application\n  - name: tomviz\n    script: build_tomviz.sh   # [unix]\n    script: build_tomviz.bat  # [win]\n    build:\n      number: {{ build_number }}\n      # py310 is skipped: the paraview 6.1.1 py310 osx-64 package is broken\n      # (missing jsoncpp symbol at import time)\n      skip: true  # [py < 311]\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n        - git\n      host:\n        - python\n        - paraview =={{ paraview_version }}\n        - vtk\n        - tbb-devel\n        - libxml2-devel 2.14*\n        - libprotobuf\n      run:\n        - python\n        - numpy\n        - scipy\n        - h5py\n        - click\n        - tqdm\n        - marshmallow\n        - jsonpatch\n        - jsonpointer\n        - pyfftw\n        - pygments\n    test:\n      imports:\n        - paraview\n        - paraview.simple\n        - paraview.numpy_support\n        - tomviz\n        - tomviz.cli\n        - tomviz._wrapping\n        - tomviz._realtime.ctvlib\n      commands:\n        - test -f $PREFIX/bin/tomviz  # [unix]\n        - test -f $PREFIX/lib/libtomvizcore${SHLIB_EXT}  # [unix]\n        - \"! ldd $PREFIX/bin/tomviz | grep 'not found'\"  # [linux]\n        - \"! ldd $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'\"  # [linux]\n        - \"! otool -L $PREFIX/bin/tomviz | grep 'not found'\"  # [osx]\n        - \"! otool -L $PREFIX/lib/libtomvizcore${SHLIB_EXT} | grep 'not found'\"  # [osx]\n        - \"timeout 20 tomviz || test $? -eq 124\"  # [osx]\n        - if not exist %LIBRARY_BIN%\\\\tomviz.exe exit 1  # [win]\n        - if not exist %LIBRARY_BIN%\\\\tomvizcore.dll exit 1  # [win]\n        - powershell -Command \"$p = Start-Process tomviz -PassThru; Start-Sleep 20; if ($p.HasExited) { exit 1 } else { Stop-Process $p; exit 0 }\"  # [win]\n      requires:\n        - coreutils  # [osx]\n    about:\n      home: https://github.com/OpenChemistry/tomviz\n      license: BSD-3-Clause\n      license_family: BSD\n      license_file:\n        - tomviz/LICENSE\n      summary: 'Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data'\n      doc_url: https://tomviz.readthedocs.io/\n      dev_url: https://github.com/OpenChemistry/tomviz\n\n  # Second output: tomviz-pipeline Python package\n  - name: tomviz-pipeline\n    script: build_tomviz-pipeline.sh   # [unix]\n    script: build_tomviz-pipeline.bat  # [win]\n    build:\n      number: {{ build_number }}\n      noarch: python\n      skip: true  # [not linux or py != 311]  # Only build once on py311 for Linux\n      # Without this, conda-smithy drops python from the set of variables used\n      # to split CI jobs on linux (it intersects the loop vars of all outputs,\n      # and this noarch output does not loop over python), which squishes all\n      # python versions into a single linux job.\n      force_use_keys:\n        - python\n      entry_points:\n        - tomviz-pipeline = tomviz.cli:main\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools\n      run:\n        - python >={{ python_min }}\n        - numpy\n        - scipy\n        - h5py\n        - click\n        - tqdm\n        - marshmallow\n        - jsonpatch\n        - jsonpointer\n        - pyfftw\n    test:\n      imports:\n        - tomviz\n        - tomviz.cli\n        - tomviz.operators\n      commands:\n        - tomviz-pipeline --help\n        - python -c \"import tomviz; print('tomviz imported successfully')\"\n      requires:\n        - python {{ python_min }}\n        - pip\n    about:\n      home: https://github.com/OpenChemistry/tomviz\n      license: BSD-3-Clause\n      license_family: BSD\n      license_file:\n        - tomviz/LICENSE\n      summary: 'Python pipeline execution tools for tomviz'\n      description: |\n        This package provides the Python pipeline execution tools from the Tomviz\n        project, enabling command-line execution of tomviz operators and pipelines\n        without the full GUI application. It includes the tomviz Python library and\n        the tomviz-pipeline command-line tool for processing tomographic data.\n\n        This package is also required when using the Tomviz Desktop application's\n        ExternalPython execution mode, where pipelines run in a separate conda\n        environment from the main application. The package must be installed\n        in that separate conda environment.\n      doc_url: https://tomviz.readthedocs.io/en/latest/pipelines.html\n      dev_url: https://github.com/OpenChemistry/tomviz\n\n# This extra \"about\" section is a requirement by conda-forge, even\n# though it's not actually used.\nabout:\n  home: https://github.com/OpenChemistry/tomviz\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file:\n    - tomviz/LICENSE\n  summary: 'Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data'\n  doc_url: https://tomviz.readthedocs.io/\n  dev_url: https://github.com/OpenChemistry/tomviz\n\nextra:\n  feedstock-name: tomviz\n  recipe-maintainers:\n    - cjh1\n    - psavery\n    - conda-forge/event-model\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -3300,6 +3159,7 @@
       "h5py",
       "jsonpatch",
       "jsonpointer",
+      "libprotobuf",
       "libxml2-devel",
       "marshmallow",
       "ninja",
@@ -3334,6 +3194,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
+        "libprotobuf",
         "libxml2-devel",
         "paraview",
         "pip",
@@ -3387,11 +3248,12 @@
     "host": {
       "__set__": true,
       "elements": [
+        "libprotobuf",
         "libxml2-devel 2.14*",
-        "paraview ==6.1.0",
+        "paraview ==6.1.1",
         "pip",
         "python",
-        "python 3.10",
+        "python 3.11",
         "setuptools",
         "tbb-devel",
         "vtk"
@@ -3409,7 +3271,7 @@
         "pyfftw",
         "pygments",
         "python",
-        "python >=3.10",
+        "python >=3.11",
         "scipy",
         "tqdm"
       ]
@@ -3419,12 +3281,12 @@
       "elements": [
         "coreutils",
         "pip",
-        "python 3.10"
+        "python 3.11"
       ]
     }
   },
   "url": null,
-  "version": "2.3.1",
+  "version": "3.0.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/tomviz.json"
   },
@@ -3441,7 +3303,7 @@
       "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
     },
     "build": {
-      "number": "9"
+      "number": "0"
     },
     "extra": {
       "feedstock-name": "tomviz",
@@ -3465,8 +3327,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -3480,10 +3341,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -3535,19 +3397,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -3571,7 +3436,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -3589,8 +3454,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -3604,10 +3468,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -3659,19 +3524,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -3695,7 +3563,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -3713,8 +3581,7 @@
           "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
         },
         "build": {
-          "number": "9",
-          "skip": false
+          "number": "0"
         },
         "name": "tomviz",
         "requirements": {
@@ -3728,10 +3595,11 @@
           ],
           "host": [
             "python",
-            "paraview ==6.1.0",
+            "paraview ==6.1.1",
             "vtk",
             "tbb-devel",
-            "libxml2-devel 2.14*"
+            "libxml2-devel 2.14*",
+            "libprotobuf"
           ],
           "run": [
             "python",
@@ -3783,19 +3651,22 @@
           "entry_points": [
             "tomviz-pipeline = tomviz.cli:main"
           ],
+          "force_use_keys": [
+            "python"
+          ],
           "noarch": "python",
-          "number": "9",
+          "number": "0",
           "skip": true
         },
         "name": "tomviz-pipeline",
         "requirements": {
           "host": [
-            "python 3.10",
+            "python 3.11",
             "pip",
             "setuptools"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
             "numpy",
             "scipy",
             "h5py",
@@ -3819,131 +3690,7 @@
             "tomviz.operators"
           ],
           "requires": [
-            "python 3.10",
-            "pip"
-          ]
-        }
-      },
-      {
-        "about": {
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Cross platform, open source application for the processing, visualization, and analysis of 3D tomography data"
-        },
-        "build": {
-          "number": "9",
-          "skip": false
-        },
-        "name": "tomviz",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "ninja",
-            "git"
-          ],
-          "host": [
-            "python",
-            "paraview ==6.1.0",
-            "vtk",
-            "tbb-devel",
-            "libxml2-devel 2.14*"
-          ],
-          "run": [
-            "python",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw",
-            "pygments"
-          ]
-        },
-        "script": "build_tomviz.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_BIN%\\\\tomviz.exe exit 1",
-            "if not exist %LIBRARY_BIN%\\\\tomvizcore.dll exit 1",
-            "powershell -Command \"$p = Start-Process tomviz -PassThru; Start-Sleep 20; if ($p.HasExited) { exit 1 } else { Stop-Process $p; exit 0 }\""
-          ],
-          "imports": [
-            "paraview",
-            "paraview.simple",
-            "paraview.numpy_support",
-            "tomviz",
-            "tomviz.cli",
-            "tomviz._wrapping",
-            "tomviz._realtime.ctvlib"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "about": {
-          "description": "This package provides the Python pipeline execution tools from the Tomviz\nproject, enabling command-line execution of tomviz operators and pipelines\nwithout the full GUI application. It includes the tomviz Python library and\nthe tomviz-pipeline command-line tool for processing tomographic data.\n\nThis package is also required when using the Tomviz Desktop application's\nExternalPython execution mode, where pipelines run in a separate conda\nenvironment from the main application. The package must be installed\nin that separate conda environment.\n",
-          "dev_url": "https://github.com/OpenChemistry/tomviz",
-          "doc_url": "https://tomviz.readthedocs.io/en/latest/pipelines.html",
-          "home": "https://github.com/OpenChemistry/tomviz",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": [
-            "tomviz/LICENSE"
-          ],
-          "summary": "Python pipeline execution tools for tomviz"
-        },
-        "build": {
-          "entry_points": [
-            "tomviz-pipeline = tomviz.cli:main"
-          ],
-          "noarch": "python",
-          "number": "9",
-          "skip": true
-        },
-        "name": "tomviz-pipeline",
-        "requirements": {
-          "host": [
-            "python 3.10",
-            "pip",
-            "setuptools"
-          ],
-          "run": [
-            "python >=3.10",
-            "numpy",
-            "scipy",
-            "h5py",
-            "click",
-            "tqdm",
-            "marshmallow",
-            "jsonpatch",
-            "jsonpointer",
-            "pyfftw"
-          ]
-        },
-        "script": "build_tomviz-pipeline.bat",
-        "test": {
-          "commands": [
-            "tomviz-pipeline --help",
-            "python -c \"import tomviz; print('tomviz imported successfully')\""
-          ],
-          "imports": [
-            "tomviz",
-            "tomviz.cli",
-            "tomviz.operators"
-          ],
-          "requires": [
-            "python 3.10",
+            "python 3.11",
             "pip"
           ]
         }
@@ -3951,41 +3698,24 @@
     ],
     "package": {
       "name": "tomviz-split",
-      "version": "2.3.1"
+      "version": "3.0.0"
     },
     "schema_version": 0,
     "source": [
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       },
       {
         "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
-      },
-      {
-        "folder": "tomviz",
-        "git_rev": "2.3.1",
-        "git_url": "https://github.com/OpenChemistry/tomviz",
-        "patches": [
-          "conda-fixes.patch"
-        ]
+        "git_rev": "3.0.0",
+        "git_url": "https://github.com/OpenChemistry/tomviz"
       }
     ]
   },
@@ -4004,6 +3734,7 @@
     "host": {
       "__set__": true,
       "elements": [
+        "libprotobuf",
         "libxml2-devel",
         "paraview",
         "pip",
