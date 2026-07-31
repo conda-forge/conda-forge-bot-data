@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true,
@@ -24,8 +24,8 @@
       "linux_aarch64": "default"
     }
   },
-  "feedstock_hash": "957fc088da4a75d8c8c79c0a98678650bc048993",
-  "feedstock_hash_ts": 1777013928,
+  "feedstock_hash": "cc12cb785ac51a2c91b69315cfb0018f35e409b8",
+  "feedstock_hash_ts": 1785512069,
   "feedstock_name": "unitree-sdk2",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,7 +38,7 @@
       "summary": "Unitree robot sdk version 2."
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "script": [
         "cd thirdparty/lib/x86_64",
         "patchelf --replace-needed libddsc.so.0 libddsc_unitree.so.0 libddscxx.so",
@@ -125,6 +125,30 @@
               "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
               "cmake --build build/"
             ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "mkdir -p decoy/dds/ddsi",
+              "echo '#error \"A foreign CycloneDDS header shadowed the copy vendored by unitree_sdk2\"' > decoy/dds/ddsi/ddsi_serdata.h",
+              "echo '#include <unitree/robot/channel/channel_publisher.hpp>' > main.cpp",
+              "echo 'int main() { return 0; }' >> main.cpp",
+              "echo 'cmake_minimum_required(VERSION 3.16)' > CMakeLists.txt",
+              "echo 'project(unitree_include_priority CXX)' >> CMakeLists.txt",
+              "echo 'include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/decoy)' >> CMakeLists.txt",
+              "echo 'find_package(unitree_sdk2 CONFIG REQUIRED)' >> CMakeLists.txt",
+              "echo 'add_executable(main main.cpp)' >> CMakeLists.txt",
+              "echo 'target_link_libraries(main PRIVATE unitree_sdk2)' >> CMakeLists.txt",
+              "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
+              "cmake --build build/"
+            ]
           }
         ],
         "version": "2.0.2"
@@ -149,7 +173,8 @@
       "patches": [
         "add-sched-include.patch",
         "fix-destructors-cpp20.patch",
-        "rename-vendored-dds-shlib.patch"
+        "rename-vendored-dds-shlib.patch",
+        "prioritize-vendored-dds-headers.patch"
       ],
       "sha256": "aa05c28463b9f3c9459efce19485a9777644b5671eb10908f9ae0de880e0b2cc",
       "url": "https://github.com/unitreerobotics/unitree_sdk2/archive/refs/tags/2.0.2.zip"
@@ -199,7 +224,7 @@
       "summary": "Unitree robot sdk version 2."
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "script": [
         "cd thirdparty/lib/x86_64",
         "patchelf --replace-needed libddsc.so.0 libddsc_unitree.so.0 libddscxx.so",
@@ -286,6 +311,30 @@
               "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
               "cmake --build build/"
             ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "mkdir -p decoy/dds/ddsi",
+              "echo '#error \"A foreign CycloneDDS header shadowed the copy vendored by unitree_sdk2\"' > decoy/dds/ddsi/ddsi_serdata.h",
+              "echo '#include <unitree/robot/channel/channel_publisher.hpp>' > main.cpp",
+              "echo 'int main() { return 0; }' >> main.cpp",
+              "echo 'cmake_minimum_required(VERSION 3.16)' > CMakeLists.txt",
+              "echo 'project(unitree_include_priority CXX)' >> CMakeLists.txt",
+              "echo 'include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/decoy)' >> CMakeLists.txt",
+              "echo 'find_package(unitree_sdk2 CONFIG REQUIRED)' >> CMakeLists.txt",
+              "echo 'add_executable(main main.cpp)' >> CMakeLists.txt",
+              "echo 'target_link_libraries(main PRIVATE unitree_sdk2)' >> CMakeLists.txt",
+              "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
+              "cmake --build build/"
+            ]
           }
         ],
         "version": "2.0.2"
@@ -310,7 +359,8 @@
       "patches": [
         "add-sched-include.patch",
         "fix-destructors-cpp20.patch",
-        "rename-vendored-dds-shlib.patch"
+        "rename-vendored-dds-shlib.patch",
+        "prioritize-vendored-dds-headers.patch"
       ],
       "sha256": "aa05c28463b9f3c9459efce19485a9777644b5671eb10908f9ae0de880e0b2cc",
       "url": "https://github.com/unitreerobotics/unitree_sdk2/archive/refs/tags/2.0.2.zip"
@@ -360,7 +410,7 @@
       "summary": "Unitree robot sdk version 2."
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "script": [
         "cd thirdparty/lib/x86_64",
         "patchelf --replace-needed libddsc.so.0 libddsc_unitree.so.0 libddscxx.so",
@@ -444,6 +494,30 @@
               "echo \"project(unitree_examples CXX)\" >> CMakeLists.txt",
               "echo \"find_package(unitree_sdk2 CONFIG REQUIRED)\" >> CMakeLists.txt",
               "echo \"add_subdirectory(example)\" >> CMakeLists.txt",
+              "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
+              "cmake --build build/"
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "mkdir -p decoy/dds/ddsi",
+              "echo '#error \"A foreign CycloneDDS header shadowed the copy vendored by unitree_sdk2\"' > decoy/dds/ddsi/ddsi_serdata.h",
+              "echo '#include <unitree/robot/channel/channel_publisher.hpp>' > main.cpp",
+              "echo 'int main() { return 0; }' >> main.cpp",
+              "echo 'cmake_minimum_required(VERSION 3.16)' > CMakeLists.txt",
+              "echo 'project(unitree_include_priority CXX)' >> CMakeLists.txt",
+              "echo 'include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/decoy)' >> CMakeLists.txt",
+              "echo 'find_package(unitree_sdk2 CONFIG REQUIRED)' >> CMakeLists.txt",
+              "echo 'add_executable(main main.cpp)' >> CMakeLists.txt",
+              "echo 'target_link_libraries(main PRIVATE unitree_sdk2)' >> CMakeLists.txt",
               "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
               "cmake --build build/"
             ]
@@ -516,6 +590,30 @@
               "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
               "cmake --build build/"
             ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "mkdir -p decoy/dds/ddsi",
+              "echo '#error \"A foreign CycloneDDS header shadowed the copy vendored by unitree_sdk2\"' > decoy/dds/ddsi/ddsi_serdata.h",
+              "echo '#include <unitree/robot/channel/channel_publisher.hpp>' > main.cpp",
+              "echo 'int main() { return 0; }' >> main.cpp",
+              "echo 'cmake_minimum_required(VERSION 3.16)' > CMakeLists.txt",
+              "echo 'project(unitree_include_priority CXX)' >> CMakeLists.txt",
+              "echo 'include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/decoy)' >> CMakeLists.txt",
+              "echo 'find_package(unitree_sdk2 CONFIG REQUIRED)' >> CMakeLists.txt",
+              "echo 'add_executable(main main.cpp)' >> CMakeLists.txt",
+              "echo 'target_link_libraries(main PRIVATE unitree_sdk2)' >> CMakeLists.txt",
+              "cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX",
+              "cmake --build build/"
+            ]
           }
         ],
         "version": "2.0.2"
@@ -540,7 +638,8 @@
       "patches": [
         "add-sched-include.patch",
         "fix-destructors-cpp20.patch",
-        "rename-vendored-dds-shlib.patch"
+        "rename-vendored-dds-shlib.patch",
+        "prioritize-vendored-dds-headers.patch"
       ],
       "sha256": "aa05c28463b9f3c9459efce19485a9777644b5671eb10908f9ae0de880e0b2cc",
       "url": "https://github.com/unitreerobotics/unitree_sdk2/archive/refs/tags/2.0.2.zip"
@@ -561,7 +660,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/unitree-sdk2.json"
   },
-  "raw_meta_yaml": "context:\n  version: 2.0.2\n\npackage:\n  name: unitree-sdk2\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/unitreerobotics/unitree_sdk2/archive/refs/tags/${{ version }}.zip\n  sha256: aa05c28463b9f3c9459efce19485a9777644b5671eb10908f9ae0de880e0b2cc\n  patches:\n    - add-sched-include.patch\n    - fix-destructors-cpp20.patch\n    - rename-vendored-dds-shlib.patch\n\nbuild:\n  number: 2\n  skip: not linux\n  script:\n    - if: x86_64\n      then:\n        - cd thirdparty/lib/x86_64\n    - if: aarch64\n      then:\n        - cd thirdparty/lib/aarch64\n    # Rename the vendored libraries to avoid conflicts with cyclonedds.\n    - patchelf --replace-needed libddsc.so.0 libddsc_unitree.so.0 libddscxx.so\n    - patchelf --set-soname libddsc_unitree.so libddsc.so\n    - patchelf --set-soname libddscxx_unitree.so libddscxx.so\n    - mv libddsc.so libddsc_unitree.so\n    - mv libddscxx.so libddscxx_unitree.so\n    - rm libddsc.so.0 libddscxx.so.0\n    - ln -s libddsc_unitree.so libddsc_unitree.so.0\n    - ln -s libddscxx_unitree.so libddscxx_unitree.so.0\n    # Build and install the SDK.\n    - cd -\n    - cmake -S . -B build/\n      -GNinja\n      -DCMAKE_BUILD_TYPE=Release\n      -DCMAKE_INSTALL_PREFIX=$PREFIX\n      -DBUILD_EXAMPLES=OFF\n      -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=NEVER\n      -DCMAKE_POLICY_DEFAULT_CMP0109=NEW\n    - cmake --build build/ --target install\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - cmake\n    - ninja\n    - patchelf\n  host:\n  run:\n\ntests:\n  - script:\n      - cmake-package-check unitree_sdk2 --targets unitree_sdk2 ddsc ddscxx\n    requirements:\n      run:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - cmake-package-check\n  - script:\n      - echo \"Checking stdlib compatibility of installed shared libraries...\"\n      - export c_stdlib_version=${{ c_stdlib_version }}\n      - check-glibc lib/*.so* lib/*.a*\n    requirements:\n      run:\n        - cf-nvidia-tools\n  - script:\n      - ldd $PREFIX/lib/libddsc_unitree.so\n      - ldd $PREFIX/lib/libddscxx_unitree.so\n      - touch CMakeLists.txt\n      - echo \"cmake_minimum_required(VERSION 3.16)\" >> CMakeLists.txt\n      - echo \"project(unitree_examples CXX)\" >> CMakeLists.txt\n      - echo \"find_package(unitree_sdk2 CONFIG REQUIRED)\" >> CMakeLists.txt\n      - echo \"add_subdirectory(example)\" >> CMakeLists.txt\n      - cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX\n      - cmake --build build/\n    files:\n      source:\n        - example/\n    requirements:\n      run:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - cmake\n        - eigen\n        - ninja\n        - yaml-cpp\n\nabout:\n  homepage: https://support.unitree.com/home/zh/developer\n  license: BSD-3-Clause\n  license_file: LICENSE\n  repository: https://github.com/unitreerobotics/unitree_sdk2\n  summary: Unitree robot sdk version 2.\n\nextra:\n  recipe-maintainers:\n    - diegoferigo\n",
+  "raw_meta_yaml": "context:\n  version: 2.0.2\n\npackage:\n  name: unitree-sdk2\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/unitreerobotics/unitree_sdk2/archive/refs/tags/${{ version }}.zip\n  sha256: aa05c28463b9f3c9459efce19485a9777644b5671eb10908f9ae0de880e0b2cc\n  patches:\n    - add-sched-include.patch\n    - fix-destructors-cpp20.patch\n    - rename-vendored-dds-shlib.patch\n    - prioritize-vendored-dds-headers.patch\n\nbuild:\n  number: 3\n  skip: not linux\n  script:\n    - if: x86_64\n      then:\n        - cd thirdparty/lib/x86_64\n    - if: aarch64\n      then:\n        - cd thirdparty/lib/aarch64\n    # Rename the vendored libraries to avoid conflicts with cyclonedds.\n    - patchelf --replace-needed libddsc.so.0 libddsc_unitree.so.0 libddscxx.so\n    - patchelf --set-soname libddsc_unitree.so libddsc.so\n    - patchelf --set-soname libddscxx_unitree.so libddscxx.so\n    - mv libddsc.so libddsc_unitree.so\n    - mv libddscxx.so libddscxx_unitree.so\n    - rm libddsc.so.0 libddscxx.so.0\n    - ln -s libddsc_unitree.so libddsc_unitree.so.0\n    - ln -s libddscxx_unitree.so libddscxx_unitree.so.0\n    # Build and install the SDK.\n    - cd -\n    - cmake -S . -B build/\n      -GNinja\n      -DCMAKE_BUILD_TYPE=Release\n      -DCMAKE_INSTALL_PREFIX=$PREFIX\n      -DBUILD_EXAMPLES=OFF\n      -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=NEVER\n      -DCMAKE_POLICY_DEFAULT_CMP0109=NEW\n    - cmake --build build/ --target install\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - cmake\n    - ninja\n    - patchelf\n  host:\n  run:\n\ntests:\n  - script:\n      - cmake-package-check unitree_sdk2 --targets unitree_sdk2 ddsc ddscxx\n    requirements:\n      run:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - cmake-package-check\n  - script:\n      - echo \"Checking stdlib compatibility of installed shared libraries...\"\n      - export c_stdlib_version=${{ c_stdlib_version }}\n      - check-glibc lib/*.so* lib/*.a*\n    requirements:\n      run:\n        - cf-nvidia-tools\n  - script:\n      - ldd $PREFIX/lib/libddsc_unitree.so\n      - ldd $PREFIX/lib/libddscxx_unitree.so\n      - touch CMakeLists.txt\n      - echo \"cmake_minimum_required(VERSION 3.16)\" >> CMakeLists.txt\n      - echo \"project(unitree_examples CXX)\" >> CMakeLists.txt\n      - echo \"find_package(unitree_sdk2 CONFIG REQUIRED)\" >> CMakeLists.txt\n      - echo \"add_subdirectory(example)\" >> CMakeLists.txt\n      - cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX\n      - cmake --build build/\n    files:\n      source:\n        - example/\n    requirements:\n      run:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - cmake\n        - eigen\n        - ninja\n        - yaml-cpp\n  - script:\n      # The vendored CycloneDDS headers must win over any other CycloneDDS reachable earlier on the\n      # include path, no matter how the conflicting directory enters the consumer's include path.\n      - mkdir -p decoy/dds/ddsi\n      - echo '#error \"A foreign CycloneDDS header shadowed the copy vendored by unitree_sdk2\"'\n        > decoy/dds/ddsi/ddsi_serdata.h\n      - echo '#include <unitree/robot/channel/channel_publisher.hpp>' > main.cpp\n      - echo 'int main() { return 0; }' >> main.cpp\n      - echo 'cmake_minimum_required(VERSION 3.16)' > CMakeLists.txt\n      - echo 'project(unitree_include_priority CXX)' >> CMakeLists.txt\n      - echo 'include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/decoy)' >> CMakeLists.txt\n      - echo 'find_package(unitree_sdk2 CONFIG REQUIRED)' >> CMakeLists.txt\n      - echo 'add_executable(main main.cpp)' >> CMakeLists.txt\n      - echo 'target_link_libraries(main PRIVATE unitree_sdk2)' >> CMakeLists.txt\n      - cmake -S . -B build/ -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$PREFIX\n      - cmake --build build/\n    requirements:\n      run:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - cmake\n        - ninja\n\nabout:\n  homepage: https://support.unitree.com/home/zh/developer\n  license: BSD-3-Clause\n  license_file: LICENSE\n  repository: https://github.com/unitreerobotics/unitree_sdk2\n  summary: Unitree robot sdk version 2.\n\nextra:\n  recipe-maintainers:\n    - diegoferigo\n",
   "req": {
     "__set__": true,
     "elements": [
