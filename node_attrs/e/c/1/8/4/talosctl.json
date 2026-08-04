@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "4d293207f6cc2110afdd21087290240829548235",
-  "feedstock_hash_ts": 1784644832,
+  "feedstock_hash": "7c3d35ad8416db71b46c5db50668104931839197",
+  "feedstock_hash_ts": 1785879805,
   "feedstock_name": "talosctl",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -62,12 +62,12 @@
             }
           }
         ],
-        "version": "1.13.7"
+        "version": "1.13.8"
       }
     ],
     "package": {
       "name": "talosctl",
-      "version": "1.13.7"
+      "version": "1.13.8"
     },
     "requirements": {
       "build": [
@@ -78,8 +78,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "2694a289d868ecb5ab2b0fcfbf61c452dfbc6540fab1c6b49f52d451755b5c8a",
-      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.7.tar.gz"
+      "sha256": "e95fb856af66ddec36368fcb30980b75efe808c7e48db71a55716fe811edbbfa",
+      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.8.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -149,7 +149,7 @@
             }
           }
         ],
-        "version": "1.13.7"
+        "version": "1.13.8"
       },
       {
         "build": null,
@@ -172,7 +172,7 @@
             }
           }
         ],
-        "version": "1.13.7"
+        "version": "1.13.8"
       },
       {
         "build": null,
@@ -195,12 +195,12 @@
             }
           }
         ],
-        "version": "1.13.7"
+        "version": "1.13.8"
       }
     ],
     "package": {
       "name": "talosctl",
-      "version": "1.13.7"
+      "version": "1.13.8"
     },
     "requirements": {
       "build": [
@@ -211,8 +211,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "2694a289d868ecb5ab2b0fcfbf61c452dfbc6540fab1c6b49f52d451755b5c8a",
-      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.7.tar.gz"
+      "sha256": "e95fb856af66ddec36368fcb30980b75efe808c7e48db71a55716fe811edbbfa",
+      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.8.tar.gz"
     }
   },
   "name": "talosctl",
@@ -261,12 +261,12 @@
             }
           }
         ],
-        "version": "1.13.7"
+        "version": "1.13.8"
       }
     ],
     "package": {
       "name": "talosctl",
-      "version": "1.13.7"
+      "version": "1.13.8"
     },
     "requirements": {
       "build": [
@@ -277,8 +277,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "2694a289d868ecb5ab2b0fcfbf61c452dfbc6540fab1c6b49f52d451755b5c8a",
-      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.7.tar.gz"
+      "sha256": "e95fb856af66ddec36368fcb30980b75efe808c7e48db71a55716fe811edbbfa",
+      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.8.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -318,7 +318,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/talosctl.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.13.7\"\n\npackage:\n  name: talosctl\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/siderolabs/talos/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 2694a289d868ecb5ab2b0fcfbf61c452dfbc6540fab1c6b49f52d451755b5c8a\n\nbuild:\n  number: 0\n  script:\n    interpreter: nu\n    content: |\n      # Talos pins `go 1.26.5` across its go.mod / go.work (including nested modules),\n      # but the build toolchain is older; relax every pin to a version it satisfies.\n      [(glob go.mod) (glob **/go.mod) (glob go.work) (glob **/go.work)]\n      | flatten\n      | uniq\n      | each {|f|\n          open --raw $f\n          | decode utf-8\n          | str replace --regex --all '(?m)^go 1\\.26\\.[0-9]+' 'go 1.26.2'\n          | save --force $f\n      }\n\n      # Windows lands the binary in Library\\bin with an .exe suffix; unix uses $PREFIX/bin.\n      let bin = if $nu.os-info.name == \"windows\" {\n          $\"($env.LIBRARY_BIN)/talosctl.exe\"\n      } else {\n          $\"($env.PREFIX)/bin/talosctl\"\n      }\n\n      # GOWORK=off builds in module mode using the go.mod replace directives.\n      with-env {GOWORK: \"off\"} {\n          go build -v -o $bin -ldflags $\"-s -w -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v($env.PKG_VERSION)\" ./cmd/talosctl\n      }\n\n      # Collect statically-linked dependency licenses for the package.\n      go-licenses save ./cmd/talosctl --save_path ./library-licenses --ignore github.com/siderolabs/talos\n\nrequirements:\n  build:\n    - ${{ compiler('go-nocgo') }}\n    - go-licenses\n    - nushell\n\ntests:\n  - package_contents:\n      bin:\n        - talosctl\n\nabout:\n  homepage: https://github.com/talosctl/talosctl\n  summary: \"Talos Linux is an OS for Kubernetes\"\n  description: |\n    Talos is a modern OS for running Kubernetes: secure, immutable, and minimal.\n    Talos is fully open source.\n    All system management is done via an API.\n    `talosctl` is a command line tool which uses that API.\n  license: MPL-2.0\n  license_file:\n    - LICENSE\n    - library-licenses/\n  documentation: https://docs.siderolabs.com/talos\n  repository: https://github.com/siderolabs/talos\n\nextra:\n  recipe-maintainers:\n    - phreed\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.13.8\"\n\npackage:\n  name: talosctl\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/siderolabs/talos/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: e95fb856af66ddec36368fcb30980b75efe808c7e48db71a55716fe811edbbfa\n\nbuild:\n  number: 0\n  script:\n    interpreter: nu\n    content: |\n      # Talos pins `go 1.26.5` across its go.mod / go.work (including nested modules),\n      # but the build toolchain is older; relax every pin to a version it satisfies.\n      [(glob go.mod) (glob **/go.mod) (glob go.work) (glob **/go.work)]\n      | flatten\n      | uniq\n      | each {|f|\n          open --raw $f\n          | decode utf-8\n          | str replace --regex --all '(?m)^go 1\\.26\\.[0-9]+' 'go 1.26.2'\n          | save --force $f\n      }\n\n      # Windows lands the binary in Library\\bin with an .exe suffix; unix uses $PREFIX/bin.\n      let bin = if $nu.os-info.name == \"windows\" {\n          $\"($env.LIBRARY_BIN)/talosctl.exe\"\n      } else {\n          $\"($env.PREFIX)/bin/talosctl\"\n      }\n\n      # GOWORK=off builds in module mode using the go.mod replace directives.\n      with-env {GOWORK: \"off\"} {\n          go build -v -o $bin -ldflags $\"-s -w -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v($env.PKG_VERSION)\" ./cmd/talosctl\n      }\n\n      # Collect statically-linked dependency licenses for the package.\n      go-licenses save ./cmd/talosctl --save_path ./library-licenses --ignore github.com/siderolabs/talos\n\nrequirements:\n  build:\n    - ${{ compiler('go-nocgo') }}\n    - go-licenses\n    - nushell\n\ntests:\n  - package_contents:\n      bin:\n        - talosctl\n\nabout:\n  homepage: https://github.com/talosctl/talosctl\n  summary: \"Talos Linux is an OS for Kubernetes\"\n  description: |\n    Talos is a modern OS for running Kubernetes: secure, immutable, and minimal.\n    Talos is fully open source.\n    All system management is done via an API.\n    `talosctl` is a command line tool which uses that API.\n  license: MPL-2.0\n  license_file:\n    - LICENSE\n    - library-licenses/\n  documentation: https://docs.siderolabs.com/talos\n  repository: https://github.com/siderolabs/talos\n\nextra:\n  recipe-maintainers:\n    - phreed\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -372,8 +372,8 @@
       "elements": []
     }
   },
-  "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.7.tar.gz",
-  "version": "1.13.7",
+  "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.8.tar.gz",
+  "version": "1.13.8",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/talosctl.json"
   },
@@ -422,12 +422,12 @@
             }
           }
         ],
-        "version": "1.13.7"
+        "version": "1.13.8"
       }
     ],
     "package": {
       "name": "talosctl",
-      "version": "1.13.7"
+      "version": "1.13.8"
     },
     "requirements": {
       "build": [
@@ -438,8 +438,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "2694a289d868ecb5ab2b0fcfbf61c452dfbc6540fab1c6b49f52d451755b5c8a",
-      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.7.tar.gz"
+      "sha256": "e95fb856af66ddec36368fcb30980b75efe808c7e48db71a55716fe811edbbfa",
+      "url": "https://github.com/siderolabs/talos/archive/refs/tags/v1.13.8.tar.gz"
     }
   },
   "win_64_requirements": {
