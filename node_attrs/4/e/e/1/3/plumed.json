@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_mpimpich.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.28'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfftw:\n- '3'\ngsl:\n- '2.7'\nlibblas:\n- 3.9.* *netlib\nliblapack:\n- 3.9.* *netlib\nmpi:\n- mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_mpimpich.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfftw:\n- '3'\ngsl:\n- '2.7'\nlibblas:\n- 3.9.* *netlib\nliblapack:\n- 3.9.* *netlib\nmpi:\n- mpich\nmpich:\n- '5'\nopenmpi:\n- '5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
@@ -11,35 +11,36 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "osx_64": "azure",
+      "osx_arm64": "azure"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ed6b2a51d793ecf9c5de7931a73ab11cf9e02819",
-  "feedstock_hash_ts": 1785564642,
+  "feedstock_hash": "1754d5ddf5762a2fbe4357459c7fe82116abf54e",
+  "feedstock_hash_ts": 1785852817,
   "feedstock_name": "plumed",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.\n",
+      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.",
       "dev_url": "https://github.com/plumed/plumed2",
       "doc_url": "https://www.plumed.org/doc",
       "home": "http://www.plumed.org/",
       "license": "LGPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "LGPL-3.0-only",
       "license_file": "COPYING.LESSER",
       "summary": "Free energy calculations in molecular systems"
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "plumed * mpi_mpich_*",
-        "plumed * mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -47,6 +48,156 @@
         "mkrack"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      }
+    ],
     "package": {
       "name": "plumed",
       "version": "2.10.1"
@@ -54,7 +205,6 @@
     "requirements": {
       "build": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ],
@@ -76,28 +226,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d",
       "url": "https://github.com/plumed/plumed2/archive/v2.10.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "plumed info --root",
-        "plumed info --long-version",
-        "plumed-patch -h",
-        "plumed config has external_blas external_lapack fftw gsl zlib",
-        "plumed config has asmjit",
-        "plumed config has mpi",
-        "$PREFIX/lib/plumed/plumed-runtime -h",
-        "test -f $PREFIX/lib/libplumed$SHLIB_EXT",
-        "test -f $PREFIX/lib/libplumedWrapper.a",
-        "test -f $PREFIX/lib/libplumedKernel$SHLIB_EXT",
-        "export OMPI_MCA_plm=isolated",
-        "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
-        "export OMPI_MCA_rmaps_base_oversubscribe=yes",
-        "export OMPI_MCA_btl=vader,self"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -105,7 +237,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ]
@@ -140,22 +271,17 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.\n",
+      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.",
       "dev_url": "https://github.com/plumed/plumed2",
       "doc_url": "https://www.plumed.org/doc",
       "home": "http://www.plumed.org/",
       "license": "LGPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "LGPL-3.0-only",
       "license_file": "COPYING.LESSER",
       "summary": "Free energy calculations in molecular systems"
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "plumed * mpi_mpich_*",
-        "plumed * mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -163,6 +289,156 @@
         "mkrack"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      }
+    ],
     "package": {
       "name": "plumed",
       "version": "2.10.1"
@@ -170,7 +446,6 @@
     "requirements": {
       "build": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ],
@@ -192,27 +467,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d",
       "url": "https://github.com/plumed/plumed2/archive/v2.10.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "plumed info --root",
-        "plumed info --long-version",
-        "plumed-patch -h",
-        "plumed config has external_blas external_lapack fftw gsl zlib",
-        "plumed config has mpi",
-        "$PREFIX/lib/plumed/plumed-runtime -h",
-        "test -f $PREFIX/lib/libplumed$SHLIB_EXT",
-        "test -f $PREFIX/lib/libplumedWrapper.a",
-        "test -f $PREFIX/lib/libplumedKernel$SHLIB_EXT",
-        "export OMPI_MCA_plm=isolated",
-        "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
-        "export OMPI_MCA_rmaps_base_oversubscribe=yes",
-        "export OMPI_MCA_btl=vader,self"
-      ]
     }
   },
   "linux_aarch64_requirements": {
@@ -220,7 +478,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ]
@@ -255,22 +512,17 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
-      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.\n",
+      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.",
       "dev_url": "https://github.com/plumed/plumed2",
       "doc_url": "https://www.plumed.org/doc",
       "home": "http://www.plumed.org/",
       "license": "LGPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "LGPL-3.0-only",
       "license_file": "COPYING.LESSER",
       "summary": "Free energy calculations in molecular systems"
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "plumed * mpi_mpich_*",
-        "plumed * mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -278,6 +530,156 @@
         "mkrack"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      }
+    ],
     "package": {
       "name": "plumed",
       "version": "2.10.1"
@@ -285,7 +687,6 @@
     "requirements": {
       "build": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ],
@@ -307,27 +708,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d",
       "url": "https://github.com/plumed/plumed2/archive/v2.10.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "plumed info --root",
-        "plumed info --long-version",
-        "plumed-patch -h",
-        "plumed config has external_blas external_lapack fftw gsl zlib",
-        "plumed config has mpi",
-        "$PREFIX/lib/plumed/plumed-runtime -h",
-        "test -f $PREFIX/lib/libplumed$SHLIB_EXT",
-        "test -f $PREFIX/lib/libplumedWrapper.a",
-        "test -f $PREFIX/lib/libplumedKernel$SHLIB_EXT",
-        "export OMPI_MCA_plm=isolated",
-        "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
-        "export OMPI_MCA_rmaps_base_oversubscribe=yes",
-        "export OMPI_MCA_btl=vader,self"
-      ]
     }
   },
   "linux_ppc64le_requirements": {
@@ -335,7 +719,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ]
@@ -370,22 +753,17 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.\n",
+      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.",
       "dev_url": "https://github.com/plumed/plumed2",
       "doc_url": "https://www.plumed.org/doc",
       "home": "http://www.plumed.org/",
       "license": "LGPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "LGPL-3.0-only",
       "license_file": "COPYING.LESSER",
       "summary": "Free energy calculations in molecular systems"
     },
     "build": {
-      "number": "100",
-      "run_exports": [
-        "plumed * mpi_mpich_*",
-        "plumed * mpi_openmpi_*"
-      ],
-      "string": "nompi_h1234567_100"
+      "number": "101"
     },
     "extra": {
       "recipe-maintainers": [
@@ -393,6 +771,695 @@
         "mkrack"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      }
+    ],
     "package": {
       "name": "plumed",
       "version": "2.10.1"
@@ -400,7 +1467,6 @@
     "requirements": {
       "build": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ],
@@ -422,49 +1488,26 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d",
       "url": "https://github.com/plumed/plumed2/archive/v2.10.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "plumed info --root",
-        "plumed info --long-version",
-        "plumed-patch -h",
-        "plumed config has external_blas external_lapack fftw gsl zlib",
-        "plumed config has asmjit",
-        "plumed config has mpi",
-        "$PREFIX/lib/plumed/plumed-runtime -h",
-        "test -f $PREFIX/lib/libplumed$SHLIB_EXT",
-        "test -f $PREFIX/lib/libplumedWrapper.a",
-        "test -f $PREFIX/lib/libplumedKernel$SHLIB_EXT",
-        "export OMPI_MCA_plm=isolated",
-        "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
-        "export OMPI_MCA_rmaps_base_oversubscribe=yes",
-        "export OMPI_MCA_btl=vader,self"
-      ]
     }
   },
   "name": "plumed",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.\n",
+      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.",
       "dev_url": "https://github.com/plumed/plumed2",
       "doc_url": "https://www.plumed.org/doc",
       "home": "http://www.plumed.org/",
       "license": "LGPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "LGPL-3.0-only",
       "license_file": "COPYING.LESSER",
       "summary": "Free energy calculations in molecular systems"
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "plumed * mpi_mpich_*",
-        "plumed * mpi_openmpi_*"
-      ],
-      "string": "mpi_openmpi_h1234567_0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -472,6 +1515,156 @@
         "mkrack"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "openmpi",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "openmpi",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "export OMPI_MCA_plm=isolated",
+              "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
+              "export OMPI_MCA_rmaps_base_oversubscribe=yes",
+              "export OMPI_MCA_btl=vader,self",
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      }
+    ],
     "package": {
       "name": "plumed",
       "version": "2.10.1"
@@ -479,7 +1672,6 @@
     "requirements": {
       "build": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ],
@@ -501,28 +1693,10 @@
         "openmpi"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d",
       "url": "https://github.com/plumed/plumed2/archive/v2.10.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "plumed info --root",
-        "plumed info --long-version",
-        "plumed-patch -h",
-        "plumed config has external_blas external_lapack fftw gsl zlib",
-        "plumed config has asmjit",
-        "plumed config has mpi",
-        "$PREFIX/lib/plumed/plumed-runtime -h",
-        "test -f $PREFIX/lib/libplumed$SHLIB_EXT",
-        "test -f $PREFIX/lib/libplumedWrapper.a",
-        "test -f $PREFIX/lib/libplumedKernel$SHLIB_EXT",
-        "export OMPI_MCA_plm=isolated",
-        "export OMPI_MCA_btl_vader_single_copy_mechanism=none",
-        "export OMPI_MCA_rmaps_base_oversubscribe=yes",
-        "export OMPI_MCA_btl=vader,self"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -530,7 +1704,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ]
@@ -565,18 +1738,17 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.\n",
+      "description": "PLUMED is an open source library for free energy calculations in\nmolecular systems which works together with some of the most\npopular molecular dynamics engines.",
       "dev_url": "https://github.com/plumed/plumed2",
       "doc_url": "https://www.plumed.org/doc",
       "home": "http://www.plumed.org/",
       "license": "LGPL-3.0-only",
-      "license_family": "GPL",
+      "license_family": "LGPL-3.0-only",
       "license_file": "COPYING.LESSER",
       "summary": "Free energy calculations in molecular systems"
     },
     "build": {
-      "number": "100",
-      "string": "nompi_h1234567_100"
+      "number": "101"
     },
     "extra": {
       "recipe-maintainers": [
@@ -584,6 +1756,103 @@
         "mkrack"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "mpich",
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "mpich",
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has mpi",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      },
+      {
+        "build": null,
+        "name": "plumed",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "fftw",
+            "gsl",
+            "libblas",
+            "libfabric",
+            "liblapack",
+            "libopenblas * *openmp*",
+            "zlib"
+          ],
+          "run": [
+            "gawk",
+            "libopenblas * *openmp*"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "plumed",
+                "plumedKernel",
+                "libplumedWrapper.a"
+              ]
+            }
+          },
+          {
+            "script": [
+              "plumed info --root",
+              "plumed info --long-version",
+              "plumed-patch -h",
+              "plumed config has external_blas external_lapack fftw gsl zlib",
+              "plumed config has asmjit",
+              "$PREFIX/lib/plumed/plumed-runtime -h"
+            ]
+          }
+        ],
+        "version": "2.10.1"
+      }
+    ],
     "package": {
       "name": "plumed",
       "version": "2.10.1"
@@ -591,11 +1860,11 @@
     "requirements": {
       "build": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ],
       "host": [
+        "mpich",
         "fftw",
         "gsl",
         "libblas",
@@ -605,26 +1874,15 @@
         "zlib"
       ],
       "run": [
+        "mpich",
         "gawk",
         "libopenblas * *openmp*"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d",
       "url": "https://github.com/plumed/plumed2/archive/v2.10.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "plumed info --root",
-        "plumed info --long-version",
-        "plumed-patch -h",
-        "plumed config has external_blas external_lapack fftw gsl zlib",
-        "$PREFIX/lib/plumed/plumed-runtime -h",
-        "test -f $PREFIX/lib/libplumed$SHLIB_EXT",
-        "test -f $PREFIX/lib/libplumedWrapper.a",
-        "test -f $PREFIX/lib/libplumedKernel$SHLIB_EXT"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -632,7 +1890,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ]
@@ -646,6 +1903,7 @@
         "libfabric",
         "liblapack",
         "libopenblas",
+        "mpich",
         "zlib"
       ]
     },
@@ -653,7 +1911,8 @@
       "__set__": true,
       "elements": [
         "gawk",
-        "libopenblas"
+        "libopenblas",
+        "mpich"
       ]
     },
     "test": {
@@ -678,12 +1937,11 @@
   "pr_info": {
     "__lazy_json__": "pr_info/plumed.json"
   },
-  "raw_meta_yaml": "{% set name = \"plumed\" %}\n{% set version = \"2.10.1\" %}\n{% set build = 0 %}\n{% set mpi = mpi or \"nompi\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/plumed/plumed2/archive/v{{ version }}.tar.gz\n  sha256: 92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d\n\n{% if mpi == 'nompi' %}\n{% set build = build + 100 %}\n{% endif %}\nbuild:\n  number: {{ build }}\n  skip: true  # [win]\n# Most programs should link libplumedWrapper.a so that libplumedKernel.so will be loaded\n# with dlopen. There is no need for pinning thus.\n# Programs linking libplumed.so should pin to min_pin='x.x', max_pin='x'.\n# Programs linking libplumedKernel.so should pin to min_pin='x.x.x'. max_pin='x.x.x'.\n\n  {% if mpi != \"nompi\" %}\n  {% set mpi_prefix = \"mpi_\" + mpi %}\n  {% else %}\n  {% set mpi_prefix = \"nompi\" %}\n  {% endif %}\n  string: {{ mpi_prefix }}_h{{ PKG_HASH }}_{{ build }}\n\n  {% if mpi != \"nompi\" %}\n  run_exports:\n    - {{ name }} * {{ mpi_prefix }}_*\n  {% endif %}\n\nrequirements:\n  build:\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler(\"cxx\") }}\n    - make\n  host:\n    - {{ mpi }}  # [mpi != \"nompi\"]\n    - fftw\n    - gsl\n    - libblas\n    - libfabric\n    - liblapack\n    - \"libopenblas * *openmp*\"\n    - zlib\n  run:\n    - {{ mpi }}  # [mpi != \"nompi\"]\n    - gawk\n    - \"libopenblas * *openmp*\"\n\ntest:\n  commands:\n    - export OMPI_MCA_plm=isolated  # [mpi == \"openmpi\"]\n    - export OMPI_MCA_btl_vader_single_copy_mechanism=none  # [mpi == \"openmpi\"]\n    - export OMPI_MCA_rmaps_base_oversubscribe=yes  # [mpi == \"openmpi\"]\n    - export OMPI_MCA_btl=vader,self  # [mpi == \"openmpi\"]\n    - plumed info --root\n    - plumed info --long-version\n    - plumed-patch -h\n    - plumed config has external_blas external_lapack fftw gsl zlib\n    - plumed config has asmjit  # [not ppc64le and not aarch64 and not arm64]\n    - plumed config has mpi  # [mpi != \"nompi\"]\n    - $PREFIX/lib/plumed/plumed-runtime -h\n    - test -f $PREFIX/lib/libplumed$SHLIB_EXT\n    - test -f $PREFIX/lib/libplumedWrapper.a\n    - test -f $PREFIX/lib/libplumedKernel$SHLIB_EXT\n\nabout:\n  home: http://www.plumed.org/\n  license: LGPL-3.0-only\n  license_family: GPL\n  license_file: COPYING.LESSER\n  summary: Free energy calculations in molecular systems\n  description: |\n    PLUMED is an open source library for free energy calculations in\n    molecular systems which works together with some of the most\n    popular molecular dynamics engines.\n  doc_url: https://www.plumed.org/doc\n  dev_url: https://github.com/plumed/plumed2\n\nextra:\n  recipe-maintainers:\n    - GiovanniBussi\n    - mkrack\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: \"plumed\"\n  version: \"2.10.1\"\n  mpi_prefix: ${{ \"nompi\" if mpi == \"nompi\" else \"mpi_\" + mpi }}\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/${{ name }}/${{ name }}2/archive/v${{ version }}.tar.gz\n  sha256: 92e504371869091fe1ef1dd5a1f2996aa369ed9db6c7d2a56650231786ac7c5d\n\nbuild:\n  # Prioritize nompi via build number\n  number: ${{ 1 + (100 if mpi == \"nompi\" else 0) }}\n  skip:\n    - osx and arm64 and mpi == \"openmpi\"\n    - win\n  string: mpi_${{ mpi }}_h${{ hash }}_${{ build_number }}\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - make\n  host:\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n    - fftw\n    - gsl\n    - libblas\n    - libfabric\n    - liblapack\n    - \"libopenblas * *openmp*\"\n    - zlib\n  run:\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n    - gawk\n    - \"libopenblas * *openmp*\"\n\n\ntests:\n  - package_contents:\n      lib:\n        - ${{ name }}\n        - ${{ name }}Kernel\n        - lib${{ name }}Wrapper.a\n  - script:\n      - if: target_platform == build_platform\n        then:\n          - if: mpi == \"openmpi\"\n            then:\n              - export OMPI_MCA_plm=isolated\n              - export OMPI_MCA_btl_vader_single_copy_mechanism=none\n              - export OMPI_MCA_rmaps_base_oversubscribe=yes\n              - export OMPI_MCA_btl=vader,self\n          - plumed info --root\n          - plumed info --long-version\n          - plumed-patch -h\n          - plumed config has external_blas external_lapack fftw gsl zlib\n          - if: mpi != \"nompi\"\n            then:\n              - plumed config has mpi\n          - if: not (target_platform == \"linux-ppc64le\"\n                     or target_platform == \"linux-aarch64\"\n                     or target_platform == \"osx-arm64\")\n            then:\n              - plumed config has asmjit\n          - $PREFIX/lib/plumed/plumed-runtime -h\n\nabout:\n  homepage: http://www.plumed.org/\n  license: LGPL-3.0-only\n  license_file: COPYING.LESSER\n  summary: Free energy calculations in molecular systems\n  description: |\n    PLUMED is an open source library for free energy calculations in\n    molecular systems which works together with some of the most\n    popular molecular dynamics engines.\n  documentation: https://www.plumed.org/doc\n  repository: https://github.com/plumed/plumed2\n\nextra:\n  recipe-maintainers:\n    - GiovanniBussi\n    - mkrack\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
-      "c_stdlib_stub",
       "cxx_compiler_stub",
       "fftw",
       "gawk",
@@ -703,7 +1961,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ]
@@ -712,7 +1969,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "fftw",
         "gsl",
@@ -729,7 +1985,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "gawk",
         "libopenblas",
@@ -748,7 +2003,6 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
         "cxx_compiler_stub",
         "make"
       ]
