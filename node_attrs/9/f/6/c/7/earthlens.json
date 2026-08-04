@@ -12,18 +12,18 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "44b69bb6393419849d482321c78478a296020af0",
-  "feedstock_hash_ts": 1783408038,
+  "feedstock_hash": "d23e7bf4ced144be424ca911ce33b3320029f55b",
+  "feedstock_hash_ts": 1785874765,
   "feedstock_name": "earthlens",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "earthlens is a Python package for downloading satellite and climate\ndata from multiple sources, including the Climate Hazards Center\n(CHIRPS / CHIRP / CHIRTS / WBGT / SPI / SPEI / CHC_CMIP6, via FTP),\nERA5 on AWS S3, the ECMWF Climate Data Store via cdsapi, and Google\nEarth Engine. It provides a unified `EarthLens` facade that lazily\nloads each backend so the optional SDK for a backend you don't use\nnever has to be installed.\n\nThe core `earthlens` package ships only the CHC (FTP) backend's\nrequirements. The optional backends are packaged as separate\nmetapackages that depend on `earthlens` plus the relevant SDK:\n\n  * `earthlens-s3` — boto3 (ERA5-on-S3 backend)\n  * `earthlens-ecmwf` — cdsapi (ECMWF/CDS backend)\n  * `earthlens-gee` — earthengine-api + rtree (Google Earth Engine)\n  * `earthlens-all` — pulls in every optional backend\n",
+      "description": "earthlens is a Python package for downloading satellite and climate data\nfrom many providers behind one `EarthLens` facade that lazily loads each\nbackend, so a backend's optional SDK is only needed when you use it.\n\nAs of 0.11.0 earthlens is a namespace package split across six installable\ndistributions plus an umbrella metapackage:\n\n  * `earthlens-core` — the facade, CLI, abstractions and shared transports\n    (no provider SDKs).\n  * `earthlens-atmosphere` — weather, climate, air-quality, solar/wind.\n  * `earthlens-ocean` — ocean, hydrology and marine backends.\n  * `earthlens-imagery` — optical/SAR imagery and EO archives.\n  * `earthlens-land` — land, population and terrain backends.\n  * `earthlens-hazards` — hazards, humanitarian and infrastructure backends.\n  * `earthlens` — umbrella metapackage pulling core + all five providers.\n  * `earthlens-all` — `earthlens` plus every backend SDK packaged on\n    conda-forge.\n",
       "dev_url": "https://github.com/serapeum-org/earthlens",
       "doc_source_url": "https://github.com/serapeum-org/earthlens/main/README.md",
       "doc_url": "https://serapeum-org.github.io/earthlens/",
       "home": "https://github.com/serapeum-org/earthlens",
-      "license": "GPL-3.0-or-later",
+      "license": "GPL-3.0-only",
       "license_family": "GPL",
       "license_file": "LICENSE.md",
       "summary": "Remote sensing package for downloading satellite and climate data"
@@ -41,9 +41,9 @@
       {
         "build": {
           "noarch": "python",
-          "script": "$PREFIX/bin/python -m pip install . -vv --no-deps --no-build-isolation"
+          "script": "cd libs/core && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
         },
-        "name": "earthlens",
+        "name": "earthlens-core",
         "requirements": {
           "host": [
             "python 3.11",
@@ -53,7 +53,7 @@
           ],
           "run": [
             "python >=3.11",
-            "pyramids >=0.41.0",
+            "pyramids >=0.46.0",
             "gdal >=3.10.0,<4",
             "libgdal-netcdf >=3.10.0,<4",
             "libgdal-hdf4 >=3.10.0,<4",
@@ -76,9 +76,7 @@
           ],
           "run_constrained": [
             "boto3 >=1.43.0",
-            "cdsapi >=0.7.7",
-            "earthengine-api >=1.7.26",
-            "rtree >=1.0.0"
+            "botocore >=1.34.0"
           ]
         },
         "test": {
@@ -86,9 +84,43 @@
             "earthlens --help"
           ],
           "imports": [
-            "earthlens",
-            "earthlens.aggregate",
-            "earthlens.base",
+            "earthlens.core",
+            "earthlens.base"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python",
+          "script": "cd libs/providers/atmosphere && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        },
+        "name": "earthlens-atmosphere",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
+          ],
+          "run": [
+            "python >=3.11",
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "cdsapi >=0.7.7",
+            "ecmwf-datastores-client >=0.5.1",
+            "herbie-data >=2026.3",
+            "ecmwf-opendata >=0.3",
+            "tropycal >=1.4",
+            "cartopy >=0.22"
+          ]
+        },
+        "test": {
+          "imports": [
+            "earthlens._atmosphere",
             "earthlens.chc"
           ],
           "requires": [
@@ -98,23 +130,33 @@
       },
       {
         "build": {
-          "noarch": "python"
+          "noarch": "python",
+          "script": "cd libs/providers/ocean && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
         },
-        "name": "earthlens-s3",
+        "name": "earthlens-ocean",
         "requirements": {
           "host": [
-            "python 3.11"
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
           ],
           "run": [
             "python >=3.11",
-            "earthlens",
-            "boto3 >=1.43.0",
-            "botocore >=1.34.0"
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "copernicusmarine >=2.0.0,<3",
+            "erddapy >=3.0",
+            "dataretrieval >=1.1.4",
+            "pyobis >=1.6.1",
+            "pyarrow >=10.0.0",
+            "argopy >=1.4"
           ]
         },
         "test": {
           "imports": [
-            "earthlens.s3"
+            "earthlens._ocean"
           ],
           "requires": [
             "python 3.11"
@@ -123,50 +165,133 @@
       },
       {
         "build": {
-          "noarch": "python"
+          "noarch": "python",
+          "script": "cd libs/providers/imagery && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
         },
-        "name": "earthlens-ecmwf",
+        "name": "earthlens-imagery",
         "requirements": {
           "host": [
-            "python 3.11"
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
           ],
           "run": [
             "python >=3.11",
-            "earthlens",
-            "cdsapi >=0.7.7"
-          ]
-        },
-        "test": {
-          "imports": [
-            "earthlens.ecmwf"
+            "earthlens-core"
           ],
-          "requires": [
-            "python 3.11"
-          ]
-        }
-      },
-      {
-        "build": {
-          "noarch": "python"
-        },
-        "name": "earthlens-gee",
-        "requirements": {
-          "host": [
-            "python 3.11"
-          ],
-          "run": [
-            "python >=3.11",
-            "earthlens",
+          "run_constrained": [
             "earthengine-api >=1.7.26",
             "google-api-python-client >=2.0",
             "google-cloud-storage >=2.0",
             "rtree >=1.0.0",
-            "urllib3 >=1.26"
+            "urllib3 >=1.26",
+            "eumdac >=3.1",
+            "openeo >=0.47,<0.52",
+            "sentinelhub >=3.11.5"
           ]
         },
         "test": {
           "imports": [
-            "earthlens.gee"
+            "earthlens._imagery"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python",
+          "script": "cd libs/providers/land && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        },
+        "name": "earthlens-land",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
+          ],
+          "run": [
+            "python >=3.11",
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "pygbif >=0.6.6"
+          ]
+        },
+        "test": {
+          "imports": [
+            "earthlens._land",
+            "earthlens.ghsl"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python",
+          "script": "cd libs/providers/hazards && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        },
+        "name": "earthlens-hazards",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
+          ],
+          "run": [
+            "python >=3.11",
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "obspy >=1.5.0",
+            "hdx-python-api >=6,<7",
+            "overturemaps >=1.0.0",
+            "duckdb >=1.0.0"
+          ]
+        },
+        "test": {
+          "imports": [
+            "earthlens._hazards",
+            "earthlens.gdacs"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python"
+        },
+        "name": "earthlens",
+        "requirements": {
+          "run": [
+            "python >=3.11",
+            "earthlens-core",
+            "earthlens-atmosphere",
+            "earthlens-ocean",
+            "earthlens-imagery",
+            "earthlens-land",
+            "earthlens-hazards"
+          ]
+        },
+        "test": {
+          "commands": [
+            "earthlens --help"
+          ],
+          "imports": [
+            "earthlens.core",
+            "earthlens._atmosphere",
+            "earthlens._ocean",
+            "earthlens._imagery",
+            "earthlens._land",
+            "earthlens._hazards"
           ],
           "requires": [
             "python 3.11"
@@ -179,57 +304,51 @@
         },
         "name": "earthlens-all",
         "requirements": {
-          "host": [
-            "python 3.11"
-          ],
           "run": [
             "python >=3.11",
             "earthlens",
-            "earthlens-s3",
-            "earthlens-ecmwf",
-            "earthlens-gee",
-            "copernicusmarine >=2.0.0,<3",
-            "obspy >=1.5.0",
-            "hdx-python-api >=6,<7",
-            "eumdac >=3.1",
+            "boto3 >=1.43.0",
+            "botocore >=1.34.0",
+            "cdsapi >=0.7.7",
+            "ecmwf-datastores-client >=0.5.1",
             "herbie-data >=2026.3",
             "ecmwf-opendata >=0.3",
-            "sentinelhub >=3.11.5",
             "tropycal >=1.4",
             "cartopy >=0.22",
-            "overturemaps >=1.0.0",
-            "duckdb >=1.0.0",
-            "dataretrieval >=1.1.4",
-            "ecmwf-datastores-client >=0.5.1",
-            "pygbif >=0.6.6",
-            "pyobis >=1.6.1",
+            "copernicusmarine >=2.0.0,<3",
             "erddapy >=3.0",
-            "pyarrow >=10.0.0"
+            "dataretrieval >=1.1.4",
+            "pyobis >=1.6.1",
+            "pyarrow >=10.0.0",
+            "earthengine-api >=1.7.26",
+            "google-api-python-client >=2.0",
+            "google-cloud-storage >=2.0",
+            "rtree >=1.0.0",
+            "urllib3 >=1.26",
+            "eumdac >=3.1",
+            "openeo >=0.47,<0.52",
+            "sentinelhub >=3.11.5",
+            "pygbif >=0.6.6",
+            "obspy >=1.5.0",
+            "hdx-python-api >=6,<7",
+            "overturemaps >=1.0.0",
+            "duckdb >=1.0.0"
           ]
         },
         "test": {
           "imports": [
-            "earthlens",
-            "earthlens.s3",
+            "earthlens.core",
+            "earthlens._atmosphere",
+            "earthlens._ocean",
+            "earthlens._imagery",
+            "earthlens._land",
+            "earthlens._hazards",
             "earthlens.ecmwf",
-            "earthlens.gee",
             "earthlens.cmems",
-            "earthlens.fdsn",
-            "earthlens.hdx",
-            "earthlens.eumetsat",
-            "earthlens.nwp",
-            "earthlens.radar",
-            "earthlens.sentinel_hub",
-            "earthlens.tropycal",
-            "earthlens.overture",
-            "earthlens.usgs_water",
-            "earthlens.nwm",
-            "earthlens.cmip6",
-            "earthlens.dem",
-            "earthlens.goes",
+            "earthlens.gee",
             "earthlens.gbif",
-            "earthlens.obis",
-            "earthlens.erddap"
+            "earthlens.fdsn",
+            "earthlens.nwp"
           ],
           "requires": [
             "python 3.11"
@@ -239,7 +358,7 @@
     ],
     "package": {
       "name": "earthlens-split",
-      "version": "0.10.0"
+      "version": "0.11.0"
     },
     "requirements": {
       "host": [
@@ -254,8 +373,8 @@
     },
     "schema_version": 0,
     "source": {
-      "sha256": "a3531b48f8f4033544be3315ada51af064520e16e882690d24859ca5d95da2cb",
-      "url": "https://github.com/serapeum-org/earthlens/archive/0.10.0.tar.gz"
+      "sha256": "8d4e9c609298a008418211391afa0161472c29c482a99369e0c34f9c6cb7c0bb",
+      "url": "https://github.com/serapeum-org/earthlens/archive/0.11.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -284,9 +403,12 @@
         "duckdb",
         "earthengine-api",
         "earthlens",
-        "earthlens-ecmwf",
-        "earthlens-gee",
-        "earthlens-s3",
+        "earthlens-atmosphere",
+        "earthlens-core",
+        "earthlens-hazards",
+        "earthlens-imagery",
+        "earthlens-land",
+        "earthlens-ocean",
         "ecmwf-datastores-client",
         "ecmwf-opendata",
         "erddapy",
@@ -304,6 +426,7 @@
         "loguru",
         "numpy",
         "obspy",
+        "openeo",
         "overturemaps",
         "pandas",
         "platformdirs",
@@ -336,12 +459,12 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "earthlens is a Python package for downloading satellite and climate\ndata from multiple sources, including the Climate Hazards Center\n(CHIRPS / CHIRP / CHIRTS / WBGT / SPI / SPEI / CHC_CMIP6, via FTP),\nERA5 on AWS S3, the ECMWF Climate Data Store via cdsapi, and Google\nEarth Engine. It provides a unified `EarthLens` facade that lazily\nloads each backend so the optional SDK for a backend you don't use\nnever has to be installed.\n\nThe core `earthlens` package ships only the CHC (FTP) backend's\nrequirements. The optional backends are packaged as separate\nmetapackages that depend on `earthlens` plus the relevant SDK:\n\n  * `earthlens-s3` — boto3 (ERA5-on-S3 backend)\n  * `earthlens-ecmwf` — cdsapi (ECMWF/CDS backend)\n  * `earthlens-gee` — earthengine-api + rtree (Google Earth Engine)\n  * `earthlens-all` — pulls in every optional backend\n",
+      "description": "earthlens is a Python package for downloading satellite and climate data\nfrom many providers behind one `EarthLens` facade that lazily loads each\nbackend, so a backend's optional SDK is only needed when you use it.\n\nAs of 0.11.0 earthlens is a namespace package split across six installable\ndistributions plus an umbrella metapackage:\n\n  * `earthlens-core` — the facade, CLI, abstractions and shared transports\n    (no provider SDKs).\n  * `earthlens-atmosphere` — weather, climate, air-quality, solar/wind.\n  * `earthlens-ocean` — ocean, hydrology and marine backends.\n  * `earthlens-imagery` — optical/SAR imagery and EO archives.\n  * `earthlens-land` — land, population and terrain backends.\n  * `earthlens-hazards` — hazards, humanitarian and infrastructure backends.\n  * `earthlens` — umbrella metapackage pulling core + all five providers.\n  * `earthlens-all` — `earthlens` plus every backend SDK packaged on\n    conda-forge.\n",
       "dev_url": "https://github.com/serapeum-org/earthlens",
       "doc_source_url": "https://github.com/serapeum-org/earthlens/main/README.md",
       "doc_url": "https://serapeum-org.github.io/earthlens/",
       "home": "https://github.com/serapeum-org/earthlens",
-      "license": "GPL-3.0-or-later",
+      "license": "GPL-3.0-only",
       "license_family": "GPL",
       "license_file": "LICENSE.md",
       "summary": "Remote sensing package for downloading satellite and climate data"
@@ -359,9 +482,9 @@
       {
         "build": {
           "noarch": "python",
-          "script": "$PREFIX/bin/python -m pip install . -vv --no-deps --no-build-isolation"
+          "script": "cd libs/core && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
         },
-        "name": "earthlens",
+        "name": "earthlens-core",
         "requirements": {
           "host": [
             "python 3.11",
@@ -371,7 +494,7 @@
           ],
           "run": [
             "python >=3.11",
-            "pyramids >=0.41.0",
+            "pyramids >=0.46.0",
             "gdal >=3.10.0,<4",
             "libgdal-netcdf >=3.10.0,<4",
             "libgdal-hdf4 >=3.10.0,<4",
@@ -394,9 +517,7 @@
           ],
           "run_constrained": [
             "boto3 >=1.43.0",
-            "cdsapi >=0.7.7",
-            "earthengine-api >=1.7.26",
-            "rtree >=1.0.0"
+            "botocore >=1.34.0"
           ]
         },
         "test": {
@@ -404,9 +525,43 @@
             "earthlens --help"
           ],
           "imports": [
-            "earthlens",
-            "earthlens.aggregate",
-            "earthlens.base",
+            "earthlens.core",
+            "earthlens.base"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python",
+          "script": "cd libs/providers/atmosphere && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        },
+        "name": "earthlens-atmosphere",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
+          ],
+          "run": [
+            "python >=3.11",
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "cdsapi >=0.7.7",
+            "ecmwf-datastores-client >=0.5.1",
+            "herbie-data >=2026.3",
+            "ecmwf-opendata >=0.3",
+            "tropycal >=1.4",
+            "cartopy >=0.22"
+          ]
+        },
+        "test": {
+          "imports": [
+            "earthlens._atmosphere",
             "earthlens.chc"
           ],
           "requires": [
@@ -416,23 +571,33 @@
       },
       {
         "build": {
-          "noarch": "python"
+          "noarch": "python",
+          "script": "cd libs/providers/ocean && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
         },
-        "name": "earthlens-s3",
+        "name": "earthlens-ocean",
         "requirements": {
           "host": [
-            "python 3.11"
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
           ],
           "run": [
             "python >=3.11",
-            "earthlens",
-            "boto3 >=1.43.0",
-            "botocore >=1.34.0"
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "copernicusmarine >=2.0.0,<3",
+            "erddapy >=3.0",
+            "dataretrieval >=1.1.4",
+            "pyobis >=1.6.1",
+            "pyarrow >=10.0.0",
+            "argopy >=1.4"
           ]
         },
         "test": {
           "imports": [
-            "earthlens.s3"
+            "earthlens._ocean"
           ],
           "requires": [
             "python 3.11"
@@ -441,50 +606,133 @@
       },
       {
         "build": {
-          "noarch": "python"
+          "noarch": "python",
+          "script": "cd libs/providers/imagery && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
         },
-        "name": "earthlens-ecmwf",
+        "name": "earthlens-imagery",
         "requirements": {
           "host": [
-            "python 3.11"
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
           ],
           "run": [
             "python >=3.11",
-            "earthlens",
-            "cdsapi >=0.7.7"
-          ]
-        },
-        "test": {
-          "imports": [
-            "earthlens.ecmwf"
+            "earthlens-core"
           ],
-          "requires": [
-            "python 3.11"
-          ]
-        }
-      },
-      {
-        "build": {
-          "noarch": "python"
-        },
-        "name": "earthlens-gee",
-        "requirements": {
-          "host": [
-            "python 3.11"
-          ],
-          "run": [
-            "python >=3.11",
-            "earthlens",
+          "run_constrained": [
             "earthengine-api >=1.7.26",
             "google-api-python-client >=2.0",
             "google-cloud-storage >=2.0",
             "rtree >=1.0.0",
-            "urllib3 >=1.26"
+            "urllib3 >=1.26",
+            "eumdac >=3.1",
+            "openeo >=0.47,<0.52",
+            "sentinelhub >=3.11.5"
           ]
         },
         "test": {
           "imports": [
-            "earthlens.gee"
+            "earthlens._imagery"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python",
+          "script": "cd libs/providers/land && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        },
+        "name": "earthlens-land",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
+          ],
+          "run": [
+            "python >=3.11",
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "pygbif >=0.6.6"
+          ]
+        },
+        "test": {
+          "imports": [
+            "earthlens._land",
+            "earthlens.ghsl"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python",
+          "script": "cd libs/providers/hazards && $PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        },
+        "name": "earthlens-hazards",
+        "requirements": {
+          "host": [
+            "python 3.11",
+            "pip",
+            "setuptools >=80",
+            "wheel"
+          ],
+          "run": [
+            "python >=3.11",
+            "earthlens-core"
+          ],
+          "run_constrained": [
+            "obspy >=1.5.0",
+            "hdx-python-api >=6,<7",
+            "overturemaps >=1.0.0",
+            "duckdb >=1.0.0"
+          ]
+        },
+        "test": {
+          "imports": [
+            "earthlens._hazards",
+            "earthlens.gdacs"
+          ],
+          "requires": [
+            "python 3.11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "python"
+        },
+        "name": "earthlens",
+        "requirements": {
+          "run": [
+            "python >=3.11",
+            "earthlens-core",
+            "earthlens-atmosphere",
+            "earthlens-ocean",
+            "earthlens-imagery",
+            "earthlens-land",
+            "earthlens-hazards"
+          ]
+        },
+        "test": {
+          "commands": [
+            "earthlens --help"
+          ],
+          "imports": [
+            "earthlens.core",
+            "earthlens._atmosphere",
+            "earthlens._ocean",
+            "earthlens._imagery",
+            "earthlens._land",
+            "earthlens._hazards"
           ],
           "requires": [
             "python 3.11"
@@ -497,57 +745,51 @@
         },
         "name": "earthlens-all",
         "requirements": {
-          "host": [
-            "python 3.11"
-          ],
           "run": [
             "python >=3.11",
             "earthlens",
-            "earthlens-s3",
-            "earthlens-ecmwf",
-            "earthlens-gee",
-            "copernicusmarine >=2.0.0,<3",
-            "obspy >=1.5.0",
-            "hdx-python-api >=6,<7",
-            "eumdac >=3.1",
+            "boto3 >=1.43.0",
+            "botocore >=1.34.0",
+            "cdsapi >=0.7.7",
+            "ecmwf-datastores-client >=0.5.1",
             "herbie-data >=2026.3",
             "ecmwf-opendata >=0.3",
-            "sentinelhub >=3.11.5",
             "tropycal >=1.4",
             "cartopy >=0.22",
-            "overturemaps >=1.0.0",
-            "duckdb >=1.0.0",
-            "dataretrieval >=1.1.4",
-            "ecmwf-datastores-client >=0.5.1",
-            "pygbif >=0.6.6",
-            "pyobis >=1.6.1",
+            "copernicusmarine >=2.0.0,<3",
             "erddapy >=3.0",
-            "pyarrow >=10.0.0"
+            "dataretrieval >=1.1.4",
+            "pyobis >=1.6.1",
+            "pyarrow >=10.0.0",
+            "earthengine-api >=1.7.26",
+            "google-api-python-client >=2.0",
+            "google-cloud-storage >=2.0",
+            "rtree >=1.0.0",
+            "urllib3 >=1.26",
+            "eumdac >=3.1",
+            "openeo >=0.47,<0.52",
+            "sentinelhub >=3.11.5",
+            "pygbif >=0.6.6",
+            "obspy >=1.5.0",
+            "hdx-python-api >=6,<7",
+            "overturemaps >=1.0.0",
+            "duckdb >=1.0.0"
           ]
         },
         "test": {
           "imports": [
-            "earthlens",
-            "earthlens.s3",
+            "earthlens.core",
+            "earthlens._atmosphere",
+            "earthlens._ocean",
+            "earthlens._imagery",
+            "earthlens._land",
+            "earthlens._hazards",
             "earthlens.ecmwf",
-            "earthlens.gee",
             "earthlens.cmems",
-            "earthlens.fdsn",
-            "earthlens.hdx",
-            "earthlens.eumetsat",
-            "earthlens.nwp",
-            "earthlens.radar",
-            "earthlens.sentinel_hub",
-            "earthlens.tropycal",
-            "earthlens.overture",
-            "earthlens.usgs_water",
-            "earthlens.nwm",
-            "earthlens.cmip6",
-            "earthlens.dem",
-            "earthlens.goes",
+            "earthlens.gee",
             "earthlens.gbif",
-            "earthlens.obis",
-            "earthlens.erddap"
+            "earthlens.fdsn",
+            "earthlens.nwp"
           ],
           "requires": [
             "python 3.11"
@@ -557,7 +799,7 @@
     ],
     "package": {
       "name": "earthlens-split",
-      "version": "0.10.0"
+      "version": "0.11.0"
     },
     "requirements": {
       "host": [
@@ -572,8 +814,8 @@
     },
     "schema_version": 0,
     "source": {
-      "sha256": "a3531b48f8f4033544be3315ada51af064520e16e882690d24859ca5d95da2cb",
-      "url": "https://github.com/serapeum-org/earthlens/archive/0.10.0.tar.gz"
+      "sha256": "8d4e9c609298a008418211391afa0161472c29c482a99369e0c34f9c6cb7c0bb",
+      "url": "https://github.com/serapeum-org/earthlens/archive/0.11.0.tar.gz"
     }
   },
   "name": "earthlens-split",
@@ -582,9 +824,12 @@
     "elements": [
       "earthlens",
       "earthlens-all",
-      "earthlens-ecmwf",
-      "earthlens-gee",
-      "earthlens-s3",
+      "earthlens-atmosphere",
+      "earthlens-core",
+      "earthlens-hazards",
+      "earthlens-imagery",
+      "earthlens-land",
+      "earthlens-ocean",
       "earthlens-split"
     ]
   },
@@ -595,7 +840,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/earthlens.json"
   },
-  "raw_meta_yaml": "{% set python_min = \"3.11\" %}\n{% set name = \"earthlens\" %}\n{% set version = \"0.10.0\" %}\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/serapeum-org/earthlens/archive/{{ version }}.tar.gz\n  sha256: a3531b48f8f4033544be3315ada51af064520e16e882690d24859ca5d95da2cb\n\nbuild:\n  number: 0\n  noarch: python\n\nrequirements:\n  host:\n    - python {{ python_min }}\n    - pip\n    - setuptools >=80\n    - wheel\n  run:\n    - python >={{ python_min }}\n\noutputs:\n  - name: earthlens\n    build:\n      noarch: python\n      script: $PREFIX/bin/python -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools >=80\n        - wheel\n      run:\n        - python >={{ python_min }}\n        - pyramids >=0.41.0\n        # GDAL + its format drivers are bundled inside the pyramids PyPI wheel\n        # (osgeo vendored in pyramids/_vendor), so they are absent from\n        # earthlens' pyproject.toml. The conda-forge `pyramids` package does NOT\n        # vendor GDAL, so earthlens must pull the GDAL stack explicitly here.\n        - gdal >=3.10.0,<4\n        - libgdal-netcdf >=3.10.0,<4\n        - libgdal-hdf4 >=3.10.0,<4\n        - libgdal-grib >=3.10.0,<4\n        - pyogrio >=0.7\n        - geopandas >=1.0.0\n        - joblib >=1.5.0\n        - loguru >=0.7.3\n        - numpy >=2.0.0\n        - pandas >=2.0.0\n        - platformdirs >=3.0.0\n        - pydantic >=2\n        - pyproj >=3.7.0\n        - pyyaml >=6.0.2\n        - requests >=2.28.1\n        - shapely >=2.0.0\n        - tqdm >=4.66.0\n        # typer + rich are core: the `earthlens` console script (project.scripts)\n        # imports earthlens.cli at module load, so pyproject.toml lists them in\n        # the core dependencies (not behind an extra).\n        - typer >=0.12\n        - rich >=13\n      run_constrained:\n        - boto3 >=1.43.0\n        - cdsapi >=0.7.7\n        - earthengine-api >=1.7.26\n        - rtree >=1.0.0\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens\n        - earthlens.aggregate\n        - earthlens.base\n        - earthlens.chc\n      commands:\n        # the earthlens CLI shipped in 0.8.0; verifies typer/rich resolve too\n        - earthlens --help\n\n  - name: earthlens-s3\n    build:\n      noarch: python\n    requirements:\n      host:\n        - python {{ python_min }}\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens', exact=True) }}\n        - boto3 >=1.43.0\n        - botocore >=1.34.0\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens.s3\n\n  - name: earthlens-ecmwf\n    build:\n      noarch: python\n    requirements:\n      host:\n        - python {{ python_min }}\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens', exact=True) }}\n        - cdsapi >=0.7.7\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens.ecmwf\n\n  - name: earthlens-gee\n    build:\n      noarch: python\n    requirements:\n      host:\n        - python {{ python_min }}\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens', exact=True) }}\n        - earthengine-api >=1.7.26\n        - google-api-python-client >=2.0\n        - google-cloud-storage >=2.0\n        - rtree >=1.0.0\n        - urllib3 >=1.26\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens.gee\n\n  - name: earthlens-all\n    build:\n      noarch: python\n    requirements:\n      host:\n        - python {{ python_min }}\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens', exact=True) }}\n        - {{ pin_subpackage('earthlens-s3', exact=True) }}\n        - {{ pin_subpackage('earthlens-ecmwf', exact=True) }}\n        - {{ pin_subpackage('earthlens-gee', exact=True) }}\n        # Remaining optional backends from the pyproject.toml `[all]` extra. Each\n        # group mirrors one optional-dependency set. `radar`/`dem`/`goes` share\n        # the s3 SDK (boto3/botocore), already via earthlens-s3 above, and the\n        # `cmip6`/`ghsl`/`firms`/`gdacs`/`openaq` backends need no extra SDK\n        # (HTTPS/GDAL + core deps), so the base earthlens package already covers them.\n        # cmems\n        - copernicusmarine >=2.0.0,<3\n        # fdsn\n        - obspy >=1.5.0\n        # hdx\n        - hdx-python-api >=6,<7\n        # eumetsat\n        - eumdac >=3.1\n        # nwp\n        - herbie-data >=2026.3\n        - ecmwf-opendata >=0.3\n        # sentinel-hub\n        - sentinelhub >=3.11.5\n        # tropycal (cartopy is required: tropycal.tracks imports cartopy)\n        - tropycal >=1.4\n        - cartopy >=0.22\n        # overture\n        - overturemaps >=1.0.0\n        - duckdb >=1.0.0\n        # usgs-water\n        - dataretrieval >=1.1.4\n        # ecmwf-modern (modern CDS datastores transport)\n        - ecmwf-datastores-client >=0.5.1\n        # gbif\n        - pygbif >=0.6.6\n        # obis\n        - pyobis >=1.6.1\n        # erddap\n        - erddapy >=3.0\n        # nwm (NOAA National Water Model): earthlens[s3] (boto3/botocore already\n        # via earthlens-s3 above) + pyramids[parquet] (pyarrow) for to_parquet.\n        - pyarrow >=10.0.0\n        #\n        # Backends from `[all]` deliberately NOT bundled here because they cannot\n        # be satisfied on conda-forge today:\n        #   * earthdata — earthaccess requires python >=3.12, which would raise\n        #                 this noarch bundle's floor above python_min (3.11).\n        #   * openeo    — pyproject pins openeo >=0.47,<0.48; conda-forge jumps\n        #                 from 0.46 to 0.49 (no 0.47.x), so the range is unsolvable.\n        #   * stac      — requires stac-asset, not yet on conda-forge.\n        #   * worldpop  — worldpoppy is not on conda-forge.\n        #   * asf       — asf_search is packaged, but the backend also pulls\n        #                 earthlens[earthdata] (earthaccess, python >=3.12).\n        #   * eea_aq    — airbase is not on conda-forge.\n        #   * jaxa      — jaxa.earth and gportal are not on conda-forge.\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens\n        - earthlens.s3\n        - earthlens.ecmwf\n        - earthlens.gee\n        - earthlens.cmems\n        - earthlens.fdsn\n        - earthlens.hdx\n        - earthlens.eumetsat\n        - earthlens.nwp\n        - earthlens.radar\n        - earthlens.sentinel_hub\n        - earthlens.tropycal\n        - earthlens.overture\n        - earthlens.usgs_water\n        - earthlens.nwm\n        - earthlens.cmip6\n        - earthlens.dem\n        - earthlens.goes\n        - earthlens.gbif\n        - earthlens.obis\n        - earthlens.erddap\nabout:\n  home: https://github.com/serapeum-org/earthlens\n  license: GPL-3.0-or-later\n  license_family: GPL\n  license_file: LICENSE.md\n  summary: Remote sensing package for downloading satellite and climate data\n  description: |\n    earthlens is a Python package for downloading satellite and climate\n    data from multiple sources, including the Climate Hazards Center\n    (CHIRPS / CHIRP / CHIRTS / WBGT / SPI / SPEI / CHC_CMIP6, via FTP),\n    ERA5 on AWS S3, the ECMWF Climate Data Store via cdsapi, and Google\n    Earth Engine. It provides a unified `EarthLens` facade that lazily\n    loads each backend so the optional SDK for a backend you don't use\n    never has to be installed.\n\n    The core `earthlens` package ships only the CHC (FTP) backend's\n    requirements. The optional backends are packaged as separate\n    metapackages that depend on `earthlens` plus the relevant SDK:\n\n      * `earthlens-s3` — boto3 (ERA5-on-S3 backend)\n      * `earthlens-ecmwf` — cdsapi (ECMWF/CDS backend)\n      * `earthlens-gee` — earthengine-api + rtree (Google Earth Engine)\n      * `earthlens-all` — pulls in every optional backend\n  dev_url: https://github.com/serapeum-org/earthlens\n  doc_url: https://serapeum-org.github.io/earthlens/\n  doc_source_url: https://github.com/serapeum-org/earthlens/main/README.md\n\nextra:\n  recipe-maintainers:\n    - MAfarrag\n",
+  "raw_meta_yaml": "{% set python_min = \"3.11\" %}\n{% set version = \"0.11.0\" %}\n\npackage:\n  name: earthlens-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/serapeum-org/earthlens/archive/{{ version }}.tar.gz\n  sha256: 8d4e9c609298a008418211391afa0161472c29c482a99369e0c34f9c6cb7c0bb\n\nbuild:\n  number: 0\n  noarch: python\n\nrequirements:\n  host:\n    - python {{ python_min }}\n    - pip\n    - setuptools >=80\n    - wheel\n  run:\n    - python >={{ python_min }}\n\n# earthlens 0.11.0 is a uv workspace of seven lockstep distributions built from\n# one monorepo. This recipe mirrors that layout: one output per distribution,\n# each pip-installed from its own `libs/…` subdirectory, with exact\n# `pin_subpackage` between them (the workspace's `== {{ version }}` inter-package\n# pins). Per-backend SDKs are pip \"extras\" with no direct conda analogue; each\n# provider output carries them as `run_constrained` hints, and the batteries-\n# included `earthlens-all` output pulls every SDK that is packaged on conda-forge.\noutputs:\n  # ------------------------------------------------------------------ core ----\n  - name: earthlens-core\n    build:\n      noarch: python\n      script: cd libs/core && $PYTHON -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools >=80\n        - wheel\n      run:\n        - python >={{ python_min }}\n        - pyramids >=0.46.0\n        # GDAL + its format drivers are vendored inside the pyramids PyPI wheel\n        # (osgeo in pyramids/_vendor), so they are absent from earthlens'\n        # pyproject.toml. The conda-forge `pyramids` package does NOT vendor\n        # GDAL, so core pulls the GDAL stack explicitly (mirrors pyramids' pins).\n        - gdal >=3.10.0,<4\n        - libgdal-netcdf >=3.10.0,<4\n        - libgdal-hdf4 >=3.10.0,<4\n        - libgdal-grib >=3.10.0,<4\n        - pyogrio >=0.7\n        - geopandas >=1.0.0\n        - joblib >=1.5.0\n        - loguru >=0.7.3\n        - numpy >=2.0.0\n        - pandas >=2.0.0\n        - platformdirs >=3.0.0\n        - pydantic >=2\n        - pyproj >=3.7.0\n        - pyyaml >=6.0.2\n        - requests >=2.28.1\n        - shapely >=2.0.0\n        - tqdm >=4.66.0\n        - typer >=0.12\n        - rich >=13\n      run_constrained:\n        # core's own [s3] extra — the shared unsigned-S3 transport used by the\n        # s3 / dem / goes / radar / nwm backends (earthlens.base.s3).\n        - boto3 >=1.43.0\n        - botocore >=1.34.0\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens.core\n        - earthlens.base\n      commands:\n        # the console script lives in core (earthlens.cli:main)\n        - earthlens --help\n\n  # ------------------------------------------------------------ atmosphere ----\n  - name: earthlens-atmosphere\n    build:\n      noarch: python\n      script: cd libs/providers/atmosphere && $PYTHON -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools >=80\n        - wheel\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens-core', exact=True) }}\n      run_constrained:\n        # per-backend SDKs (pip extras) that are on conda-forge:\n        # ecmwf / ecmwf-modern / nwp / tropycal. (eea_aq needs airbase, absent.)\n        - cdsapi >=0.7.7\n        - ecmwf-datastores-client >=0.5.1\n        - herbie-data >=2026.3\n        - ecmwf-opendata >=0.3\n        - tropycal >=1.4\n        - cartopy >=0.22\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens._atmosphere\n        - earthlens.chc\n\n  # ----------------------------------------------------------------- ocean ----\n  - name: earthlens-ocean\n    build:\n      noarch: python\n      script: cd libs/providers/ocean && $PYTHON -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools >=80\n        - wheel\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens-core', exact=True) }}\n      run_constrained:\n        # cmems / erddap / usgs-water / obis / nwm (nwm adds pyarrow via\n        # pyramids[parquet]). argo (argopy) is available but conflicts with\n        # openeo's xarray pin, so it is a hint only, never bundled in -all.\n        - copernicusmarine >=2.0.0,<3\n        - erddapy >=3.0\n        - dataretrieval >=1.1.4\n        - pyobis >=1.6.1\n        - pyarrow >=10.0.0\n        - argopy >=1.4\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens._ocean\n\n  # --------------------------------------------------------------- imagery ----\n  - name: earthlens-imagery\n    build:\n      noarch: python\n      script: cd libs/providers/imagery && $PYTHON -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools >=80\n        - wheel\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens-core', exact=True) }}\n      run_constrained:\n        # gee / eumetsat / openeo / sentinel-hub. (earthdata & asf need\n        # python >=3.12 / unpackaged asf_search; jaxa & stac SDKs are absent.)\n        - earthengine-api >=1.7.26\n        - google-api-python-client >=2.0\n        - google-cloud-storage >=2.0\n        - rtree >=1.0.0\n        - urllib3 >=1.26\n        - eumdac >=3.1\n        - openeo >=0.47,<0.52\n        - sentinelhub >=3.11.5\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens._imagery\n\n  # ------------------------------------------------------------------ land ----\n  - name: earthlens-land\n    build:\n      noarch: python\n      script: cd libs/providers/land && $PYTHON -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools >=80\n        - wheel\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens-core', exact=True) }}\n      run_constrained:\n        # gbif. (dem reuses core's boto3; ghsl needs no SDK; worldpop needs\n        # worldpoppy, which is not on conda-forge.)\n        - pygbif >=0.6.6\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens._land\n        - earthlens.ghsl\n\n  # --------------------------------------------------------------- hazards ----\n  - name: earthlens-hazards\n    build:\n      noarch: python\n      script: cd libs/providers/hazards && $PYTHON -m pip install . -vv --no-deps --no-build-isolation\n    requirements:\n      host:\n        - python {{ python_min }}\n        - pip\n        - setuptools >=80\n        - wheel\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens-core', exact=True) }}\n      run_constrained:\n        # fdsn / hdx / overture. (osm needs ohsome and osm-pbf needs osmium,\n        # neither packaged on conda-forge.)\n        - obspy >=1.5.0\n        - hdx-python-api >=6,<7\n        - overturemaps >=1.0.0\n        - duckdb >=1.0.0\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens._hazards\n        - earthlens.gdacs\n\n  # -------------------------------------------------- earthlens (umbrella) ----\n  # Pure metapackage: the code lives in the six distributions above; this pulls\n  # all of them at the exact same build (the workspace meta package's\n  # `earthlens-<dist> == {{ version }}` pins). No SDKs — every backend's code is\n  # present, but its optional SDK is not (matches `pip install earthlens`).\n  - name: earthlens\n    build:\n      noarch: python\n    requirements:\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens-core', exact=True) }}\n        - {{ pin_subpackage('earthlens-atmosphere', exact=True) }}\n        - {{ pin_subpackage('earthlens-ocean', exact=True) }}\n        - {{ pin_subpackage('earthlens-imagery', exact=True) }}\n        - {{ pin_subpackage('earthlens-land', exact=True) }}\n        - {{ pin_subpackage('earthlens-hazards', exact=True) }}\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens.core\n        - earthlens._atmosphere\n        - earthlens._ocean\n        - earthlens._imagery\n        - earthlens._land\n        - earthlens._hazards\n      commands:\n        - earthlens --help\n\n  # ---------------------------------------------- earthlens-all (batteries) ---\n  # earthlens + every backend SDK from the `[all]` extra that is packaged on\n  # conda-forge, so `conda install earthlens-all` is runnable out of the box.\n  - name: earthlens-all\n    build:\n      noarch: python\n    requirements:\n      run:\n        - python >={{ python_min }}\n        - {{ pin_subpackage('earthlens', exact=True) }}\n        # core [s3] transport (s3 / dem / goes / radar / nwm)\n        - boto3 >=1.43.0\n        - botocore >=1.34.0\n        # atmosphere\n        - cdsapi >=0.7.7\n        - ecmwf-datastores-client >=0.5.1\n        - herbie-data >=2026.3\n        - ecmwf-opendata >=0.3\n        - tropycal >=1.4\n        - cartopy >=0.22\n        # ocean\n        - copernicusmarine >=2.0.0,<3\n        - erddapy >=3.0\n        - dataretrieval >=1.1.4\n        - pyobis >=1.6.1\n        - pyarrow >=10.0.0\n        # imagery\n        - earthengine-api >=1.7.26\n        - google-api-python-client >=2.0\n        - google-cloud-storage >=2.0\n        - rtree >=1.0.0\n        - urllib3 >=1.26\n        - eumdac >=3.1\n        - openeo >=0.47,<0.52\n        - sentinelhub >=3.11.5\n        # land\n        - pygbif >=0.6.6\n        # hazards\n        - obspy >=1.5.0\n        - hdx-python-api >=6,<7\n        - overturemaps >=1.0.0\n        - duckdb >=1.0.0\n        #\n        # `[all]` backends deliberately NOT bundled — SDK unavailable on\n        # conda-forge or an incompatible python floor:\n        #   * earthdata / asf — earthaccess requires python >=3.12 (would raise\n        #                       this noarch bundle's floor above 3.11); asf also\n        #                       needs the unpackaged asf_search.\n        #   * eea_aq          — airbase is not on conda-forge.\n        #   * jaxa            — jaxa.earth / gportal are not on conda-forge.\n        #   * stac            — stac-asset is not on conda-forge.\n        #   * worldpop        — worldpoppy is not on conda-forge.\n        #   * osm             — ohsome is not on conda-forge.\n        # (argo and osm-pbf are not part of the upstream `[all]` extra: argopy's\n        #  xarray pin conflicts with openeo's, and pyrosm needs the unpackaged\n        #  osmium.)\n    test:\n      requires:\n        - python {{ python_min }}\n      imports:\n        - earthlens.core\n        - earthlens._atmosphere\n        - earthlens._ocean\n        - earthlens._imagery\n        - earthlens._land\n        - earthlens._hazards\n        # a backend from each theme, exercised with its SDK present\n        - earthlens.ecmwf\n        - earthlens.cmems\n        - earthlens.gee\n        - earthlens.gbif\n        - earthlens.fdsn\n        - earthlens.nwp\n\nabout:\n  home: https://github.com/serapeum-org/earthlens\n  license: GPL-3.0-only\n  license_family: GPL\n  license_file: LICENSE.md\n  summary: Remote sensing package for downloading satellite and climate data\n  description: |\n    earthlens is a Python package for downloading satellite and climate data\n    from many providers behind one `EarthLens` facade that lazily loads each\n    backend, so a backend's optional SDK is only needed when you use it.\n\n    As of 0.11.0 earthlens is a namespace package split across six installable\n    distributions plus an umbrella metapackage:\n\n      * `earthlens-core` — the facade, CLI, abstractions and shared transports\n        (no provider SDKs).\n      * `earthlens-atmosphere` — weather, climate, air-quality, solar/wind.\n      * `earthlens-ocean` — ocean, hydrology and marine backends.\n      * `earthlens-imagery` — optical/SAR imagery and EO archives.\n      * `earthlens-land` — land, population and terrain backends.\n      * `earthlens-hazards` — hazards, humanitarian and infrastructure backends.\n      * `earthlens` — umbrella metapackage pulling core + all five providers.\n      * `earthlens-all` — `earthlens` plus every backend SDK packaged on\n        conda-forge.\n  dev_url: https://github.com/serapeum-org/earthlens\n  doc_url: https://serapeum-org.github.io/earthlens/\n  doc_source_url: https://github.com/serapeum-org/earthlens/main/README.md\n\nextra:\n  recipe-maintainers:\n    - MAfarrag\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -608,9 +853,12 @@
       "duckdb",
       "earthengine-api",
       "earthlens",
-      "earthlens-ecmwf",
-      "earthlens-gee",
-      "earthlens-s3",
+      "earthlens-atmosphere",
+      "earthlens-core",
+      "earthlens-hazards",
+      "earthlens-imagery",
+      "earthlens-land",
+      "earthlens-ocean",
       "ecmwf-datastores-client",
       "ecmwf-opendata",
       "erddapy",
@@ -628,6 +876,7 @@
       "loguru",
       "numpy",
       "obspy",
+      "openeo",
       "overturemaps",
       "pandas",
       "pip",
@@ -680,9 +929,12 @@
         "duckdb",
         "earthengine-api",
         "earthlens",
-        "earthlens-ecmwf",
-        "earthlens-gee",
-        "earthlens-s3",
+        "earthlens-atmosphere",
+        "earthlens-core",
+        "earthlens-hazards",
+        "earthlens-imagery",
+        "earthlens-land",
+        "earthlens-ocean",
         "ecmwf-datastores-client",
         "ecmwf-opendata",
         "erddapy",
@@ -700,6 +952,7 @@
         "loguru",
         "numpy",
         "obspy",
+        "openeo",
         "overturemaps",
         "pandas",
         "platformdirs",
@@ -757,9 +1010,12 @@
         "duckdb >=1.0.0",
         "earthengine-api >=1.7.26",
         "earthlens",
-        "earthlens-ecmwf",
-        "earthlens-gee",
-        "earthlens-s3",
+        "earthlens-atmosphere",
+        "earthlens-core",
+        "earthlens-hazards",
+        "earthlens-imagery",
+        "earthlens-land",
+        "earthlens-ocean",
         "ecmwf-datastores-client >=0.5.1",
         "ecmwf-opendata >=0.3",
         "erddapy >=3.0",
@@ -777,6 +1033,7 @@
         "loguru >=0.7.3",
         "numpy >=2.0.0",
         "obspy >=1.5.0",
+        "openeo >=0.47,<0.52",
         "overturemaps >=1.0.0",
         "pandas >=2.0.0",
         "platformdirs >=3.0.0",
@@ -786,7 +1043,7 @@
         "pyobis >=1.6.1",
         "pyogrio >=0.7",
         "pyproj >=3.7.0",
-        "pyramids >=0.41.0",
+        "pyramids >=0.46.0",
         "python >=3.11",
         "pyyaml >=6.0.2",
         "requests >=2.28.1",
@@ -807,8 +1064,8 @@
       ]
     }
   },
-  "url": "https://github.com/serapeum-org/earthlens/archive/0.10.0.tar.gz",
-  "version": "0.10.0",
+  "url": "https://github.com/serapeum-org/earthlens/archive/0.11.0.tar.gz",
+  "version": "0.11.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/earthlens.json"
   }
