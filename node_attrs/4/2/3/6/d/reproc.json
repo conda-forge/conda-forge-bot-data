@@ -1,16 +1,19 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
+      "linux_riscv64": "linux_64",
       "osx_arm64": "osx_64",
       "win_arm64": "win_64"
     },
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
@@ -21,8 +24,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "c6ddbdb95879856e1d9131de9eebbf75653259fb",
-  "feedstock_hash_ts": 1779092222,
+  "feedstock_hash": "c1d08dfe7707a471d0ab9140b70523da9ab39ec2",
+  "feedstock_hash_ts": 1785921683,
   "feedstock_name": "reproc",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -30,11 +33,21 @@
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -46,7 +59,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -55,38 +69,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -106,68 +130,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -182,37 +220,234 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "reproc"
+          ]
+        },
+        "name": "reproc",
+        "requirements": {
+          "build": [
             "c_compiler_stub",
+            "c_stdlib_stub",
             "cxx_compiler_stub",
             "cmake",
             "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "reproc-cpp"
           ]
-        }
+        },
+        "name": "reproc-cpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "reproc"
+          ],
+          "run": [
+            "reproc"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": null,
+        "name": "reproc-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": null,
+        "name": "reproc-cpp-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "reproc-static"
+          ],
+          "run": [
+            "reproc-static"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -224,17 +459,15 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
   "linux_64_requirements": {
     "build": {
@@ -276,11 +509,21 @@
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -292,7 +535,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -301,38 +545,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -352,68 +606,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -428,37 +696,40 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -470,17 +741,15 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
   "linux_aarch64_requirements": {
     "build": {
@@ -522,11 +791,21 @@
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -538,7 +817,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -547,38 +827,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -598,68 +888,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -674,37 +978,40 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -716,17 +1023,15 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
   "linux_ppc64le_requirements": {
     "build": {
@@ -768,11 +1073,21 @@
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -784,7 +1099,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -793,38 +1109,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -844,68 +1170,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -920,37 +1260,41 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -959,38 +1303,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -1010,68 +1364,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -1086,37 +1454,41 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -1125,38 +1497,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -1176,68 +1558,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -1252,37 +1648,41 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -1291,38 +1691,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -1342,68 +1752,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -1418,37 +1842,41 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -1457,38 +1885,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -1508,68 +1946,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -1584,37 +2036,41 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -1623,41 +2079,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -1677,73 +2140,82 @@
             "reproc"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -1758,40 +2230,41 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -1800,41 +2273,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -1854,73 +2334,82 @@
             "reproc"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -1935,40 +2424,234 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "reproc"
+          ]
+        },
+        "name": "reproc",
+        "requirements": {
+          "build": [
             "c_compiler_stub",
+            "c_stdlib_stub",
             "cxx_compiler_stub",
             "cmake",
             "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "reproc-cpp"
           ]
-        }
+        },
+        "name": "reproc-cpp",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "reproc"
+          ],
+          "run": [
+            "reproc"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": null,
+        "name": "reproc-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
+      },
+      {
+        "build": null,
+        "name": "reproc-cpp-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "reproc-static"
+          ],
+          "run": [
+            "reproc-static"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -1980,79 +2663,37 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      },
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      },
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      },
-      {
-        "patches": [
-          "apple_gettime.patch",
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      },
-      {
-        "patches": [
-          "apple_gettime.patch",
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      },
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      },
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
-  "name": "reproc-split",
+  "name": "reproc",
   "osx_64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -2064,7 +2705,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -2073,38 +2715,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -2124,68 +2776,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -2200,37 +2866,40 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -2242,18 +2911,15 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "apple_gettime.patch",
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
   "osx_64_requirements": {
     "build": {
@@ -2295,11 +2961,21 @@
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -2311,7 +2987,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -2320,38 +2997,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/run.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -2371,68 +3058,82 @@
             "reproc"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/run.hpp",
-            "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc.a",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc/run.h",
-            "test -f ${PREFIX}/lib/libreproc.a",
-            "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
-            "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test ! -f ${PREFIX}/lib/libreproc++.a",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -2447,37 +3148,40 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/include/reproc++/reproc.hpp",
-            "test -f ${PREFIX}/lib/libreproc++.a",
-            "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
-            "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
-            "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -2489,18 +3193,15 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "apple_gettime.patch",
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
   "osx_arm64_requirements": {
     "build": {
@@ -2559,7 +3260,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/reproc.json"
   },
-  "raw_meta_yaml": "# WRANING remove .post from package.version\n{% set version = \"14.2.7\" %}\n\npackage:\n  name: reproc-split\n  version: '{{ version }}.post0'\n\nsource:\n  - url: https://github.com/DaanDeMeyer/reproc/archive/v{{ version }}.tar.gz\n    sha256: 77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8\n    patches:\n      - apple_gettime.patch  # [osx]\n      # When the open file descriptor limit > 1048576, reproc\n      # (and therefore micromamba) aborts when starting a new process\n      # As upstream is inactive, pick up the patch in the feedstock instead\n      # https://github.com/DaanDeMeyer/reproc/pull/103\n      - 103-remove-fd-limit.patch\n      # When version 14.2.7 was released, the cmake project version was not so it still\n      # appears as version 14.2.4. This patch sets the cmake project version to the correct version.\n      # As upstream is inactive, pick up the patch in the feedstock instead\n      # https://github.com/DaanDeMeyer/reproc/pull/121\n      - 121-fix-cmake-version.patch\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler(\"cxx\") }}\n    - cmake\n    - ninja\n\noutputs:\n  - name: reproc\n    script: install.sh  # [unix]\n    script: install.bat  # [win]\n    build:\n      run_exports:\n        - {{ pin_subpackage('reproc', 'x.x') }}\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n    test:\n      files:\n        - test-c/\n      requires:\n        - {{ compiler(\"c\") }}\n        - cmake\n        - ninja\n      commands:\n        - '@echo on'  # [win]\n        # Positive file tests\n        - test -f ${PREFIX}/include/reproc/run.h                       # [unix]\n        - if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}            # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)  # [win]\n        - if not exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake                       # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)  # [win]\n        # Negative file tests\n        - test ! -f ${PREFIX}/include/reproc++/run.hpp                 # [unix]\n        - if exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}      # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)  # [win]\n        - if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc.a                       # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc++.a                       # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake                 # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)  # [win]\n        # Running a test trying to link to the library\n        - cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}  # [unix]\n        - cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%   # [win]\n        - cmake --build build-test-c/\n        - cmake --build build-test-c/ --target test\n\n  - name: reproc-cpp\n    script: install.sh  # [unix]\n    script: install.bat  # [win]\n    build:\n      run_exports:\n        - {{ pin_subpackage('reproc-cpp', 'x.x') }}\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - cmake\n        - ninja\n      host:\n        - {{ pin_subpackage('reproc', exact=True ) }}\n      run:\n        - {{ pin_subpackage('reproc', exact=True ) }}\n    test:\n      files:\n        - test-cpp/\n      requires:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - cmake\n        - ninja\n      commands:\n        - '@echo on'  # [win]\n        # Positive file tests\n        - test -f ${PREFIX}/include/reproc++/run.hpp                       # [unix]\n        - if not exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}            # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)  # [win]\n        - if not exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake                       # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)  # [win]\n        # Negative file tests\n        - test ! -f ${PREFIX}/lib/libreproc.a                       # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc++.a                       # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)  # [win]\n        # Running a test trying to link to the library\n        - cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}  # [unix]\n        - cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%   # [win]\n        - cmake --build build-test-cpp/\n        - cmake --build build-test-cpp/ --target test\n\n  - name: reproc-static\n    script: install.sh  # [unix]\n    script: install.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n      run_constrained:\n        - reproc < 0\n    test:\n      files:\n        - test-c/\n      requires:\n        - {{ compiler(\"c\") }}\n        - cmake\n        - ninja\n      commands:\n        - '@echo on'  # [win]\n        # Positive file tests\n        - test -f ${PREFIX}/include/reproc/run.h                       # [unix]\n        - if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/libreproc.a                             # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake                       # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)  # [win]\n        # Negative file tests\n        - test ! -f ${PREFIX}/include/reproc++/reproc.hpp                 # [unix]\n        - if exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc++.a                       # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}      # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)  # [win]\n        - if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}      # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)  # [win]\n        - if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake                 # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)  # [win]\n        # Running a test trying to link to the library\n        - cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}  # [unix]\n        - cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%   # [win]\n        - cmake --build build-test-c/\n        - cmake --build build-test-c/ --target test\n\n  - name: reproc-cpp-static\n    script: install.sh  # [unix]\n    script: install.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - cmake\n        - ninja\n      host:\n        - {{ pin_subpackage('reproc-static', exact=True ) }}\n      run:\n        - {{ pin_subpackage('reproc-static', exact=True ) }}\n      run_constrained:\n        - reproc-cpp < 0\n    test:\n      files:\n        - test-cpp/\n      requires:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - cmake\n        - ninja\n      commands:\n        - '@echo on'  # [win]\n        # Positive file tests\n        - test -f ${PREFIX}/include/reproc++/reproc.hpp                       # [unix]\n        - if not exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/libreproc++.a                             # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)  # [win]\n        - test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake                      # [unix]\n        - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)  # [win]\n        # Negative file tests\n        - test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}      # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)  # [win]\n        - if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)  # [win]\n        - test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}      # [unix]\n        - if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)  # [win]\n        - if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)  # [win]\n        # Running a test trying to link to the library\n        - cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}  # [unix]\n        - cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%   # [win]\n        - cmake --build build-test-cpp/\n        - cmake --build build-test-cpp/ --target test\n\nabout:\n  home: https://github.com/DaanDeMeyer/reproc\n  license_file: LICENSE\n  license: MIT\n  summary: reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs.\n  dev_url: https://github.com/DaanDeMeyer/reproc\n\nextra:\n  recipe-maintainers:\n    - AntoinePrv\n    - wolfv\n    - DaanDeMeyer\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"14.2.7\"\n\nrecipe:\n  name: reproc-split\n  version: ${{ version }}.post0\n\nsource:\n  url: https://github.com/DaanDeMeyer/reproc/archive/v${{ version }}.tar.gz\n  sha256: 77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8\n  patches:\n    - if: osx\n      then: apple_gettime.patch\n    # When the open file descriptor limit > 1048576, reproc\n    # (and therefore micromamba) aborts when starting a new process\n    # As upstream is inactive, pick up the patch in the feedstock instead\n    # https://github.com/DaanDeMeyer/reproc/pull/103\n    - 103-remove-fd-limit.patch\n    # When version 14.2.7 was released, the cmake project version was not so it still\n    # appears as version 14.2.4. This patch sets the cmake project version to the correct version.\n    # As upstream is inactive, pick up the patch in the feedstock instead\n    # https://github.com/DaanDeMeyer/reproc/pull/121\n    - 121-fix-cmake-version.patch\n\nbuild:\n  number: 2\n\noutputs:\n  - staging:\n      name: reproc-build\n    build:\n      script:\n        file: ${{ \"build.sh\" if unix else \"build.bat\" }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - cmake\n        - ninja\n\n  - package:\n      name: reproc\n    inherit: reproc-build\n    build:\n      script:\n        file: ${{ \"install.sh\" if unix else \"install.bat\" }}\n    requirements:\n      build:\n        - cmake\n      run_exports:\n        - ${{ pin_subpackage(\"reproc\", upper_bound=\"x.x\") }}\n      ignore_run_exports:\n        from_package:\n          - ${{ compiler(\"cxx\") }}\n    tests:\n      - script:\n          - if: win\n            then:\n              - \"@echo on\"\n              # Positive file tests\n              - if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)\n              # Negative file tests\n              - if exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)\n            else:\n              # Positive file tests\n              - test -f ${PREFIX}/include/reproc/run.h\n              - test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}\n              - test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake\n              # Negative file tests\n              - test ! -f ${PREFIX}/include/reproc++/run.hpp\n              - test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}\n              - test ! -f ${PREFIX}/lib/libreproc.a\n              - test ! -f ${PREFIX}/lib/libreproc++.a\n              - test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake\n          # Run a test that links to the library\n          - if: win\n            then: cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%\n            else: cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}\n          - cmake --build build-test-c/\n          - cmake --build build-test-c/ --target test\n        files:\n          recipe:\n            - test-c/\n        requirements:\n          build:\n            - ${{ compiler(\"c\") }}\n            - cmake\n            - ninja\n\n  - package:\n      name: reproc-cpp\n    inherit: reproc-build\n    build:\n      script:\n        file: ${{ \"install.sh\" if unix else \"install.bat\" }}\n    requirements:\n      build:\n        - cmake\n      host:\n        - ${{ pin_subpackage(\"reproc\", exact=True) }}\n      run:\n        - ${{ pin_subpackage(\"reproc\", exact=True) }}\n      run_exports:\n        - ${{ pin_subpackage(\"reproc-cpp\", upper_bound=\"x.x\") }}\n    tests:\n      - script:\n          - if: win\n            then:\n              - \"@echo on\"\n              # Positive file tests\n              - if not exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)\n              # Negative file tests\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)\n            else:\n              # Positive file tests\n              - test -f ${PREFIX}/include/reproc++/run.hpp\n              - test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}\n              - test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake\n              # Negative file tests\n              - test ! -f ${PREFIX}/lib/libreproc.a\n              - test ! -f ${PREFIX}/lib/libreproc++.a\n          # Run a test that links to the library\n          - if: win\n            then: cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%\n            else: cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}\n          - cmake --build build-test-cpp/\n          - cmake --build build-test-cpp/ --target test\n        files:\n          recipe:\n            - test-cpp/\n        requirements:\n          build:\n            - ${{ compiler(\"c\") }}\n            - ${{ compiler(\"cxx\") }}\n            - cmake\n            - ninja\n\n  - package:\n      name: reproc-static\n    inherit: reproc-build\n    build:\n      script:\n        file: ${{ \"install.sh\" if unix else \"install.bat\" }}\n    requirements:\n      build:\n        - cmake\n      run_constraints:\n        - reproc <0\n      ignore_run_exports:\n        from_package:\n          - ${{ compiler(\"cxx\") }}\n    tests:\n      - script:\n          - if: win\n            then:\n              - \"@echo on\"\n              # Positive file tests\n              - if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)\n              # Negative file tests\n              - if exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)\n            else:\n              # Positive file tests\n              - test -f ${PREFIX}/include/reproc/run.h\n              - test -f ${PREFIX}/lib/libreproc.a\n              - test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake\n              # Negative file tests\n              - test ! -f ${PREFIX}/include/reproc++/reproc.hpp\n              - test ! -f ${PREFIX}/lib/libreproc++.a\n              - test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}\n              - test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}\n              - test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake\n          # Run a test that links to the library\n          - if: win\n            then: cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%\n            else: cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}\n          - cmake --build build-test-c/\n          - cmake --build build-test-c/ --target test\n        files:\n          recipe:\n            - test-c/\n        requirements:\n          build:\n            - ${{ compiler(\"c\") }}\n            - cmake\n            - ninja\n\n  - package:\n      name: reproc-cpp-static\n    inherit: reproc-build\n    build:\n      script:\n        file: ${{ \"install.sh\" if unix else \"install.bat\" }}\n    requirements:\n      build:\n        - cmake\n      host:\n        - ${{ pin_subpackage(\"reproc-static\", exact=True) }}\n      run:\n        - ${{ pin_subpackage(\"reproc-static\", exact=True) }}\n      run_constraints:\n        - reproc-cpp <0\n    tests:\n      - script:\n          - if: win\n            then:\n              - \"@echo on\"\n              # Positive file tests\n              - if not exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)\n              - if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)\n              # Negative file tests\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)\n              - if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)\n              - if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)\n            else:\n              # Positive file tests\n              - test -f ${PREFIX}/include/reproc++/reproc.hpp\n              - test -f ${PREFIX}/lib/libreproc++.a\n              - test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake\n              # Negative file tests\n              - test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}\n              - test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}\n          # Run a test that links to the library\n          - if: win\n            then: cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%\n            else: cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}\n          - cmake --build build-test-cpp/\n          - cmake --build build-test-cpp/ --target test\n        files:\n          recipe:\n            - test-cpp/\n        requirements:\n          build:\n            - ${{ compiler(\"c\") }}\n            - ${{ compiler(\"cxx\") }}\n            - cmake\n            - ninja\n\nabout:\n  homepage: https://github.com/DaanDeMeyer/reproc\n  license: MIT\n  license_file: LICENSE\n  summary: reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs.\n  repository: https://github.com/DaanDeMeyer/reproc\n\nextra:\n  recipe-maintainers:\n    - AntoinePrv\n    - wolfv\n    - DaanDeMeyer\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -2659,11 +3360,21 @@
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -2675,7 +3386,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -2684,41 +3396,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -2738,73 +3457,82 @@
             "reproc"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -2819,40 +3547,40 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -2864,17 +3592,15 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
   "win_64_requirements": {
     "build": {
@@ -2916,11 +3642,21 @@
       "dev_url": "https://github.com/DaanDeMeyer/reproc",
       "home": "https://github.com/DaanDeMeyer/reproc",
       "license": "MIT",
+      "license_family": "MIT",
       "license_file": "LICENSE",
       "summary": "reproc (Redirected Process) is a cross-platform C/C++ library that simplifies starting, stopping and communicating with external programs."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "reproc"
+        ]
+      },
+      "script": {
+        "file": "install.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -2932,7 +3668,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc"
           ]
         },
@@ -2941,41 +3678,48 @@
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
-          ]
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/run.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "reproc-cpp"
           ]
         },
@@ -2995,73 +3739,82 @@
             "reproc"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\run.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/run.hpp",
+              "test -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc.a",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cxx_compiler_stub",
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "reproc < 0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc\\run.h (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc\\reproc-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "cmake -G Ninja -S test-c/ -B build-test-c/ %CMAKE_ARGS%",
-            "cmake --build build-test-c/",
-            "cmake --build build-test-c/ --target test"
-          ],
-          "files": [
-            "test-c/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-c/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc/run.h",
+              "test -f ${PREFIX}/lib/libreproc.a",
+              "test -f ${PREFIX}/lib/cmake/reproc/reproc-config.cmake",
+              "test ! -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test ! -f ${PREFIX}/lib/libreproc++.a",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "cmake -G Ninja -S test-c/ -B build-test-c/ ${CMAKE_ARGS}",
+              "cmake --build build-test-c/",
+              "cmake --build build-test-c/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       },
       {
+        "build": null,
         "name": "reproc-cpp-static",
         "requirements": {
           "build": [
@@ -3076,40 +3829,40 @@
           ],
           "run": [
             "reproc-static"
-          ],
-          "run_constrained": [
-            "reproc-cpp < 0"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "@echo on",
-            "if not exist %LIBRARY_PREFIX%\\include\\reproc++\\reproc.hpp (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\reproc++_static.lib (exit 1)",
-            "if not exist %LIBRARY_PREFIX%\\lib\\cmake\\reproc++\\reproc++-config.cmake (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc.dll (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\lib\\reproc++.lib (exit 1)",
-            "if exist %LIBRARY_PREFIX%\\bin\\reproc++.dll (exit 1)",
-            "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ %CMAKE_ARGS%",
-            "cmake --build build-test-cpp/",
-            "cmake --build build-test-cpp/ --target test"
-          ],
-          "files": [
-            "test-cpp/"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "test-cpp/"
+              ]
+            },
+            "requirements": {
+              "build": [
+                "c_compiler_stub",
+                "cxx_compiler_stub",
+                "cmake",
+                "ninja"
+              ]
+            },
+            "script": [
+              "test -f ${PREFIX}/include/reproc++/reproc.hpp",
+              "test -f ${PREFIX}/lib/libreproc++.a",
+              "test -f ${PREFIX}/lib/cmake/reproc++/reproc++-config.cmake",
+              "test ! -f ${PREFIX}/lib/libreproc${SHLIB_EXT}",
+              "test ! -f ${PREFIX}/lib/libreproc++${SHLIB_EXT}",
+              "cmake -G Ninja -S test-cpp/ -B build-test-cpp/ ${CMAKE_ARGS}",
+              "cmake --build build-test-cpp/",
+              "cmake --build build-test-cpp/ --target test"
+            ]
+          }
+        ],
+        "version": "14.2.7.post0"
       }
     ],
     "package": {
-      "name": "reproc-split",
+      "name": "reproc",
       "version": "14.2.7.post0"
     },
     "requirements": {
@@ -3121,17 +3874,15 @@
         "ninja"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "patches": [
-          "103-remove-fd-limit.patch",
-          "121-fix-cmake-version.patch"
-        ],
-        "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
-        "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
-      }
-    ]
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "103-remove-fd-limit.patch",
+        "121-fix-cmake-version.patch"
+      ],
+      "sha256": "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8",
+      "url": "https://github.com/DaanDeMeyer/reproc/archive/v14.2.7.tar.gz"
+    }
   },
   "win_arm64_requirements": {
     "build": {
