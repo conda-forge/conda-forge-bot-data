@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "3a164d852182a60e6b01df212aa7166d25f3c705",
-  "feedstock_hash_ts": 1785168139,
+  "feedstock_hash": "58adcb67c5ce11700bc4080016da304208fe4db2",
+  "feedstock_hash_ts": 1785965838,
   "feedstock_name": "mediamtx",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -77,12 +77,12 @@
             }
           }
         ],
-        "version": "1.19.3"
+        "version": "1.20.0"
       }
     ],
     "package": {
       "name": "mediamtx",
-      "version": "1.19.3"
+      "version": "1.20.0"
     },
     "requirements": {
       "build": [
@@ -92,8 +92,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "eba0aaccb3ea834988dca35d3dce3772ead0d790f9e27d89ea02563330874e85",
-      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.19.3.tar.gz"
+      "sha256": "dd589ecb9be58700536f2f0a9f7b08f6affe25434846d11849c7b141e7eaa0aa",
+      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.20.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -177,7 +177,7 @@
             }
           }
         ],
-        "version": "1.19.3"
+        "version": "1.20.0"
       },
       {
         "build": null,
@@ -209,7 +209,7 @@
             }
           }
         ],
-        "version": "1.19.3"
+        "version": "1.20.0"
       },
       {
         "build": null,
@@ -241,12 +241,12 @@
             }
           }
         ],
-        "version": "1.19.3"
+        "version": "1.20.0"
       }
     ],
     "package": {
       "name": "mediamtx",
-      "version": "1.19.3"
+      "version": "1.20.0"
     },
     "requirements": {
       "build": [
@@ -256,8 +256,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "eba0aaccb3ea834988dca35d3dce3772ead0d790f9e27d89ea02563330874e85",
-      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.19.3.tar.gz"
+      "sha256": "dd589ecb9be58700536f2f0a9f7b08f6affe25434846d11849c7b141e7eaa0aa",
+      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.20.0.tar.gz"
     }
   },
   "name": "mediamtx",
@@ -321,12 +321,12 @@
             }
           }
         ],
-        "version": "1.19.3"
+        "version": "1.20.0"
       }
     ],
     "package": {
       "name": "mediamtx",
-      "version": "1.19.3"
+      "version": "1.20.0"
     },
     "requirements": {
       "build": [
@@ -336,8 +336,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "eba0aaccb3ea834988dca35d3dce3772ead0d790f9e27d89ea02563330874e85",
-      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.19.3.tar.gz"
+      "sha256": "dd589ecb9be58700536f2f0a9f7b08f6affe25434846d11849c7b141e7eaa0aa",
+      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.20.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -376,7 +376,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/mediamtx.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"1.19.3\"\n\npackage:\n  name: mediamtx\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/bluenviron/mediamtx/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: eba0aaccb3ea834988dca35d3dce3772ead0d790f9e27d89ea02563330874e85\n    target_directory: src\n  - path: service.yaml\n    target_directory: service-config\n\nbuild:\n  number: 0\n  script:\n    - cd src\n    - echo \"v${{ version }}\" > VERSION\n    - go generate ./...\n    - go-licenses save . --save_path ../library_licenses --ignore golang.org/x/sys --ignore golang.org/x/crypto  --ignore github.com/ugorji/go --ignore github.com/benburkert/openpgp\n    - if: unix\n      then:\n        - go build -v -o $PREFIX/bin/mediamtx -ldflags=\"-s -w\"\n        - mkdir -p $PREFIX/config\n        - cp ../service-config/service.yaml $PREFIX/config/service.yaml\n        - cp -r ${RECIPE_DIR}/library_licenses/* ${SRC_DIR}/library_licenses\n      else:\n        - go build -v -o %LIBRARY_BIN%\\mediamtx.exe -ldflags=\"-s\"\n        - mkdir %LIBRARY_PREFIX%\\config\n        - copy ..\\service-config\\service.yaml %LIBRARY_PREFIX%\\config\\service.yaml\n        - xcopy /s %RECIPE_DIR%\\library_licenses\\* %SRC_DIR%\\library_licenses\n\nrequirements:\n  build:\n    - ${{ compiler(\"go-nocgo\") }}\n    - go-licenses\n\ntests:\n  - script: mediamtx --version\n  - script: mediamtx --help\n  - if: unix\n    then:\n      package_contents:\n        bin:\n          - mediamtx\n        files:\n          - config/service.yaml\n        strict: true\n    else:\n      package_contents:\n        bin:\n          - mediamtx.exe\n        files:\n          - Library/config/service.yaml\n        strict: true\n\nabout:\n  homepage: https://github.com/bluenviron/mediamtx\n  summary: Ready-to-use and zero-dependency real-time media server and media proxy\n  description: |\n    MediaMTX is a ready-to-use and zero-dependency real-time media server and\n    media proxy that allows to publish, read, proxy, record and playback video and audio streams.\n    It has been conceived as a \"media router\" that routes media streams from one end to the other.\n  license: MIT\n  license_file:\n    - src/LICENSE\n    - library_licenses/\n  documentation: https://github.com/bluenviron/mediamtx/blob/main/README.md\n  repository: https://github.com/bluenviron/mediamtx\n\nextra:\n  recipe-maintainers:\n    - phreed\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"1.20.0\"\n\npackage:\n  name: mediamtx\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/bluenviron/mediamtx/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: dd589ecb9be58700536f2f0a9f7b08f6affe25434846d11849c7b141e7eaa0aa\n    target_directory: src\n  - path: service.yaml\n    target_directory: service-config\n\nbuild:\n  number: 0\n  script:\n    - cd src\n    - echo \"v${{ version }}\" > VERSION\n    - go generate ./...\n    - go-licenses save . --save_path ../library_licenses --ignore golang.org/x/sys --ignore golang.org/x/crypto  --ignore github.com/ugorji/go --ignore github.com/benburkert/openpgp\n    - if: unix\n      then:\n        - go build -v -o $PREFIX/bin/mediamtx -ldflags=\"-s -w\"\n        - mkdir -p $PREFIX/config\n        - cp ../service-config/service.yaml $PREFIX/config/service.yaml\n        - cp -r ${RECIPE_DIR}/library_licenses/* ${SRC_DIR}/library_licenses\n      else:\n        - go build -v -o %LIBRARY_BIN%\\mediamtx.exe -ldflags=\"-s\"\n        - mkdir %LIBRARY_PREFIX%\\config\n        - copy ..\\service-config\\service.yaml %LIBRARY_PREFIX%\\config\\service.yaml\n        - xcopy /s %RECIPE_DIR%\\library_licenses\\* %SRC_DIR%\\library_licenses\n\nrequirements:\n  build:\n    - ${{ compiler(\"go-nocgo\") }}\n    - go-licenses\n\ntests:\n  - script: mediamtx --version\n  - script: mediamtx --help\n  - if: unix\n    then:\n      package_contents:\n        bin:\n          - mediamtx\n        files:\n          - config/service.yaml\n        strict: true\n    else:\n      package_contents:\n        bin:\n          - mediamtx.exe\n        files:\n          - Library/config/service.yaml\n        strict: true\n\nabout:\n  homepage: https://github.com/bluenviron/mediamtx\n  summary: Ready-to-use and zero-dependency real-time media server and media proxy\n  description: |\n    MediaMTX is a ready-to-use and zero-dependency real-time media server and\n    media proxy that allows to publish, read, proxy, record and playback video and audio streams.\n    It has been conceived as a \"media router\" that routes media streams from one end to the other.\n  license: MIT\n  license_file:\n    - src/LICENSE\n    - library_licenses/\n  documentation: https://github.com/bluenviron/mediamtx/blob/main/README.md\n  repository: https://github.com/bluenviron/mediamtx\n\nextra:\n  recipe-maintainers:\n    - phreed\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -427,8 +427,8 @@
       "elements": []
     }
   },
-  "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.19.3.tar.gz",
-  "version": "1.19.3",
+  "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.20.0.tar.gz",
+  "version": "1.20.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/mediamtx.json"
   },
@@ -492,12 +492,12 @@
             }
           }
         ],
-        "version": "1.19.3"
+        "version": "1.20.0"
       }
     ],
     "package": {
       "name": "mediamtx",
-      "version": "1.19.3"
+      "version": "1.20.0"
     },
     "requirements": {
       "build": [
@@ -507,8 +507,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "eba0aaccb3ea834988dca35d3dce3772ead0d790f9e27d89ea02563330874e85",
-      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.19.3.tar.gz"
+      "sha256": "dd589ecb9be58700536f2f0a9f7b08f6affe25434846d11849c7b141e7eaa0aa",
+      "url": "https://github.com/bluenviron/mediamtx/archive/refs/tags/v1.20.0.tar.gz"
     }
   },
   "win_64_requirements": {
