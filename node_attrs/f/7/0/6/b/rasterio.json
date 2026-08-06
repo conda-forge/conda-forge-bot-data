@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.12.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibgdal_core:\n- '3.12'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\nproj:\n- '9.8'\npython:\n- 3.12.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_python3.12.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibgdal_core:\n- '3.13'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\nproj:\n- '9.8'\npython:\n- 3.12.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "azure": {
       "store_build_artifacts": true
@@ -28,8 +28,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "abb5d40f6747c9ba55d9283bbe8f5f2cd2aae3c9",
-  "feedstock_hash_ts": 1785964411,
+  "feedstock_hash": "d8110cae4c82ab746b24100cef97a54ef3b53835",
+  "feedstock_hash_ts": 1785983365,
   "feedstock_name": "rasterio",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -43,7 +43,7 @@
       "entry_points": [
         "rio = rasterio.rio.main:main_group"
       ],
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -195,7 +195,7 @@
       "entry_points": [
         "rio = rasterio.rio.main:main_group"
       ],
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -347,7 +347,7 @@
       "entry_points": [
         "rio = rasterio.rio.main:main_group"
       ],
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -499,7 +499,7 @@
       "entry_points": [
         "rio = rasterio.rio.main:main_group"
       ],
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -598,7 +598,7 @@
       "entry_points": [
         "rio = rasterio.rio.main:main_group"
       ],
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -750,7 +750,7 @@
       "entry_points": [
         "rio = rasterio.rio.main:main_group"
       ],
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -909,7 +909,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/rasterio.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.5.0\" %}\n\npackage:\n  name: rasterio\n  version: {{ version }}\n\nsource:\n  url: https://github.com/rasterio/rasterio/archive/{{ version }}.tar.gz\n  sha256: f5d5cab866545e85a21b1921458ee8c711e23489ccc44fa66c6f70443a3ecae6\n  patches:\n    # Backport of https://github.com/rasterio/rasterio/pull/3529, needed with GDAL >=3.12.2.\n    - 3529-warp-xfail.patch\n\nbuild:\n  number: 1\n  skip: true  # [py<312]\n  entry_points:\n    - rio = rasterio.rio.main:main_group\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy >=1.24                           # [build_platform != target_platform]\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n  host:\n    - python\n    - pip\n    - cython\n    - numpy >=1.24\n    - libgdal-core\n    - proj\n    - setuptools\n  run:\n    - python\n    - setuptools >=0.9.8\n    - libgdal-core\n    - affine\n    - attrs\n    - certifi\n    - click >=4,!=8.2.* # https://github.com/pallets/click/issues/2939\n    - cligj >=0.5\n    - snuggs >=1.4.1\n    - click-plugins\n    - proj\n\ntest:\n  source_files:\n    - tests\n  requires:\n    - pip\n    # awaiting upstream pytest=8 support\n    - pytest >=2.8.2,<8\n    - pytest-cov >=2.2.0\n    - ipython >=2.0\n    - aiohttp\n    - boto3 >=1.2.4\n    - fsspec\n    - hypothesis\n    - libgdal-netcdf\n    - matplotlib-base\n    - packaging\n    - requests\n    - shapely\n  files:\n    - test_data/test.tif\n  imports:\n    - rasterio\n  commands:\n    - rio --help\n    - rio info {{ RECIPE_DIR }}/test_data/test.tif  # [not win]\n    - rio info {{ RECIPE_DIR }}\\\\test_data\\\\test.tif  # [win]\n    # skip linux tests for cross-compiled targets\n    # xylar 2022-Jul-6: disabling test_search_gdal_data_debian and test_decimated_no_use_overview under win.\n    #                   test_decimated_no_use_overview fails because of trying to overwrite an existing file.\n    # Tests skipped on all platforms:\n    # - test_merge_out_of_range_nodata: unknown numpy 2 segfault.\n    # - test_rio_env_no_credentials: writes an indented AWS credentials file, which recent\n    #   botocore rejects with InvalidConfigError instead of reaching S3.\n    {% set tests_to_skip = \"test_merge_out_of_range_nodata or test_rio_env_no_credentials\" %}\n    - $PYTHON -m pytest -v -m \"not wheel\" -rxXs -k \"not ({{ tests_to_skip }})\" tests  # [linux and build_platform == target_platform]\n    - $PYTHON -m pytest -v -m \"not wheel\" -rxXs -k \"not ({{ tests_to_skip }})\" tests  # [osx]\n    - python -m pytest -v -m \"not wheel\" -rxXs -k \"not (test_search_gdal_data_debian or test_decimated_no_use_overview or test_copyfiles_same_dataset_another_name or {{ tests_to_skip }})\" tests  # [win]\n    - pip check\nabout:\n  home: https://github.com/rasterio/rasterio\n  license: BSD-3-Clause\n  license_file: LICENSE.txt\n  summary: Rasterio reads and writes geospatial raster datasets\n\nextra:\n  recipe-maintainers:\n    - weiji14\n    - ocefpaf\n    - ceholden\n    - snowman2\n    - akrherz\n",
+  "raw_meta_yaml": "{% set version = \"1.5.0\" %}\n\npackage:\n  name: rasterio\n  version: {{ version }}\n\nsource:\n  url: https://github.com/rasterio/rasterio/archive/{{ version }}.tar.gz\n  sha256: f5d5cab866545e85a21b1921458ee8c711e23489ccc44fa66c6f70443a3ecae6\n  patches:\n    # Backport of https://github.com/rasterio/rasterio/pull/3529, needed with GDAL >=3.12.2.\n    - 3529-warp-xfail.patch\n\nbuild:\n  number: 2\n  skip: true  # [py<312]\n  entry_points:\n    - rio = rasterio.rio.main:main_group\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy >=1.24                           # [build_platform != target_platform]\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n  host:\n    - python\n    - pip\n    - cython\n    - numpy >=1.24\n    - libgdal-core\n    - proj\n    - setuptools\n  run:\n    - python\n    - setuptools >=0.9.8\n    - libgdal-core\n    - affine\n    - attrs\n    - certifi\n    - click >=4,!=8.2.* # https://github.com/pallets/click/issues/2939\n    - cligj >=0.5\n    - snuggs >=1.4.1\n    - click-plugins\n    - proj\n\ntest:\n  source_files:\n    - tests\n  requires:\n    - pip\n    # awaiting upstream pytest=8 support\n    - pytest >=2.8.2,<8\n    - pytest-cov >=2.2.0\n    - ipython >=2.0\n    - aiohttp\n    - boto3 >=1.2.4\n    - fsspec\n    - hypothesis\n    - libgdal-netcdf\n    - matplotlib-base\n    - packaging\n    - requests\n    - shapely\n  files:\n    - test_data/test.tif\n  imports:\n    - rasterio\n  commands:\n    - rio --help\n    - rio info {{ RECIPE_DIR }}/test_data/test.tif  # [not win]\n    - rio info {{ RECIPE_DIR }}\\\\test_data\\\\test.tif  # [win]\n    # skip linux tests for cross-compiled targets\n    # xylar 2022-Jul-6: disabling test_search_gdal_data_debian and test_decimated_no_use_overview under win.\n    #                   test_decimated_no_use_overview fails because of trying to overwrite an existing file.\n    # Tests skipped on all platforms:\n    # - test_merge_out_of_range_nodata: unknown numpy 2 segfault.\n    # - test_rio_env_no_credentials: writes an indented AWS credentials file, which recent\n    #   botocore rejects with InvalidConfigError instead of reaching S3.\n    {% set tests_to_skip = \"test_merge_out_of_range_nodata or test_rio_env_no_credentials\" %}\n    - $PYTHON -m pytest -v -m \"not wheel\" -rxXs -k \"not ({{ tests_to_skip }})\" tests  # [linux and build_platform == target_platform]\n    - $PYTHON -m pytest -v -m \"not wheel\" -rxXs -k \"not ({{ tests_to_skip }})\" tests  # [osx]\n    - python -m pytest -v -m \"not wheel\" -rxXs -k \"not (test_search_gdal_data_debian or test_decimated_no_use_overview or test_copyfiles_same_dataset_another_name or {{ tests_to_skip }})\" tests  # [win]\n    - pip check\nabout:\n  home: https://github.com/rasterio/rasterio\n  license: BSD-3-Clause\n  license_file: LICENSE.txt\n  summary: Rasterio reads and writes geospatial raster datasets\n\nextra:\n  recipe-maintainers:\n    - weiji14\n    - ocefpaf\n    - ceholden\n    - snowman2\n    - akrherz\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1067,7 +1067,7 @@
       "entry_points": [
         "rio = rasterio.rio.main:main_group"
       ],
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "recipe-maintainers": [
