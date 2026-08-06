@@ -1,38 +1,51 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '13'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "build_platform": {
-      "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64",
+      "linux_riscv64": "linux_64",
       "win_arm64": "win_64"
     },
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "43b01db922e5168a53c41b356635db686475882f",
-  "feedstock_hash_ts": 1777047819,
+  "feedstock_hash": "71b57eab0ad5785f6237216fe90fbb19ff94a43c",
+  "feedstock_hash_ts": 1786002618,
   "feedstock_name": "gtest",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -48,7 +61,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -60,37 +74,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -98,16 +124,88 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
+        "version": "1.17.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "gtest"
           ]
         },
+        "name": "gtest",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
+        "version": "1.17.0"
+      },
+      {
+        "build": null,
+        "name": "gmock",
+        "requirements": {
+          "build": [],
+          "host": [
+            "gtest"
+          ],
+          "run": [
+            "gtest"
+          ]
+        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -116,10 +214,9 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
@@ -158,12 +255,20 @@
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -179,7 +284,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -191,37 +297,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -229,16 +347,16 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -247,10 +365,9 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
@@ -289,12 +406,20 @@
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -310,7 +435,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -322,37 +448,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -360,16 +498,16 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -378,10 +516,9 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
@@ -420,12 +557,20 @@
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -441,7 +586,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -453,37 +599,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -491,16 +649,17 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -512,37 +671,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -550,16 +721,17 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -571,37 +743,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -609,16 +793,17 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -630,37 +815,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -668,16 +865,17 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -689,37 +887,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -727,16 +937,17 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -748,37 +959,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_BIN%\\\\gtest.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "if not exist %LIBRARY_BIN%\\\\gtest_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "if not exist %LIBRARY_BIN%\\\\gmock.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "if not exist %LIBRARY_BIN%\\\\gmock_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "if not exist %LIBRARY_INC%\\gtest\\gtest.h exit 1",
-            "if not exist %LIBRARY_INC%\\gmock\\gmock.h exit 1"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -786,16 +1009,17 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -807,37 +1031,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_BIN%\\\\gtest.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "if not exist %LIBRARY_BIN%\\\\gtest_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "if not exist %LIBRARY_BIN%\\\\gmock.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "if not exist %LIBRARY_BIN%\\\\gmock_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "if not exist %LIBRARY_INC%\\gtest\\gtest.h exit 1",
-            "if not exist %LIBRARY_INC%\\gmock\\gmock.h exit 1"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -845,16 +1081,88 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
+        "version": "1.17.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "gtest"
           ]
         },
+        "name": "gtest",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
+        "version": "1.17.0"
+      },
+      {
+        "build": null,
+        "name": "gmock",
+        "requirements": {
+          "build": [],
+          "host": [
+            "gtest"
+          ],
+          "run": [
+            "gtest"
+          ]
+        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -863,26 +1171,33 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
     }
   },
-  "name": "gtest-split",
+  "name": "gtest",
   "osx_64_meta_yaml": {
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -898,7 +1213,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -910,37 +1226,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -948,16 +1276,16 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -966,10 +1294,9 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
@@ -1008,12 +1335,20 @@
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -1029,7 +1364,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -1041,37 +1377,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.sh",
-        "test": {
-          "commands": [
-            "test -f $PREFIX/lib/libgtest${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "test -f $PREFIX/lib/libgtest_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgtest_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "test -f $PREFIX/lib/libgmock${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "test -f $PREFIX/lib/libgmock_main${SHLIB_EXT}",
-            "test ! -f $PREFIX/lib/libgmock_main.a",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "test -f $PREFIX/include/gtest/gtest.h || (echo \"gtest/gtest.h not found\" && exit 1)",
-            "test -f $PREFIX/include/gmock/gmock.h || (echo \"gmock/gmock.h not found\" && exit 1)"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -1079,16 +1427,16 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -1097,10 +1445,9 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
@@ -1155,7 +1502,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/gtest.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.17.0\" %}\n\n\npackage:\n  name: gtest-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/google/googletest/archive/refs/tags/v{{ version }}.tar.gz\n  sha256: 65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake\n    - ninja\n  host: []  # Empty host dependency section\n\noutputs:\n  - name: gtest\n    script: build-gtest.sh  # [unix]\n    script: build-gtest.bat  # [win]\n    version: {{ version }}\n    build:\n      # Builds are linked against the x.x.x version SO.\n      run_exports:\n        - {{ pin_subpackage('gtest', max_pin='x.x.x') }}\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      run_constrained:\n        - gmock {{ version }}\n    test:\n      requires:\n        - pkg-config\n      commands:\n        # libraries\n        {% for each_lib in [\"gtest\", \"gtest_main\", \"gmock\", \"gmock_main\"] %}\n        # presence of shared libs\n        - test -f $PREFIX/lib/lib{{ each_lib }}${SHLIB_EXT}      # [unix]\n        - if not exist %LIBRARY_BIN%\\\\{{ each_lib }}.dll exit 1  # [win]\n        - if not exist %LIBRARY_LIB%\\\\{{ each_lib }}.lib exit 1  # [win]\n\n        # absence of static libs\n        - test ! -f $PREFIX/lib/lib{{ each_lib }}.a              # [unix]\n\n        # pkg-config\n        - pkg-config --print-errors --exact-version \"{{ version }}\" {{ each_lib }}\n        {% endfor %}\n\n        # headers (selection)\n        {% for each_header in [\"gtest/gtest.h\", \"gmock/gmock.h\"] %}\n        - test -f $PREFIX/include/{{ each_header }} || (echo \"{{ each_header }} not found\" && exit 1)  # [unix]\n        - if not exist %LIBRARY_INC%\\{{ \"\\\\\".join(each_header.split(\"/\")) }} exit 1                    # [win]\n        {% endfor %}\n\n  # empty wrapper for compatibility with previous output naming/separation\n  - name: gmock\n    version: {{ version }}\n    requirements:\n      host:\n        - {{ pin_subpackage('gtest', exact=True) }}\n      run:\n        - {{ pin_subpackage('gtest', exact=True) }}\n    test:\n      commands:\n        - echo \"Tested above\"\n\nabout:\n  home: https://github.com/google/googletest\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: Google's C++ test framework\n\nextra:\n  recipe-maintainers:\n    - SylvainCorlay\n    - scopatz\n    - wesm\n    - marcelotrevisani\n    - xhochy\n    - h-vetinari\n  feedstock-name: gtest\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.17.0\"\n\nrecipe:\n  name: gtest-split\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/google/googletest/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c\n\nbuild:\n  number: 2\n\noutputs:\n  - package:\n      name: gtest\n    build:\n      script:\n        file: build-gtest\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - ninja\n      run_exports:\n        - ${{ pin_subpackage('gtest', upper_bound='x.x.x') }}\n      run_constraints:\n        - gmock ==${{ version }}\n    tests:\n      - package_contents:\n          include:\n            - gtest/gtest.h\n            - gmock/gmock.h\n          lib:\n            - gtest\n            - gtest_main\n            - gmock\n            - gmock_main\n          files:\n            not_exists:\n              - if: unix\n                then:\n                  - lib/libgtest.a\n                  - lib/libgtest_main.a\n                  - lib/libgmock.a\n                  - lib/libgmock_main.a\n      - if: unix and target_platform != \"linux-riscv64\"\n        then:\n          script:\n            - for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done\n          requirements:\n            run:\n              - pkg-config\n      - if: win\n        then:\n          script:\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gtest\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gtest_main\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gmock\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gmock_main\n          requirements:\n            run:\n              - pkg-config\n\n  # Empty wrapper for compatibility with the previous output separation.\n  - package:\n      name: gmock\n    requirements:\n      host:\n        - ${{ pin_subpackage('gtest', exact=True) }}\n      run:\n        - ${{ pin_subpackage('gtest', exact=True) }}\n    tests:\n      - script:\n          - echo \"Tested in the gtest output\"\n\nabout:\n  homepage: https://github.com/google/googletest\n  license: BSD-3-Clause\n  license_file: LICENSE\n  summary: Google's C++ test framework\n\nextra:\n  recipe-maintainers:\n    - SylvainCorlay\n    - scopatz\n    - wesm\n    - marcelotrevisani\n    - xhochy\n    - h-vetinari\n  feedstock-name: gtest\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1238,12 +1585,20 @@
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -1259,7 +1614,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -1271,37 +1627,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_BIN%\\\\gtest.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "if not exist %LIBRARY_BIN%\\\\gtest_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "if not exist %LIBRARY_BIN%\\\\gmock.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "if not exist %LIBRARY_BIN%\\\\gmock_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "if not exist %LIBRARY_INC%\\gtest\\gtest.h exit 1",
-            "if not exist %LIBRARY_INC%\\gmock\\gmock.h exit 1"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -1309,16 +1677,16 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -1327,10 +1695,9 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
@@ -1369,12 +1736,20 @@
     "about": {
       "home": "https://github.com/google/googletest",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "gtest"
+        ]
+      },
+      "script": {
+        "file": "build-gtest"
+      }
     },
     "extra": {
       "feedstock-name": "gtest",
@@ -1390,7 +1765,8 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "gtest"
           ]
         },
@@ -1402,37 +1778,49 @@
             "cmake",
             "ninja"
           ],
-          "run_constrained": [
-            "gmock 1.17.0"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build-gtest.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_BIN%\\\\gtest.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest",
-            "if not exist %LIBRARY_BIN%\\\\gtest_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gtest_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gtest_main",
-            "if not exist %LIBRARY_BIN%\\\\gmock.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock",
-            "if not exist %LIBRARY_BIN%\\\\gmock_main.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\gmock_main.lib exit 1",
-            "pkg-config --print-errors --exact-version \"1.17.0\" gmock_main",
-            "if not exist %LIBRARY_INC%\\gtest\\gtest.h exit 1",
-            "if not exist %LIBRARY_INC%\\gmock\\gmock.h exit 1"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [],
+                "not_exists": [
+                  "lib/libgtest.a",
+                  "lib/libgtest_main.a",
+                  "lib/libgmock.a",
+                  "lib/libgmock_main.a"
+                ]
+              },
+              "include": [
+                "gtest/gtest.h",
+                "gmock/gmock.h"
+              ],
+              "lib": [
+                "gtest",
+                "gtest_main",
+                "gmock",
+                "gmock_main"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done"
+          }
+        ],
         "version": "1.17.0"
       },
       {
+        "build": null,
         "name": "gmock",
         "requirements": {
+          "build": [],
           "host": [
             "gtest"
           ],
@@ -1440,16 +1828,16 @@
             "gtest"
           ]
         },
-        "test": {
-          "commands": [
-            "echo \"Tested above\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Tested in the gtest output\""
+          }
+        ],
         "version": "1.17.0"
       }
     ],
     "package": {
-      "name": "gtest-split",
+      "name": "gtest",
       "version": "1.17.0"
     },
     "requirements": {
@@ -1458,10 +1846,9 @@
         "c_stdlib_stub",
         "cmake",
         "ninja"
-      ],
-      "host": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c",
       "url": "https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz"
