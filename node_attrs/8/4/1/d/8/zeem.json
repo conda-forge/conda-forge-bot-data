@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -25,8 +25,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "24f4461573742c67bc84d6ad3279d071a76f240b",
-  "feedstock_hash_ts": 1786206258,
+  "feedstock_hash": "be8f8d00b49275bd2c09948f23480c9c0ed2e027",
+  "feedstock_hash_ts": 1786211789,
   "feedstock_name": "zeem",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -46,11 +46,7 @@
         "weak": [
           "zeem"
         ]
-      },
-      "script": [
-        "sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt",
-        "set -exo pipefail\n\nif [[ ${target_platform} == \"osx-\"* ]]; then\n  # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n  # experimental library support (-fexperimental-library) and a deployment\n  # target new enough to satisfy Apple's availability checks\n  # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n  export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n  # std::chrono::from_stream on libc++ has an unresolved bug parsing\n  # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n  # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n  sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\nfi\n\nif [[ ${build_platform} != ${target_platform} ]]; then\n  extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\n\ncmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\ncmake --build build --config Release --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n  ctest -V -C Release --test-dir build\nfi\ncmake --install build\n"
-      ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -71,13 +67,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -93,31 +90,32 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       }
     ],
     "package": {
       "name": "zeem",
-      "version": "2.1.5"
+      "version": "2.2.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "pkg-config",
-        "make"
+        "ninja",
+        "pkg-config"
       ],
       "host": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc",
-      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz"
+      "sha256": "8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02",
+      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -127,7 +125,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -136,7 +134,8 @@
       "elements": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
@@ -165,11 +164,7 @@
         "weak": [
           "zeem"
         ]
-      },
-      "script": [
-        "sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt",
-        "set -exo pipefail\n\nif [[ ${target_platform} == \"osx-\"* ]]; then\n  # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n  # experimental library support (-fexperimental-library) and a deployment\n  # target new enough to satisfy Apple's availability checks\n  # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n  export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n  # std::chrono::from_stream on libc++ has an unresolved bug parsing\n  # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n  # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n  sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\nfi\n\nif [[ ${build_platform} != ${target_platform} ]]; then\n  extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\n\ncmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\ncmake --build build --config Release --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n  ctest -V -C Release --test-dir build\nfi\ncmake --install build\n"
-      ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -190,13 +185,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -212,31 +208,32 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       }
     ],
     "package": {
       "name": "zeem",
-      "version": "2.1.5"
+      "version": "2.2.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "pkg-config",
-        "make"
+        "ninja",
+        "pkg-config"
       ],
       "host": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc",
-      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz"
+      "sha256": "8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02",
+      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -246,7 +243,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -255,7 +252,8 @@
       "elements": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
@@ -284,11 +282,7 @@
         "weak": [
           "zeem"
         ]
-      },
-      "script": [
-        "sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt",
-        "set -exo pipefail\n\nif [[ ${target_platform} == \"osx-\"* ]]; then\n  # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n  # experimental library support (-fexperimental-library) and a deployment\n  # target new enough to satisfy Apple's availability checks\n  # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n  export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n  # std::chrono::from_stream on libc++ has an unresolved bug parsing\n  # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n  # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n  sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\nfi\n\nif [[ ${build_platform} != ${target_platform} ]]; then\n  extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\n\ncmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\ncmake --build build --config Release --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n  ctest -V -C Release --test-dir build\nfi\ncmake --install build\n"
-      ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -309,13 +303,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -331,31 +326,32 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       }
     ],
     "package": {
       "name": "zeem",
-      "version": "2.1.5"
+      "version": "2.2.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "pkg-config",
-        "make"
+        "ninja",
+        "pkg-config"
       ],
       "host": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc",
-      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz"
+      "sha256": "8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02",
+      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -365,7 +361,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -374,7 +370,8 @@
       "elements": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
@@ -403,11 +400,7 @@
         "weak": [
           "zeem"
         ]
-      },
-      "script": [
-        "sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt",
-        "set -exo pipefail\n\nif [[ ${target_platform} == \"osx-\"* ]]; then\n  # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n  # experimental library support (-fexperimental-library) and a deployment\n  # target new enough to satisfy Apple's availability checks\n  # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n  export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n  # std::chrono::from_stream on libc++ has an unresolved bug parsing\n  # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n  # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n  sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\nfi\n\nif [[ ${build_platform} != ${target_platform} ]]; then\n  extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\n\ncmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\ncmake --build build --config Release --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n  ctest -V -C Release --test-dir build\nfi\ncmake --install build\n"
-      ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -428,13 +421,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -450,7 +444,7 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       },
       {
         "build": {
@@ -465,13 +459,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -487,7 +482,7 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       },
       {
         "build": {
@@ -502,13 +497,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -524,7 +520,7 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       },
       {
         "build": {
@@ -539,13 +535,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -561,7 +558,7 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       },
       {
         "build": {
@@ -576,13 +573,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -598,7 +596,7 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       },
       {
         "build": {
@@ -613,13 +611,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -635,31 +634,32 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       }
     ],
     "package": {
       "name": "zeem",
-      "version": "2.1.5"
+      "version": "2.2.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "pkg-config",
-        "make"
+        "ninja",
+        "pkg-config"
       ],
       "host": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc",
-      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz"
+      "sha256": "8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02",
+      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz"
     }
   },
   "name": "zeem",
@@ -680,11 +680,7 @@
         "weak": [
           "zeem"
         ]
-      },
-      "script": [
-        "sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt",
-        "set -exo pipefail\n\nif [[ ${target_platform} == \"osx-\"* ]]; then\n  # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n  # experimental library support (-fexperimental-library) and a deployment\n  # target new enough to satisfy Apple's availability checks\n  # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n  export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n  # std::chrono::from_stream on libc++ has an unresolved bug parsing\n  # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n  # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n  sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\nfi\n\nif [[ ${build_platform} != ${target_platform} ]]; then\n  extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\n\ncmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\ncmake --build build --config Release --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n  ctest -V -C Release --test-dir build\nfi\ncmake --install build\n"
-      ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -705,13 +701,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -727,31 +724,32 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       }
     ],
     "package": {
       "name": "zeem",
-      "version": "2.1.5"
+      "version": "2.2.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "pkg-config",
-        "make"
+        "ninja",
+        "pkg-config"
       ],
       "host": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc",
-      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz"
+      "sha256": "8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02",
+      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -761,7 +759,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -770,7 +768,8 @@
       "elements": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
@@ -799,11 +798,7 @@
         "weak": [
           "zeem"
         ]
-      },
-      "script": [
-        "sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt",
-        "set -exo pipefail\n\nif [[ ${target_platform} == \"osx-\"* ]]; then\n  # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n  # experimental library support (-fexperimental-library) and a deployment\n  # target new enough to satisfy Apple's availability checks\n  # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n  export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n  # std::chrono::from_stream on libc++ has an unresolved bug parsing\n  # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n  # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n  sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\nfi\n\nif [[ ${build_platform} != ${target_platform} ]]; then\n  extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\n\ncmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\ncmake --build build --config Release --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n  ctest -V -C Release --test-dir build\nfi\ncmake --install build\n"
-      ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -824,13 +819,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -846,31 +842,32 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       }
     ],
     "package": {
       "name": "zeem",
-      "version": "2.1.5"
+      "version": "2.2.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "pkg-config",
-        "make"
+        "ninja",
+        "pkg-config"
       ],
       "host": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc",
-      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz"
+      "sha256": "8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02",
+      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -880,7 +877,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -889,7 +886,8 @@
       "elements": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
@@ -919,7 +917,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/zeem.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"2.1.5\"\n\npackage:\n  name: zeem\n  version: ${{ version }}\n\nsource:\n  url: https://forge.hekkelman.net/maarten/zeem/archive/v${{ version }}.tar.gz\n  sha256: b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc\n\nbuild:\n  number: 0\n  script:\n    # Use locally installed Catch2\n    - sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt\n\n    - if: unix\n      then: |\n        set -exo pipefail\n\n        if [[ ${target_platform} == \"osx-\"* ]]; then\n          # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n          # experimental library support (-fexperimental-library) and a deployment\n          # target new enough to satisfy Apple's availability checks\n          # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n          export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n          # std::chrono::from_stream on libc++ has an unresolved bug parsing\n          # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n          # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n          sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\n        fi\n\n        if [[ ${build_platform} != ${target_platform} ]]; then\n          extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\n        fi\n\n        cmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\n        cmake --build build --config Release --parallel ${CPU_COUNT}\n        if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n          ctest -V -C Release --test-dir build\n        fi\n        cmake --install build\n\n    - if: win\n      then: |\n        @echo on\n        set PATH=%SRC_DIR%\\build;%SRC_DIR%\\build\\bin;%SRC_DIR%\\build\\Release;%SRC_DIR%\\build\\release;%PATH%\n        if errorlevel 1 exit 1\n        cmake -S . -B build -G \"NMake Makefiles JOM\" %CMAKE_ARGS% -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON\n        if errorlevel 1 exit 1\n        cmake --build build --config Release --parallel %CPU_COUNT%\n        if errorlevel 1 exit 1\n        ctest -V -C Release --test-dir build\n        if errorlevel 1 exit 1\n        cmake --install build\n        if errorlevel 1 exit 1\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - pkg-config\n    - if: unix\n      then: make\n    - if: win\n      then:\n        - jom\n        - m2-sed\n  host:\n    - catch2\n    - fast_float\n    - howardhinnant_date\n  run_exports:\n    # Patch version update may be breakable\n    - ${{ pin_subpackage(\"zeem\", upper_bound=\"x.x.x\") }}\n  ignore_run_exports:\n    from_package:\n      - catch2\n\ntests:\n  - package_contents:\n      include:\n        - zeem/*\n      lib:\n        - zeem\n    strict: true\n\nabout:\n  homepage: https://mhekkel.github.io/zeem\n  repository: https://forge.hekkelman.net/maarten/zeem\n  documentation: https://mhekkel.github.io/zeem\n  license: BSD-2-Clause\n  license_file: LICENSE\n  summary: \"A C++ Module Library offering a full XML library with validating parser, DOM tree, XPaths and serialization\"\n  description: |\n    This is a feature complete XML library containing a validating parser as well as a modern C++ API for the data structures.\n    It also supports serializing custom data structures.\n\n    The core of this library is a validating XML parser with DTD processing and all.\n    On top of this are implemented an API for manipulating XML data in a DOM like fashion and a serialization API.\n    As a bonus there’s also an XPath implementation, albeit this is limited to XPath 1.0.\n\n    This XML library was extracted from [libzeep](https://github.com/mhekkel/libzeep) since having a separate and simple XML library is more convenient.\n    The API is unfortunately no longer compatible since the goal was to be more standards compliant.\n    E.g., zeem::element should now be a complete [Sequence Container](https://en.cppreference.com/w/cpp/named_req/SequenceContainer).\n\nextra:\n  recipe-maintainers:\n    - eunos-1128\n",
+  "raw_meta_yaml": "context:\n  version: \"2.2.0\"\n\npackage:\n  name: zeem\n  version: ${{ version }}\n\nsource:\n  url: https://forge.hekkelman.net/maarten/zeem/archive/v${{ version }}.tar.gz\n  sha256: 8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - pkg-config\n    - if: osx\n      then:\n        - clang-tools\n    - if: win\n      then:\n        - m2-sed\n  host:\n    - catch2\n    - fast_float\n    - howardhinnant_date\n    - libmcfp\n  run_exports:\n    # Patch version update may be breakable\n    - ${{ pin_subpackage(\"zeem\", upper_bound=\"x.x.x\") }}\n  ignore_run_exports:\n    from_package:\n      - catch2\n\ntests:\n  - package_contents:\n      include:\n        - zeem/*\n      lib:\n        - zeem\n    strict: true\n\nabout:\n  homepage: https://mhekkel.github.io/zeem\n  repository: https://forge.hekkelman.net/maarten/zeem\n  documentation: https://mhekkel.github.io/zeem\n  license: BSD-2-Clause\n  license_file: LICENSE\n  summary: \"A C++ Module Library offering a full XML library with validating parser, DOM tree, XPaths and serialization\"\n  description: |\n    This is a feature complete XML library containing a validating parser as well as a modern C++ API for the data structures.\n    It also supports serializing custom data structures.\n\n    The core of this library is a validating XML parser with DTD processing and all.\n    On top of this are implemented an API for manipulating XML data in a DOM like fashion and a serialization API.\n    As a bonus there’s also an XPath implementation, albeit this is limited to XPath 1.0.\n\n    This XML library was extracted from [libzeep](https://github.com/mhekkel/libzeep) since having a separate and simple XML library is more convenient.\n    The API is unfortunately no longer compatible since the goal was to be more standards compliant.\n    E.g., zeem::element should now be a complete [Sequence Container](https://en.cppreference.com/w/cpp/named_req/SequenceContainer).\n\nextra:\n  recipe-maintainers:\n    - eunos-1128\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -929,7 +927,8 @@
       "cxx_compiler_stub",
       "fast_float",
       "howardhinnant_date",
-      "make",
+      "libmcfp",
+      "ninja",
       "pkg-config"
     ]
   },
@@ -940,7 +939,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -951,7 +950,8 @@
         "catch2",
         "cxx_compiler_stub",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
@@ -974,7 +974,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -983,7 +983,8 @@
       "elements": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
@@ -995,8 +996,8 @@
       "elements": []
     }
   },
-  "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz",
-  "version": "2.1.5",
+  "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz",
+  "version": "2.2.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/zeem.json"
   },
@@ -1017,11 +1018,7 @@
         "weak": [
           "zeem"
         ]
-      },
-      "script": [
-        "sed -i.bak 's#CPMAddPackage(\"gh:catchorg/Catch2@3.4.0\")#find_package(Catch2 REQUIRED)#' test/CMakeLists.txt",
-        "set -exo pipefail\n\nif [[ ${target_platform} == \"osx-\"* ]]; then\n  # std::chrono::current_zone (C++20 tzdb) requires libc++ 19+ built with\n  # experimental library support (-fexperimental-library) and a deployment\n  # target new enough to satisfy Apple's availability checks\n  # (bypassed here via `-D_LIBCPP_DISABLE_AVAILABILITY`).\n  export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY -fexperimental-library\"\n\n  # std::chrono::from_stream on libc++ has an unresolved bug parsing\n  # \"%FT%H:%M\" (seconds-omitted) into system_clock::time_point;\n  # Linux (libstdc++) and Windows (MSVC STL) parse this correctly.\n  sed -i.bak 's|TEST_CASE(\"test_time_4\")|TEST_CASE(\"test_time_4\", \"[!mayfail]\")|' test/serializer-test.cpp\nfi\n\nif [[ ${build_platform} != ${target_platform} ]]; then\n  extra_cmake_args=\"-DTEST_STD_CHRONO_FROM_STREAM_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\n\ncmake -S . -B build ${CMAKE_ARGS} -DBUILD_TESTING=ON -DBUILD_SHARED_LIBS=ON ${extra_cmake_args}\ncmake --build build --config Release --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n  ctest -V -C Release --test-dir build\nfi\ncmake --install build\n"
-      ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -1042,13 +1039,14 @@
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "cmake",
-            "pkg-config",
-            "make"
+            "ninja",
+            "pkg-config"
           ],
           "host": [
             "catch2",
             "fast_float",
-            "howardhinnant_date"
+            "howardhinnant_date",
+            "libmcfp"
           ],
           "run": []
         },
@@ -1064,31 +1062,32 @@
             }
           }
         ],
-        "version": "2.1.5"
+        "version": "2.2.0"
       }
     ],
     "package": {
       "name": "zeem",
-      "version": "2.1.5"
+      "version": "2.2.0"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "pkg-config",
-        "make"
+        "ninja",
+        "pkg-config"
       ],
       "host": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "b4dc9466c49601b511bfd3fcb88e89bba6c2f9eca23934db0a759090b825d1fc",
-      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.1.5.tar.gz"
+      "sha256": "8710b956958d1149ebc7ff78ff89b77a6e0bbb69eead8927085aa6a649f09a02",
+      "url": "https://forge.hekkelman.net/maarten/zeem/archive/v2.2.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -1098,7 +1097,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "make",
+        "ninja",
         "pkg-config"
       ]
     },
@@ -1107,7 +1106,8 @@
       "elements": [
         "catch2",
         "fast_float",
-        "howardhinnant_date"
+        "howardhinnant_date",
+        "libmcfp"
       ]
     },
     "run": {
