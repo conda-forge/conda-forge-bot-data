@@ -1,36 +1,40 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "b669b01d8d121594ddbc45b17770e01ff0918caf",
-  "feedstock_hash_ts": 1782429833,
+  "feedstock_hash": "086017567f90c11932a1424c1e7bea0572547aea",
+  "feedstock_hash_ts": 1786379731,
   "feedstock_name": "pyami-atlas",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/ami-team/pyAMI-atlas",
-      "doc_url": "https://ami.in2p3.fr/docs/pyAMI/",
-      "home": "https://ami.in2p3.fr/docs/pyAMI/",
-      "license": "LGPL-2.1-only",
-      "license_family": "LGPL-2.1-only",
-      "license_file": "pyAMI_atlas/LICENSE.txt",
+      "doc_url": "https://atlas-ami.cern.ch/docs/pyAMI/",
+      "home": "https://atlas-ami.cern.ch/",
+      "license": "LGPL-3.0-or-later",
+      "license_family": "LGPL-3.0-or-later",
+      "license_file": "LICENSE.md",
       "summary": "Python ATLAS Metadata Interface (pyAMI) for ATLAS"
     },
     "build": {
       "noarch": "python",
       "number": "0",
-      "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+      "script": [
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+        "${{ PYTHON }} -c \"import glob, os, sysconfig; [os.remove(f) for f in glob.glob(os.path.join(sysconfig.get_path('scripts'), 'ami_atlas*'))]\""
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -46,11 +50,11 @@
           "host": [
             "python 3.10.*",
             "pip",
-            "pyami-core"
+            "hatchling"
           ],
           "run": [
             "python >=3.10",
-            "pyami-core"
+            "pyami-core >=5.1.10"
           ]
         },
         "tests": [
@@ -59,39 +63,42 @@
               "imports": [
                 "pyAMI_atlas"
               ],
-              "python_version": "3.10.*"
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
             }
           },
           {
             "script": "ami --help"
           }
         ],
-        "version": "5.1.4"
+        "version": "5.1.10"
       }
     ],
     "package": {
       "name": "pyami-atlas",
-      "version": "5.1.4"
+      "version": "5.1.10"
     },
     "requirements": {
       "host": [
         "python 3.10.*",
         "pip",
-        "pyami-core"
+        "hatchling"
       ],
       "run": [
         "python >=3.10",
-        "pyami-core"
+        "pyami-core >=5.1.10"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "patches/0001-move-ami_atlas-to-cli.py-inside-package.patch",
-        "patches/0002-drop-ami_atlas_post_install-usage.patch"
+        "patches/0001-drop-post-install-shared-scripts.patch",
+        "patches/0002-guard-entrypoint-add-main.patch"
       ],
-      "sha256": "073c7b570cfea5bdd9a6e2cd00f8b9948080698a649c65226bcd116049e1e020",
-      "url": "https://pypi.org/packages/source/p/pyami-atlas/pyAMI_atlas-5.1.4.tar.gz"
+      "sha256": "2c84630f74f71496b7fb872fb63458ee0ca8f4b23c4fadda79359695597b17c9",
+      "url": "https://pypi.org/packages/source/p/pyami-atlas/pyami_atlas-5.1.10.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -102,8 +109,8 @@
     "host": {
       "__set__": true,
       "elements": [
+        "hatchling",
         "pip",
-        "pyami-core",
         "python"
       ]
     },
@@ -124,17 +131,20 @@
   "meta_yaml": {
     "about": {
       "dev_url": "https://github.com/ami-team/pyAMI-atlas",
-      "doc_url": "https://ami.in2p3.fr/docs/pyAMI/",
-      "home": "https://ami.in2p3.fr/docs/pyAMI/",
-      "license": "LGPL-2.1-only",
-      "license_family": "LGPL-2.1-only",
-      "license_file": "pyAMI_atlas/LICENSE.txt",
+      "doc_url": "https://atlas-ami.cern.ch/docs/pyAMI/",
+      "home": "https://atlas-ami.cern.ch/",
+      "license": "LGPL-3.0-or-later",
+      "license_family": "LGPL-3.0-or-later",
+      "license_file": "LICENSE.md",
       "summary": "Python ATLAS Metadata Interface (pyAMI) for ATLAS"
     },
     "build": {
       "noarch": "python",
       "number": "0",
-      "script": "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+      "script": [
+        "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
+        "${{ PYTHON }} -c \"import glob, os, sysconfig; [os.remove(f) for f in glob.glob(os.path.join(sysconfig.get_path('scripts'), 'ami_atlas*'))]\""
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -150,11 +160,11 @@
           "host": [
             "python 3.10.*",
             "pip",
-            "pyami-core"
+            "hatchling"
           ],
           "run": [
             "python >=3.10",
-            "pyami-core"
+            "pyami-core >=5.1.10"
           ]
         },
         "tests": [
@@ -163,39 +173,42 @@
               "imports": [
                 "pyAMI_atlas"
               ],
-              "python_version": "3.10.*"
+              "python_version": [
+                "3.10.*",
+                "*"
+              ]
             }
           },
           {
             "script": "ami --help"
           }
         ],
-        "version": "5.1.4"
+        "version": "5.1.10"
       }
     ],
     "package": {
       "name": "pyami-atlas",
-      "version": "5.1.4"
+      "version": "5.1.10"
     },
     "requirements": {
       "host": [
         "python 3.10.*",
         "pip",
-        "pyami-core"
+        "hatchling"
       ],
       "run": [
         "python >=3.10",
-        "pyami-core"
+        "pyami-core >=5.1.10"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "patches/0001-move-ami_atlas-to-cli.py-inside-package.patch",
-        "patches/0002-drop-ami_atlas_post_install-usage.patch"
+        "patches/0001-drop-post-install-shared-scripts.patch",
+        "patches/0002-guard-entrypoint-add-main.patch"
       ],
-      "sha256": "073c7b570cfea5bdd9a6e2cd00f8b9948080698a649c65226bcd116049e1e020",
-      "url": "https://pypi.org/packages/source/p/pyami-atlas/pyAMI_atlas-5.1.4.tar.gz"
+      "sha256": "2c84630f74f71496b7fb872fb63458ee0ca8f4b23c4fadda79359695597b17c9",
+      "url": "https://pypi.org/packages/source/p/pyami-atlas/pyami_atlas-5.1.10.tar.gz"
     }
   },
   "name": "pyami-atlas",
@@ -212,10 +225,11 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pyami-atlas.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"5.1.4\"\n  python_min: \"3.10\"\n\npackage:\n  name: pyami-atlas\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/p/pyami-atlas/pyAMI_atlas-${{ version }}.tar.gz\n  sha256: 073c7b570cfea5bdd9a6e2cd00f8b9948080698a649c65226bcd116049e1e020\n  patches:\n    - patches/0001-move-ami_atlas-to-cli.py-inside-package.patch\n    - patches/0002-drop-ami_atlas_post_install-usage.patch\n\nbuild:\n  number: 0\n  noarch: python\n  script:\n    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n  python:\n    entry_points:\n      - ami=pyAMI_atlas.cli:main\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - pip\n    - pyami-core\n  run:\n    - python >=${{ python_min }}\n    - pyami-core\n\ntests:\n  - python:\n      imports:\n        - pyAMI_atlas\n      pip_check: true\n      python_version: ${{ python_min }}.*\n  - script:\n      - ami --help\n\nabout:\n  summary: Python ATLAS Metadata Interface (pyAMI) for ATLAS\n  homepage: https://ami.in2p3.fr/docs/pyAMI/\n  repository: https://github.com/ami-team/pyAMI-atlas\n  documentation: https://ami.in2p3.fr/docs/pyAMI/\n  license: LGPL-2.1-only\n  license_file: pyAMI_atlas/LICENSE.txt\n\nextra:\n  recipe-maintainers:\n    - kratsg\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"5.1.10\"\n\npackage:\n  name: pyami-atlas\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/p/pyami-atlas/pyami_atlas-${{ version }}.tar.gz\n  sha256: 2c84630f74f71496b7fb872fb63458ee0ca8f4b23c4fadda79359695597b17c9\n  patches:\n    - patches/0001-drop-post-install-shared-scripts.patch\n    - patches/0002-guard-entrypoint-add-main.patch\n\nbuild:\n  number: 0\n  noarch: python\n  script:\n    # upstream's pyproject.toml unconditionally declares an `ami_atlas`\n    # console script; strip it here since the intended entry point is\n    # `ami` (declared above), materialized via conda's own noarch\n    # entry-point mechanism, not pip's.\n    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n    - ${{ PYTHON }} -c \"import glob, os, sysconfig; [os.remove(f) for f in glob.glob(os.path.join(sysconfig.get_path('scripts'), 'ami_atlas*'))]\"\n  python:\n    entry_points:\n      - ami=pyAMI_atlas.__main__:main\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - pip\n    - hatchling\n  run:\n    - python >=${{ python_min }}\n    - pyami-core >=5.1.10\n\ntests:\n  - python:\n      imports:\n        - pyAMI_atlas\n      pip_check: true\n      python_version:\n        - ${{ python_min }}.*\n        - \"*\"\n  - script:\n      - ami --help\n\nabout:\n  summary: Python ATLAS Metadata Interface (pyAMI) for ATLAS\n  homepage: https://atlas-ami.cern.ch/\n  repository: https://github.com/ami-team/pyAMI-atlas\n  documentation: https://atlas-ami.cern.ch/docs/pyAMI/\n  license: LGPL-3.0-or-later\n  license_file: LICENSE.md\n\nextra:\n  recipe-maintainers:\n    - kratsg\n",
   "req": {
     "__set__": true,
     "elements": [
+      "hatchling",
       "pip",
       "pyami-core",
       "python"
@@ -229,8 +243,8 @@
     "host": {
       "__set__": true,
       "elements": [
+        "hatchling",
         "pip",
-        "pyami-core",
         "python"
       ]
     },
@@ -257,15 +271,15 @@
     "host": {
       "__set__": true,
       "elements": [
+        "hatchling",
         "pip",
-        "pyami-core",
         "python 3.10.*"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "pyami-core",
+        "pyami-core >=5.1.10",
         "python >=3.10"
       ]
     },
@@ -276,8 +290,8 @@
       ]
     }
   },
-  "url": "https://pypi.org/packages/source/p/pyami-atlas/pyAMI_atlas-5.1.4.tar.gz",
-  "version": "5.1.4",
+  "url": "https://pypi.org/packages/source/p/pyami-atlas/pyami_atlas-5.1.10.tar.gz",
+  "version": "5.1.10",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/pyami-atlas.json"
   }
