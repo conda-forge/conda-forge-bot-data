@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "alsa_lib:\n- '1.2'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nffmpeg:\n- '8'\npulseaudio:\n- '17.0'\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "alsa_lib:\n- '1.2'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nffmpeg:\n- '9'\npulseaudio:\n- '17.0'\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -20,8 +20,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "284c47d6e4b9057e21e8c22f5337d68e964ef544",
-  "feedstock_hash_ts": 1776914041,
+  "feedstock_hash": "9e62833d022fae6fc0302e223a16d078900a4310",
+  "feedstock_hash_ts": 1786378997,
   "feedstock_name": "alsa-plugins",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,7 +38,7 @@
       "summary": "The Advanced Linux Sound Architecture (ALSA) - plugins"
     },
     "build": {
-      "number": "2"
+      "number": "3"
     },
     "extra": {
       "recipe-maintainers": [
@@ -69,6 +69,9 @@
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "ffmpeg9.patch"
+      ],
       "sha256": "55fccb55e6e195d73e93924b327f66d371001175c5bff70fdfd90bc026d496ba",
       "url": "https://github.com/alsa-project/alsa-plugins/archive/v1.2.12.tar.gz"
     },
@@ -141,7 +144,7 @@
       "summary": "The Advanced Linux Sound Architecture (ALSA) - plugins"
     },
     "build": {
-      "number": "2"
+      "number": "3"
     },
     "extra": {
       "recipe-maintainers": [
@@ -172,6 +175,9 @@
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "ffmpeg9.patch"
+      ],
       "sha256": "55fccb55e6e195d73e93924b327f66d371001175c5bff70fdfd90bc026d496ba",
       "url": "https://github.com/alsa-project/alsa-plugins/archive/v1.2.12.tar.gz"
     },
@@ -244,7 +250,7 @@
       "summary": "The Advanced Linux Sound Architecture (ALSA) - plugins"
     },
     "build": {
-      "number": "2"
+      "number": "3"
     },
     "extra": {
       "recipe-maintainers": [
@@ -275,6 +281,9 @@
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "ffmpeg9.patch"
+      ],
       "sha256": "55fccb55e6e195d73e93924b327f66d371001175c5bff70fdfd90bc026d496ba",
       "url": "https://github.com/alsa-project/alsa-plugins/archive/v1.2.12.tar.gz"
     },
@@ -347,7 +356,7 @@
       "summary": "The Advanced Linux Sound Architecture (ALSA) - plugins"
     },
     "build": {
-      "number": "2"
+      "number": "3"
     },
     "extra": {
       "recipe-maintainers": [
@@ -378,6 +387,9 @@
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "ffmpeg9.patch"
+      ],
       "sha256": "55fccb55e6e195d73e93924b327f66d371001175c5bff70fdfd90bc026d496ba",
       "url": "https://github.com/alsa-project/alsa-plugins/archive/v1.2.12.tar.gz"
     },
@@ -421,7 +433,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/alsa-plugins.json"
   },
-  "raw_meta_yaml": "{% set name = \"alsa-plugins\" %}\n{% set version = \"1.2.12\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/alsa-project/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: 55fccb55e6e195d73e93924b327f66d371001175c5bff70fdfd90bc026d496ba\n\nbuild:\n  number: 2\n  skip: true  # [not linux]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - autoconf\n    - automake\n    - libtool\n    - make\n    - pkg-config\n  host:\n    # unversioned dep on alsa-lib to get conda-forge pin\n    - alsa-lib\n    # alsa-plugins needs an alsa-lib with a version >= to its own\n    - alsa-lib >={{ version }}\n    - ffmpeg\n    - jack\n    - pulseaudio\n\ntest:\n  commands:\n    {% set mods = [\"conf_pulse\", \"ctl_arcam_av\", \"ctl_oss\", \"ctl_pulse\"] %}\n    {% set mods = mods + [\"pcm_a52\", \"pcm_jack\", \"pcm_oss\", \"pcm_pulse\"] %}\n    {% set mods = mods + [\"pcm_upmix\", \"pcm_usb_stream\", \"pcm_vdownmix\"] %}\n    {% set mods = mods + [\"rate_lavrate\", \"rate_lavrate_fast\", \"rate_lavrate_faster\"] %}\n    {% set mods = mods + [\"rate_lavrate_high\", \"rate_lavrate_higher\", \"rate_speexrate\"] %}\n    {% set mods = mods + [\"rate_speexrate_best\", \"rate_speexrate_medium\"] %}\n    {% for mod in mods %}\n    - test -f $PREFIX/lib/alsa-lib/libasound_module_{{ mod }}$SHLIB_EXT\n    {% endfor %}\n\nabout:\n  home: http://www.alsa-project.org/main/index.php/Main_Page\n  license: LGPL-2.1-or-later AND GPL-3.0-or-later\n  license_family: LGPL\n  license_file:\n    - COPYING\n    - COPYING.GPL\n  summary: The Advanced Linux Sound Architecture (ALSA) - plugins\n  description: |\n    Plugins for the ALSA library, including play or capture via JACK or Pulse Audio and\n    stream conversions.\n  dev_url: https://github.com/alsa-project/alsa-plugins\n\nextra:\n  recipe-maintainers:\n    - ryanvolz\n",
+  "raw_meta_yaml": "{% set name = \"alsa-plugins\" %}\n{% set version = \"1.2.12\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/alsa-project/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: 55fccb55e6e195d73e93924b327f66d371001175c5bff70fdfd90bc026d496ba\n  patches:\n    - ffmpeg9.patch\n\nbuild:\n  number: 3\n  skip: true  # [not linux]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - autoconf\n    - automake\n    - libtool\n    - make\n    - pkg-config\n  host:\n    # unversioned dep on alsa-lib to get conda-forge pin\n    - alsa-lib\n    # alsa-plugins needs an alsa-lib with a version >= to its own\n    - alsa-lib >={{ version }}\n    - ffmpeg\n    - jack\n    - pulseaudio\n\ntest:\n  commands:\n    {% set mods = [\"conf_pulse\", \"ctl_arcam_av\", \"ctl_oss\", \"ctl_pulse\"] %}\n    {% set mods = mods + [\"pcm_a52\", \"pcm_jack\", \"pcm_oss\", \"pcm_pulse\"] %}\n    {% set mods = mods + [\"pcm_upmix\", \"pcm_usb_stream\", \"pcm_vdownmix\"] %}\n    {% set mods = mods + [\"rate_lavrate\", \"rate_lavrate_fast\", \"rate_lavrate_faster\"] %}\n    {% set mods = mods + [\"rate_lavrate_high\", \"rate_lavrate_higher\", \"rate_speexrate\"] %}\n    {% set mods = mods + [\"rate_speexrate_best\", \"rate_speexrate_medium\"] %}\n    {% for mod in mods %}\n    - test -f $PREFIX/lib/alsa-lib/libasound_module_{{ mod }}$SHLIB_EXT\n    {% endfor %}\n\nabout:\n  home: http://www.alsa-project.org/main/index.php/Main_Page\n  license: LGPL-2.1-or-later AND GPL-3.0-or-later\n  license_family: LGPL\n  license_file:\n    - COPYING\n    - COPYING.GPL\n  summary: The Advanced Linux Sound Architecture (ALSA) - plugins\n  description: |\n    Plugins for the ALSA library, including play or capture via JACK or Pulse Audio and\n    stream conversions.\n  dev_url: https://github.com/alsa-project/alsa-plugins\n\nextra:\n  recipe-maintainers:\n    - ryanvolz\n",
   "req": {
     "__set__": true,
     "elements": [
