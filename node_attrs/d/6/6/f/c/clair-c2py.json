@@ -12,8 +12,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "170f17c45343b9a17d060ad5311529889450ba96",
-  "feedstock_hash_ts": 1786115172,
+  "feedstock_hash": "2e0d5504e1387f023c173b04a14f4dbd1b71e06f",
+  "feedstock_hash_ts": 1786367465,
   "feedstock_name": "clair-c2py",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -28,7 +28,7 @@
       "summary": "Clang introspection/reflection tools for automatic C++ to Python bindings (clair-c2py)"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -125,7 +125,7 @@
       "summary": "Clang introspection/reflection tools for automatic C++ to Python bindings (clair-c2py)"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -187,7 +187,7 @@
       "summary": "Clang introspection/reflection tools for automatic C++ to Python bindings (clair-c2py)"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -286,7 +286,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/clair-c2py.json"
   },
-  "raw_meta_yaml": "{% set name = \"clair-c2py\" %}\n{% set version = \"0.9.0\" %}\n{% set llvm_major = \"20\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/flatironinstitute/clair/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 511d13612ac0864bc52f0d9819c3bf49e09261a00b7342b6378f7e174763bbcc\n  patches:\n    # Try find_package(fmt)/find_package(tomlplusplus) before the upstream\n    # FetchContent fallback, so the build does not need network access and uses\n    # the conda-forge packages. Already on clair's unstable/0.9.x branches;\n    # drop this patch once a release ships it.\n    - find_package_deps.patch\n\nbuild:\n  number: 0\n  # clair is a Clang LibTooling tool; no Windows support upstream.\n  skip: true  # [win]\n\nrequirements:\n  build:\n    # clair FATAL_ERRORs unless built with Clang; the compiler is forced to\n    # clang/clangxx via conda_build_config.yaml (overrides the default gcc on linux).\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake >=3.20\n    - ninja\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n  host:\n    # LibTooling libraries + CMake config (find_package(Clang CONFIG)); requires >= 20.\n    - clangdev {{ llvm_major }}.*\n    - llvmdev {{ llvm_major }}.*\n    - llvm    {{ llvm_major }}.*\n    - libclang-cpp {{ llvm_major }}.*\n    - fmt\n    - tomlplusplus\n    - python\n    - numpy\n  run:\n    - python\n    # clair records (and conda relocates) the clang it was built with and uses\n    # that compiler + its resource dir at runtime to parse the user's C++, so a\n    # matching clang must be present at runtime.\n    - clang {{ llvm_major }}.*\n\ntest:\n  commands:\n    - clair-c2py --version\n    - clair-c2py --help\n\nabout:\n  home: https://github.com/flatironinstitute/clair\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE.txt\n  summary: Clang introspection/reflection tools for automatic C++ to Python bindings (clair-c2py)\n  description: |\n    Clair (Clang Introspection and Reflection) provides Clang LibTooling-based\n    tools that drive automatic C++ to Python bindings generation. The flagship\n    binary, clair-c2py, scans C++ headers and emits bindings that build against\n    the companion c2py runtime library (pulled in by each consuming project).\n  doc_url: https://flatironinstitute.github.io/clair/\n  dev_url: https://github.com/flatironinstitute/clair\n\nextra:\n  recipe-maintainers:\n    - wentzell\n",
+  "raw_meta_yaml": "{% set name = \"clair-c2py\" %}\n{% set version = \"0.9.0\" %}\n{% set llvm_major = \"20\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/flatironinstitute/clair/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 511d13612ac0864bc52f0d9819c3bf49e09261a00b7342b6378f7e174763bbcc\n  patches:\n    # Try find_package(fmt)/find_package(tomlplusplus) before the upstream\n    # FetchContent fallback, so the build does not need network access and uses\n    # the conda-forge packages. Already on clair's unstable/0.9.x branches;\n    # drop this patch once a release ships it.\n    - find_package_deps.patch\n\nbuild:\n  number: 1\n  # clair is a Clang LibTooling tool; no Windows support upstream.\n  skip: true  # [win]\n\nrequirements:\n  build:\n    # clair FATAL_ERRORs unless built with Clang; the compiler is forced to\n    # clang/clangxx via conda_build_config.yaml (overrides the default gcc on linux).\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake >=3.20\n    - ninja\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n  host:\n    # LibTooling libraries + CMake config (find_package(Clang CONFIG)); requires >= 20.\n    - clangdev {{ llvm_major }}.*\n    - llvmdev {{ llvm_major }}.*\n    - llvm    {{ llvm_major }}.*\n    - libclang-cpp {{ llvm_major }}.*\n    - fmt\n    - tomlplusplus\n    - python\n    - numpy\n  run:\n    - python\n    # clair records (and conda relocates) the clang it was built with and uses\n    # that compiler + its resource dir at runtime to parse the user's C++, so a\n    # matching clang must be present at runtime.\n    - clang {{ llvm_major }}.*\n\ntest:\n  commands:\n    - clair-c2py --version\n    - clair-c2py --help\n\nabout:\n  home: https://github.com/flatironinstitute/clair\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE.txt\n  summary: Clang introspection/reflection tools for automatic C++ to Python bindings (clair-c2py)\n  description: |\n    Clair (Clang Introspection and Reflection) provides Clang LibTooling-based\n    tools that drive automatic C++ to Python bindings generation. The flagship\n    binary, clair-c2py, scans C++ headers and emits bindings that build against\n    the companion c2py runtime library (pulled in by each consuming project).\n  doc_url: https://flatironinstitute.github.io/clair/\n  dev_url: https://github.com/flatironinstitute/clair\n\nextra:\n  recipe-maintainers:\n    - wentzell\n",
   "req": {
     "__set__": true,
     "elements": [
