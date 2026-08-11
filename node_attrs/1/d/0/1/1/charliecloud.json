@@ -15,8 +15,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "a940a58d01e618a0ea74257595d683ade9156473",
-  "feedstock_hash_ts": 1785940496,
+  "feedstock_hash": "d9df0079bd70b9ab7fe796ed2370f2c9a09e9123",
+  "feedstock_hash_ts": 1786423408,
   "feedstock_name": "charliecloud",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -45,7 +45,7 @@
     },
     "package": {
       "name": "charliecloud",
-      "version": "0.44"
+      "version": "0.45"
     },
     "requirements": {
       "build": [
@@ -69,15 +69,15 @@
     },
     "schema_version": 0,
     "source": {
-      "sha256": "2a01ecbb6cb2cfe0495338484fdba1ea63e44a48caff0d77ddd602f9e12177cf",
-      "url": "https://gitlab.com/charliecloud/charliecloud/-/releases/v0.44/downloads/charliecloud-0.44.tar.gz"
+      "sha256": "7ff265669751e2593ffed832cc3d98efddd367f306390feeb7714192d54b90bd",
+      "url": "https://gitlab.com/charliecloud/charliecloud/-/releases/v0.45/downloads/charliecloud-0.45.tar.gz"
     },
     "test": {
       "commands": [
         "ch-run --help",
         "ch-run --version",
         "ch-image --help",
-        "ch-image --version | grep -Fx 0.44",
+        "ch-image --version | grep -Fx 0.45",
         "ch-convert --help",
         "ch-image gestalt dependencies"
       ]
@@ -142,7 +142,7 @@
     },
     "package": {
       "name": "charliecloud",
-      "version": "0.44"
+      "version": "0.45"
     },
     "requirements": {
       "build": [
@@ -166,15 +166,15 @@
     },
     "schema_version": 0,
     "source": {
-      "sha256": "2a01ecbb6cb2cfe0495338484fdba1ea63e44a48caff0d77ddd602f9e12177cf",
-      "url": "https://gitlab.com/charliecloud/charliecloud/-/releases/v0.44/downloads/charliecloud-0.44.tar.gz"
+      "sha256": "7ff265669751e2593ffed832cc3d98efddd367f306390feeb7714192d54b90bd",
+      "url": "https://gitlab.com/charliecloud/charliecloud/-/releases/v0.45/downloads/charliecloud-0.45.tar.gz"
     },
     "test": {
       "commands": [
         "ch-run --help",
         "ch-run --version",
         "ch-image --help",
-        "ch-image --version | grep -Fx 0.44",
+        "ch-image --version | grep -Fx 0.45",
         "ch-convert --help",
         "ch-image gestalt dependencies"
       ]
@@ -194,7 +194,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/charliecloud.json"
   },
-  "raw_meta_yaml": "{% set version = \"0.44\" %}\n\npackage:\n  name: charliecloud\n  version: \"{{ version }}\"\n\nsource:\n  # Release asset, not the raw git archive: bundles a pre-generated configure\n  # and Lark, so the build needs no network access or autotools bootstrap.\n  url: https://gitlab.com/charliecloud/charliecloud/-/releases/v{{ version }}/downloads/charliecloud-{{ version }}.tar.gz\n  sha256: 2a01ecbb6cb2cfe0495338484fdba1ea63e44a48caff0d77ddd602f9e12177cf\n\nbuild:\n  number: 0\n  skip: true  # [not linux]\n  script:\n    # buggy-build: bin/str.h poisons strdup/strcmp/strncmp, colliding with\n    # glibc's _FORTIFY_SOURCE macros of the same names under -Werror.\n    # disable-test: matches the old patch's behavior, skipping the\n    # sotest/fixture tree entirely (no more DSO whitelist or symlink fixup).\n    - ./configure --prefix=$PREFIX --enable-buggy-build --disable-html --disable-man --disable-test --enable-ch-image\n    - make -j${CPU_COUNT}\n    - make install\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - make\n    # configure needs this to locate libfuse3 for squashfuse support.\n    - pkg-config\n\n  host:\n    # python is pinned by conda-forge's build matrix; vmin_python=3.6\n    # in configure.ac but the matrix only builds against 3.10+ anyway.\n    - python\n    - requests >=2.6.0\n\n  run:\n    - python\n    - requests >=2.6.0\n    - tar\n    # ch-image autodetects git and enables the build-cache feature by default.\n    - git\n    # SquashFS image support (vmin_mksquashfs=4.2, vmin_squashfuse=0.1.100).\n    - squashfs-tools >=4.2\n    - squashfuse >=0.1.100\n\ntest:\n  commands:\n    # ch-run writes --version to stderr (argp default), so don't pipe-grep it.\n    - ch-run --help\n    - ch-run --version\n    - ch-image --help\n    - ch-image --version | grep -Fx {{ version }}\n    - ch-convert --help\n    # No-network dependency check; also exercises the bundled Lark import.\n    - ch-image gestalt dependencies\n\nabout:\n  home: https://charliecloud.io/\n  license: Apache-2.0\n  license_file: LICENSE\n  summary: Lightweight user-defined software stacks for high-performance computing.\n  description: |\n    Charliecloud uses Linux user and mount namespaces to run unprivileged\n    containers from standard image formats (Docker/OCI) without a daemon or\n    setuid root binary, letting HPC users run containerized workloads on\n    cluster compute nodes. It includes ch-run (a small C binary launcher),\n    ch-image (a Python image manager and builder), and ch-convert (an image\n    format converter), targeting environments where rootless Docker/Podman\n    aren't viable but unprivileged user namespaces are available.\n  dev_url: https://gitlab.com/charliecloud/charliecloud\n  doc_url: https://charliecloud.io/latest/index.html\n\nextra:\n  recipe-maintainers:\n    - MilkClouds\n    - ngam\n",
+  "raw_meta_yaml": "{% set version = \"0.45\" %}\n\npackage:\n  name: charliecloud\n  version: \"{{ version }}\"\n\nsource:\n  # Release asset, not the raw git archive: bundles a pre-generated configure\n  # and Lark, so the build needs no network access or autotools bootstrap.\n  url: https://gitlab.com/charliecloud/charliecloud/-/releases/v{{ version }}/downloads/charliecloud-{{ version }}.tar.gz\n  sha256: 7ff265669751e2593ffed832cc3d98efddd367f306390feeb7714192d54b90bd\n\nbuild:\n  number: 0\n  skip: true  # [not linux]\n  script:\n    # buggy-build: bin/str.h poisons strdup/strcmp/strncmp, colliding with\n    # glibc's _FORTIFY_SOURCE macros of the same names under -Werror.\n    # disable-test: matches the old patch's behavior, skipping the\n    # sotest/fixture tree entirely (no more DSO whitelist or symlink fixup).\n    - ./configure --prefix=$PREFIX --enable-buggy-build --disable-html --disable-man --disable-test --enable-ch-image\n    - make -j${CPU_COUNT}\n    - make install\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - make\n    # configure needs this to locate libfuse3 for squashfuse support.\n    - pkg-config\n\n  host:\n    # python is pinned by conda-forge's build matrix; vmin_python=3.6\n    # in configure.ac but the matrix only builds against 3.10+ anyway.\n    - python\n    - requests >=2.6.0\n\n  run:\n    - python\n    - requests >=2.6.0\n    - tar\n    # ch-image autodetects git and enables the build-cache feature by default.\n    - git\n    # SquashFS image support (vmin_mksquashfs=4.2, vmin_squashfuse=0.1.100).\n    - squashfs-tools >=4.2\n    - squashfuse >=0.1.100\n\ntest:\n  commands:\n    # ch-run writes --version to stderr (argp default), so don't pipe-grep it.\n    - ch-run --help\n    - ch-run --version\n    - ch-image --help\n    - ch-image --version | grep -Fx {{ version }}\n    - ch-convert --help\n    # No-network dependency check; also exercises the bundled Lark import.\n    - ch-image gestalt dependencies\n\nabout:\n  home: https://charliecloud.io/\n  license: Apache-2.0\n  license_file: LICENSE\n  summary: Lightweight user-defined software stacks for high-performance computing.\n  description: |\n    Charliecloud uses Linux user and mount namespaces to run unprivileged\n    containers from standard image formats (Docker/OCI) without a daemon or\n    setuid root binary, letting HPC users run containerized workloads on\n    cluster compute nodes. It includes ch-run (a small C binary launcher),\n    ch-image (a Python image manager and builder), and ch-convert (an image\n    format converter), targeting environments where rootless Docker/Podman\n    aren't viable but unprivileged user namespaces are available.\n  dev_url: https://gitlab.com/charliecloud/charliecloud\n  doc_url: https://charliecloud.io/latest/index.html\n\nextra:\n  recipe-maintainers:\n    - MilkClouds\n    - ngam\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -281,8 +281,8 @@
       "elements": []
     }
   },
-  "url": "https://gitlab.com/charliecloud/charliecloud/-/releases/v0.44/downloads/charliecloud-0.44.tar.gz",
-  "version": "0.44",
+  "url": "https://gitlab.com/charliecloud/charliecloud/-/releases/v0.45/downloads/charliecloud-0.45.tar.gz",
+  "version": "0.45",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/charliecloud.json"
   }
