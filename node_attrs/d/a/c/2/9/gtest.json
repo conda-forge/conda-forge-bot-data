@@ -24,8 +24,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "b9e3998d0f9778695fa7e9f7ac064b5512c9f412",
-  "feedstock_hash_ts": 1786413478,
+  "feedstock_hash": "b95c34b47a9c2cd9e3213779ebcc68cc0b9a1932",
+  "feedstock_hash_ts": 1786419334,
   "feedstock_name": "gtest",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -37,7 +37,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
@@ -260,7 +260,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
@@ -411,7 +411,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
@@ -562,7 +562,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
@@ -1189,7 +1189,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
@@ -1340,7 +1340,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
@@ -1502,7 +1502,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/gtest.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.18.0\"\n\nrecipe:\n  name: gtest-split\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/google/googletest/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 6e3191c1455468b3fc35a417fb565c1c5071aee1b7e7f85e30cf48a98d37d8b5\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: gtest\n    build:\n      script:\n        file: build-gtest\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - ninja\n      run_exports:\n        - ${{ pin_subpackage('gtest', upper_bound='x.x.x') }}\n      run_constraints:\n        - gmock ==${{ version }}\n    tests:\n      - package_contents:\n          include:\n            - gtest/gtest.h\n            - gmock/gmock.h\n          lib:\n            - gtest\n            - gtest_main\n            - gmock\n            - gmock_main\n          files:\n            not_exists:\n              - if: unix\n                then:\n                  - lib/libgtest.a\n                  - lib/libgtest_main.a\n                  - lib/libgmock.a\n                  - lib/libgmock_main.a\n      - if: unix and target_platform != \"linux-riscv64\"\n        then:\n          script:\n            - for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done\n          requirements:\n            run:\n              - pkg-config\n      - if: win\n        then:\n          script:\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gtest\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gtest_main\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gmock\n            - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gmock_main\n          requirements:\n            run:\n              - pkg-config\n\n  # Empty wrapper for compatibility with the previous output separation.\n  - package:\n      name: gmock\n    requirements:\n      host:\n        - ${{ pin_subpackage('gtest', exact=True) }}\n      run:\n        - ${{ pin_subpackage('gtest', exact=True) }}\n    tests:\n      - script:\n          - echo \"Tested in the gtest output\"\n\nabout:\n  homepage: https://github.com/google/googletest\n  license: BSD-3-Clause\n  license_file: LICENSE\n  summary: Google's C++ test framework\n\nextra:\n  recipe-maintainers:\n    - SylvainCorlay\n    - scopatz\n    - wesm\n    - marcelotrevisani\n    - xhochy\n    - h-vetinari\n  feedstock-name: gtest\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.18.0\"\n\nrecipe:\n  name: gtest-split\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/google/googletest/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 6e3191c1455468b3fc35a417fb565c1c5071aee1b7e7f85e30cf48a98d37d8b5\n\nbuild:\n  number: 1\n\noutputs:\n  - package:\n      name: gtest\n    build:\n      script:\n        file: build-gtest\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - ninja\n      run_exports:\n        - ${{ pin_subpackage('gtest', upper_bound='x.x.x') }}\n      run_constraints:\n        - gmock ==${{ version }}\n    tests:\n      - package_contents:\n          include:\n            - gtest/gtest.h\n            - gmock/gmock.h\n          lib:\n            - gtest\n            - gtest_main\n            - gmock\n            - gmock_main\n          files:\n            not_exists:\n              - if: unix\n                then:\n                  - lib/libgtest.a\n                  - lib/libgtest_main.a\n                  - lib/libgmock.a\n                  - lib/libgmock_main.a\n      - requirements:\n          run:\n            - pkg-config\n        script:\n          - if: unix\n            then:\n              - for lib in gtest gtest_main gmock gmock_main; do pkg-config --print-errors --exact-version \"$PKG_VERSION\" \"$lib\"; done\n            else:\n              - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gtest\n              - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gtest_main\n              - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gmock\n              - pkg-config --print-errors --exact-version \"%PKG_VERSION%\" gmock_main\n\n  # Empty wrapper for compatibility with the previous output separation.\n  - package:\n      name: gmock\n    requirements:\n      host:\n        - ${{ pin_subpackage('gtest', exact=True) }}\n      run:\n        - ${{ pin_subpackage('gtest', exact=True) }}\n    tests:\n      - script:\n          - echo \"Tested in the gtest output\"\n\nabout:\n  homepage: https://github.com/google/googletest\n  license: BSD-3-Clause\n  license_file: LICENSE\n  summary: Google's C++ test framework\n\nextra:\n  recipe-maintainers:\n    - SylvainCorlay\n    - scopatz\n    - wesm\n    - marcelotrevisani\n    - xhochy\n    - h-vetinari\n  feedstock-name: gtest\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1590,7 +1590,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
@@ -1741,7 +1741,7 @@
       "summary": "Google's C++ test framework"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "gtest"
