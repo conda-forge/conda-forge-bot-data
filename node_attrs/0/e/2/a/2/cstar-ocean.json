@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "78eaf1d91d391deb8f0ccbd9055d532913cc9d20",
-  "feedstock_hash_ts": 1786403810,
+  "feedstock_hash": "8e82c3f297f8ccad27fee8d664fe8c73e0db9985",
+  "feedstock_hash_ts": 1786490472,
   "feedstock_name": "cstar-ocean",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -86,7 +86,7 @@
             "script": "cstar --version"
           }
         ],
-        "version": "0.9.1"
+        "version": "0.10.0"
       },
       {
         "build": null,
@@ -120,12 +120,12 @@
             ]
           }
         ],
-        "version": "0.9.1"
+        "version": "0.10.0"
       }
     ],
     "package": {
       "name": "cstar-ocean",
-      "version": "0.9.1"
+      "version": "0.10.0"
     },
     "requirements": {
       "host": [
@@ -155,8 +155,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "833285756f461765500a406416b2c274fba5ad1ea50cb0c93270313d22dd2063",
-      "url": "https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-0.9.1.tar.gz"
+      "sha256": "800ac39d7eb72de0609b43cab13de0ecf079945e5b9f9a8fea0b9d2f2a31dab6",
+      "url": "https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-0.10.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -280,7 +280,7 @@
             "script": "cstar --version"
           }
         ],
-        "version": "0.9.1"
+        "version": "0.10.0"
       },
       {
         "build": null,
@@ -314,12 +314,12 @@
             ]
           }
         ],
-        "version": "0.9.1"
+        "version": "0.10.0"
       }
     ],
     "package": {
       "name": "cstar-ocean",
-      "version": "0.9.1"
+      "version": "0.10.0"
     },
     "requirements": {
       "host": [
@@ -349,8 +349,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "833285756f461765500a406416b2c274fba5ad1ea50cb0c93270313d22dd2063",
-      "url": "https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-0.9.1.tar.gz"
+      "sha256": "800ac39d7eb72de0609b43cab13de0ecf079945e5b9f9a8fea0b9d2f2a31dab6",
+      "url": "https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-0.10.0.tar.gz"
     }
   },
   "name": "cstar-ocean",
@@ -368,7 +368,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/cstar-ocean.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"0.9.1\"\n  python_min: \"3.12\"\n\nrecipe:\n  name: cstar-ocean-suite\n  version: ${{ version }}\n\nsource:\n  - url: https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-${{ version }}.tar.gz\n    sha256: 833285756f461765500a406416b2c274fba5ad1ea50cb0c93270313d22dd2063\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: cstar-ocean\n      version: ${{ version }}\n\n    build:\n      # noarch; not solvable on Windows today (roms-tools -> xesmf/esmf has no\n      # win-64 build) but will work there as soon as the deps become available\n      noarch: python\n      script: python -m pip install . -vv --no-deps --no-build-isolation\n      python:\n        entry_points:\n          - cstar = cstar.cli.cli:main\n\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n        - pip\n        - setuptools >=61.0.0\n        - wheel\n        - setuptools-scm >=7.0\n        - check-manifest\n      run:\n        - python >=${{ python_min }}\n        - fakeredis <2.35\n        - networkx >=3.6.1\n        - prefect >=3.6.1\n        - psutil >=7.2.2\n        - pydantic >=2.13\n        - python-dateutil >=2.8.2\n        - pytimeparse >=1.1.8\n        - python-dotenv\n        - pyyaml >=6.0,<7\n        - f90nml >=1.4\n        - numpy >2.0,<2.4\n        - roms-tools >=4.0.1,<5\n        - typer <=0.25\n\n    tests:\n      - python:\n          imports:\n            - cstar\n          pip_check: true\n          python_version:\n            - ${{ python_min }}.*\n            - \"*\"\n      - script:\n          - cstar --version\n\n    about:\n      homepage: https://www.cworthy.org\n      repository: https://github.com/CWorthy-ocean/C-Star\n      documentation: https://c-star.readthedocs.io\n      summary: Computational systems for tracking ocean carbon\n      description: |\n        C-Star automates the setup and execution of reproducible ocean-carbon\n        modeling workflows (ROMS-MARBL and related regional ocean/biogeochemistry\n        simulations) via a blueprint-driven, orchestration-aware Python API and\n        command-line tool.\n      license: Apache-2.0\n      license_file: LICENSE\n\n  - package:\n      name: cstar-ocean-standalone\n      version: ${{ version }}\n\n    build:\n      # metapackage (no code): the toolchain deps below resolve to their\n      # platform-specific variants at install time\n      noarch: generic\n\n    requirements:\n      run:\n        - ${{ pin_subpackage(\"cstar-ocean\", exact=True) }}\n        - c-compiler\n        - cxx-compiler\n        - fortran-compiler\n        - make\n        - cmake\n        - mpich\n        - netcdf-fortran\n        - libpnetcdf\n        # ucla-roms Makefiles require GNU-flavored rsync; macOS system rsync lacks the needed flags\n        - rsync\n\n    tests:\n      - script:\n          # the point of this metapackage is a working toolchain next to cstar\n          - cstar --version\n          - gfortran --version\n          - mpirun --version\n          - cmake --version\n          - make --version\n          - rsync --version\n          - nf-config --version\n\n    about:\n      homepage: https://www.cworthy.org\n      repository: https://github.com/CWorthy-ocean/C-Star\n      documentation: https://c-star.readthedocs.io\n      summary: >-\n        C-Star with a full conda-provided build toolchain for laptops/workstations\n        (HPC users should use system modules instead)\n      license: Apache-2.0\n      license_file: LICENSE\n\nabout:\n  homepage: https://www.cworthy.org\n  repository: https://github.com/CWorthy-ocean/C-Star\n  documentation: https://c-star.readthedocs.io\n  summary: Computational systems for tracking ocean carbon\n  license: Apache-2.0\n  license_file: LICENSE\n\nextra:\n  # multi-output recipe: infrastructure needs the feedstock name to be explicit\n  feedstock-name: cstar-ocean\n  recipe-maintainers:\n    - ScottEilerman\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"0.10.0\"\n  python_min: \"3.12\"\n\nrecipe:\n  name: cstar-ocean-suite\n  version: ${{ version }}\n\nsource:\n  - url: https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-${{ version }}.tar.gz\n    sha256: 800ac39d7eb72de0609b43cab13de0ecf079945e5b9f9a8fea0b9d2f2a31dab6\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: cstar-ocean\n      version: ${{ version }}\n\n    build:\n      # noarch; not solvable on Windows today (roms-tools -> xesmf/esmf has no\n      # win-64 build) but will work there as soon as the deps become available\n      noarch: python\n      script: python -m pip install . -vv --no-deps --no-build-isolation\n      python:\n        entry_points:\n          - cstar = cstar.cli.cli:main\n\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n        - pip\n        - setuptools >=61.0.0\n        - wheel\n        - setuptools-scm >=7.0\n        - check-manifest\n      run:\n        - python >=${{ python_min }}\n        - fakeredis <2.35\n        - networkx >=3.6.1\n        - prefect >=3.6.1\n        - psutil >=7.2.2\n        - pydantic >=2.13\n        - python-dateutil >=2.8.2\n        - pytimeparse >=1.1.8\n        - python-dotenv\n        - pyyaml >=6.0,<7\n        - f90nml >=1.4\n        - numpy >2.0,<2.4\n        - roms-tools >=4.0.1,<5\n        - typer <=0.25\n\n    tests:\n      - python:\n          imports:\n            - cstar\n          pip_check: true\n          python_version:\n            - ${{ python_min }}.*\n            - \"*\"\n      - script:\n          - cstar --version\n\n    about:\n      homepage: https://www.cworthy.org\n      repository: https://github.com/CWorthy-ocean/C-Star\n      documentation: https://c-star.readthedocs.io\n      summary: Computational systems for tracking ocean carbon\n      description: |\n        C-Star automates the setup and execution of reproducible ocean-carbon\n        modeling workflows (ROMS-MARBL and related regional ocean/biogeochemistry\n        simulations) via a blueprint-driven, orchestration-aware Python API and\n        command-line tool.\n      license: Apache-2.0\n      license_file: LICENSE\n\n  - package:\n      name: cstar-ocean-standalone\n      version: ${{ version }}\n\n    build:\n      # metapackage (no code): the toolchain deps below resolve to their\n      # platform-specific variants at install time\n      noarch: generic\n\n    requirements:\n      run:\n        - ${{ pin_subpackage(\"cstar-ocean\", exact=True) }}\n        - c-compiler\n        - cxx-compiler\n        - fortran-compiler\n        - make\n        - cmake\n        - mpich\n        - netcdf-fortran\n        - libpnetcdf\n        # ucla-roms Makefiles require GNU-flavored rsync; macOS system rsync lacks the needed flags\n        - rsync\n\n    tests:\n      - script:\n          # the point of this metapackage is a working toolchain next to cstar\n          - cstar --version\n          - gfortran --version\n          - mpirun --version\n          - cmake --version\n          - make --version\n          - rsync --version\n          - nf-config --version\n\n    about:\n      homepage: https://www.cworthy.org\n      repository: https://github.com/CWorthy-ocean/C-Star\n      documentation: https://c-star.readthedocs.io\n      summary: >-\n        C-Star with a full conda-provided build toolchain for laptops/workstations\n        (HPC users should use system modules instead)\n      license: Apache-2.0\n      license_file: LICENSE\n\nabout:\n  homepage: https://www.cworthy.org\n  repository: https://github.com/CWorthy-ocean/C-Star\n  documentation: https://c-star.readthedocs.io\n  summary: Computational systems for tracking ocean carbon\n  license: Apache-2.0\n  license_file: LICENSE\n\nextra:\n  # multi-output recipe: infrastructure needs the feedstock name to be explicit\n  feedstock-name: cstar-ocean\n  recipe-maintainers:\n    - ScottEilerman\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -508,8 +508,8 @@
       ]
     }
   },
-  "url": "https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-0.9.1.tar.gz",
-  "version": "0.9.1",
+  "url": "https://pypi.org/packages/source/c/cstar-ocean/cstar_ocean-0.10.0.tar.gz",
+  "version": "0.10.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/cstar-ocean.json"
   }
