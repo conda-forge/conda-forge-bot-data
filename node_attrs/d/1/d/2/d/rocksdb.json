@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_rocksdb_build_extdefault.yaml": "bzip2:\n- '1'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ngflags:\n- '2.3'\nlz4_c:\n- '1.10'\nrocksdb:\n- '11.0'\nrocksdb_build_ext:\n- default\nsnappy:\n- '1.2'\ntarget_platform:\n- linux-64\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
+  "ci_support_linux_64_rocksdb_build_extdefault.yaml": "bzip2:\n- '1'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ngflags:\n- '2.3'\nlz4_c:\n- '1.10'\nrocksdb_build_ext:\n- default\nsnappy:\n- '1.2'\ntarget_platform:\n- linux-64\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
   "conda-forge.yml": {
     "bot": {
       "abi_migration_branches": [
@@ -18,6 +18,7 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
@@ -29,25 +30,31 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "0ea37f7acc4a0a8fd9da3ede4fe964a3de8af9c7",
-  "feedstock_hash_ts": 1786389881,
+  "feedstock_hash": "aa7000361903975997ba7371b1eeef09f6716e41",
+  "feedstock_hash_ts": 1786548731,
   "feedstock_name": "rocksdb",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/facebook/rocksdb",
       "doc_url": "https://rocksdb.org/docs",
-      "home": "https://rocksdb.org",
+      "home": "https://rocksdb.org/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "src/LICENSE.Apache",
       "summary": "A library that provides an embeddable, persistent key-value store for fast storage."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "rocksdb"
-      ],
-      "string": "h1234567_0_jemalloc"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "rocksdb"
+        ]
+      },
+      "script": {
+        "file": "build.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -58,6 +65,81 @@
         "sodre"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "jemalloc",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      }
+    ],
     "package": {
       "name": "rocksdb",
       "version": "11.8.1"
@@ -79,21 +161,13 @@
         "jemalloc"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "folder": "src",
       "patches": [
         "remove-unreachable-returns.patch"
       ],
       "sha256": "618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff",
       "url": "https://github.com/facebook/rocksdb/archive/v11.8.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/librocksdb.a",
-        "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
-        "test -f ${PREFIX}/include/rocksdb/db.h"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -131,17 +205,23 @@
     "about": {
       "dev_url": "https://github.com/facebook/rocksdb",
       "doc_url": "https://rocksdb.org/docs",
-      "home": "https://rocksdb.org",
+      "home": "https://rocksdb.org/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "src/LICENSE.Apache",
       "summary": "A library that provides an embeddable, persistent key-value store for fast storage."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "rocksdb"
-      ],
-      "string": "h1234567_0_jemalloc"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "rocksdb"
+        ]
+      },
+      "script": {
+        "file": "build.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -152,6 +232,81 @@
         "sodre"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "jemalloc",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      }
+    ],
     "package": {
       "name": "rocksdb",
       "version": "11.8.1"
@@ -173,21 +328,13 @@
         "jemalloc"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "folder": "src",
       "patches": [
         "remove-unreachable-returns.patch"
       ],
       "sha256": "618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff",
       "url": "https://github.com/facebook/rocksdb/archive/v11.8.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/librocksdb.a",
-        "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
-        "test -f ${PREFIX}/include/rocksdb/db.h"
-      ]
     }
   },
   "linux_aarch64_requirements": {
@@ -225,17 +372,23 @@
     "about": {
       "dev_url": "https://github.com/facebook/rocksdb",
       "doc_url": "https://rocksdb.org/docs",
-      "home": "https://rocksdb.org",
+      "home": "https://rocksdb.org/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "src/LICENSE.Apache",
       "summary": "A library that provides an embeddable, persistent key-value store for fast storage."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "rocksdb"
-      ],
-      "string": "h1234567_0_jemalloc"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "rocksdb"
+        ]
+      },
+      "script": {
+        "file": "build.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -246,6 +399,81 @@
         "sodre"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "jemalloc",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      }
+    ],
     "package": {
       "name": "rocksdb",
       "version": "11.8.1"
@@ -267,21 +495,13 @@
         "jemalloc"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "folder": "src",
       "patches": [
         "remove-unreachable-returns.patch"
       ],
       "sha256": "618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff",
       "url": "https://github.com/facebook/rocksdb/archive/v11.8.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/librocksdb.a",
-        "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
-        "test -f ${PREFIX}/include/rocksdb/db.h"
-      ]
     }
   },
   "linux_ppc64le_requirements": {
@@ -319,17 +539,23 @@
     "about": {
       "dev_url": "https://github.com/facebook/rocksdb",
       "doc_url": "https://rocksdb.org/docs",
-      "home": "https://rocksdb.org",
+      "home": "https://rocksdb.org/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "src/LICENSE.Apache",
       "summary": "A library that provides an embeddable, persistent key-value store for fast storage."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "rocksdb"
-      ],
-      "string": "h1234567_0_default"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "rocksdb"
+        ]
+      },
+      "script": {
+        "file": "build.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -340,6 +566,335 @@
         "sodre"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "jemalloc",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "jemalloc",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "jemalloc",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      }
+    ],
     "package": {
       "name": "rocksdb",
       "version": "11.8.1"
@@ -361,24 +916,13 @@
         "jemalloc"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "folder": "src",
       "patches": [
         "remove-unreachable-returns.patch"
       ],
       "sha256": "618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff",
       "url": "https://github.com/facebook/rocksdb/archive/v11.8.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/librocksdb.a",
-        "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
-        "test -f ${PREFIX}/include/rocksdb/db.h",
-        "if not exist %LIBRARY_PREFIX%\\lib\\rocksdb.lib exit 1",
-        "if not exist %LIBRARY_PREFIX%\\lib\\rocksdb-shared.lib exit 1",
-        "if not exist %LIBRARY_PREFIX%\\include\\rocksdb\\db.h exit 1"
-      ]
     }
   },
   "name": "rocksdb",
@@ -386,17 +930,23 @@
     "about": {
       "dev_url": "https://github.com/facebook/rocksdb",
       "doc_url": "https://rocksdb.org/docs",
-      "home": "https://rocksdb.org",
+      "home": "https://rocksdb.org/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "src/LICENSE.Apache",
       "summary": "A library that provides an embeddable, persistent key-value store for fast storage."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "rocksdb"
-      ],
-      "string": "h1234567_0_default"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "rocksdb"
+        ]
+      },
+      "script": {
+        "file": "build.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -407,6 +957,44 @@
         "sodre"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      }
+    ],
     "package": {
       "name": "rocksdb",
       "version": "11.8.1"
@@ -427,21 +1015,13 @@
         "zlib"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "folder": "src",
       "patches": [
         "remove-unreachable-returns.patch"
       ],
       "sha256": "618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff",
       "url": "https://github.com/facebook/rocksdb/archive/v11.8.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/librocksdb.a",
-        "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
-        "test -f ${PREFIX}/include/rocksdb/db.h"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -478,17 +1058,23 @@
     "about": {
       "dev_url": "https://github.com/facebook/rocksdb",
       "doc_url": "https://rocksdb.org/docs",
-      "home": "https://rocksdb.org",
+      "home": "https://rocksdb.org/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "src/LICENSE.Apache",
       "summary": "A library that provides an embeddable, persistent key-value store for fast storage."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "rocksdb"
-      ],
-      "string": "h1234567_0_default"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "rocksdb"
+        ]
+      },
+      "script": {
+        "file": "build.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -499,6 +1085,44 @@
         "sodre"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      }
+    ],
     "package": {
       "name": "rocksdb",
       "version": "11.8.1"
@@ -519,21 +1143,13 @@
         "zlib"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "folder": "src",
       "patches": [
         "remove-unreachable-returns.patch"
       ],
       "sha256": "618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff",
       "url": "https://github.com/facebook/rocksdb/archive/v11.8.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f ${PREFIX}/lib/librocksdb.a",
-        "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
-        "test -f ${PREFIX}/include/rocksdb/db.h"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -584,7 +1200,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/rocksdb.json"
   },
-  "raw_meta_yaml": "{% set name = \"rocksdb\" %}\n{% set version = \"11.8.1\" %}\n\npackage:\n  name: rocksdb\n  version: {{ version }}\n\nsource:\n  folder: src\n  url: https://github.com/facebook/rocksdb/archive/v{{ version }}.tar.gz\n  sha256: 618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff\n  patches:\n    - remove-unreachable-returns.patch\n\nbuild:\n  number: 0\n  string: h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_{{ rocksdb_build_ext }}\n  run_exports:\n    # Symbols are removed from a minor release to the next.\n    # https://abi-laboratory.pro/index.php?view=timeline&l=rocksdb\n    - {{ pin_subpackage(name, max_pin='x.x') }}\n\nrequirements:\n  build:\n    - {{ compiler(\"cxx\") }}\n    - {{ stdlib(\"c\") }}\n    - cmake >=3.5.1,<4\n    - ninja >=1.10,<2\n  host:\n    - gflags\n    - jemalloc  # [rocksdb_build_ext == \"jemalloc\"]\n    - lz4-c\n    - snappy\n    - zstd\n    - bzip2\n    - zlib\n\ntest:\n  commands:\n    - test -f ${PREFIX}/lib/librocksdb.a                           # [unix]\n    - test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}                 # [unix]\n    - test -f ${PREFIX}/include/rocksdb/db.h                       # [unix]\n    - if not exist %LIBRARY_PREFIX%\\lib\\rocksdb.lib exit 1         # [win]\n    - if not exist %LIBRARY_PREFIX%\\lib\\rocksdb-shared.lib exit 1  # [win]\n    - if not exist %LIBRARY_PREFIX%\\include\\rocksdb\\db.h exit 1    # [win]\n\nabout:\n  home: https://rocksdb.org\n  license: Apache-2.0\n  license_file: src/LICENSE.Apache\n  summary: A library that provides an embeddable, persistent key-value store for fast storage.\n\n  dev_url: https://github.com/facebook/rocksdb\n  doc_url: https://rocksdb.org/docs\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n    - benhuff\n    - oblute\n    - rluria14\n    - sodre\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: rocksdb\n  version: \"11.8.1\"\n  build_number: 1\n\npackage:\n  name: rocksdb\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/facebook/rocksdb/archive/v${{ version }}.tar.gz\n  sha256: 618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff\n  target_directory: src\n  patches:\n    - remove-unreachable-returns.patch\n\nbuild:\n  number: ${{ build_number }}\n  string: h${{ hash }}_${{ build_number }}_${{ rocksdb_build_ext }}\n  script:\n    file: ${{ \"build.bat\" if win else \"build.sh\" }}\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake >=3.5.1,<4\n    - ninja >=1.10,<2\n  host:\n    - gflags\n    - if: rocksdb_build_ext == \"jemalloc\"\n      then: jemalloc\n    - lz4-c\n    - snappy\n    - zstd\n    - bzip2\n    - zlib\n  run_exports:\n    # Symbols are removed from one minor release to the next.\n    # https://abi-laboratory.pro/index.php?view=timeline&l=rocksdb\n    - ${{ pin_subpackage(name, upper_bound='x.x') }}\n\ntests:\n  - script:\n      - if: unix\n        then: test -f ${PREFIX}/lib/librocksdb.a\n      - if: unix\n        then: test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}\n      - if: unix\n        then: test -f ${PREFIX}/include/rocksdb/db.h\n      - if: win\n        then: if not exist %LIBRARY_PREFIX%\\lib\\rocksdb.lib exit 1\n      - if: win\n        then: if not exist %LIBRARY_PREFIX%\\lib\\rocksdb-shared.lib exit 1\n      - if: win\n        then: if not exist %LIBRARY_PREFIX%\\include\\rocksdb\\db.h exit 1\n\nabout:\n  license: Apache-2.0\n  license_file: src/LICENSE.Apache\n  summary: A library that provides an embeddable, persistent key-value store for fast storage.\n  homepage: https://rocksdb.org\n  repository: https://github.com/facebook/rocksdb\n  documentation: https://rocksdb.org/docs\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n    - benhuff\n    - oblute\n    - rluria14\n    - sodre\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -678,17 +1294,23 @@
     "about": {
       "dev_url": "https://github.com/facebook/rocksdb",
       "doc_url": "https://rocksdb.org/docs",
-      "home": "https://rocksdb.org",
+      "home": "https://rocksdb.org/",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "src/LICENSE.Apache",
       "summary": "A library that provides an embeddable, persistent key-value store for fast storage."
     },
     "build": {
-      "number": "0",
-      "run_exports": [
-        "rocksdb"
-      ],
-      "string": "h1234567_0_default"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "rocksdb"
+        ]
+      },
+      "script": {
+        "file": "build.sh",
+        "interpreter": "bash"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -699,6 +1321,44 @@
         "sodre"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "rocksdb"
+          ]
+        },
+        "name": "rocksdb",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake >=3.5.1,<4",
+            "ninja >=1.10,<2"
+          ],
+          "host": [
+            "gflags",
+            "lz4-c",
+            "snappy",
+            "zstd",
+            "bzip2",
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f ${PREFIX}/lib/librocksdb.a",
+              "test -f ${PREFIX}/lib/librocksdb${SHLIB_EXT}",
+              "test -f ${PREFIX}/include/rocksdb/db.h"
+            ]
+          }
+        ],
+        "version": "11.8.1"
+      }
+    ],
     "package": {
       "name": "rocksdb",
       "version": "11.8.1"
@@ -719,21 +1379,13 @@
         "zlib"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "folder": "src",
       "patches": [
         "remove-unreachable-returns.patch"
       ],
       "sha256": "618d9726a7cb1cf4ce034f4cdca49de98aa64867dda06b91371a791ae8921aff",
       "url": "https://github.com/facebook/rocksdb/archive/v11.8.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "if not exist %LIBRARY_PREFIX%\\lib\\rocksdb.lib exit 1",
-        "if not exist %LIBRARY_PREFIX%\\lib\\rocksdb-shared.lib exit 1",
-        "if not exist %LIBRARY_PREFIX%\\include\\rocksdb\\db.h exit 1"
-      ]
     }
   },
   "win_64_requirements": {
