@@ -3,6 +3,10 @@
   "branch": "main",
   "ci_support_linux_64_mpimpichpython3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nhdf5:\n- 1.14.6\nmetis:\n- 5.1.0\nmpi:\n- mpich\nmpich:\n- '5'\nopenblas:\n- 0.3.*\nopenmpi:\n- '5'\npetsc:\n- '3.25'\npetsc4py:\n- '3.25'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\nsuperlu_dist:\n- '9'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - fortran_compiler_version\n",
   "conda-forge.yml": {
+    "build_platform": {
+      "linux_aarch64": "linux_64",
+      "osx_arm64": "osx_64"
+    },
     "conda_build": {
       "pkg_format": "2"
     },
@@ -10,10 +14,15 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "win": "azure"
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "ec2372be499919a6cf65650bd5eff66b31ff70f7",
-  "feedstock_hash_ts": 1785533511,
+  "feedstock_hash": "5eb09db382ef92866a77677b4cff23d3ee2dfc06",
+  "feedstock_hash_ts": 1786563579,
   "feedstock_name": "proteus",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -26,12 +35,12 @@
       "summary": "Proteus is a Python package for rapidly developing computer models and numerical methods."
     },
     "build": {
-      "number": "8",
+      "number": "21",
       "run_exports": [
         "proteus * mpi_mpich_*",
         "proteus * mpi_openmpi_*"
       ],
-      "string": "mpi_openmpi_h1234567_8"
+      "string": "mpi_openmpi_h1234567_21"
     },
     "extra": {
       "recipe-maintainers": [
@@ -69,7 +78,7 @@
         "petsc",
         "petsc * real_*",
         "python",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "triangle",
         "superlu",
         "superlu_dist",
@@ -90,7 +99,7 @@
         "triangle",
         "ncurses",
         "pychrono >=9,<10",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "python 3",
         "openblas",
         "petsc4py",
@@ -106,6 +115,7 @@
     "schema_version": 0,
     "source": {
       "fn": "proteus-1.8.3.tar.gz",
+      "patches": null,
       "sha256": "315f0600044e2ad86592c248a9a4ca87dc58c1d678af2c27a9ddde802b555618",
       "url": "https://github.com/erdc/proteus/archive/1.8.3.tar.gz"
     },
@@ -192,7 +202,7 @@
       ]
     }
   },
-  "meta_yaml": {
+  "linux_aarch64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/erdc/proteus",
       "home": "http://proteustoolkit.org",
@@ -202,12 +212,12 @@
       "summary": "Proteus is a Python package for rapidly developing computer models and numerical methods."
     },
     "build": {
-      "number": "8",
+      "number": "21",
       "run_exports": [
         "proteus * mpi_mpich_*",
         "proteus * mpi_openmpi_*"
       ],
-      "string": "mpi_openmpi_h1234567_8"
+      "string": "mpi_openmpi_h1234567_21"
     },
     "extra": {
       "recipe-maintainers": [
@@ -245,13 +255,13 @@
         "petsc",
         "petsc * real_*",
         "python",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "triangle",
         "superlu",
         "superlu_dist",
         "pychrono >=9,<10",
         "mpi4py",
-        "xtensor <0.26",
+        "xtensor >=0.27.1,<0.28.0a0",
         "xtensor-python",
         "eigen",
         "hdf5",
@@ -266,7 +276,7 @@
         "triangle",
         "ncurses",
         "pychrono >=9,<10",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "python 3",
         "openblas",
         "petsc4py",
@@ -282,6 +292,191 @@
     "schema_version": 0,
     "source": {
       "fn": "proteus-1.8.3.tar.gz",
+      "patches": [
+        "fix-arm64-avx.patch",
+        "fix-linux-aarch64-xio-path.patch",
+        "fix-linux-aarch64-cxx20.patch"
+      ],
+      "sha256": "315f0600044e2ad86592c248a9a4ca87dc58c1d678af2c27a9ddde802b555618",
+      "url": "https://github.com/erdc/proteus/archive/1.8.3.tar.gz"
+    },
+    "test": {
+      "commands": [
+        "pytest -v test/ci/test_meshPartitionFromTetgenFiles.py"
+      ],
+      "imports": [
+        "proteus"
+      ],
+      "requires": [
+        "pytest",
+        "pytest-forked",
+        "matplotlib-base"
+      ],
+      "source_files": [
+        "test"
+      ]
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "eigen",
+        "hdf5",
+        "metis",
+        "mpi4py",
+        "mpich",
+        "numpy",
+        "openblas",
+        "openmpi",
+        "parmetis",
+        "petsc",
+        "petsc4py",
+        "pip",
+        "pybind11",
+        "pychrono",
+        "python",
+        "scorec",
+        "setuptools",
+        "superlu",
+        "superlu_dist",
+        "triangle",
+        "xtensor",
+        "xtensor-python"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "h5py",
+        "hdf5",
+        "mpi4py",
+        "ncurses",
+        "openblas",
+        "petsc4py",
+        "pychrono",
+        "python",
+        "scipy",
+        "scorec",
+        "tetgen",
+        "triangle"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "matplotlib-base",
+        "pytest",
+        "pytest-forked"
+      ]
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/erdc/proteus",
+      "home": "http://proteustoolkit.org",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE.md",
+      "summary": "Proteus is a Python package for rapidly developing computer models and numerical methods."
+    },
+    "build": {
+      "number": "21",
+      "run_exports": [
+        "proteus * mpi_mpich_*",
+        "proteus * mpi_openmpi_*"
+      ],
+      "string": "mpi_mpich_h1234567_21"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "davidbrochart",
+        "SylvainCorlay",
+        "martinRenou",
+        "zhang-alvin",
+        "jan-janssen",
+        "cekees"
+      ]
+    },
+    "package": {
+      "name": "proteus",
+      "version": "1.8.3"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make"
+      ],
+      "host": [
+        "setuptools",
+        "cython >=3",
+        "pybind11",
+        "pip",
+        "metis",
+        "mpich",
+        "numpy >=1.25.1",
+        "openblas >=0.3.20",
+        "parmetis",
+        "petsc4py",
+        "petsc",
+        "petsc * real_*",
+        "python",
+        "scorec >=2.2.8,<3",
+        "triangle",
+        "superlu",
+        "superlu_dist",
+        "pychrono >=9,<10",
+        "mpi4py",
+        "xtensor <0.26",
+        "xtensor-python",
+        "eigen",
+        "hdf5",
+        "hdf5 * mpi_mpich_*",
+        "openmpi",
+        "hdf5 * mpi_openmpi_*",
+        "xtensor >=0.27.1,<0.28.0a0"
+      ],
+      "run": [
+        "mpi4py",
+        "scipy",
+        "tetgen",
+        "triangle",
+        "ncurses",
+        "pychrono >=9,<10",
+        "scorec >=2.2.8,<3",
+        "python 3",
+        "openblas",
+        "petsc4py",
+        "cython",
+        "hdf5",
+        "hdf5 * mpi_mpich_*",
+        "h5py",
+        "h5py * mpi_mpich_*",
+        "hdf5 * mpi_openmpi_*",
+        "h5py * mpi_openmpi_*"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "fn": "proteus-1.8.3.tar.gz",
+      "patches": [
+        "fix-arm64-avx.patch"
+      ],
       "sha256": "315f0600044e2ad86592c248a9a4ca87dc58c1d678af2c27a9ddde802b555618",
       "url": "https://github.com/erdc/proteus/archive/1.8.3.tar.gz"
     },
@@ -313,12 +508,12 @@
       "summary": "Proteus is a Python package for rapidly developing computer models and numerical methods."
     },
     "build": {
-      "number": "8",
+      "number": "21",
       "run_exports": [
         "proteus * mpi_mpich_*",
         "proteus * mpi_openmpi_*"
       ],
-      "string": "mpi_openmpi_h1234567_8"
+      "string": "mpi_openmpi_h1234567_21"
     },
     "extra": {
       "recipe-maintainers": [
@@ -356,7 +551,7 @@
         "petsc",
         "petsc * real_*",
         "python",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "triangle",
         "superlu",
         "superlu_dist",
@@ -377,7 +572,7 @@
         "triangle",
         "ncurses",
         "pychrono >=9,<10",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "python 3",
         "openblas",
         "petsc4py",
@@ -393,6 +588,7 @@
     "schema_version": 0,
     "source": {
       "fn": "proteus-1.8.3.tar.gz",
+      "patches": null,
       "sha256": "315f0600044e2ad86592c248a9a4ca87dc58c1d678af2c27a9ddde802b555618",
       "url": "https://github.com/erdc/proteus/archive/1.8.3.tar.gz"
     },
@@ -479,6 +675,179 @@
       ]
     }
   },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/erdc/proteus",
+      "home": "http://proteustoolkit.org",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE.md",
+      "summary": "Proteus is a Python package for rapidly developing computer models and numerical methods."
+    },
+    "build": {
+      "number": "21",
+      "run_exports": [
+        "proteus * mpi_mpich_*"
+      ],
+      "string": "mpi_mpich_h1234567_21"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "davidbrochart",
+        "SylvainCorlay",
+        "martinRenou",
+        "zhang-alvin",
+        "jan-janssen",
+        "cekees"
+      ]
+    },
+    "package": {
+      "name": "proteus",
+      "version": "1.8.3"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make"
+      ],
+      "host": [
+        "setuptools",
+        "cython >=3",
+        "pybind11",
+        "pip",
+        "metis",
+        "mpich",
+        "numpy >=1.25.1",
+        "openblas >=0.3.20",
+        "parmetis",
+        "petsc4py",
+        "petsc",
+        "petsc * real_*",
+        "python",
+        "scorec >=2.2.8,<3",
+        "triangle",
+        "superlu",
+        "superlu_dist",
+        "pychrono >=9,<10",
+        "mpi4py",
+        "xtensor <0.26",
+        "xtensor-python",
+        "eigen",
+        "hdf5",
+        "hdf5 * mpi_mpich_*"
+      ],
+      "run": [
+        "mpi4py",
+        "scipy",
+        "tetgen",
+        "triangle",
+        "ncurses",
+        "pychrono >=9,<10",
+        "scorec >=2.2.8,<3",
+        "python 3",
+        "openblas",
+        "petsc4py",
+        "cython",
+        "hdf5",
+        "hdf5 * mpi_mpich_*",
+        "h5py",
+        "h5py * mpi_mpich_*"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "fn": "proteus-1.8.3.tar.gz",
+      "patches": [
+        "fix-arm64-avx.patch"
+      ],
+      "sha256": "315f0600044e2ad86592c248a9a4ca87dc58c1d678af2c27a9ddde802b555618",
+      "url": "https://github.com/erdc/proteus/archive/1.8.3.tar.gz"
+    },
+    "test": {
+      "commands": [
+        "pytest -v test/ci/test_meshPartitionFromTetgenFiles.py"
+      ],
+      "imports": [
+        "proteus"
+      ],
+      "requires": [
+        "pytest",
+        "pytest-forked",
+        "matplotlib-base"
+      ],
+      "source_files": [
+        "test"
+      ]
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "make"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "eigen",
+        "hdf5",
+        "metis",
+        "mpi4py",
+        "mpich",
+        "numpy",
+        "openblas",
+        "parmetis",
+        "petsc",
+        "petsc4py",
+        "pip",
+        "pybind11",
+        "pychrono",
+        "python",
+        "scorec",
+        "setuptools",
+        "superlu",
+        "superlu_dist",
+        "triangle",
+        "xtensor",
+        "xtensor-python"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "h5py",
+        "hdf5",
+        "mpi4py",
+        "ncurses",
+        "openblas",
+        "petsc4py",
+        "pychrono",
+        "python",
+        "scipy",
+        "scorec",
+        "tetgen",
+        "triangle"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "matplotlib-base",
+        "pytest",
+        "pytest-forked"
+      ]
+    }
+  },
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -488,12 +857,14 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64"
+    "linux_aarch64",
+    "osx_64",
+    "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/proteus.json"
   },
-  "raw_meta_yaml": "{% set name = \"proteus\" %}\n{% set version = \"1.8.3\" %}\n{% set build = 8 %}\n{% set sha256 = \"315f0600044e2ad86592c248a9a4ca87dc58c1d678af2c27a9ddde802b555618\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  fn: proteus-{{ version }}.tar.gz\n  url: https://github.com/erdc/proteus/archive/{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n\nbuild:\n  number: {{ build }}\n  skip: true  # [win]\n  {% set mpi_prefix = \"mpi_\" + mpi %}\n  string: {{ mpi_prefix }}_h{{ PKG_HASH }}_{{ build }}\n  run_exports:\n    - {{ name }} * {{ mpi_prefix }}_*\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('fortran') }}\n    - make\n  host:\n    - setuptools\n    - cython >=3\n    - pybind11\n    - pip\n    - metis\n    - {{ mpi }}\n    - numpy >=1.25.1\n    # Unpinned \"openblas\" lets the solver satisfy it with the ancient\n    # 0.3.4 ABI-compatibility-shim build conda-forge keeps around for its\n    # generic libblas/liblapack dispatch layer -- that build doesn't\n    # actually use the libgfortran5 run_exports pulls in, so anything\n    # linking it (proteus's superluWrappers extension, in particular)\n    # fails at import time with \"libgfortran.so.3: cannot open shared\n    # object file\" since only libgfortran.so.5 is provided. A lower\n    # bound is enough to keep the solver on a real, current build.\n    - openblas >=0.3.20\n    - parmetis\n    - petsc4py\n    - petsc\n    # real_*, not complex_*: proteus's C++ is built with -DPETSC_SKIP_COMPLEX\n    # and assumes real PETSC_SCALAR throughout. Without this filter the\n    # solver is free to pick either scalar variant. Kept as a separate entry\n    # (like hdf5's mpi_prefix filter below) rather than replacing the bare\n    # \"petsc\" line above, since conda-build's variant-based version pinning\n    # (from conda_build_config.yaml) is only applied to a literal bare\n    # package name in the recipe text.\n    #\n    # petsc4py itself has no equivalent \"real_*\"/\"complex_*\" build string\n    # (its own recipe.yaml has no `build.string` override, just a generic\n    # hash) -- it's already correctly filtered indirectly, since its own\n    # host requirement is `petsc ${version_xy}.* ${scalar}_*`, so once\n    # petsc itself is pinned to real_* here, any petsc4py built against\n    # complex petsc becomes unsatisfiable on its own.\n    - petsc * real_*\n    - python\n    - scorec >=2.2.8\n    - triangle\n    - superlu\n    - superlu_dist\n    - pychrono >=9,<10\n    - mpi4py\n    # include-paths changed in 0.25\n    - xtensor <0.26\n    - xtensor-python\n    - eigen\n    # pinning from conda_build_config and build pinning from {{ mpi_prefix }}\n    - hdf5\n    - hdf5 * {{ mpi_prefix }}_*\n  run:\n    - mpi4py\n    - scipy\n    - tetgen\n    - triangle\n    - ncurses\n    - pychrono >=9,<10\n    - scorec >=2.2.8\n    - python 3\n    - {{ pin_compatible('openblas', max_pin='x.x') }}\n    - {{ pin_compatible('petsc4py', max_pin='x.x') }}\n    - {{ pin_compatible('cython', max_pin='x.x') }}\n    # pinning from conda_build_config and build pinning from {{ mpi_prefix }}\n    - hdf5\n    - hdf5 * {{ mpi_prefix }}_*\n    - h5py\n    - h5py * {{ mpi_prefix }}_*\ntest:\n  imports:\n    - proteus\n  source_files:\n    - test\n  requires:\n    - pytest\n    - pytest-forked\n    - matplotlib-base\n  commands:\n    - pytest -v test/ci/test_meshPartitionFromTetgenFiles.py\n\nabout:\n  home: http://proteustoolkit.org\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE.md\n  summary: Proteus is a Python package for rapidly developing computer models and numerical methods.\n  dev_url: https://github.com/erdc/proteus\n\nextra:\n  recipe-maintainers:\n    - davidbrochart\n    - SylvainCorlay\n    - martinRenou\n    - zhang-alvin\n    - jan-janssen\n    - cekees\n",
+  "raw_meta_yaml": "{% set name = \"proteus\" %}\n{% set version = \"1.8.3\" %}\n{% set build = 21 %}\n{% set sha256 = \"315f0600044e2ad86592c248a9a4ca87dc58c1d678af2c27a9ddde802b555618\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  fn: proteus-{{ version }}.tar.gz\n  url: https://github.com/erdc/proteus/archive/{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n  patches:\n    # v1.8.3's setup.py hard-codes -mavx (x86-only) for MeshSmoothing and\n    # cMoveMeshMonitor, which fails outright on any non-x86 target (\"error:\n    # unrecognized command-line option '-mavx'\" on linux-aarch64;\n    # \"unsupported option '-mavx' for target arm64-apple-darwin...\" on\n    # osx-arm64). Fixed upstream after this release (erdc/proteus commit\n    # 13d526b1) but not yet in a new tag. conda-build's arm64/aarch64\n    # selectors are OS-specific names for the same architecture (osx uses\n    # \"arm64\", linux uses \"aarch64\"), so both are needed here.\n    - fix-arm64-avx.patch  # [(osx and arm64) or (linux and aarch64)]\n    # xtensor 0.27.1 reorganized its headers into subdirectories by\n    # category -- xio.hpp -> io/xio.hpp, xarray.hpp -> containers/\n    # xarray.hpp, xview.hpp -> views/xview.hpp, xfixed.hpp -> containers/\n    # xfixed.hpp (confirmed against the actual 0.27.1 source tree; all\n    # four old paths 404). Only matters on linux-aarch64, where the\n    # recipe's own xtensor pin above is relaxed to >=0.27.1 (no older\n    # xtensor-python builds exist for that platform at all) -- every\n    # other platform stays on the old xtensor pin and doesn't need this.\n    # Patches every proteus header that includes any of these four\n    # (ArgumentsDict.h, RANS2P.h, RANS2P2D.h) -- confirmed exhaustive via\n    # a full grep of the source tree for xtensor/* includes.\n    - fix-linux-aarch64-xio-path.patch  # [linux and aarch64]\n    # The newer xtensor/xtl required on linux-aarch64 (see above) uses\n    # both std::conjunction (C++17) and C++20 `concept` syntax\n    # unconditionally in its headers -- but every extension that calls\n    # get_xtensor_include() (exactly the 35 that hard-code -std=c++14)\n    # fails with \"'conjunction' is not a member of 'std'\" and then, once\n    # bumped only to C++17, \"'concept' does not name a type\". Bump those\n    # 35 '-std=c++14' occurrences straight to '-std=c++20' instead.\n    # Scoped to linux-aarch64 only, same as the two patches above.\n    - fix-linux-aarch64-cxx20.patch  # [linux and aarch64]\n\nbuild:\n  number: {{ build }}\n  skip: true  # [win]\n  # scorec has no openmpi build on osx-arm64 (openmpi's mpicc/mpicxx are\n  # real compiled binaries that can't execute under cross-compilation from\n  # an osx-64 build host, unlike mpich's portable shell-script wrappers --\n  # see scorec-feedstock recipe). Since proteus unconditionally requires\n  # both scorec and {{ mpi }}, the openmpi variant can never solve here.\n  skip: true  # [osx and arm64 and mpi == \"openmpi\"]\n  {% set mpi_prefix = \"mpi_\" + mpi %}\n  string: {{ mpi_prefix }}_h{{ PKG_HASH }}_{{ build }}\n  run_exports:\n    - {{ name }} * {{ mpi_prefix }}_*\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('fortran') }}\n    - make\n    # Needed for cross-compiled builds (osx-arm64 built from an osx-64\n    # host): without a build-platform python + cross-python's sysconfig\n    # shim, there is no usable \"python\"/\"$PYTHON\" to run setup.py at all\n    # -- $PREFIX/bin/python is a real arm64 binary that can't execute on\n    # the x86_64 build machine (\"Bad CPU type in executable\"). See\n    # h5py-feedstock's recipe for the same pattern.\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython >=3                             # [build_platform != target_platform]\n    - numpy >=1.25.1                         # [build_platform != target_platform]\n  host:\n    - setuptools\n    - cython >=3\n    - pybind11\n    - pip\n    - metis\n    - {{ mpi }}\n    - numpy >=1.25.1\n    # Unpinned \"openblas\" lets the solver satisfy it with the ancient\n    # 0.3.4 ABI-compatibility-shim build conda-forge keeps around for its\n    # generic libblas/liblapack dispatch layer -- that build doesn't\n    # actually use the libgfortran5 run_exports pulls in, so anything\n    # linking it (proteus's superluWrappers extension, in particular)\n    # fails at import time with \"libgfortran.so.3: cannot open shared\n    # object file\" since only libgfortran.so.5 is provided. A lower\n    # bound is enough to keep the solver on a real, current build.\n    - openblas >=0.3.20\n    - parmetis\n    - petsc4py\n    - petsc\n    # real_*, not complex_*: proteus's C++ is built with -DPETSC_SKIP_COMPLEX\n    # and assumes real PETSC_SCALAR throughout. Without this filter the\n    # solver is free to pick either scalar variant. Kept as a separate entry\n    # (like hdf5's mpi_prefix filter below) rather than replacing the bare\n    # \"petsc\" line above, since conda-build's variant-based version pinning\n    # (from conda_build_config.yaml) is only applied to a literal bare\n    # package name in the recipe text.\n    #\n    # petsc4py itself has no equivalent \"real_*\"/\"complex_*\" build string\n    # (its own recipe.yaml has no `build.string` override, just a generic\n    # hash) -- it's already correctly filtered indirectly, since its own\n    # host requirement is `petsc ${version_xy}.* ${scalar}_*`, so once\n    # petsc itself is pinned to real_* here, any petsc4py built against\n    # complex petsc becomes unsatisfiable on its own.\n    - petsc * real_*\n    - python\n    # Upper bound: scorec >=3 renamed/restructured its core PCU parallel-\n    # communication API to take an explicit PCU_t handle on every call\n    # (previously global, zero-argument functions) -- see SCOREC/core PR\n    # #433 (\"pcu-object-breaking\"). proteus's MeshAdaptPUMI C++ glue code\n    # calls the old global-style API directly across ~150 sites in 7\n    # files and hasn't been ported yet. Without this pin the solver is\n    # free to float proteus onto an incompatible scorec build as soon as\n    # one lands on conda-forge (see conda-forge/scorec-feedstock#27).\n    - scorec >=2.2.8,<3\n    - triangle\n    - superlu\n    - superlu_dist\n    - pychrono >=9,<10\n    - mpi4py\n    # include-paths changed in 0.25. linux-aarch64 only ever had\n    # xtensor-python 0.29.0 built (no older builds exist for that platform\n    # at all), which pulls in xtensor >=0.27.1 -- unsatisfiable against the\n    # <0.26 pin below, so relax it there specifically rather than for\n    # every platform. proteus's only xtensor usage is xt::pyarray<T> as a\n    # plain function-parameter type in ADR.h (xtensor-python/pyarray.hpp),\n    # which is unchanged in 0.29.0, so this is expected to compile fine.\n    - xtensor <0.26  # [not (linux and aarch64)]\n    - xtensor >=0.27.1,<0.28.0a0  # [linux and aarch64]\n    - xtensor-python\n    - eigen\n    # pinning from conda_build_config and build pinning from {{ mpi_prefix }}\n    - hdf5\n    - hdf5 * {{ mpi_prefix }}_*\n  run:\n    - mpi4py\n    - scipy\n    - tetgen\n    - triangle\n    - ncurses\n    - pychrono >=9,<10\n    - scorec >=2.2.8,<3\n    - python 3\n    - {{ pin_compatible('openblas', max_pin='x.x') }}\n    - {{ pin_compatible('petsc4py', max_pin='x.x') }}\n    - {{ pin_compatible('cython', max_pin='x.x') }}\n    # pinning from conda_build_config and build pinning from {{ mpi_prefix }}\n    - hdf5\n    - hdf5 * {{ mpi_prefix }}_*\n    - h5py\n    - h5py * {{ mpi_prefix }}_*\ntest:\n  imports:\n    - proteus\n  source_files:\n    - test\n  requires:\n    - pytest\n    - pytest-forked\n    - matplotlib-base\n  commands:\n    - pytest -v test/ci/test_meshPartitionFromTetgenFiles.py\n\nabout:\n  home: http://proteustoolkit.org\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE.md\n  summary: Proteus is a Python package for rapidly developing computer models and numerical methods.\n  dev_url: https://github.com/erdc/proteus\n\nextra:\n  recipe-maintainers:\n    - davidbrochart\n    - SylvainCorlay\n    - martinRenou\n    - zhang-alvin\n    - jan-janssen\n    - cekees\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -639,12 +1010,13 @@
         "pybind11",
         "pychrono >=9,<10",
         "python",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "setuptools",
         "superlu",
         "superlu_dist",
         "triangle",
         "xtensor <0.26",
+        "xtensor >=0.27.1,<0.28.0a0",
         "xtensor-python"
       ]
     },
@@ -665,7 +1037,7 @@
         "pychrono >=9,<10",
         "python 3",
         "scipy",
-        "scorec >=2.2.8",
+        "scorec >=2.2.8,<3",
         "tetgen",
         "triangle"
       ]
