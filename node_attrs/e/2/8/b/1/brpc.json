@@ -13,8 +13,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "253122b3f1cf023b82faf45544b5301847f31b37",
-  "feedstock_hash_ts": 1786539114,
+  "feedstock_hash": "ef24b9e0ed529e3461799580a87f2a694c1567d9",
+  "feedstock_hash_ts": 1786546864,
   "feedstock_name": "brpc",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -138,7 +138,8 @@
     "schema_version": 1,
     "source": {
       "patches": [
-        "patches/0001-fix-guard-SO_BINDTODEVICE.patch"
+        "patches/0001-fix-guard-SO_BINDTODEVICE.patch",
+        "patches/0002-fix-libprotobuf.patch"
       ],
       "sha256": "30fc544c74ef51419d262d279571c2c1b5db7dda1bc3bad893b1397d676fd02a",
       "url": [
@@ -371,7 +372,8 @@
     "schema_version": 1,
     "source": {
       "patches": [
-        "patches/0001-fix-guard-SO_BINDTODEVICE.patch"
+        "patches/0001-fix-guard-SO_BINDTODEVICE.patch",
+        "patches/0002-fix-libprotobuf.patch"
       ],
       "sha256": "30fc544c74ef51419d262d279571c2c1b5db7dda1bc3bad893b1397d676fd02a",
       "url": [
@@ -502,7 +504,8 @@
     "schema_version": 1,
     "source": {
       "patches": [
-        "patches/0001-fix-guard-SO_BINDTODEVICE.patch"
+        "patches/0001-fix-guard-SO_BINDTODEVICE.patch",
+        "patches/0002-fix-libprotobuf.patch"
       ],
       "sha256": "30fc544c74ef51419d262d279571c2c1b5db7dda1bc3bad893b1397d676fd02a",
       "url": [
@@ -561,7 +564,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/brpc.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.17.0\"\n\npackage:\n  name: brpc\n  version: ${{ version }}\n\nsource:\n  url:\n    - https://dlcdn.apache.org/brpc/${{ version }}/apache-brpc-${{ version }}-src.tar.gz\n    - https://archive.apache.org/dist/brpc/${{ version }}/apache-brpc-${{ version }}-src.tar.gz\n  sha256: 30fc544c74ef51419d262d279571c2c1b5db7dda1bc3bad893b1397d676fd02a\n  patches:\n    # guard the Linux-only SO_BINDTODEVICE socket option, missing from the\n    # macOS SDK; backport of https://github.com/apache/brpc/pull/3320\n    - patches/0001-fix-guard-SO_BINDTODEVICE.patch\n\nbuild:\n  number: 0\n  skip:\n    - win\n  script: build.sh\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - ninja\n    # protoc is executed at build time to compile brpc's own .proto files\n    - if: build_platform != target_platform\n      then:\n        - libprotobuf\n  host:\n    - gflags\n    - leveldb\n    - libabseil\n    - libprotobuf\n    - openssl\n    - zlib\n  run:\n    # libbrpc.so links libleveldb, but leveldb does not provide run_exports,\n    # so it has to be added explicitly\n    - leveldb\n  ignore_run_exports:\n    from_package:\n      # -lz is on brpc's link line, but the linker drops it (--as-needed):\n      # libbrpc.so only uses zlib indirectly through libprotobuf\n      - zlib\n  run_exports:\n    # upstream does not declare a stable ABI (unversioned libbrpc.so),\n    # so pin consumers to the same minor version\n    - ${{ pin_subpackage('brpc', upper_bound='x.x') }}\n\ntests:\n  - package_contents:\n      lib:\n        - brpc\n      include:\n        - brpc/server.h\n        - bthread/bthread.h\n        - butil/logging.h\n        - bvar/bvar.h\n      files:\n        exists:\n          - lib/pkgconfig/brpc.pc\n  - requirements:\n      run:\n        - ${{ compiler('cxx') }}\n        - pkg-config\n    script:\n      - pkg-config --exists --print-errors brpc\n      - test \"$(pkg-config --modversion brpc)\" = \"${{ version }}\"\n      - $CXX $CXXFLAGS -std=c++17 test_program.cpp $(pkg-config --cflags --libs brpc) $LDFLAGS -o test_program\n      - ./test_program\n    files:\n      recipe:\n        - test_program.cpp\n\nabout:\n  homepage: https://brpc.apache.org/\n  repository: https://github.com/apache/brpc\n  documentation: https://brpc.apache.org/docs/\n  summary: Industrial-grade RPC framework using C++. \"bRPC\" means \"better RPC\".\n  description: |\n    Apache bRPC is an industrial-grade RPC framework written in C++, often\n    used in high performance systems such as search, storage, machine\n    learning, advertisement and recommendation. It lets you build servers\n    and clients speaking multiple protocols (baidu_std, HTTP/1.x, HTTP/2 &\n    gRPC, Redis, RTMP, and more) and ships bthread (an M:N user-space\n    threading library), bvar (metrics) and rich builtin diagnostic services.\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - NOTICE\n\nextra:\n  recipe-maintainers:\n    - c8ef\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.17.0\"\n\npackage:\n  name: brpc\n  version: ${{ version }}\n\nsource:\n  url:\n    - https://dlcdn.apache.org/brpc/${{ version }}/apache-brpc-${{ version }}-src.tar.gz\n    - https://archive.apache.org/dist/brpc/${{ version }}/apache-brpc-${{ version }}-src.tar.gz\n  sha256: 30fc544c74ef51419d262d279571c2c1b5db7dda1bc3bad893b1397d676fd02a\n  patches:\n    # guard the Linux-only SO_BINDTODEVICE socket option, missing from the\n    # macOS SDK; backport of https://github.com/apache/brpc/pull/3320\n    - patches/0001-fix-guard-SO_BINDTODEVICE.patch\n    - patches/0002-fix-libprotobuf.patch\n\nbuild:\n  number: 0\n  skip:\n    - win\n  script: build.sh\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - ninja\n    # protoc is executed at build time to compile brpc's own .proto files\n    - if: build_platform != target_platform\n      then:\n        - libprotobuf\n  host:\n    - gflags\n    - leveldb\n    - libabseil\n    - libprotobuf\n    - openssl\n    - zlib\n  run:\n    # libbrpc.so links libleveldb, but leveldb does not provide run_exports,\n    # so it has to be added explicitly\n    - leveldb\n  ignore_run_exports:\n    from_package:\n      # -lz is on brpc's link line, but the linker drops it (--as-needed):\n      # libbrpc.so only uses zlib indirectly through libprotobuf\n      - zlib\n  run_exports:\n    # upstream does not declare a stable ABI (unversioned libbrpc.so),\n    # so pin consumers to the same minor version\n    - ${{ pin_subpackage('brpc', upper_bound='x.x') }}\n\ntests:\n  - package_contents:\n      lib:\n        - brpc\n      include:\n        - brpc/server.h\n        - bthread/bthread.h\n        - butil/logging.h\n        - bvar/bvar.h\n      files:\n        exists:\n          - lib/pkgconfig/brpc.pc\n  - requirements:\n      run:\n        - ${{ compiler('cxx') }}\n        - pkg-config\n    script:\n      - pkg-config --exists --print-errors brpc\n      - test \"$(pkg-config --modversion brpc)\" = \"${{ version }}\"\n      - $CXX $CXXFLAGS -std=c++17 test_program.cpp $(pkg-config --cflags --libs brpc) $LDFLAGS -o test_program\n      - ./test_program\n    files:\n      recipe:\n        - test_program.cpp\n\nabout:\n  homepage: https://brpc.apache.org/\n  repository: https://github.com/apache/brpc\n  documentation: https://brpc.apache.org/docs/\n  summary: Industrial-grade RPC framework using C++. \"bRPC\" means \"better RPC\".\n  description: |\n    Apache bRPC is an industrial-grade RPC framework written in C++, often\n    used in high performance systems such as search, storage, machine\n    learning, advertisement and recommendation. It lets you build servers\n    and clients speaking multiple protocols (baidu_std, HTTP/1.x, HTTP/2 &\n    gRPC, Redis, RTMP, and more) and ships bthread (an M:N user-space\n    threading library), bvar (metrics) and rich builtin diagnostic services.\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - NOTICE\n\nextra:\n  recipe-maintainers:\n    - c8ef\n",
   "req": {
     "__set__": true,
     "elements": [
