@@ -1,10 +1,13 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.34'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibudev:\n- '257'\nopenssl:\n- '3.5'\nperl:\n- 5.32.1\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.34'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibudev:\n- '257'\nopenssl:\n- '3.5'\nperl:\n- 5.32.1\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
+    },
+    "build_platform": {
+      "win_arm64": "win_64"
     },
     "conda_build": {
       "error_overdepending": true,
@@ -23,8 +26,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ad21d162c370871f7487527712a32406e57df385",
-  "feedstock_hash_ts": 1786529951,
+  "feedstock_hash": "b79ced117f0d5eac5a4d9c12ba8cae1a0eb21c44",
+  "feedstock_hash_ts": 1786645659,
   "feedstock_name": "fnox",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -374,6 +377,55 @@
       ]
     },
     "outputs": [
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.33.0"
+      },
       {
         "build": null,
         "name": "fnox",
@@ -975,7 +1027,8 @@
     "linux_aarch64",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/fnox.json"
@@ -1207,6 +1260,161 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "cxx_compiler_stub",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libudev",
+        "openssl",
+        "usage"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "fnox is a flexible secret management tool that supports storing secrets with\nencryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n(AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\ninterface to work with secrets across development, CI, and production,\nand supports shell integration to auto-load secrets on directory change.",
+      "dev_url": "https://github.com/jdx/fnox",
+      "home": "https://fnox.jdx.dev/",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Fort Knox for your secrets — flexible secret management with encryption and cloud providers"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
+          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
+          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
+          "\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox",
+          "\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish",
+          "\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox",
+          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+        ],
+        "env": {
+          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "OPENSSL_NO_VENDOR": "1",
+          "PKG_CONFIG_ALLOW_CROSS": "1"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "salim-b"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "fnox",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses",
+            "clang",
+            "cmake",
+            "libclang",
+            "make",
+            "ninja",
+            "perl",
+            "pkg-config"
+          ],
+          "host": [
+            "usage",
+            "libudev",
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "fnox --help",
+              "fnox --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "fnox"
+              ],
+              "files": [
+                "share/bash-completion/completions/fnox",
+                "share/fish/vendor_completions.d/fnox.fish",
+                "share/zsh/site-functions/_fnox"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.33.0"
+      }
+    ],
+    "package": {
+      "name": "fnox",
+      "version": "1.33.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "clang",
+        "cmake",
+        "libclang",
+        "make",
+        "ninja",
+        "perl",
+        "pkg-config"
+      ],
+      "host": [
+        "usage",
+        "libudev",
+        "openssl"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "6d8cb68ad960e4dd864211e13d2da8346336bca23ae00a4f4f67fedaf146f4ee",
+      "url": "https://github.com/jdx/fnox/archive/refs/tags/v1.33.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
