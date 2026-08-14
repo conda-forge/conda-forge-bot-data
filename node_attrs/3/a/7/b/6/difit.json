@@ -295,7 +295,14 @@
         "npm pkg delete scripts.prepare",
         "npm pack --ignore-scripts",
         "npm install --global ${SRC_DIR}/${PKG_NAME}-${PKG_VERSION}.tgz --cpu=${{ 'arm64' if (arm64 or aarch64) else 'x64' }}",
-        "pnpm-licenses generate-disclaimer --prod --output-file=third-party-licenses.txt"
+        "pnpm-licenses generate-disclaimer --prod --output-file=third-party-licenses.txt",
+        "call pnpm install --ignore-scripts",
+        "if %ERRORLEVEL% neq 0 exit 1",
+        "call pnpm build",
+        "call npm pkg delete scripts.prepare",
+        "call npm pack --ignore-scripts",
+        "call npm install --global %SRC_DIR%/%PKG_NAME%-%PKG_VERSION%.tgz",
+        "call pnpm-licenses generate-disclaimer --prod --output-file=third-party-licenses.txt"
       ]
     },
     "extra": {
@@ -907,13 +914,13 @@
     "build": {
       "number": "0",
       "script": [
-        "set -ex",
-        "pnpm install --ignore-scripts",
-        "pnpm build",
-        "npm pkg delete scripts.prepare",
-        "npm pack --ignore-scripts",
-        "npm install --global ${SRC_DIR}/${PKG_NAME}-${PKG_VERSION}.tgz --cpu=${{ 'arm64' if (arm64 or aarch64) else 'x64' }}",
-        "pnpm-licenses generate-disclaimer --prod --output-file=third-party-licenses.txt"
+        "call pnpm install --ignore-scripts",
+        "if %ERRORLEVEL% neq 0 exit 1",
+        "call pnpm build",
+        "call npm pkg delete scripts.prepare",
+        "call npm pack --ignore-scripts",
+        "call npm install --global %SRC_DIR%/%PKG_NAME%-%PKG_VERSION%.tgz",
+        "call pnpm-licenses generate-disclaimer --prod --output-file=third-party-licenses.txt"
       ]
     },
     "extra": {

@@ -259,7 +259,12 @@
         "mkdir -p $PREFIX/share/bash-completion/completions $PREFIX/share/zsh/site-functions $PREFIX/share/fish/vendor_completions.d",
         "cp contrib/completions/bash/aws-vault.bash $PREFIX/share/bash-completion/completions/aws-vault",
         "cp contrib/completions/zsh/aws-vault.zsh $PREFIX/share/zsh/site-functions/_aws-vault",
-        "cp contrib/completions/fish/aws-vault.fish $PREFIX/share/fish/vendor_completions.d/aws-vault.fish"
+        "cp contrib/completions/fish/aws-vault.fish $PREFIX/share/fish/vendor_completions.d/aws-vault.fish",
+        "go mod vendor",
+        "sed -i.bak 's/ -fmodules//g' vendor/github.com/noamcohen97/touchid-go/*.go",
+        "rm vendor/github.com/noamcohen97/touchid-go/*.bak",
+        "grep -rn fmodules vendor/github.com/noamcohen97/touchid-go/ && exit 1 || true",
+        "go build -v -o %LIBRARY_BIN%\\aws-vault.exe -ldflags=\"-s -w -X main.Version=v${{ version }}\" -trimpath ."
       ]
     },
     "extra": {
@@ -433,19 +438,13 @@
           {
             "script": [
               "aws-vault --help",
-              "aws-vault --version",
-              "aws-vault --version 2>&1 | grep ${{ version }}"
+              "aws-vault --version"
             ]
           },
           {
             "package_contents": {
               "bin": [
                 "aws-vault"
-              ],
-              "files": [
-                "share/bash-completion/completions/aws-vault",
-                "share/zsh/site-functions/_aws-vault",
-                "share/fish/vendor_completions.d/aws-vault.fish"
               ],
               "strict": true
             }
@@ -488,6 +487,10 @@
       "script": [
         "cd src",
         "go-licenses save . --save_path ../library_licenses${{ ' --ignore github.com/mattn/go-localereader' if win else '' }}",
+        "go mod vendor",
+        "sed -i.bak 's/ -fmodules//g' vendor/github.com/noamcohen97/touchid-go/*.go",
+        "rm vendor/github.com/noamcohen97/touchid-go/*.bak",
+        "grep -rn fmodules vendor/github.com/noamcohen97/touchid-go/ && exit 1 || true",
         "go build -v -o $PREFIX/bin/aws-vault -ldflags=\"-s -w -X main.Version=v${{ version }}\" -trimpath .",
         "mkdir -p $PREFIX/share/bash-completion/completions $PREFIX/share/zsh/site-functions $PREFIX/share/fish/vendor_completions.d",
         "cp contrib/completions/bash/aws-vault.bash $PREFIX/share/bash-completion/completions/aws-vault",
@@ -595,6 +598,10 @@
       "script": [
         "cd src",
         "go-licenses save . --save_path ../library_licenses${{ ' --ignore github.com/mattn/go-localereader' if win else '' }}",
+        "go mod vendor",
+        "sed -i.bak 's/ -fmodules//g' vendor/github.com/noamcohen97/touchid-go/*.go",
+        "rm vendor/github.com/noamcohen97/touchid-go/*.bak",
+        "grep -rn fmodules vendor/github.com/noamcohen97/touchid-go/ && exit 1 || true",
         "go build -v -o $PREFIX/bin/aws-vault -ldflags=\"-s -w -X main.Version=v${{ version }}\" -trimpath .",
         "mkdir -p $PREFIX/share/bash-completion/completions $PREFIX/share/zsh/site-functions $PREFIX/share/fish/vendor_completions.d",
         "cp contrib/completions/bash/aws-vault.bash $PREFIX/share/bash-completion/completions/aws-vault",
@@ -787,11 +794,7 @@
       "script": [
         "cd src",
         "go-licenses save . --save_path ../library_licenses${{ ' --ignore github.com/mattn/go-localereader' if win else '' }}",
-        "go build -v -o $PREFIX/bin/aws-vault -ldflags=\"-s -w -X main.Version=v${{ version }}\" -trimpath .",
-        "mkdir -p $PREFIX/share/bash-completion/completions $PREFIX/share/zsh/site-functions $PREFIX/share/fish/vendor_completions.d",
-        "cp contrib/completions/bash/aws-vault.bash $PREFIX/share/bash-completion/completions/aws-vault",
-        "cp contrib/completions/zsh/aws-vault.zsh $PREFIX/share/zsh/site-functions/_aws-vault",
-        "cp contrib/completions/fish/aws-vault.fish $PREFIX/share/fish/vendor_completions.d/aws-vault.fish"
+        "go build -v -o %LIBRARY_BIN%\\aws-vault.exe -ldflags=\"-s -w -X main.Version=v${{ version }}\" -trimpath ."
       ]
     },
     "extra": {
@@ -817,19 +820,13 @@
           {
             "script": [
               "aws-vault --help",
-              "aws-vault --version",
-              "aws-vault --version 2>&1 | grep ${{ version }}"
+              "aws-vault --version"
             ]
           },
           {
             "package_contents": {
               "bin": [
                 "aws-vault"
-              ],
-              "files": [
-                "share/bash-completion/completions/aws-vault",
-                "share/zsh/site-functions/_aws-vault",
-                "share/fish/vendor_completions.d/aws-vault.fish"
               ],
               "strict": true
             }
