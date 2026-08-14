@@ -1,12 +1,13 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "brotli:\n- '1.2'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ngiflib:\n- '5.2'\nlibhwy:\n- '1.4'\nlibjpeg_turbo:\n- '3'\nlibpng:\n- '1.6'\nopenexr:\n- '3.4'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "brotli:\n- '1.2'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ngiflib:\n- '5.2'\nlibhwy:\n- '1.4'\nlibjpeg_turbo:\n- '3'\nlibpng:\n- '1.6'\nopenexr:\n- '3.4'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "osx_arm64": "osx_64",
+      "win_arm64": "win_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -23,8 +24,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "88f18af3cfc012b73d676ac27c821a69bce83398",
-  "feedstock_hash_ts": 1783145945,
+  "feedstock_hash": "5a222f84311920525137cb051a04537338b7d5b5",
+  "feedstock_hash_ts": 1786672002,
   "feedstock_name": "libjxl-split",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -1243,6 +1244,104 @@
           }
         ],
         "version": "0.12.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libjxl"
+          ]
+        },
+        "name": "libjxl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake >=3.16",
+            "make"
+          ],
+          "host": [
+            "brotli",
+            "libhwy"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f \"$PREFIX\"/include/jxl/encode.h",
+              "test -f \"$PREFIX\"/lib/libjxl\"$SHLIB_EXT\"",
+              "test ! -f \"$PREFIX\"/bin/cjxl",
+              "test ! -f \"$PREFIX\"/lib/libjxl.a"
+            ]
+          }
+        ],
+        "version": "0.12.0"
+      },
+      {
+        "build": null,
+        "name": "libjxl-tools",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake",
+            "make"
+          ],
+          "host": [
+            "brotli",
+            "libhwy",
+            "giflib",
+            "libjpeg-turbo",
+            "openexr",
+            "libpng",
+            "zlib",
+            "libjxl"
+          ],
+          "run": [
+            "libjxl"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "cjxl --version",
+              "djxl --version",
+              "jxltran --help",
+              "jxlinfo --help",
+              "printf \"P6 1 1 63 000\" > test.ppm",
+              "cjxl test.ppm test.jxl",
+              "djxl test.jxl test.ppm",
+              "jxlinfo test.jxl",
+              "jxltran test.jxl test_output.jxl"
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "pkg-config --print-errors --exact-version \"${{ version }}\" libjxl"
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config",
+                "c_compiler_stub"
+              ]
+            },
+            "script": {
+              "file": "test_pkgconfig_link.sh",
+              "interpreter": "bash"
+            }
+          }
+        ],
+        "version": "0.12.0"
       }
     ],
     "package": {
@@ -1687,7 +1786,8 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/libjxl-split.json"
@@ -1964,6 +2064,205 @@
     }
   },
   "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "make",
+        "pkg-config"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "brotli",
+        "giflib",
+        "libhwy",
+        "libjpeg-turbo",
+        "libjxl",
+        "libpng",
+        "openexr",
+        "zlib"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "libjxl"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "pkg-config"
+      ]
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "This repository contains a reference implementation of JPEG XL (encoder and decoder),\ncalled libjxl. This software library is used by many applications that support JPEG XL.\n\n`libjxl` provides the core library.\nFor `cjxl`, `djxl`, `libjxl_extras_codec`, and other tools, use `libjxl-tools`.",
+      "dev_url": "https://github.com/libjxl/libjxl",
+      "doc_url": "https://libjxl.readthedocs.io/",
+      "home": "https://jpeg.org/jpegxl/",
+      "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
+      "summary": "JPEG XL image format reference implementation"
+    },
+    "build": {
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "libjxl"
+        ]
+      },
+      "script": {
+        "env": {
+          "JPEGXL_ENABLE_TOOLS": "OFF"
+        },
+        "file": "install"
+      }
+    },
+    "extra": {
+      "feedstock-name": "libjxl",
+      "recipe-maintainers": [
+        "sshockwave"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libjxl"
+          ]
+        },
+        "name": "libjxl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake >=3.16",
+            "make"
+          ],
+          "host": [
+            "brotli",
+            "libhwy"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "test -f \"$PREFIX\"/include/jxl/encode.h",
+              "test -f \"$PREFIX\"/lib/libjxl\"$SHLIB_EXT\"",
+              "test ! -f \"$PREFIX\"/bin/cjxl",
+              "test ! -f \"$PREFIX\"/lib/libjxl.a"
+            ]
+          }
+        ],
+        "version": "0.12.0"
+      },
+      {
+        "build": null,
+        "name": "libjxl-tools",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake",
+            "make"
+          ],
+          "host": [
+            "brotli",
+            "libhwy",
+            "giflib",
+            "libjpeg-turbo",
+            "openexr",
+            "libpng",
+            "zlib",
+            "libjxl"
+          ],
+          "run": [
+            "libjxl"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "cjxl --version",
+              "djxl --version",
+              "jxltran --help",
+              "jxlinfo --help",
+              "printf \"P6 1 1 63 000\" > test.ppm",
+              "cjxl test.ppm test.jxl",
+              "djxl test.jxl test.ppm",
+              "jxlinfo test.jxl",
+              "jxltran test.jxl test_output.jxl"
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": "pkg-config --print-errors --exact-version \"${{ version }}\" libjxl"
+          },
+          {
+            "requirements": {
+              "run": [
+                "pkg-config",
+                "c_compiler_stub"
+              ]
+            },
+            "script": {
+              "file": "test_pkgconfig_link.sh",
+              "interpreter": "bash"
+            }
+          }
+        ],
+        "version": "0.12.0"
+      }
+    ],
+    "package": {
+      "name": "libjxl",
+      "version": "0.12.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "pkg-config",
+        "cmake >=3.16",
+        "make"
+      ],
+      "host": [
+        "brotli",
+        "libhwy"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0002-BACKPORT_FIX_LM_PKGCONFIG_LIBJXL_CMAKE.patch",
+        "patches/0003-FIX_LM_PKGCONFIG_LIBJXL_CMS_CMAKE.patch",
+        "patches/0004-FIX_LM_PKGCONFIG_LIBJXL_THREADS_CMAKE.patch"
+      ],
+      "sha256": "03e9be69a30be4011f559da75328b6d7cea8ad921fabfbd551ce10bf45cdc992",
+      "url": "https://github.com/libjxl/libjxl/archive/v0.12.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
