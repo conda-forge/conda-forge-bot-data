@@ -15,13 +15,6 @@
     "check_solvable": false,
     "commit_message": "Build for NVIDIA Tegra devices and CUDA 12.9\n\nThis migration adds `arm_variant_type=tegra` to the build matrix to support NVIDIA Tegra\ndevices compatible with CUDA 12.9. This migrator is only applicable to the `linux-aarch4`\nplatform because Tegra is specific to that architecture. Non-Tegra ARM\ndevices are assumed to be SBSA-compliant (Server Base System Architecture). The\ndefault value of `arm_variant_type` is `sbsa` or it is undefined for non-ARM platforms.\nTegra devices compatible with CUDA 13.0 are SBSA-compliant, and do not need a separate\nbuild. Only Orin (sm_87) and later devices are supported because earlier Tegra devices are\nnot supported by CUDA 12.9.\n\nIn addition to this migrator, the `arm-variant` package must be added to the build\nrequirements of the recipe in order to constrain the CUDA compiler to the correct variant.\n\n```yaml\n# A fake selector may be needed for conda-build to pick up arm_variant_type as a variant\n# [arm_variant_type]\n\nrequirements:\n  build:\n    - {{ compiler('cuda') }}\n    - arm-variant * {{ arm_variant_type }}  # [linux and aarch64 and cuda_compiler_version != \"None\"]\n```\n\nFor v1 recipes, the work-around looks as follows:\n```yaml\ncontext:\n  # ensure arm_variant_type gets detected as a used variable\n  touch_arm_variant_type: ${{ arm_variant_type }}\n```\n\nPlease read the conda-forge CUDA recipe guide for more information:\nhttps://github.com/conda-forge/cuda-feedstock/blob/main/recipe/doc/recipe_guide.md#building-for-arm-tegra-devices\n",
     "conda_forge_yml_patches": null,
-    "cycles": {
-      "__set__": true,
-      "elements": [
-        "pytorch-cpu",
-        "triton"
-      ]
-    },
     "effective_graph": {
       "__nx_digraph__": true,
       "node_link_data": {
