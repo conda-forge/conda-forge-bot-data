@@ -1,10 +1,10 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_tk_variantnoxft.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nexpat:\n- '2'\nfontconfig:\n- '2'\ntarget_platform:\n- linux-64\ntk_variant:\n- noxft\nzlib:\n- '1'\n",
+  "ci_support_linux_64_tk_variantnoxft.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nexpat:\n- '2'\nfontconfig:\n- '2'\ntarget_platform:\n- linux-64\ntk_variant:\n- noxft\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "build_platform": {
-      "osx_arm64": "osx_64",
+      "linux_ppc64le": "linux_64",
       "win_arm64": "win_64"
     },
     "conda_build": {
@@ -19,12 +19,13 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "6924fff6adba24d31a817d37b3c4acb01d7d2825",
-  "feedstock_hash_ts": 1784228961,
+  "feedstock_hash": "c0be87db2591ba0698aa2363c8f7154555b468c1",
+  "feedstock_hash_ts": 1786728916,
   "feedstock_name": "tk",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -33,16 +34,11 @@
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "3",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -57,20 +53,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -80,29 +73,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -112,32 +117,189 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
             "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
             "pkg-config"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11",
@@ -150,29 +312,45 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -182,29 +360,207 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
         "make",
+        "zip",
         "pkg-config"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11",
@@ -215,8 +571,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -226,7 +585,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "make",
-        "pkg-config"
+        "pkg-config",
+        "zip"
       ]
     },
     "host": {
@@ -234,6 +594,9 @@
       "elements": [
         "expat",
         "fontconfig",
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-libxft",
         "xorg-xorgproto",
@@ -242,11 +605,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
   "linux_aarch64_meta_yaml": {
@@ -255,16 +623,11 @@
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "3",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -279,20 +642,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -302,29 +662,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -334,32 +706,189 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
             "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
             "pkg-config"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11",
@@ -372,29 +901,45 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -404,29 +949,207 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
         "make",
+        "zip",
         "pkg-config"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11",
@@ -437,8 +1160,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -448,7 +1174,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "make",
-        "pkg-config"
+        "pkg-config",
+        "zip"
       ]
     },
     "host": {
@@ -456,6 +1183,9 @@
       "elements": [
         "expat",
         "fontconfig",
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-libxft",
         "xorg-xorgproto",
@@ -464,11 +1194,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
   "linux_ppc64le_meta_yaml": {
@@ -477,16 +1212,11 @@
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "3",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -501,20 +1231,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -524,29 +1251,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -556,32 +1295,189 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
             "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
             "pkg-config"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11",
@@ -594,29 +1490,45 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -626,29 +1538,207 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
         "make",
+        "zip",
         "pkg-config"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11",
@@ -659,8 +1749,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -670,7 +1763,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "make",
-        "pkg-config"
+        "pkg-config",
+        "zip"
       ]
     },
     "host": {
@@ -678,6 +1772,9 @@
       "elements": [
         "expat",
         "fontconfig",
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-libxft",
         "xorg-xorgproto",
@@ -686,11 +1783,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
   "meta_yaml": {
@@ -699,16 +1801,11 @@
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "103",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -723,20 +1820,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -746,29 +1840,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -778,32 +1884,189 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
             "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
             "pkg-config"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11",
@@ -816,29 +2079,45 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -848,31 +2127,204 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip",
+            "pkg-config"
           ],
           "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -882,29 +2334,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -914,32 +2378,189 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
             "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
             "pkg-config"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11",
@@ -952,29 +2573,45 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -984,31 +2621,204 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip",
+            "pkg-config"
           ],
           "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1018,29 +2828,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1050,32 +2872,189 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
             "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
             "pkg-config"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11",
@@ -1088,29 +3067,45 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1120,31 +3115,204 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip",
+            "pkg-config"
           ],
           "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip",
+            "pkg-config"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "xorg-libxft",
+            "fontconfig",
+            "expat",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1154,29 +3322,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1186,31 +3366,188 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1220,29 +3557,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1252,31 +3601,188 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1286,29 +3792,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1318,31 +3836,188 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
-              "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
-              "wish${{ maj_min }} hello.tcl"
+              "tclsh${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
       },
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
           ]
         },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
         "name": "tk",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
+              "wish hello.tcl",
+              "wish${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1352,29 +4027,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1384,29 +4071,191 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
         "make",
+        "zip",
         "pkg-config"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11",
@@ -1417,27 +4266,25 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
-  "name": "tk",
+  "name": "libtcl",
   "osx_64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/tcltk/tk",
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "103",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1452,20 +4299,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1475,29 +4319,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1507,28 +4363,190 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "zip"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11"
@@ -1536,8 +4554,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -1546,12 +4567,16 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "make",
+        "zip"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-xorgproto",
         "zlib"
@@ -1559,11 +4584,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
   "osx_arm64_meta_yaml": {
@@ -1572,16 +4602,11 @@
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "103",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1596,20 +4621,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1619,29 +4641,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1651,28 +4685,190 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "zip"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11"
@@ -1680,8 +4876,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -1690,12 +4889,16 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "make",
+        "zip"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-xorgproto",
         "zlib"
@@ -1703,16 +4906,26 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
   "outputs_names": {
     "__set__": true,
     "elements": [
+      "libtcl",
+      "libtcl-devel",
+      "libtk",
+      "libtk-devel",
+      "tcl",
       "tk"
     ]
   },
@@ -1729,7 +4942,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/tk.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"8.6.13\"\n  major: ${{ version | split(\".\") | first }}\n  minor: ${{ (version | split(\".\"))[1] }}\n  maj_min: ${{ major }}.${{ minor }}\n  maj_min_nodot: ${{ major }}${{ minor }}\n  build: 3\n  # the variant prefix is only used in the build string on linux\n  string_prefix: ${{ (tk_variant | default(\"\")) + \"_\" if (linux | default(false)) else \"\" }}\n\npackage:\n  name: tk\n  version: ${{ version }}\n\nsource:\n  - url: https://downloads.sourceforge.net/tcl/tcl${{ version }}-src.tar.gz\n    target_directory: tcl${{ version }}\n    sha256: 43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066\n  - url: https://downloads.sourceforge.net/tcl/tk${{ version }}-src.tar.gz\n    target_directory: tk${{ version }}\n    sha256: 2e65fa069a23365440a3c56c556b8673b5e32a283800d8d9b257e3f584ce0675\n\nbuild:\n  number: ${{ build + 100 if tk_variant == 'noxft' and linux else build }}\n  string: ${{ string_prefix }}h${{ hash }}_${{ build }}\n  variant:\n    use_keys:\n      - tk_variant\n    # deprioritize the xft variant (preserves preference for noxft, replaces v0 track_features)\n    down_prioritize_variant: ${{ 1 if (tk_variant | default(\"\")) == \"xft\" else 0 }}\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - if: unix\n      then: make\n    - if: linux and tk_variant == \"xft\"\n      then: pkg-config\n    - if: build_platform != target_platform\n      then: tk\n  host:\n    - if: unix\n      then: zlib\n    - if: linux\n      then:\n        - xorg-xorgproto\n        - xorg-libx11\n    - if: linux and tk_variant == \"xft\"\n      then:\n        - xorg-libxft\n        - fontconfig\n        - expat\n  run_constraints:\n    - if: linux\n      then: ${{ pin_compatible(\"xorg-libx11\") }}\n    - if: linux and tk_variant == \"xft\"\n      then:\n        - ${{ pin_compatible(\"xorg-libxft\") }}\n        - ${{ pin_compatible(\"fontconfig\") }}\n  run_exports:\n    # pin to major.minor because library names have that info in them\n    - ${{ pin_subpackage('tk', upper_bound='x.x') }}\n  ignore_run_exports:\n    from_package:\n      - if: linux\n        then: xorg-libx11\n      - if: linux and tk_variant == \"xft\"\n        then:\n          - xorg-libxft\n          - expat\n          - fontconfig\n\ntests:\n  # Library naming note: \"t\" suffix means \"full thread support\" in Windows\n  #    https://sourceforge.net/p/tcl/mailman/tcl-bugs/thread/From_noreply@sourceforge.net_Mon_Jul_23_11:46:16_2012/\n  - package_contents:\n      bin:\n        - tclsh\n        - wish\n        - if: unix\n          then:\n            - tclsh${{ maj_min }}\n            - wish${{ maj_min }}\n        - if: win\n          then:\n            - tclsh${{ maj_min_nodot }}\n            - wish${{ maj_min_nodot }}\n      include:\n        - tcl.h\n        - tclDecls.h\n        - tclPlatDecls.h\n        - tclTomMathDecls.h\n        - tclTomMath.h\n        - tk.h\n        - tkDecls.h\n        - tkPlatDecls.h\n      lib:\n        - if: unix\n          then:\n            - tcl${{ maj_min }}\n            - tk${{ maj_min }}\n        - if: win\n          then:\n            - tcl${{ maj_min_nodot }}t\n            - tk${{ maj_min_nodot }}t\n      files:\n        # static and import libraries (not handled by `lib`)\n        - if: unix\n          then:\n            - lib/libtclstub${{ maj_min }}.a\n            - lib/libtkstub${{ maj_min }}.a\n        - if: win\n          then:\n            - Library/lib/tcl${{ maj_min_nodot }}t.lib\n            - Library/lib/tk${{ maj_min_nodot }}t.lib\n            - Library/lib/tclstub${{ maj_min_nodot }}.lib\n            - Library/lib/tkstub${{ maj_min_nodot }}.lib\n\n  - script:\n      # Check commands work and run a simple program.\n      - tclsh hello.tcl\n      - wish hello.tcl\n      - if: unix\n        then:\n          - tclsh${{ maj_min }} hello.tcl\n          - wish${{ maj_min }} hello.tcl\n      - if: win\n        then:\n          - tclsh${{ maj_min_nodot }} hello.tcl\n          - wish${{ maj_min_nodot }}t hello.tcl\n    files:\n      recipe:\n        - hello.tcl\n\nabout:\n  homepage: http://www.tcl.tk/\n  license: TCL\n  license_file: tcl${{ version }}/license.terms\n  summary: A dynamic programming language with GUI support.  Bundles Tcl and Tk.\n  repository: https://github.com/tcltk/tk\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - msarahan\n    - pelson\n    - ocefpaf\n    - isuruf\n    - matthiasdiener\n    - xhochy\n",
+  "raw_meta_yaml": "context:\n  version: \"9.0.4\"\n  major: ${{ version | split(\".\") | first }}\n  minor: ${{ (version | split(\".\"))[1] }}\n  maj_min: ${{ major }}${{ '.' if unix }}${{ minor }}\n  build: 0\n  tk_build: ${{ build + 100 if tk_variant == 'noxft' and linux else build }}\n  # the variant prefix is only used in the build string on linux\n  string_prefix: ${{ (tk_variant | default(\"\")) + \"_\" if (linux | default(false)) else \"\" }}\n\nrecipe:\n  name: tk-split\n  version: ${{ version }}\n\nsource:\n  - url: https://downloads.sourceforge.net/tcl/tcl${{ version }}-src.tar.gz\n    target_directory: tcl${{ version }}\n    sha256: d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea\n    patches:\n      # link against system libraries on Windows\n      - patches/win-system-libs.patch\n\n  - url: https://downloads.sourceforge.net/tcl/tk${{ version }}-src.tar.gz\n    target_directory: tk${{ version }}\n    sha256: d7a146d2917eb8b5cc95276dbf0e3d03c7464d2b19c1675357857c989301dbb4\n\nbuild:\n  number: ${{ build }}\n  # TODO: remove this once we build native tk-9\n  skip: build_platform != target_platform and win\n\noutputs:\n  - staging:\n      name: tk-build\n    build:\n      script:\n        file: build\n        env:\n          PKG_VERSION: ${{ version }}\n    requirements:\n      build:\n        - ${{ stdlib('c') }}\n        - ${{ compiler('c') }}\n        - if: unix\n          then:\n            - make\n            - zip\n        - if: linux and tk_variant == \"xft\"\n          then: pkg-config\n        - if: build_platform != target_platform and win\n          then: tcl >=9\n      host:\n        - libtommath\n        - zlib\n        - if: linux\n          then:\n            - xorg-xorgproto\n            - xorg-libx11\n        - if: linux and tk_variant == \"xft\"\n          then:\n            - xorg-libxft\n            - fontconfig\n            - expat\n      ignore_run_exports:\n        from_package:\n          - xorg-libx11\n          - xorg-libxft\n\n  - package:\n      name: libtcl\n    inherit: tk-build\n    build:\n      files:\n        include:\n          - lib/tcl${{ major }}\n          - lib/tcl${{ major }}.${{ minor }}\n          - lib/libtcl*.so\n          - lib/libtcl*.dylib\n          - Library/bin/tcl*.dll\n          - Library/lib/tcl${{ major }}\n          - Library/lib/tcl${{ major }}.${{ minor }}\n          - Library/lib/dde*\n          - Library/lib/registry*\n          # TODO: remove this\n          - Library/bin/zlib1.dll\n          - Library/bin/libtommath.dll\n        exclude:\n          - lib/tcl*/*.sh\n          - lib/pkgconfig\n          - lib/libtcl*tk*\n          - Library/lib/tcl*/*.sh\n          - Library/lib/tcl*.sh\n          - Library/lib/pkgconfig\n          - Library/bin/tcl*tk*.dll\n    requirements:\n      run_constraints:\n        - tk ${{ version }}.*\n    tests:\n      - package_contents:\n          lib:\n            - if: unix\n              then: tcl${{ maj_min }}\n          files:\n            - if: win\n              then:\n                - Library/bin/tcl${{ maj_min }}.dll\n\n  - package:\n      name: tcl\n    inherit: tk-build\n    build:\n      files:\n        - bin/tclsh*\n        - Library/bin/tclsh*.exe\n    requirements:\n      host:\n        - ${{ pin_subpackage('libtcl', upper_bound='x.x.x') }}\n        - if: linux\n          then: xorg-libx11\n      run:\n        - ${{ pin_subpackage('libtcl', upper_bound='x.x.x') }}\n      run_constraints:\n        - tk ${{ version }}.*\n    tests:\n      - package_contents:\n          bin:\n            - tclsh\n            - tclsh${{ maj_min }}\n      - script:\n          # Check commands work and run a simple program.\n          - tclsh hello.tcl\n          - tclsh${{ maj_min }} hello.tcl\n          - if: win\n            then:\n              - tclsh${{ maj_min_nodot }} hello.tcl\n        requirements:\n          run:\n            - if: linux\n              then: xorg-libx11\n        files:\n          recipe:\n            - hello.tcl\n\n  - package:\n      name: libtcl-devel\n    inherit: tk-build\n    requirements:\n      host:\n        - ${{ pin_subpackage('libtcl', upper_bound='x.x.x') }}\n      run:\n        - ${{ pin_subpackage('libtcl', upper_bound='x.x.x') }}\n      run_constraints:\n        - tk ${{ version }}.*\n    build:\n      files:\n        include:\n          - include/tcl-private\n          - include/tcl*\n          - lib/tcl*/*.sh\n          - lib/pkgconfig/tcl*\n          - lib/libtcl*.a\n          - Library/include/tcl-private\n          - Library/include/tcl*\n          - Library/lib/tcl*.sh\n          - Library/lib/tcl*/*.sh\n          - Library/lib/pkgconfig/tcl*\n          - Library/lib/tcl*.lib\n        exclude:\n          - Library/lib/tcl*tk*.lib\n    tests:\n      - package_contents:\n          files:\n            # static and import libraries (not handled by `lib`)\n            - if: unix\n              then:\n                - lib/libtclstub.a\n            - if: win\n              then:\n                - Library/lib/tcl${{ maj_min }}.lib\n                - Library/lib/tclstub.lib\n          include:\n            - tcl.h\n            - tclDecls.h\n            - tclPlatDecls.h\n            - tclTomMathDecls.h\n            - tclTomMath.h\n\n  - package:\n      name: libtk\n    inherit: tk-build\n    build:\n      files:\n        include:\n          - lib/tk*\n          - lib/libtcl*tk*.so\n          - lib/libtcl*tk*.dylib\n          - Library/bin/tcl*tk*.dll\n          - Library/lib/tk${{ major }}.${{ minor }}\n        exclude:\n          - lib/tk*/*.sh\n      number: ${{ tk_build }}\n      string: ${{ string_prefix }}h${{ hash }}_${{ tk_build }}\n      variant:\n        use_keys:\n          - tk_variant\n        # deprioritize the xft variant (preserves preference for noxft, replaces v0 track_features)\n        down_prioritize_variant: ${{ 1 if (tk_variant | default(\"\")) == \"xft\" else 0 }}\n    requirements:\n      host:\n        - ${{ pin_subpackage('libtcl', upper_bound='x.x.x') }}\n        - if: linux and tk_variant == \"xft\"\n          then:\n            - xorg-libxft\n            - fontconfig\n            - expat\n      run:\n        - ${{ pin_subpackage('libtcl', upper_bound='x.x.x') }}\n      run_constraints:\n        - tk ${{ version }}.*\n    tests:\n      - package_contents:\n          lib:\n            - if: unix\n              then: tcl${{ major }}tk${{ maj_min }}\n          files:\n            - if: win\n              then: Library/bin/tcl${{ major }}tk${{ maj_min }}.dll\n\n  - package:\n      name: tk\n    inherit: tk-build\n    build:\n      files:\n        - bin/wish*\n        - Library/bin/wish*.exe\n      number: ${{ tk_build }}\n      string: ${{ string_prefix }}h${{ hash }}_${{ tk_build }}\n      variant:\n        use_keys:\n          - tk_variant\n        # deprioritize the xft variant (preserves preference for noxft, replaces v0 track_features)\n        down_prioritize_variant: ${{ 1 if (tk_variant | default(\"\")) == \"xft\" else 0 }}\n    requirements:\n      host:\n        - ${{ pin_subpackage('libtk', upper_bound='x.x.x') }}\n        - if: linux\n          then: xorg-libx11\n      run:\n        - ${{ pin_subpackage('libtk', upper_bound='x.x.x') }}\n    tests:\n      - package_contents:\n          bin:\n            - wish\n            - wish${{ maj_min }}\n      - script:\n          # Check commands work and run a simple program.\n          - wish hello.tcl\n          - wish${{ maj_min }} hello.tcl\n          - if: win\n            then:\n              - wish${{ maj_min_nodot }} hello.tcl\n        files:\n          recipe:\n            - hello.tcl\n        requirements:\n          run:\n            - if: linux\n              then: xorg-libx11\n\n  - package:\n      name: libtk-devel\n    inherit: tk-build\n    build:\n      files:\n        - include/tk-private\n        - include/tk*\n        - lib/tk*/*.sh\n        - lib/pkgconfig/tk*\n        - lib/libtk*.a\n        - Library/include/tk-private\n        - Library/include/tk*\n        - Library/lib/tk*/*.sh\n        - Library/lib/pkgconfig/tk*\n        - Library/lib/tcl*tk*.lib\n        - Library/lib/tkstub.lib\n      number: ${{ tk_build }}\n      string: ${{ string_prefix }}h${{ hash }}_${{ tk_build }}\n      variant:\n        use_keys:\n          - tk_variant\n        # deprioritize the xft variant (preserves preference for noxft, replaces v0 track_features)\n        down_prioritize_variant: ${{ 1 if (tk_variant | default(\"\")) == \"xft\" else 0 }}\n    requirements:\n      host:\n        - ${{ pin_subpackage('libtk', upper_bound='x.x.x') }}\n      run:\n        - ${{ pin_subpackage('libtk', upper_bound='x.x.x') }}\n      run_constraints:\n        - tk ${{ version }}.*\n    tests:\n      - package_contents:\n          files:\n            # static and import libraries (not handled by `lib`)\n            - if: unix\n              then:\n                - lib/libtkstub.a\n            - if: win\n              then:\n                - Library/lib/tcl${{ major }}tk${{ maj_min }}.lib\n                - Library/lib/tkstub.lib\n          include:\n            - tk.h\n            - tkDecls.h\n            - tkPlatDecls.h\n\nabout:\n  homepage: http://www.tcl.tk/\n  license: TCL\n  license_file: tcl${{ version }}/license.terms\n  summary: A dynamic programming language with GUI support.  Bundles Tcl and Tk.\n  repository: https://github.com/tcltk/tk\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - msarahan\n    - pelson\n    - ocefpaf\n    - isuruf\n    - matthiasdiener\n    - xhochy\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1737,11 +4950,15 @@
       "c_stdlib_stub",
       "expat",
       "fontconfig",
+      "libtcl",
+      "libtk",
+      "libtommath",
       "make",
       "pkg-config",
       "xorg-libx11",
       "xorg-libxft",
       "xorg-xorgproto",
+      "zip",
       "zlib"
     ]
   },
@@ -1752,7 +4969,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "make",
-        "pkg-config"
+        "pkg-config",
+        "zip"
       ]
     },
     "host": {
@@ -1762,6 +4980,9 @@
         "c_stdlib_stub",
         "expat",
         "fontconfig",
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-libxft",
         "xorg-xorgproto",
@@ -1772,12 +4993,16 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "libtcl",
+        "libtk"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
   "strong_exports": false,
@@ -1788,7 +5013,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "make",
-        "pkg-config"
+        "pkg-config",
+        "zip"
       ]
     },
     "host": {
@@ -1796,6 +5022,9 @@
       "elements": [
         "expat",
         "fontconfig",
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-libxft",
         "xorg-xorgproto",
@@ -1804,15 +5033,20 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
-  "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz",
-  "version": "8.6.13",
+  "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz",
+  "version": "9.0.4",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/tk.json"
   },
@@ -1822,16 +5056,11 @@
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "103",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1846,20 +5075,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -1869,29 +5095,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -1901,28 +5139,190 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "zip"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11"
@@ -1930,8 +5330,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -1940,12 +5343,16 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "make",
+        "zip"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-xorgproto",
         "zlib"
@@ -1953,11 +5360,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   },
   "win_arm64_meta_yaml": {
@@ -1966,16 +5378,11 @@
       "home": "http://www.tcl.tk/",
       "license": "TCL",
       "license_family": "TCL",
-      "license_file": "tcl8.6.13/license.terms",
+      "license_file": "tcl9.0.4/license.terms",
       "summary": "A dynamic programming language with GUI support.  Bundles Tcl and Tk."
     },
     "build": {
-      "number": "103",
-      "run_exports": {
-        "weak": [
-          "tk"
-        ]
-      }
+      "number": "0"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1990,20 +5397,17 @@
     },
     "outputs": [
       {
-        "build": {
-          "strong": [],
-          "weak": [
-            "tk"
-          ]
-        },
-        "name": "tk",
+        "build": null,
+        "name": "libtcl",
         "requirements": {
           "build": [
             "c_stdlib_stub",
             "c_compiler_stub",
-            "make"
+            "make",
+            "zip"
           ],
           "host": [
+            "libtommath",
             "zlib",
             "xorg-xorgproto",
             "xorg-libx11"
@@ -2013,29 +5417,41 @@
         "tests": [
           {
             "package_contents": {
+              "lib": [
+                "tcl9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tcl",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
               "bin": [
                 "tclsh",
-                "wish",
-                "tclsh8.6",
-                "wish8.6"
-              ],
-              "files": [
-                "lib/libtclstub8.6.a",
-                "lib/libtkstub8.6.a"
-              ],
-              "include": [
-                "tcl.h",
-                "tclDecls.h",
-                "tclPlatDecls.h",
-                "tclTomMathDecls.h",
-                "tclTomMath.h",
-                "tk.h",
-                "tkDecls.h",
-                "tkPlatDecls.h"
-              ],
-              "lib": [
-                "tcl8.6",
-                "tk8.6"
+                "tclsh9.0"
               ]
             }
           },
@@ -2045,28 +5461,190 @@
                 "hello.tcl"
               ]
             },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
             "script": [
               "tclsh hello.tcl",
+              "tclsh${{ maj_min }} hello.tcl"
+            ]
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtcl-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtclstub.a"
+              ],
+              "include": [
+                "tcl.h",
+                "tclDecls.h",
+                "tclPlatDecls.h",
+                "tclTomMathDecls.h",
+                "tclTomMath.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtcl"
+          ],
+          "run": [
+            "libtcl"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "tcl9tk9.0"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "tk",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "wish",
+                "wish9.0"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello.tcl"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "xorg-libx11"
+              ]
+            },
+            "script": [
               "wish hello.tcl",
-              "tclsh${{ maj_min }} hello.tcl",
               "wish${{ maj_min }} hello.tcl"
             ]
           }
         ],
-        "version": "8.6.13"
+        "version": "9.0.4"
+      },
+      {
+        "build": null,
+        "name": "libtk-devel",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "zip"
+          ],
+          "host": [
+            "libtommath",
+            "zlib",
+            "xorg-xorgproto",
+            "xorg-libx11",
+            "libtk"
+          ],
+          "run": [
+            "libtk"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/libtkstub.a"
+              ],
+              "include": [
+                "tk.h",
+                "tkDecls.h",
+                "tkPlatDecls.h"
+              ]
+            }
+          }
+        ],
+        "version": "9.0.4"
       }
     ],
     "package": {
-      "name": "tk",
-      "version": "8.6.13"
+      "name": "libtcl",
+      "version": "9.0.4"
     },
     "requirements": {
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "zip"
       ],
       "host": [
+        "libtommath",
         "zlib",
         "xorg-xorgproto",
         "xorg-libx11"
@@ -2074,8 +5652,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "43a1fae7412f61ff11de2cfd05d28cfc3a73762f354a417c62370a54e2caf066",
-      "url": "https://downloads.sourceforge.net/tcl/tcl8.6.13-src.tar.gz"
+      "patches": [
+        "patches/win-system-libs.patch"
+      ],
+      "sha256": "d0aed49230bc02a65c1e0229e65f34590a4b037ec40d546f32573b467f7551ea",
+      "url": "https://downloads.sourceforge.net/tcl/tcl9.0.4-src.tar.gz"
     }
   },
   "win_arm64_requirements": {
@@ -2084,12 +5665,16 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "make",
+        "zip"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "libtcl",
+        "libtk",
+        "libtommath",
         "xorg-libx11",
         "xorg-xorgproto",
         "zlib"
@@ -2097,11 +5682,16 @@
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "libtcl",
+        "libtk"
+      ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "xorg-libx11"
+      ]
     }
   }
 }
