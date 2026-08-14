@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.34'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nexpat:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\ntarget_platform:\n- linux-64\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.34'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nexpat:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\nliblzma_devel:\n- '5'\ntarget_platform:\n- linux-64\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -22,8 +22,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "24010a29e1ed2680583559494b5376bc5985d705",
-  "feedstock_hash_ts": 1780422691,
+  "feedstock_hash": "751a44a99412d693ca5f1911d5bafab4fe02db9a",
+  "feedstock_hash_ts": 1786685398,
   "feedstock_name": "salt-terminal",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,8 +38,8 @@
       "summary": "Terminal with built-in SSH"
     },
     "build": {
-      "number": "0",
-      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n"
+      "number": "1",
+      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n\nif [[ \"${target_platform}\" == linux-* ]]; then\n  mkdir -p \"${PREFIX}/Menu\"\n\n  # Prefer the icon/menu metadata produced by upstream's installer when\n  # available; only fall back to the recipe-local asset if it is absent.\n  if [[ ! -f \"${PREFIX}/Menu/salt_menu.json\" ]]; then\n    cp \"${RECIPE_DIR}/menu.json\" \"${PREFIX}/Menu/salt_menu.json\"\n  fi\n\n  if [[ ! -f \"${PREFIX}/Menu/salt.png\" ]]; then\n    upstream_icon=\"\"\n    for search_dir in \"${PREFIX}/share\" \"${PREFIX}/lib\" \"${PREFIX}/libexec\" \"${PREFIX}/usr/share\" \"${PREFIX}/opt\"; do\n      if [[ -d \"${search_dir}\" ]]; then\n        upstream_icon=\"$(find \"${search_dir}\" -type f \\( -iname \"salt*.png\" -o -iname \"icon*.png\" \\) -print -quit 2>/dev/null)\"\n        if [[ -n \"${upstream_icon}\" ]]; then\n          break\n        fi\n      fi\n    done\n\n    if [[ -n \"${upstream_icon}\" ]]; then\n      cp \"${upstream_icon}\" \"${PREFIX}/Menu/salt.png\"\n    fi\n  fi\nfi\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -73,7 +73,7 @@
             "libmcfp",
             "libmgui",
             "libpinch",
-            "libzeep",
+            "libzeep >=7.0.0,<8.0.0a0",
             "maartens_resource_compiler",
             "zeem",
             "zlib"
@@ -86,6 +86,17 @@
               "salt --version",
               "salt --help"
             ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "salt"
+              ],
+              "files": [
+                "Menu/salt_menu.json",
+                "Menu/salt.png"
+              ]
+            }
           }
         ],
         "version": "5.0.1"
@@ -118,7 +129,7 @@
         "libmcfp",
         "libmgui",
         "libpinch",
-        "libzeep",
+        "libzeep >=7.0.0,<8.0.0a0",
         "maartens_resource_compiler",
         "zeem",
         "zlib"
@@ -185,8 +196,8 @@
       "summary": "Terminal with built-in SSH"
     },
     "build": {
-      "number": "0",
-      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n"
+      "number": "1",
+      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n\nif [[ \"${target_platform}\" == linux-* ]]; then\n  mkdir -p \"${PREFIX}/Menu\"\n\n  # Prefer the icon/menu metadata produced by upstream's installer when\n  # available; only fall back to the recipe-local asset if it is absent.\n  if [[ ! -f \"${PREFIX}/Menu/salt_menu.json\" ]]; then\n    cp \"${RECIPE_DIR}/menu.json\" \"${PREFIX}/Menu/salt_menu.json\"\n  fi\n\n  if [[ ! -f \"${PREFIX}/Menu/salt.png\" ]]; then\n    upstream_icon=\"\"\n    for search_dir in \"${PREFIX}/share\" \"${PREFIX}/lib\" \"${PREFIX}/libexec\" \"${PREFIX}/usr/share\" \"${PREFIX}/opt\"; do\n      if [[ -d \"${search_dir}\" ]]; then\n        upstream_icon=\"$(find \"${search_dir}\" -type f \\( -iname \"salt*.png\" -o -iname \"icon*.png\" \\) -print -quit 2>/dev/null)\"\n        if [[ -n \"${upstream_icon}\" ]]; then\n          break\n        fi\n      fi\n    done\n\n    if [[ -n \"${upstream_icon}\" ]]; then\n      cp \"${upstream_icon}\" \"${PREFIX}/Menu/salt.png\"\n    fi\n  fi\nfi\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -220,7 +231,7 @@
             "libmcfp",
             "libmgui",
             "libpinch",
-            "libzeep",
+            "libzeep >=7.0.0,<8.0.0a0",
             "maartens_resource_compiler",
             "zeem",
             "zlib"
@@ -233,6 +244,17 @@
               "salt --version",
               "salt --help"
             ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "salt"
+              ],
+              "files": [
+                "Menu/salt_menu.json",
+                "Menu/salt.png"
+              ]
+            }
           }
         ],
         "version": "5.0.1"
@@ -265,7 +287,7 @@
         "libmcfp",
         "libmgui",
         "libpinch",
-        "libzeep",
+        "libzeep >=7.0.0,<8.0.0a0",
         "maartens_resource_compiler",
         "zeem",
         "zlib"
@@ -332,8 +354,8 @@
       "summary": "Terminal with built-in SSH"
     },
     "build": {
-      "number": "0",
-      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n"
+      "number": "1",
+      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n\nif [[ \"${target_platform}\" == linux-* ]]; then\n  mkdir -p \"${PREFIX}/Menu\"\n\n  # Prefer the icon/menu metadata produced by upstream's installer when\n  # available; only fall back to the recipe-local asset if it is absent.\n  if [[ ! -f \"${PREFIX}/Menu/salt_menu.json\" ]]; then\n    cp \"${RECIPE_DIR}/menu.json\" \"${PREFIX}/Menu/salt_menu.json\"\n  fi\n\n  if [[ ! -f \"${PREFIX}/Menu/salt.png\" ]]; then\n    upstream_icon=\"\"\n    for search_dir in \"${PREFIX}/share\" \"${PREFIX}/lib\" \"${PREFIX}/libexec\" \"${PREFIX}/usr/share\" \"${PREFIX}/opt\"; do\n      if [[ -d \"${search_dir}\" ]]; then\n        upstream_icon=\"$(find \"${search_dir}\" -type f \\( -iname \"salt*.png\" -o -iname \"icon*.png\" \\) -print -quit 2>/dev/null)\"\n        if [[ -n \"${upstream_icon}\" ]]; then\n          break\n        fi\n      fi\n    done\n\n    if [[ -n \"${upstream_icon}\" ]]; then\n      cp \"${upstream_icon}\" \"${PREFIX}/Menu/salt.png\"\n    fi\n  fi\nfi\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -367,7 +389,7 @@
             "libmcfp",
             "libmgui",
             "libpinch",
-            "libzeep",
+            "libzeep >=7.0.0,<8.0.0a0",
             "maartens_resource_compiler",
             "zeem",
             "zlib"
@@ -380,6 +402,17 @@
               "salt --version",
               "salt --help"
             ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "salt"
+              ],
+              "files": [
+                "Menu/salt_menu.json",
+                "Menu/salt.png"
+              ]
+            }
           }
         ],
         "version": "5.0.1"
@@ -412,7 +445,7 @@
         "libmcfp",
         "libmgui",
         "libpinch",
-        "libzeep",
+        "libzeep >=7.0.0,<8.0.0a0",
         "maartens_resource_compiler",
         "zeem",
         "zlib"
@@ -479,8 +512,8 @@
       "summary": "Terminal with built-in SSH"
     },
     "build": {
-      "number": "0",
-      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n"
+      "number": "1",
+      "script": "set -exo pipefail\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_DOCUMENTATION=ON\ncmake --build build --parallel ${CPU_COUNT}\n./build/salt -i --prefix ${PREFIX}\n\nif [[ \"${target_platform}\" == linux-* ]]; then\n  mkdir -p \"${PREFIX}/Menu\"\n\n  # Prefer the icon/menu metadata produced by upstream's installer when\n  # available; only fall back to the recipe-local asset if it is absent.\n  if [[ ! -f \"${PREFIX}/Menu/salt_menu.json\" ]]; then\n    cp \"${RECIPE_DIR}/menu.json\" \"${PREFIX}/Menu/salt_menu.json\"\n  fi\n\n  if [[ ! -f \"${PREFIX}/Menu/salt.png\" ]]; then\n    upstream_icon=\"\"\n    for search_dir in \"${PREFIX}/share\" \"${PREFIX}/lib\" \"${PREFIX}/libexec\" \"${PREFIX}/usr/share\" \"${PREFIX}/opt\"; do\n      if [[ -d \"${search_dir}\" ]]; then\n        upstream_icon=\"$(find \"${search_dir}\" -type f \\( -iname \"salt*.png\" -o -iname \"icon*.png\" \\) -print -quit 2>/dev/null)\"\n        if [[ -n \"${upstream_icon}\" ]]; then\n          break\n        fi\n      fi\n    done\n\n    if [[ -n \"${upstream_icon}\" ]]; then\n      cp \"${upstream_icon}\" \"${PREFIX}/Menu/salt.png\"\n    fi\n  fi\nfi\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -514,7 +547,7 @@
             "libmcfp",
             "libmgui",
             "libpinch",
-            "libzeep",
+            "libzeep >=7.0.0,<8.0.0a0",
             "maartens_resource_compiler",
             "zeem",
             "zlib"
@@ -527,6 +560,17 @@
               "salt --version",
               "salt --help"
             ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "salt"
+              ],
+              "files": [
+                "Menu/salt_menu.json",
+                "Menu/salt.png"
+              ]
+            }
           }
         ],
         "version": "5.0.1"
@@ -557,7 +601,7 @@
             "libmcfp",
             "libmgui",
             "libpinch",
-            "libzeep",
+            "libzeep >=7.0.0,<8.0.0a0",
             "maartens_resource_compiler",
             "zeem",
             "zlib"
@@ -570,6 +614,17 @@
               "salt --version",
               "salt --help"
             ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "salt"
+              ],
+              "files": [
+                "Menu/salt_menu.json",
+                "Menu/salt.png"
+              ]
+            }
           }
         ],
         "version": "5.0.1"
@@ -600,7 +655,7 @@
             "libmcfp",
             "libmgui",
             "libpinch",
-            "libzeep",
+            "libzeep >=7.0.0,<8.0.0a0",
             "maartens_resource_compiler",
             "zeem",
             "zlib"
@@ -613,6 +668,17 @@
               "salt --version",
               "salt --help"
             ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "salt"
+              ],
+              "files": [
+                "Menu/salt_menu.json",
+                "Menu/salt.png"
+              ]
+            }
           }
         ],
         "version": "5.0.1"
@@ -645,7 +711,7 @@
         "libmcfp",
         "libmgui",
         "libpinch",
-        "libzeep",
+        "libzeep >=7.0.0,<8.0.0a0",
         "maartens_resource_compiler",
         "zeem",
         "zlib"
@@ -673,7 +739,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/salt-terminal.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"5.0.1\"\n\npackage:\n  name: salt-terminal\n  version: ${{ version }}\n\nsource:\n  url: https://forge.hekkelman.net/maarten/salt/archive/v${{ version }}.tar.gz\n  sha256: f322e57b164fd5aa7443807b71327d4ac5ca9520118778baaee959aff84ca141\n\nbuild:\n  number: 0\n  # Remove windows in the future when we have windows support\n  skip:\n    - osx\n    - win\n  script: |\n    set -exo pipefail\n    cmake -S . -B build -G Ninja \\\n      ${CMAKE_ARGS} \\\n      -DBUILD_DOCUMENTATION=ON\n    cmake --build build --parallel ${CPU_COUNT}\n    ./build/salt -i --prefix ${PREFIX}\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - myst-parser\n    - pkg-config\n    - sphinx\n  host:\n    - asio\n    - cryptopp\n    - expat\n    - freetype\n    - glib\n    - gtk4\n    - libcanberra\n    - libgxrio\n    - liblzma-devel\n    - libmcfp\n    - libmgui\n    - libpinch\n    - libzeep\n    - maartens_resource_compiler\n    - zeem\n    - zlib\n\ntests:\n  - script:\n      - salt --version\n      - salt --help\n\nabout:\n  homepage: https://forge.hekkelman.net/maarten/salt\n  documentation: https://forge.hekkelman.net/maarten/salt/src/tag/v${{ version }}/salt-manual.md\n  repository: https://forge.hekkelman.net/maarten/salt\n  license: BSD-2-Clause\n  license_file: LICENSE\n  summary: \"Terminal with built-in SSH\"\n  description: Salt is a terminal emulator with built-in SSH.\n\nextra:\n  recipe-maintainers:\n    - eunos-1128\n",
+  "raw_meta_yaml": "context:\n  version: \"5.0.1\"\n\npackage:\n  name: salt-terminal\n  version: ${{ version }}\n\nsource:\n  url: https://forge.hekkelman.net/maarten/salt/archive/v${{ version }}.tar.gz\n  sha256: f322e57b164fd5aa7443807b71327d4ac5ca9520118778baaee959aff84ca141\n\nbuild:\n  number: 1\n  # Remove windows in the future when we have windows support\n  skip:\n    - osx\n    - win\n  script: |\n    set -exo pipefail\n    cmake -S . -B build -G Ninja \\\n      ${CMAKE_ARGS} \\\n      -DBUILD_DOCUMENTATION=ON\n    cmake --build build --parallel ${CPU_COUNT}\n    ./build/salt -i --prefix ${PREFIX}\n\n    if [[ \"${target_platform}\" == linux-* ]]; then\n      mkdir -p \"${PREFIX}/Menu\"\n\n      # Prefer the icon/menu metadata produced by upstream's installer when\n      # available; only fall back to the recipe-local asset if it is absent.\n      if [[ ! -f \"${PREFIX}/Menu/salt_menu.json\" ]]; then\n        cp \"${RECIPE_DIR}/menu.json\" \"${PREFIX}/Menu/salt_menu.json\"\n      fi\n\n      if [[ ! -f \"${PREFIX}/Menu/salt.png\" ]]; then\n        upstream_icon=\"\"\n        for search_dir in \"${PREFIX}/share\" \"${PREFIX}/lib\" \"${PREFIX}/libexec\" \"${PREFIX}/usr/share\" \"${PREFIX}/opt\"; do\n          if [[ -d \"${search_dir}\" ]]; then\n            upstream_icon=\"$(find \"${search_dir}\" -type f \\( -iname \"salt*.png\" -o -iname \"icon*.png\" \\) -print -quit 2>/dev/null)\"\n            if [[ -n \"${upstream_icon}\" ]]; then\n              break\n            fi\n          fi\n        done\n\n        if [[ -n \"${upstream_icon}\" ]]; then\n          cp \"${upstream_icon}\" \"${PREFIX}/Menu/salt.png\"\n        fi\n      fi\n    fi\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - myst-parser\n    - pkg-config\n    - sphinx\n  host:\n    - asio\n    - cryptopp\n    - expat\n    - freetype\n    - glib\n    - gtk4\n    - libcanberra\n    - libgxrio\n    - liblzma-devel\n    - libmcfp\n    - libmgui\n    - libpinch\n    - libzeep >=7.0.0,<8.0.0a0\n    - maartens_resource_compiler\n    - zeem\n    - zlib\n\ntests:\n  - script:\n      - salt --version\n      - salt --help\n  - package_contents:\n      bin:\n        - salt\n      files:\n        - Menu/salt_menu.json\n        - Menu/salt.png\n\nabout:\n  homepage: https://forge.hekkelman.net/maarten/salt\n  documentation: https://forge.hekkelman.net/maarten/salt/src/tag/v${{ version }}/salt-manual.md\n  repository: https://forge.hekkelman.net/maarten/salt\n  license: BSD-2-Clause\n  license_file: LICENSE\n  summary: \"Terminal with built-in SSH\"\n  description: Salt is a terminal emulator with built-in SSH.\n\nextra:\n  recipe-maintainers:\n    - eunos-1128\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -779,7 +845,7 @@
         "libmcfp",
         "libmgui",
         "libpinch",
-        "libzeep",
+        "libzeep >=7.0.0,<8.0.0a0",
         "maartens_resource_compiler",
         "zeem",
         "zlib"
