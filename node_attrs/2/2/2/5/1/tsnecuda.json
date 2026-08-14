@@ -12,8 +12,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "91f42776bf1d57fede86d069b9254526c7759858",
-  "feedstock_hash_ts": 1786652139,
+  "feedstock_hash": "b77a008e47b185e2d24201f29806c88beecb3167",
+  "feedstock_hash_ts": 1786732014,
   "feedstock_name": "tsnecuda",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -27,8 +27,8 @@
       "summary": "GPU Accelerated t-SNE for CUDA with Python bindings"
     },
     "build": {
-      "number": "1",
-      "string": "cuda130py313h1234567_1"
+      "number": "2",
+      "string": "cuda130py314h1234567_2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -130,8 +130,8 @@
       "summary": "GPU Accelerated t-SNE for CUDA with Python bindings"
     },
     "build": {
-      "number": "1",
-      "string": "cuda130py313h1234567_1"
+      "number": "2",
+      "string": "cuda130py314h1234567_2"
     },
     "extra": {
       "recipe-maintainers": [
@@ -196,7 +196,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/tsnecuda.json"
   },
-  "raw_meta_yaml": "{% set version = \"4.0.1\" %}\n\npackage:\n  name: tsnecuda\n  version: {{ version }}\n\nsource:\n  url: https://github.com/CannyLab/tsne-cuda/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 33edac78b22f1cce749f1a6fb01a5a344fc80f0c6c0433d050ef9ab8d7d99a87\n\nbuild:\n  number: 1\n  # only linux for the moment; needs a CUDA compiler\n  skip: true  # [not linux or cuda_compiler_version == \"None\"]\n  string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n\nrequirements:\n  build:\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('cuda') }}\n    - cmake\n    - make\n  host:\n    - python\n    - pip\n    - setuptools\n    # tsnecuda links no CPU BLAS/LAPACK itself (its only GEMM is GPU cuBLAS);\n    # FAISS carries its own BLAS transitively. Floor FAISS at 1.10 (the newest\n    # on conda-forge) so we don't regress to the netlib-era 1.9.0.\n    - libfaiss >=1.10\n    # Steer FAISS to its self-contained openblas variant. The default *mkl\n    # variant is broken against current conda-forge MKL (faiss expects\n    # libmkl_intel_lp64.so.2, which oneMKL 2026.x no longer ships), and openblas\n    # is lighter and portable. tsnecuda itself does not link this.\n    - libblas * *openblas\n    # The build skips when there's no CUDA compiler (see build.skip above), so\n    # these are always present in a real build; the selectors keep the recipe\n    # valid for the no-CUDA metadata pass without jinja control flow.\n    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != \"None\"]\n    - libcublas-dev                             # [cuda_compiler_version != \"None\"]\n    - libcufft-dev                              # [cuda_compiler_version != \"None\"]\n    - libcusolver-dev                           # [cuda_compiler_version != \"None\"]\n    - libcusparse-dev                           # [cuda_compiler_version != \"None\"]\n  run:\n    - python\n    - numpy\n    # keep the FAISS BLAS variant consistent (and self-contained) at install time\n    - libblas * *openblas\n\ntest:\n  imports:\n    # `import tsnecuda` does not dlopen libtsnecuda (the ctypes load happens when a\n    # TSNE object is constructed), so this stays safe on the GPU-less CI runners.\n    - tsnecuda\n\nabout:\n  home: https://github.com/CannyLab/tsne-cuda\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n\n  summary: GPU Accelerated t-SNE for CUDA with Python bindings\n  dev_url: https://github.com/CannyLab/tsne-cuda\n\nextra:\n  recipe-maintainers:\n    - h-vetinari\n    - DavidMChan\n",
+  "raw_meta_yaml": "{% set version = \"4.0.1\" %}\n\npackage:\n  name: tsnecuda\n  version: {{ version }}\n\nsource:\n  url: https://github.com/CannyLab/tsne-cuda/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 33edac78b22f1cce749f1a6fb01a5a344fc80f0c6c0433d050ef9ab8d7d99a87\n\nbuild:\n  number: 2\n  # only linux for the moment; needs a CUDA compiler\n  skip: true  # [not linux or cuda_compiler_version == \"None\"]\n  string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n\nrequirements:\n  build:\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('cuda') }}\n    - cmake\n    - make\n  host:\n    - python\n    - pip\n    - setuptools\n    # tsnecuda links no CPU BLAS/LAPACK itself (its only GEMM is GPU cuBLAS);\n    # FAISS carries its own BLAS transitively. Floor FAISS at 1.10 (the newest\n    # on conda-forge) so we don't regress to the netlib-era 1.9.0.\n    - libfaiss >=1.10\n    # Steer FAISS to its self-contained openblas variant. The default *mkl\n    # variant is broken against current conda-forge MKL (faiss expects\n    # libmkl_intel_lp64.so.2, which oneMKL 2026.x no longer ships), and openblas\n    # is lighter and portable. tsnecuda itself does not link this.\n    - libblas * *openblas\n    # The build skips when there's no CUDA compiler (see build.skip above), so\n    # these are always present in a real build; the selectors keep the recipe\n    # valid for the no-CUDA metadata pass without jinja control flow.\n    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != \"None\"]\n    - libcublas-dev                             # [cuda_compiler_version != \"None\"]\n    - libcufft-dev                              # [cuda_compiler_version != \"None\"]\n    - libcusolver-dev                           # [cuda_compiler_version != \"None\"]\n    - libcusparse-dev                           # [cuda_compiler_version != \"None\"]\n  run:\n    - python\n    - numpy\n    # keep the FAISS BLAS variant consistent (and self-contained) at install time\n    - libblas * *openblas\n\ntest:\n  imports:\n    # `import tsnecuda` does not dlopen libtsnecuda (the ctypes load happens when a\n    # TSNE object is constructed), so this stays safe on the GPU-less CI runners.\n    - tsnecuda\n\nabout:\n  home: https://github.com/CannyLab/tsne-cuda\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n\n  summary: GPU Accelerated t-SNE for CUDA with Python bindings\n  dev_url: https://github.com/CannyLab/tsne-cuda\n\nextra:\n  recipe-maintainers:\n    - h-vetinari\n    - DavidMChan\n",
   "req": {
     "__set__": true,
     "elements": [
