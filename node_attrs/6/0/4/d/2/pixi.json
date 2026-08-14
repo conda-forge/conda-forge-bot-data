@@ -174,7 +174,8 @@
         "content": "$env.OPENSSL_DIR = $env.PREFIX\n\nif $nu.os-info.name == \"windows\" {\n  # Avoid long path issues\n  let drive = ($env.SRC_DIR | path split | first)  # e.g. \"D:\"\n  $env.CARGO_TARGET_DIR = $\"($drive)\\\\cb\"  # D:\\cb\n  $env.CARGO_HOME = $\"($drive)\\\\ch\"        # D:\\ch\n}\n\nif $nu.os-info.name == \"linux\" {\n  # This flag is needed for tree-sitter on linux\n  $env.CFLAGS = $\"($env.CFLAGS) -D_BSD_SOURCE\"\n}\ncargo auditable install --locked --no-default-features --features native-tls --root $env.PREFIX --no-track --path crates/pixi --bin pixi\ncargo-bundle-licenses --format yaml --output $\"($env.SRC_DIR)/THIRDPARTY.yml\"\n\nif $nu.os-info.name != \"windows\" {\n  # Generate shell completions for unix shells\n  let pixi = $\"($env.PREFIX)/bin/pixi\"\n  mkdir $\"($env.PREFIX)/share/bash-completion/completions\"\n  mkdir $\"($env.PREFIX)/share/zsh/site-functions\"\n  mkdir $\"($env.PREFIX)/share/fish/vendor_completions.d\"\n  ^$pixi completion --shell bash | save --force $\"($env.PREFIX)/share/bash-completion/completions/pixi\"\n  ^$pixi completion --shell zsh | save --force $\"($env.PREFIX)/share/zsh/site-functions/_pixi\"\n  ^$pixi completion --shell fish | save --force $\"($env.PREFIX)/share/fish/vendor_completions.d/pixi.fish\"\n}\n",
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "JEMALLOC_SYS_WITH_LG_PAGE": "16"
         },
         "interpreter": "nu"
       }
@@ -305,7 +306,8 @@
         "content": "$env.OPENSSL_DIR = $env.PREFIX\n\nif $nu.os-info.name == \"windows\" {\n  # Avoid long path issues\n  let drive = ($env.SRC_DIR | path split | first)  # e.g. \"D:\"\n  $env.CARGO_TARGET_DIR = $\"($drive)\\\\cb\"  # D:\\cb\n  $env.CARGO_HOME = $\"($drive)\\\\ch\"        # D:\\ch\n}\n\nif $nu.os-info.name == \"linux\" {\n  # This flag is needed for tree-sitter on linux\n  $env.CFLAGS = $\"($env.CFLAGS) -D_BSD_SOURCE\"\n}\ncargo auditable install --locked --no-default-features --features native-tls --root $env.PREFIX --no-track --path crates/pixi --bin pixi\ncargo-bundle-licenses --format yaml --output $\"($env.SRC_DIR)/THIRDPARTY.yml\"\n\nif $nu.os-info.name != \"windows\" {\n  # Generate shell completions for unix shells\n  let pixi = $\"($env.PREFIX)/bin/pixi\"\n  mkdir $\"($env.PREFIX)/share/bash-completion/completions\"\n  mkdir $\"($env.PREFIX)/share/zsh/site-functions\"\n  mkdir $\"($env.PREFIX)/share/fish/vendor_completions.d\"\n  ^$pixi completion --shell bash | save --force $\"($env.PREFIX)/share/bash-completion/completions/pixi\"\n  ^$pixi completion --shell zsh | save --force $\"($env.PREFIX)/share/zsh/site-functions/_pixi\"\n  ^$pixi completion --shell fish | save --force $\"($env.PREFIX)/share/fish/vendor_completions.d/pixi.fish\"\n}\n",
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "JEMALLOC_SYS_WITH_LG_PAGE": "16"
         },
         "interpreter": "nu"
       }
@@ -416,11 +418,10 @@
             "cmake",
             "nushell",
             "pkg-config",
-            "make"
+            "make",
+            "ld64"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -457,11 +458,10 @@
             "cmake",
             "nushell",
             "pkg-config",
-            "make"
+            "make",
+            "ld64"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -497,12 +497,9 @@
             "cargo-bundle-licenses",
             "cmake",
             "nushell",
-            "pkg-config",
-            "make"
+            "pkg-config"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -513,11 +510,6 @@
             "package_contents": {
               "bin": [
                 "pixi"
-              ],
-              "files": [
-                "share/bash-completion/completions/pixi",
-                "share/zsh/site-functions/_pixi",
-                "share/fish/vendor_completions.d/pixi.fish"
               ],
               "strict": true
             }
@@ -538,12 +530,9 @@
             "cargo-bundle-licenses",
             "cmake",
             "nushell",
-            "pkg-config",
-            "make"
+            "pkg-config"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -554,11 +543,6 @@
             "package_contents": {
               "bin": [
                 "pixi"
-              ],
-              "files": [
-                "share/bash-completion/completions/pixi",
-                "share/zsh/site-functions/_pixi",
-                "share/fish/vendor_completions.d/pixi.fish"
               ],
               "strict": true
             }
@@ -582,7 +566,8 @@
         "cmake",
         "nushell",
         "pkg-config",
-        "make"
+        "make",
+        "ld64"
       ],
       "host": [
         "openssl"
@@ -640,11 +625,10 @@
             "cmake",
             "nushell",
             "pkg-config",
-            "make"
+            "make",
+            "ld64"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -683,10 +667,8 @@
         "cmake",
         "nushell",
         "pkg-config",
-        "make"
-      ],
-      "host": [
-        "openssl"
+        "make",
+        "ld64"
       ]
     },
     "schema_version": 1,
@@ -705,6 +687,7 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
+        "ld64",
         "make",
         "nushell",
         "pkg-config",
@@ -713,9 +696,7 @@
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
@@ -771,11 +752,10 @@
             "cmake",
             "nushell",
             "pkg-config",
-            "make"
+            "make",
+            "ld64"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -814,10 +794,8 @@
         "cmake",
         "nushell",
         "pkg-config",
-        "make"
-      ],
-      "host": [
-        "openssl"
+        "make",
+        "ld64"
       ]
     },
     "schema_version": 1,
@@ -836,6 +814,7 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
+        "ld64",
         "make",
         "nushell",
         "pkg-config",
@@ -844,9 +823,7 @@
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
@@ -885,6 +862,7 @@
       "cargo-bundle-licenses",
       "cmake",
       "cxx_compiler_stub",
+      "ld64",
       "make",
       "nushell",
       "openssl",
@@ -902,6 +880,7 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
+        "ld64",
         "make",
         "nushell",
         "pkg-config",
@@ -941,6 +920,7 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
+        "ld64",
         "make",
         "nushell",
         "pkg-config",
@@ -1011,12 +991,9 @@
             "cargo-bundle-licenses",
             "cmake",
             "nushell",
-            "pkg-config",
-            "make"
+            "pkg-config"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -1027,11 +1004,6 @@
             "package_contents": {
               "bin": [
                 "pixi"
-              ],
-              "files": [
-                "share/bash-completion/completions/pixi",
-                "share/zsh/site-functions/_pixi",
-                "share/fish/vendor_completions.d/pixi.fish"
               ],
               "strict": true
             }
@@ -1054,11 +1026,7 @@
         "cargo-bundle-licenses",
         "cmake",
         "nushell",
-        "pkg-config",
-        "make"
-      ],
-      "host": [
-        "openssl"
+        "pkg-config"
       ]
     },
     "schema_version": 1,
@@ -1077,7 +1045,6 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
-        "make",
         "nushell",
         "pkg-config",
         "rust_compiler_stub"
@@ -1085,9 +1052,7 @@
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
@@ -1142,12 +1107,9 @@
             "cargo-bundle-licenses",
             "cmake",
             "nushell",
-            "pkg-config",
-            "make"
+            "pkg-config"
           ],
-          "host": [
-            "openssl"
-          ],
+          "host": [],
           "run": []
         },
         "tests": [
@@ -1158,11 +1120,6 @@
             "package_contents": {
               "bin": [
                 "pixi"
-              ],
-              "files": [
-                "share/bash-completion/completions/pixi",
-                "share/zsh/site-functions/_pixi",
-                "share/fish/vendor_completions.d/pixi.fish"
               ],
               "strict": true
             }
@@ -1185,11 +1142,7 @@
         "cargo-bundle-licenses",
         "cmake",
         "nushell",
-        "pkg-config",
-        "make"
-      ],
-      "host": [
-        "openssl"
+        "pkg-config"
       ]
     },
     "schema_version": 1,
@@ -1208,7 +1161,6 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
-        "make",
         "nushell",
         "pkg-config",
         "rust_compiler_stub"
@@ -1216,9 +1168,7 @@
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
