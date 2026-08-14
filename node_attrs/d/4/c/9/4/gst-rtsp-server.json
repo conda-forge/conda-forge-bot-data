@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nglib:\n- '2'\nlibiconv:\n- '1'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nglib:\n- '2'\nlibiconv:\n- '1'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "bot": {
       "version_updates": {
@@ -26,8 +26,8 @@
       "osx_arm64": "default"
     }
   },
-  "feedstock_hash": "38baeb81b62827665e8ccac084381d0f90a09b8a",
-  "feedstock_hash_ts": 1786188243,
+  "feedstock_hash": "73f78bdc08e46746def9ab6aa5e57fd33f17b818",
+  "feedstock_hash_ts": 1786750323,
   "feedstock_name": "gst-rtsp-server",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -42,7 +42,7 @@
       "summary": "GStreamer RTSP Server"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -184,7 +184,7 @@
       "summary": "GStreamer RTSP Server"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -205,6 +205,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_linux-aarch64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -249,6 +250,7 @@
         "ninja",
         "gettext-tools",
         "gobject-introspection",
+        "cross-python_linux-aarch64",
         "python <3.15",
         "setuptools <81"
       ],
@@ -279,6 +281,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-aarch64",
         "cxx_compiler_stub",
         "gettext-tools",
         "gobject-introspection",
@@ -326,7 +329,7 @@
       "summary": "GStreamer RTSP Server"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -389,6 +392,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_linux-aarch64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -431,6 +435,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_osx-64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -439,6 +444,7 @@
             "gst-plugins-base 1.28.2.*",
             "gobject-introspection",
             "glib",
+            "libintl-devel",
             "libiconv",
             "zlib"
           ],
@@ -473,6 +479,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_osx-arm64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -481,6 +488,7 @@
             "gst-plugins-base 1.28.2.*",
             "gobject-introspection",
             "glib",
+            "libintl-devel",
             "libiconv",
             "zlib"
           ],
@@ -515,6 +523,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_win-64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -523,6 +532,7 @@
             "gst-plugins-base 1.28.2.*",
             "gobject-introspection",
             "glib",
+            "libintl-devel",
             "libiconv",
             "zlib"
           ],
@@ -536,9 +546,10 @@
         "tests": [
           {
             "script": [
-              "test -f $PREFIX/include/gstreamer-1.0/gst/rtsp-server/rtsp-server.h",
-              "test -f $PREFIX/lib/libgstrtspserver-1.0${SHLIB_EXT}",
-              "test -f $PREFIX/lib/gstreamer-1.0/libgstrtspclientsink${SHLIB_EXT}"
+              "if not exist %LIBRARY_INC%\\\\gstreamer-1.0\\\\gst\\\\rtsp-server\\\\rtsp-server.h exit 1",
+              "if not exist %LIBRARY_BIN%\\\\gstrtspserver-1.0-0.dll exit 1",
+              "if not exist %LIBRARY_LIB%\\\\gstreamer-1.0\\\\gstrtspclientsink.dll exit 1",
+              "gst-inspect-1.0 --plugin rtspclientsink"
             ]
           }
         ],
@@ -560,7 +571,11 @@
         "gettext-tools",
         "gobject-introspection",
         "python <3.15",
-        "setuptools <81"
+        "setuptools <81",
+        "cross-python_linux-aarch64",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cross-python_win-64"
       ],
       "host": [
         "gstreamer 1.28.2.*",
@@ -568,7 +583,8 @@
         "gobject-introspection",
         "glib",
         "libiconv",
-        "zlib"
+        "zlib",
+        "libintl-devel"
       ],
       "run": [
         "gstreamer ==1.28.6",
@@ -596,7 +612,7 @@
       "summary": "GStreamer RTSP Server"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -617,6 +633,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_osx-64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -625,6 +642,7 @@
             "gst-plugins-base 1.28.2.*",
             "gobject-introspection",
             "glib",
+            "libintl-devel",
             "libiconv",
             "zlib"
           ],
@@ -661,6 +679,7 @@
         "ninja",
         "gettext-tools",
         "gobject-introspection",
+        "cross-python_osx-64",
         "python <3.15",
         "setuptools <81"
       ],
@@ -669,6 +688,7 @@
         "gst-plugins-base 1.28.2.*",
         "gobject-introspection",
         "glib",
+        "libintl-devel",
         "libiconv",
         "zlib"
       ],
@@ -691,6 +711,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_osx-64",
         "cxx_compiler_stub",
         "gettext-tools",
         "gobject-introspection",
@@ -709,6 +730,7 @@
         "gst-plugins-base",
         "gstreamer",
         "libiconv",
+        "libintl-devel",
         "zlib"
       ]
     },
@@ -738,7 +760,7 @@
       "summary": "GStreamer RTSP Server"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -759,6 +781,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_osx-arm64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -767,6 +790,7 @@
             "gst-plugins-base 1.28.2.*",
             "gobject-introspection",
             "glib",
+            "libintl-devel",
             "libiconv",
             "zlib"
           ],
@@ -803,6 +827,7 @@
         "ninja",
         "gettext-tools",
         "gobject-introspection",
+        "cross-python_osx-arm64",
         "python <3.15",
         "setuptools <81"
       ],
@@ -811,6 +836,7 @@
         "gst-plugins-base 1.28.2.*",
         "gobject-introspection",
         "glib",
+        "libintl-devel",
         "libiconv",
         "zlib"
       ],
@@ -833,6 +859,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_osx-arm64",
         "cxx_compiler_stub",
         "gettext-tools",
         "gobject-introspection",
@@ -851,6 +878,7 @@
         "gst-plugins-base",
         "gstreamer",
         "libiconv",
+        "libintl-devel",
         "zlib"
       ]
     },
@@ -885,12 +913,16 @@
   "pr_info": {
     "__lazy_json__": "pr_info/gst-rtsp-server.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.28.6\"\n\npackage:\n  name: gst-rtsp-server\n  version: ${{ version }}\n\nsource:\n  - url: https://gstreamer.freedesktop.org/src/gst-rtsp-server/gst-rtsp-server-${{ version }}.tar.xz\n    sha256: 0cb725b1351f75e88803c55dddea1f27be09523ddcd7f29ab18270e182a2a463\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    - pkg-config\n    - meson\n    - ninja\n    - gettext-tools\n    - gobject-introspection\n    - if: build_platform != target_platform\n      then: cross-python_${{ target_platform }}\n    - python <${{ 3.15 }}\n    - setuptools <81\n  host:\n    - gstreamer 1.28.2.*\n    - gst-plugins-base 1.28.2.*\n    - gobject-introspection\n    - glib\n    - if: not linux\n      then: libintl-devel\n    - libiconv\n    - zlib\n  run:\n    - gstreamer ==${{ version }}\n    - gst-plugins-base ==${{ version }}\n    - if: not ppc64le\n      then:\n        - libsoup\n        - glib-networking\n  ignore_run_exports:\n    from_package:\n      - if: build_platform != target_platform\n        then:\n          - python\n          - python_abi\ntests:\n  - script:\n      - if: unix\n        then:\n          - test -f $PREFIX/include/gstreamer-1.0/gst/rtsp-server/rtsp-server.h\n          - test -f $PREFIX/lib/libgstrtspserver-1.0${SHLIB_EXT}\n          - test -f $PREFIX/lib/gstreamer-1.0/libgstrtspclientsink${SHLIB_EXT}\n      - if: win\n        then:\n          - if not exist %LIBRARY_INC%\\\\gstreamer-1.0\\\\gst\\\\rtsp-server\\\\rtsp-server.h exit 1\n          - if not exist %LIBRARY_BIN%\\\\gstrtspserver-1.0-0.dll exit 1\n          - if not exist %LIBRARY_LIB%\\\\gstreamer-1.0\\\\gstrtspclientsink.dll exit 1\n          - gst-inspect-1.0 --plugin rtspclientsink\n\nabout:\n  summary: GStreamer RTSP Server\n  description: |\n    GStreamer RTSP Server is a library on top of GStreamer for building an RTSP server.\n  license: LGPL-2.1-or-later\n  license_file: COPYING\n  homepage: http://gstreamer.freedesktop.org/\n  repository: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/tree/main/subprojects/gst-rtsp-server\n  documentation: https://gstreamer.freedesktop.org/modules/gst-rtsp-server.html\n\nextra:\n  recipe-maintainers:\n    - tjwilli58\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.28.6\"\n\npackage:\n  name: gst-rtsp-server\n  version: ${{ version }}\n\nsource:\n  - url: https://gstreamer.freedesktop.org/src/gst-rtsp-server/gst-rtsp-server-${{ version }}.tar.xz\n    sha256: 0cb725b1351f75e88803c55dddea1f27be09523ddcd7f29ab18270e182a2a463\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - ${{ compiler('cxx') }}\n    - pkg-config\n    - meson\n    - ninja\n    - gettext-tools\n    - gobject-introspection\n    - if: build_platform != target_platform\n      then: cross-python_${{ target_platform }}\n    - python <${{ 3.15 }}\n    - setuptools <81\n  host:\n    - gstreamer 1.28.2.*\n    - gst-plugins-base 1.28.2.*\n    - gobject-introspection\n    - glib\n    - if: not linux\n      then: libintl-devel\n    - libiconv\n    - zlib\n  run:\n    - gstreamer ==${{ version }}\n    - gst-plugins-base ==${{ version }}\n    - if: not ppc64le\n      then:\n        - libsoup\n        - glib-networking\n  ignore_run_exports:\n    from_package:\n      - if: build_platform != target_platform\n        then:\n          - python\n          - python_abi\ntests:\n  - script:\n      - if: unix\n        then:\n          - test -f $PREFIX/include/gstreamer-1.0/gst/rtsp-server/rtsp-server.h\n          - test -f $PREFIX/lib/libgstrtspserver-1.0${SHLIB_EXT}\n          - test -f $PREFIX/lib/gstreamer-1.0/libgstrtspclientsink${SHLIB_EXT}\n      - if: win\n        then:\n          - if not exist %LIBRARY_INC%\\\\gstreamer-1.0\\\\gst\\\\rtsp-server\\\\rtsp-server.h exit 1\n          - if not exist %LIBRARY_BIN%\\\\gstrtspserver-1.0-0.dll exit 1\n          - if not exist %LIBRARY_LIB%\\\\gstreamer-1.0\\\\gstrtspclientsink.dll exit 1\n          - gst-inspect-1.0 --plugin rtspclientsink\n\nabout:\n  summary: GStreamer RTSP Server\n  description: |\n    GStreamer RTSP Server is a library on top of GStreamer for building an RTSP server.\n  license: LGPL-2.1-or-later\n  license_file: COPYING\n  homepage: http://gstreamer.freedesktop.org/\n  repository: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/tree/main/subprojects/gst-rtsp-server\n  documentation: https://gstreamer.freedesktop.org/modules/gst-rtsp-server.html\n\nextra:\n  recipe-maintainers:\n    - tjwilli58\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cross-python_linux-aarch64",
+      "cross-python_osx-64",
+      "cross-python_osx-arm64",
+      "cross-python_win-64",
       "cxx_compiler_stub",
       "gettext-tools",
       "glib",
@@ -899,6 +931,7 @@
       "gst-plugins-base",
       "gstreamer",
       "libiconv",
+      "libintl-devel",
       "libsoup",
       "meson",
       "ninja",
@@ -914,6 +947,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cross-python_win-64",
         "cxx_compiler_stub",
         "gettext-tools",
         "gobject-introspection",
@@ -929,12 +966,14 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python",
         "cxx_compiler_stub",
         "glib",
         "gobject-introspection",
         "gst-plugins-base",
         "gstreamer",
         "libiconv",
+        "libintl-devel",
         "zlib"
       ]
     },
@@ -943,6 +982,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python",
         "cxx_compiler_stub",
         "glib-networking",
         "gst-plugins-base",
@@ -962,6 +1002,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cross-python_win-64",
         "cxx_compiler_stub",
         "gettext-tools",
         "gobject-introspection",
@@ -980,6 +1024,7 @@
         "gst-plugins-base 1.28.2.*",
         "gstreamer 1.28.2.*",
         "libiconv",
+        "libintl-devel",
         "zlib"
       ]
     },
@@ -1014,7 +1059,7 @@
       "summary": "GStreamer RTSP Server"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1035,6 +1080,7 @@
             "ninja",
             "gettext-tools",
             "gobject-introspection",
+            "cross-python_win-64",
             "python <3.15",
             "setuptools <81"
           ],
@@ -1043,6 +1089,7 @@
             "gst-plugins-base 1.28.2.*",
             "gobject-introspection",
             "glib",
+            "libintl-devel",
             "libiconv",
             "zlib"
           ],
@@ -1056,9 +1103,10 @@
         "tests": [
           {
             "script": [
-              "test -f $PREFIX/include/gstreamer-1.0/gst/rtsp-server/rtsp-server.h",
-              "test -f $PREFIX/lib/libgstrtspserver-1.0${SHLIB_EXT}",
-              "test -f $PREFIX/lib/gstreamer-1.0/libgstrtspclientsink${SHLIB_EXT}"
+              "if not exist %LIBRARY_INC%\\\\gstreamer-1.0\\\\gst\\\\rtsp-server\\\\rtsp-server.h exit 1",
+              "if not exist %LIBRARY_BIN%\\\\gstrtspserver-1.0-0.dll exit 1",
+              "if not exist %LIBRARY_LIB%\\\\gstreamer-1.0\\\\gstrtspclientsink.dll exit 1",
+              "gst-inspect-1.0 --plugin rtspclientsink"
             ]
           }
         ],
@@ -1079,6 +1127,7 @@
         "ninja",
         "gettext-tools",
         "gobject-introspection",
+        "cross-python_win-64",
         "python <3.15",
         "setuptools <81"
       ],
@@ -1087,6 +1136,7 @@
         "gst-plugins-base 1.28.2.*",
         "gobject-introspection",
         "glib",
+        "libintl-devel",
         "libiconv",
         "zlib"
       ],
@@ -1109,6 +1159,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_win-64",
         "cxx_compiler_stub",
         "gettext-tools",
         "gobject-introspection",
@@ -1127,6 +1178,7 @@
         "gst-plugins-base",
         "gstreamer",
         "libiconv",
+        "libintl-devel",
         "zlib"
       ]
     },
