@@ -286,7 +286,9 @@
         "go-licenses save ./ --save_path ../library_licenses --ignore github.com/cloudlena/s3manager --ignore github.com/cloudlena/adapters",
         "mkdir -p ../library_licenses/github.com/cloudlena/adapters",
         "cp \"$(go env GOMODCACHE)\"/github.com/cloudlena/adapters@*/LICENSE ../library_licenses/github.com/cloudlena/adapters/LICENSE",
-        "go build -v -buildmode=pie -trimpath -modcacherw -o $PREFIX/bin/s3manager -ldflags=\"-s -w\" ./main.go"
+        "go build -v -buildmode=pie -trimpath -modcacherw -o $PREFIX/bin/s3manager -ldflags=\"-s -w\" ./main.go",
+        "for /d %%D in (\"%GOMODCACHE%\\github.com\\cloudlena\\adapters@*\") do xcopy /Y /I \"%%D\\LICENSE\" \"..\\library_licenses\\github.com\\cloudlena\\adapters\\\"",
+        "go build -v -buildmode=pie -trimpath -modcacherw -o %LIBRARY_BIN%\\s3manager.exe -ldflags=\"-s\" ./main.go"
       ]
     },
     "extra": {
@@ -399,7 +401,7 @@
         },
         "tests": [
           {
-            "script": "s3manager 2>&1 | grep -q \"no S3 instances configured\""
+            "script": "s3manager.exe > output.txt 2>&1 & findstr /c:\"no S3 instances configured\" output.txt"
           }
         ],
         "version": "0.8.0"
@@ -674,9 +676,8 @@
       "script": [
         "cd src",
         "go-licenses save ./ --save_path ../library_licenses --ignore github.com/cloudlena/s3manager --ignore github.com/cloudlena/adapters",
-        "mkdir -p ../library_licenses/github.com/cloudlena/adapters",
-        "cp \"$(go env GOMODCACHE)\"/github.com/cloudlena/adapters@*/LICENSE ../library_licenses/github.com/cloudlena/adapters/LICENSE",
-        "go build -v -buildmode=pie -trimpath -modcacherw -o $PREFIX/bin/s3manager -ldflags=\"-s -w\" ./main.go"
+        "for /d %%D in (\"%GOMODCACHE%\\github.com\\cloudlena\\adapters@*\") do xcopy /Y /I \"%%D\\LICENSE\" \"..\\library_licenses\\github.com\\cloudlena\\adapters\\\"",
+        "go build -v -buildmode=pie -trimpath -modcacherw -o %LIBRARY_BIN%\\s3manager.exe -ldflags=\"-s\" ./main.go"
       ]
     },
     "extra": {
@@ -699,7 +700,7 @@
         },
         "tests": [
           {
-            "script": "s3manager 2>&1 | grep -q \"no S3 instances configured\""
+            "script": "s3manager.exe > output.txt 2>&1 & findstr /c:\"no S3 instances configured\" output.txt"
           }
         ],
         "version": "0.8.0"
