@@ -1,17 +1,18 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '13'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '13'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64",
+      "linux_riscv64": "linux_64",
       "win_arm64": "win_64"
     },
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "conda_install_tool": "pixi",
     "github": {
@@ -20,27 +21,36 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "linux_ppc64le": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "d7c3bceaeb4cfbb7634581536bb7665afeb26d63",
-  "feedstock_hash_ts": 1776829375,
+  "feedstock_hash": "7739afba01c0c2ec6ce7d9c9fab6c9818d7d6f22",
+  "feedstock_hash_ts": 1786717058,
   "feedstock_name": "lz4-c",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
       "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
+      "home": "https://www.lz4.org/",
       "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
       "license_file": "lib/LICENSE",
       "summary": "Extremely Fast Compression algorithm"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "lz4-c",
       "recipe-maintainers": [
         "mingwandroid",
         "rmax",
@@ -51,41 +61,76 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.so",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
-          "build": [],
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
           "host": [
             "lz4-c"
           ],
@@ -93,16 +138,122 @@
             "lz4-c"
           ]
         },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "lz4-c"
+          ]
+        },
+        "name": "lz4-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_static_cmake"
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "lz4-c-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
           ],
-          "requires": null
-        }
+          "host": [
+            "lz4-c"
+          ],
+          "run": [
+            "lz4-c"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
@@ -116,11 +267,9 @@
         "cxx_compiler_stub",
         "make",
         "patch"
-      ],
-      "host": [],
-      "run": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
       "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
@@ -158,17 +307,25 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
       "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
+      "home": "https://www.lz4.org/",
       "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
       "license_file": "lib/LICENSE",
       "summary": "Extremely Fast Compression algorithm"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "lz4-c",
       "recipe-maintainers": [
         "mingwandroid",
         "rmax",
@@ -179,41 +336,76 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.so",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
-          "build": [],
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
           "host": [
             "lz4-c"
           ],
@@ -221,16 +413,24 @@
             "lz4-c"
           ]
         },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
@@ -244,11 +444,9 @@
         "cxx_compiler_stub",
         "make",
         "patch"
-      ],
-      "host": [],
-      "run": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
       "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
@@ -286,17 +484,25 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
       "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
+      "home": "https://www.lz4.org/",
       "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
       "license_file": "lib/LICENSE",
       "summary": "Extremely Fast Compression algorithm"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "lz4-c",
       "recipe-maintainers": [
         "mingwandroid",
         "rmax",
@@ -307,41 +513,76 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.so",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
-          "build": [],
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
           "host": [
             "lz4-c"
           ],
@@ -349,16 +590,24 @@
             "lz4-c"
           ]
         },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
@@ -372,11 +621,9 @@
         "cxx_compiler_stub",
         "make",
         "patch"
-      ],
-      "host": [],
-      "run": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
       "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
@@ -414,17 +661,25 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
       "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
+      "home": "https://www.lz4.org/",
       "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
       "license_file": "lib/LICENSE",
       "summary": "Extremely Fast Compression algorithm"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "lz4-c",
       "recipe-maintainers": [
         "mingwandroid",
         "rmax",
@@ -435,324 +690,75 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.so",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
-          ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
-      },
-      {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
-        "name": "lz4-c-static",
         "requirements": {
-          "build": [],
-          "host": [
-            "lz4-c"
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "run": [
-            "lz4-c"
-          ]
+          "host": [],
+          "run": []
         },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "run_exports": [
-            "lz4-c"
-          ]
-        },
-        "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.so",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
-          ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
-      },
-      {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
-        "name": "lz4-c-static",
-        "requirements": {
-          "build": [],
-          "host": [
-            "lz4-c"
-          ],
-          "run": [
-            "lz4-c"
-          ]
-        },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "run_exports": [
-            "lz4-c"
-          ]
-        },
-        "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.so",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
-          ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
-      },
-      {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
-        "name": "lz4-c-static",
-        "requirements": {
-          "build": [],
-          "host": [
-            "lz4-c"
-          ],
-          "run": [
-            "lz4-c"
-          ]
-        },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "run_exports": [
-            "lz4-c"
-          ]
-        },
-        "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.dylib",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
-          ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
-      },
-      {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
-        "name": "lz4-c-static",
-        "requirements": {
-          "build": [],
-          "host": [
-            "lz4-c"
-          ],
-          "run": [
-            "lz4-c"
-          ]
-        },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "run_exports": [
-            "lz4-c"
-          ]
-        },
-        "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.dylib",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
-          ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
-      },
-      {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
-        "name": "lz4-c-static",
-        "requirements": {
-          "build": [],
-          "host": [
-            "lz4-c"
-          ],
-          "run": [
-            "lz4-c"
-          ]
-        },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "run_exports": [
-            "lz4-c"
-          ]
-        },
-        "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "if not exist %LIBRARY_INC%\\\\lz4.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4hc.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4frame.h exit 1",
-            "if not exist %LIBRARY_BIN%\\\\liblz4.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\liblz4.lib exit 1",
-            "if exist %LIBRARY_LIB%\\\\liblz4_static.lib exit 1",
-            "pkg-config --cflags --libs liblz4",
-            "pushd test_shared_cmake",
-            "cmake -GNinja .",
-            "popd"
-          ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config",
-            "cmake",
-            "ninja"
-          ]
-        }
-      },
-      {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": [
-            "Library/lib/cmake/lz4"
-          ]
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
-            "cmake",
-            "ninja"
+            "cxx_compiler_stub",
+            "make"
           ],
           "host": [
             "lz4-c"
@@ -761,68 +767,96 @@
             "lz4-c"
           ]
         },
-        "script": "bld_static.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_LIB%\\lz4_static.lib exit 1",
-            "pushd test_static_cmake",
-            "cmake -GNinja .",
-            "popd"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": [
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "if not exist %LIBRARY_INC%\\\\lz4.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4hc.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4frame.h exit 1",
-            "if not exist %LIBRARY_BIN%\\\\liblz4.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\liblz4.lib exit 1",
-            "if exist %LIBRARY_LIB%\\\\liblz4_static.lib exit 1",
-            "pkg-config --cflags --libs liblz4",
-            "pushd test_shared_cmake",
-            "cmake -GNinja .",
-            "popd"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config",
-            "cmake",
-            "ninja"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": [
-            "Library/lib/cmake/lz4"
-          ]
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
-            "cmake",
-            "ninja"
+            "cxx_compiler_stub",
+            "make"
           ],
           "host": [
             "lz4-c"
@@ -831,106 +865,97 @@
             "lz4-c"
           ]
         },
-        "script": "bld_static.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_LIB%\\lz4_static.lib exit 1",
-            "pushd test_static_cmake",
-            "cmake -GNinja .",
-            "popd"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": [
-            "cmake",
-            "ninja"
-          ]
-        }
-      }
-    ],
-    "package": {
-      "name": "lz4-c",
-      "version": "1.10.0"
-    },
-    "requirements": {
-      "build": [
-        "c_compiler_stub",
-        "c_stdlib_stub",
-        "cxx_compiler_stub",
-        "make",
-        "patch",
-        "cmake",
-        "ninja"
-      ],
-      "host": [],
-      "run": []
-    },
-    "schema_version": 0,
-    "source": {
-      "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
-      "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
-    }
-  },
-  "name": "lz4-c",
-  "osx_64_meta_yaml": {
-    "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
-      "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
-      "license": "BSD-2-Clause",
-      "license_file": "lib/LICENSE",
-      "summary": "Extremely Fast Compression algorithm"
-    },
-    "build": {
-      "number": "1"
-    },
-    "extra": {
-      "recipe-maintainers": [
-        "mingwandroid",
-        "rmax",
-        "wesm",
-        "xhochy"
-      ]
-    },
-    "outputs": [
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.dylib",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
-          "build": [],
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
           "host": [
             "lz4-c"
           ],
@@ -938,16 +963,514 @@
             "lz4-c"
           ]
         },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "lz4-c"
+          ]
+        },
+        "name": "lz4-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_static_cmake"
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "lz4-c-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
           ],
-          "requires": null
-        }
+          "host": [
+            "lz4-c"
+          ],
+          "run": [
+            "lz4-c"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "lz4-c"
+          ]
+        },
+        "name": "lz4-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "lz4-c-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "lz4-c"
+          ],
+          "run": [
+            "lz4-c"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "lz4-c"
+          ]
+        },
+        "name": "lz4-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "lz4-c-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "lz4-c"
+          ],
+          "run": [
+            "lz4-c"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "lz4-c"
+          ]
+        },
+        "name": "lz4-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "lz4-c-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "lz4-c"
+          ],
+          "run": [
+            "lz4-c"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "lz4-c"
+          ]
+        },
+        "name": "lz4-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "lz4-c-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "lz4-c"
+          ],
+          "run": [
+            "lz4-c"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
@@ -961,11 +1484,157 @@
         "cxx_compiler_stub",
         "make",
         "patch"
-      ],
-      "host": [],
-      "run": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
+    "source": {
+      "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
+      "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
+    }
+  },
+  "name": "lz4-c",
+  "osx_64_meta_yaml": {
+    "about": {
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
+      "dev_url": "https://github.com/lz4/lz4",
+      "home": "https://www.lz4.org/",
+      "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
+      "license_file": "lib/LICENSE",
+      "summary": "Extremely Fast Compression algorithm"
+    },
+    "build": {
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
+    },
+    "extra": {
+      "feedstock-name": "lz4-c",
+      "recipe-maintainers": [
+        "mingwandroid",
+        "rmax",
+        "wesm",
+        "xhochy"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "lz4-c"
+          ]
+        },
+        "name": "lz4-c",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "lz4-c-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "lz4-c"
+          ],
+          "run": [
+            "lz4-c"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
+      }
+    ],
+    "package": {
+      "name": "lz4-c",
+      "version": "1.10.0"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "make",
+        "patch"
+      ]
+    },
+    "schema_version": 1,
     "source": {
       "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
       "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
@@ -1003,17 +1672,25 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
       "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
+      "home": "https://www.lz4.org/",
       "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
       "license_file": "lib/LICENSE",
       "summary": "Extremely Fast Compression algorithm"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "lz4-c",
       "recipe-maintainers": [
         "mingwandroid",
         "rmax",
@@ -1024,41 +1701,76 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "lz4c -h",
-            "lz4cat -h",
-            "unlz4 -h",
-            "test -f ${PREFIX}/include/lz4.h",
-            "test -f ${PREFIX}/include/lz4hc.h",
-            "test -f ${PREFIX}/include/lz4frame.h",
-            "test ! -f ${PREFIX}/lib/liblz4.a",
-            "test -f ${PREFIX}/lib/liblz4.dylib",
-            "test -f ${PREFIX}/lib/pkgconfig/liblz4.pc",
-            "pkg-config --cflags --libs liblz4"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": null
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
-          "build": [],
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
           "host": [
             "lz4-c"
           ],
@@ -1066,16 +1778,24 @@
             "lz4-c"
           ]
         },
-        "script": "build_static.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/liblz4.a"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": null
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
@@ -1089,11 +1809,9 @@
         "cxx_compiler_stub",
         "make",
         "patch"
-      ],
-      "host": [],
-      "run": []
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
       "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
@@ -1149,17 +1867,15 @@
   "pr_info": {
     "__lazy_json__": "pr_info/lz4-c.json"
   },
-  "raw_meta_yaml": "{% set pkg_name = \"lz4-c\" %}\n{% set name = \"lz4\" %}\n{% set version = \"1.10.0\" %}\n\npackage:\n  name: {{ pkg_name }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/{{ name }}/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: 537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}  # [not win]\n    - make  # [not win]\n    - cmake  # [win]\n    - ninja  # [win]\n    - patch  # [unix]\n  host:\n  run:\n\noutputs:\n  - name: lz4-c\n    build:\n      # https://abi-laboratory.pro/index.php?view=timeline&l=lz4\n      run_exports:\n        - {{ pin_subpackage(pkg_name, max_pin='x.x') }}\n    test:\n      requires:\n        - pkg-config\n        - cmake  # [win]\n        - ninja  # [win]\n      files:\n        - test_shared_cmake\n      commands:\n        - lz4 -h\n        - lz4c -h    # [unix]\n        - lz4cat -h  # [unix]\n        - unlz4 -h   # [unix]\n\n        - test -f ${PREFIX}/include/lz4.h       # [unix]\n        - test -f ${PREFIX}/include/lz4hc.h     # [unix]\n        - test -f ${PREFIX}/include/lz4frame.h  # [unix]\n\n        - if not exist %LIBRARY_INC%\\\\lz4.h exit 1       # [win]\n        - if not exist %LIBRARY_INC%\\\\lz4hc.h exit 1     # [win]\n        - if not exist %LIBRARY_INC%\\\\lz4frame.h exit 1  # [win]\n\n        - test ! -f ${PREFIX}/lib/liblz4.a      # [unix]\n        - test -f ${PREFIX}/lib/liblz4.dylib  # [osx]\n        - test -f ${PREFIX}/lib/liblz4.so     # [linux]\n\n        - if not exist %LIBRARY_BIN%\\\\liblz4.dll exit 1         # [win]\n        - if not exist %LIBRARY_LIB%\\\\liblz4.lib exit 1         # [win]\n        - if exist %LIBRARY_LIB%\\\\liblz4_static.lib exit 1  # [win]\n\n        - test -f ${PREFIX}/lib/pkgconfig/liblz4.pc  # [unix]\n        - pkg-config --cflags --libs liblz4\n\n        - pushd test_shared_cmake  # [win]\n        - cmake -GNinja .          # [win]\n        - popd                     # [win]\n\n\n  - name: lz4-c-static\n    build:\n      activate_in_script: true\n      always_include_files:\n        - Library/lib/cmake/lz4  # [win]\n    script: build_static.sh      # [unix]\n    script: bld_static.bat       # [win]\n    requirements:\n      build:\n        - {{ compiler('c') }}  # [win]\n        - {{ stdlib(\"c\") }}    # [win]\n        - cmake                # [win]\n        - ninja                # [win]\n      host:\n        - {{ pin_subpackage('lz4-c', exact=True) }}\n      run:\n        - {{ pin_subpackage('lz4-c', exact=True) }}\n    test:\n      files:\n        - test_static_cmake\n      requires:\n        - cmake  # [win]\n        - ninja  # [win]\n      commands:\n        - test -f ${PREFIX}/lib/liblz4.a      # [unix]\n        - if not exist %LIBRARY_LIB%\\lz4_static.lib exit 1  # [win]\n\n        - pushd test_static_cmake  # [win]\n        - cmake -GNinja .          # [win]\n        - popd                     # [win]\n\nabout:\n  home: https://www.lz4.org\n  dev_url: https://github.com/lz4/lz4\n  license: BSD-2-Clause\n  license_file: lib/LICENSE\n  summary: Extremely Fast Compression algorithm\n  description: |\n    LZ4 is lossless compression algorithm, providing compression speed at 400\n    MB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\n    with speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\n    derivative, called LZ4_HC, is available, trading customizable CPU time for\n    compression ratio. LZ4 library is provided as open source software using a\n    BSD license.\n\nextra:\n  recipe-maintainers:\n    - mingwandroid\n    - rmax\n    - wesm\n    - xhochy\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  pkg_name: lz4-c\n  name: lz4\n  version: \"1.10.0\"\n\nrecipe:\n  name: ${{ pkg_name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/${{ name }}/${{ name }}/archive/v${{ version }}.tar.gz\n  sha256: 537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b\n\nbuild:\n  number: 2\n\noutputs:\n  - package:\n      name: lz4-c\n    build:\n      script: build\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - if: not win\n          then: ${{ compiler('cxx') }}\n        - if: not win\n          then: make\n        - if: win\n          then: cmake\n        - if: win\n          then: ninja\n        - if: unix\n          then: patch\n      # https://abi-laboratory.pro/index.php?view=timeline&l=lz4\n      run_exports:\n        - ${{ pin_subpackage(pkg_name, upper_bound='x.x') }}\n    tests:\n      - package_contents:\n          include:\n            - lz4.h\n            - lz4hc.h\n            - lz4frame.h\n          lib:\n            - lz4\n          files:\n            exists:\n              - if: unix\n                then: lib/pkgconfig/liblz4.pc\n            not_exists:\n              - if: unix\n                then: lib/liblz4.a\n              - if: win\n                then: Library/lib/liblz4_static.lib\n      - files:\n          recipe:\n            - test_shared_cmake\n        requirements:\n          run:\n            - if: not (linux and riscv64)\n              then: pkg-config\n            - if: win\n              then: ${{ compiler('c') }}\n            - if: win\n              then: ${{ stdlib('c') }}\n            - if: win\n              then: cmake\n            - if: win\n              then: ninja\n        script:\n          - lz4 -h\n          - if: unix\n            then: lz4c -h\n          - if: unix\n            then: lz4cat -h\n          - if: unix\n            then: unlz4 -h\n          - if: not (linux and riscv64)\n            then: pkg-config --cflags --libs liblz4\n          - if: win\n            then: pushd test_shared_cmake\n          - if: win\n            then: cmake -GNinja .\n          - if: win\n            then: popd\n  - package:\n      name: lz4-c-static\n    build:\n      always_include_files:\n        - if: win\n          then: Library/lib/cmake/lz4\n      script: build_static\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - if: not win\n          then: ${{ compiler('cxx') }}\n        - if: not win\n          then: make\n        - if: win\n          then: cmake\n        - if: win\n          then: ninja\n      host:\n        - ${{ pin_subpackage('lz4-c', exact=True) }}\n      run:\n        - ${{ pin_subpackage('lz4-c', exact=True) }}\n    tests:\n      - package_contents:\n          files:\n            exists:\n              - if: unix\n                then: lib/liblz4.a\n              - if: win\n                then: Library/lib/lz4_static.lib\n      - files:\n          recipe:\n            - test_static_cmake\n        requirements:\n          run:\n            - if: win\n              then: ${{ compiler('c') }}\n            - if: win\n              then: ${{ stdlib('c') }}\n            - if: win\n              then: cmake\n            - if: win\n              then: ninja\n        script:\n          - if: win\n            then: pushd test_static_cmake\n          - if: win\n            then: cmake -GNinja .\n          - if: win\n            then: popd\n\nabout:\n  license: BSD-2-Clause\n  license_file: lib/LICENSE\n  summary: Extremely Fast Compression algorithm\n  description: |\n    LZ4 is lossless compression algorithm, providing compression speed at 400\n    MB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\n    with speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\n    derivative, called LZ4_HC, is available, trading customizable CPU time for\n    compression ratio. LZ4 library is provided as open source software using a\n    BSD license.\n\n\n  homepage: https://www.lz4.org\n  repository: https://github.com/lz4/lz4\n\nextra:\n  feedstock-name: lz4-c\n  recipe-maintainers:\n    - mingwandroid\n    - rmax\n    - wesm\n    - xhochy\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
-      "cmake",
       "cxx_compiler_stub",
       "lz4-c",
       "make",
-      "ninja",
       "patch"
     ]
   },
@@ -1169,10 +1885,8 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cmake",
         "cxx_compiler_stub",
         "make",
-        "ninja",
         "patch"
       ]
     },
@@ -1197,8 +1911,6 @@
     "test": {
       "__set__": true,
       "elements": [
-        "cmake",
-        "ninja",
         "pkg-config"
       ]
     }
@@ -1210,10 +1922,8 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cmake",
         "cxx_compiler_stub",
         "make",
-        "ninja",
         "patch"
       ]
     },
@@ -1232,8 +1942,6 @@
     "test": {
       "__set__": true,
       "elements": [
-        "cmake",
-        "ninja",
         "pkg-config"
       ]
     }
@@ -1245,17 +1953,25 @@
   },
   "win_64_meta_yaml": {
     "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
       "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
+      "home": "https://www.lz4.org/",
       "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
       "license_file": "lib/LICENSE",
       "summary": "Extremely Fast Compression algorithm"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "lz4-c",
       "recipe-maintainers": [
         "mingwandroid",
         "rmax",
@@ -1266,49 +1982,75 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "if not exist %LIBRARY_INC%\\\\lz4.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4hc.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4frame.h exit 1",
-            "if not exist %LIBRARY_BIN%\\\\liblz4.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\liblz4.lib exit 1",
-            "if exist %LIBRARY_LIB%\\\\liblz4_static.lib exit 1",
-            "pkg-config --cflags --libs liblz4",
-            "pushd test_shared_cmake",
-            "cmake -GNinja .",
-            "popd"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config",
-            "cmake",
-            "ninja"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": [
-            "Library/lib/cmake/lz4"
-          ]
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
-            "cmake",
-            "ninja"
+            "cxx_compiler_stub",
+            "make"
           ],
           "host": [
             "lz4-c"
@@ -1317,22 +2059,24 @@
             "lz4-c"
           ]
         },
-        "script": "bld_static.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_LIB%\\lz4_static.lib exit 1",
-            "pushd test_static_cmake",
-            "cmake -GNinja .",
-            "popd"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": [
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
@@ -1343,13 +2087,12 @@
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cmake",
-        "ninja"
-      ],
-      "host": [],
-      "run": []
+        "cxx_compiler_stub",
+        "make",
+        "patch"
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
       "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
@@ -1361,8 +2104,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cmake",
-        "ninja"
+        "cxx_compiler_stub",
+        "make",
+        "patch"
       ]
     },
     "host": {
@@ -1380,25 +2124,31 @@
     "test": {
       "__set__": true,
       "elements": [
-        "cmake",
-        "ninja",
         "pkg-config"
       ]
     }
   },
   "win_arm64_meta_yaml": {
     "about": {
-      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.\n",
+      "description": "LZ4 is lossless compression algorithm, providing compression speed at 400\nMB/s per core (0.16 Bytes/cycle). It features an extremely fast decoder,\nwith speed in multiple GB/s per core (0.71 Bytes/cycle). A high compression\nderivative, called LZ4_HC, is available, trading customizable CPU time for\ncompression ratio. LZ4 library is provided as open source software using a\nBSD license.",
       "dev_url": "https://github.com/lz4/lz4",
-      "home": "https://www.lz4.org",
+      "home": "https://www.lz4.org/",
       "license": "BSD-2-Clause",
+      "license_family": "BSD-2-Clause",
       "license_file": "lib/LICENSE",
       "summary": "Extremely Fast Compression algorithm"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "lz4-c"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "lz4-c",
       "recipe-maintainers": [
         "mingwandroid",
         "rmax",
@@ -1409,49 +2159,75 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "lz4-c"
           ]
         },
         "name": "lz4-c",
-        "test": {
-          "commands": [
-            "lz4 -h",
-            "if not exist %LIBRARY_INC%\\\\lz4.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4hc.h exit 1",
-            "if not exist %LIBRARY_INC%\\\\lz4frame.h exit 1",
-            "if not exist %LIBRARY_BIN%\\\\liblz4.dll exit 1",
-            "if not exist %LIBRARY_LIB%\\\\liblz4.lib exit 1",
-            "if exist %LIBRARY_LIB%\\\\liblz4_static.lib exit 1",
-            "pkg-config --cflags --libs liblz4",
-            "pushd test_shared_cmake",
-            "cmake -GNinja .",
-            "popd"
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "patch"
           ],
-          "files": [
-            "test_shared_cmake"
-          ],
-          "requires": [
-            "pkg-config",
-            "cmake",
-            "ninja"
-          ]
-        }
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": {
+                "exists": [
+                  "lib/pkgconfig/liblz4.pc"
+                ],
+                "not_exists": [
+                  "lib/liblz4.a"
+                ]
+              },
+              "include": [
+                "lz4.h",
+                "lz4hc.h",
+                "lz4frame.h"
+              ],
+              "lib": [
+                "lz4"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_shared_cmake"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "lz4 -h",
+              "lz4c -h",
+              "lz4cat -h",
+              "unlz4 -h",
+              "pkg-config --cflags --libs liblz4"
+            ]
+          }
+        ],
+        "version": "1.10.0"
       },
       {
-        "build": {
-          "activate_in_script": true,
-          "always_include_files": [
-            "Library/lib/cmake/lz4"
-          ]
-        },
+        "build": null,
         "name": "lz4-c-static",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "c_stdlib_stub",
-            "cmake",
-            "ninja"
+            "cxx_compiler_stub",
+            "make"
           ],
           "host": [
             "lz4-c"
@@ -1460,22 +2236,24 @@
             "lz4-c"
           ]
         },
-        "script": "bld_static.bat",
-        "test": {
-          "commands": [
-            "if not exist %LIBRARY_LIB%\\lz4_static.lib exit 1",
-            "pushd test_static_cmake",
-            "cmake -GNinja .",
-            "popd"
-          ],
-          "files": [
-            "test_static_cmake"
-          ],
-          "requires": [
-            "cmake",
-            "ninja"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "lib/liblz4.a"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_static_cmake"
+              ]
+            },
+            "script": []
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
@@ -1486,13 +2264,12 @@
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cmake",
-        "ninja"
-      ],
-      "host": [],
-      "run": []
+        "cxx_compiler_stub",
+        "make",
+        "patch"
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b",
       "url": "https://github.com/lz4/lz4/archive/v1.10.0.tar.gz"
@@ -1504,8 +2281,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cmake",
-        "ninja"
+        "cxx_compiler_stub",
+        "make",
+        "patch"
       ]
     },
     "host": {
@@ -1523,8 +2301,6 @@
     "test": {
       "__set__": true,
       "elements": [
-        "cmake",
-        "ninja",
         "pkg-config"
       ]
     }
