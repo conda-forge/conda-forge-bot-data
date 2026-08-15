@@ -198,7 +198,8 @@
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
           "CARGO_PROFILE_RELEASE_LTO": "thin",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "JEMALLOC_SYS_WITH_LG_PAGE": "16"
         }
       }
     },
@@ -329,19 +330,15 @@
         "content": [
           "set -x",
           "export OPENSSL_DIR=\"$PREFIX\"",
-          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root ${PREFIX} --path . --no-track",
-          "cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml",
-          "mkdir -p $PREFIX/share/zsh/site-functions",
-          "$PREFIX/bin/rattler-build completion --shell zsh > $PREFIX/share/zsh/site-functions/_rattler-build",
-          "mkdir -p $PREFIX/share/bash-completion/completions",
-          "$PREFIX/bin/rattler-build completion --shell bash > $PREFIX/share/bash-completion/completions/rattler-build",
-          "mkdir -p $PREFIX/share/fish/vendor_completions.d",
-          "$PREFIX/bin/rattler-build completion --shell fish > $PREFIX/share/fish/vendor_completions.d/rattler-build.fish"
+          "export RUSTFLAGS=\"$RUSTFLAGS -C link-arg=-fuse-ld=bfd\"",
+          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation --bin rattler-build --root ${PREFIX} --path . --no-track",
+          "cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
           "CARGO_PROFILE_RELEASE_LTO": "thin",
-          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "JEMALLOC_SYS_WITH_LG_PAGE": "16"
         }
       }
     },
@@ -381,11 +378,6 @@
             "package_contents": {
               "bin": [
                 "rattler-build"
-              ],
-              "files": [
-                "share/zsh/site-functions/_rattler-build",
-                "share/bash-completion/completions/rattler-build",
-                "share/fish/vendor_completions.d/rattler-build.fish"
               ],
               "strict": true
             }
@@ -479,12 +471,21 @@
           "mkdir -p $PREFIX/share/bash-completion/completions",
           "$PREFIX/bin/rattler-build completion --shell bash > $PREFIX/share/bash-completion/completions/rattler-build",
           "mkdir -p $PREFIX/share/fish/vendor_completions.d",
-          "$PREFIX/bin/rattler-build completion --shell fish > $PREFIX/share/fish/vendor_completions.d/rattler-build.fish"
+          "$PREFIX/bin/rattler-build completion --shell fish > $PREFIX/share/fish/vendor_completions.d/rattler-build.fish",
+          "export RUSTFLAGS=\"$RUSTFLAGS -C link-arg=-fuse-ld=bfd\"",
+          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation --bin rattler-build --root ${PREFIX} --path . --no-track",
+          "if [[ \"${MACOSX_SDK_VERSION}\" != \"11.0\" ]]; then exit 1; fi",
+          "unset CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER",
+          "set CARGO_HOME=C:\\.cargo",
+          "md %CARGO_HOME%",
+          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root %PREFIX% --path . --no-track",
+          "cargo-bundle-licenses --format yaml --output %SRC_DIR%/THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
           "CARGO_PROFILE_RELEASE_LTO": "thin",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "JEMALLOC_SYS_WITH_LG_PAGE": "16",
           "MACOSX_SDK_VERSION": "11.0"
         }
       }
@@ -608,11 +609,6 @@
               "bin": [
                 "rattler-build"
               ],
-              "files": [
-                "share/zsh/site-functions/_rattler-build",
-                "share/bash-completion/completions/rattler-build",
-                "share/fish/vendor_completions.d/rattler-build.fish"
-              ],
               "strict": true
             }
           },
@@ -636,12 +632,8 @@
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
@@ -677,12 +669,8 @@
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
@@ -714,27 +702,17 @@
             "c_compiler_stub",
             "cxx_compiler_stub",
             "cmake",
-            "make",
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
             "package_contents": {
               "bin": [
                 "rattler-build"
-              ],
-              "files": [
-                "share/zsh/site-functions/_rattler-build",
-                "share/bash-completion/completions/rattler-build",
-                "share/fish/vendor_completions.d/rattler-build.fish"
               ],
               "strict": true
             }
@@ -755,27 +733,17 @@
             "c_compiler_stub",
             "cxx_compiler_stub",
             "cmake",
-            "make",
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
             "package_contents": {
               "bin": [
                 "rattler-build"
-              ],
-              "files": [
-                "share/zsh/site-functions/_rattler-build",
-                "share/bash-completion/completions/rattler-build",
-                "share/fish/vendor_completions.d/rattler-build.fish"
               ],
               "strict": true
             }
@@ -830,6 +798,8 @@
       "number": "0",
       "script": {
         "content": [
+          "if [[ \"${MACOSX_SDK_VERSION}\" != \"11.0\" ]]; then exit 1; fi",
+          "unset CARGO_TARGET_X86_64_APPLE_DARWIN_LINKER",
           "set -x",
           "export OPENSSL_DIR=\"$PREFIX\"",
           "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root ${PREFIX} --path . --no-track",
@@ -873,12 +843,8 @@
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
@@ -915,12 +881,6 @@
         "make",
         "cargo-auditable",
         "cargo-bundle-licenses"
-      ],
-      "host": [
-        "openssl"
-      ],
-      "run": [
-        "patchelf"
       ]
     },
     "schema_version": 1,
@@ -945,15 +905,11 @@
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "patchelf"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -1017,12 +973,8 @@
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
@@ -1059,12 +1011,6 @@
         "make",
         "cargo-auditable",
         "cargo-bundle-licenses"
-      ],
-      "host": [
-        "openssl"
-      ],
-      "run": [
-        "patchelf"
       ]
     },
     "schema_version": 1,
@@ -1089,15 +1035,11 @@
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "patchelf"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -1227,16 +1169,10 @@
       "number": "0",
       "script": {
         "content": [
-          "set -x",
-          "export OPENSSL_DIR=\"$PREFIX\"",
-          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root ${PREFIX} --path . --no-track",
-          "cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml",
-          "mkdir -p $PREFIX/share/zsh/site-functions",
-          "$PREFIX/bin/rattler-build completion --shell zsh > $PREFIX/share/zsh/site-functions/_rattler-build",
-          "mkdir -p $PREFIX/share/bash-completion/completions",
-          "$PREFIX/bin/rattler-build completion --shell bash > $PREFIX/share/bash-completion/completions/rattler-build",
-          "mkdir -p $PREFIX/share/fish/vendor_completions.d",
-          "$PREFIX/bin/rattler-build completion --shell fish > $PREFIX/share/fish/vendor_completions.d/rattler-build.fish"
+          "set CARGO_HOME=C:\\.cargo",
+          "md %CARGO_HOME%",
+          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root %PREFIX% --path . --no-track",
+          "cargo-bundle-licenses --format yaml --output %SRC_DIR%/THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
@@ -1265,27 +1201,17 @@
             "c_compiler_stub",
             "cxx_compiler_stub",
             "cmake",
-            "make",
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
             "package_contents": {
               "bin": [
                 "rattler-build"
-              ],
-              "files": [
-                "share/zsh/site-functions/_rattler-build",
-                "share/bash-completion/completions/rattler-build",
-                "share/fish/vendor_completions.d/rattler-build.fish"
               ],
               "strict": true
             }
@@ -1308,15 +1234,8 @@
         "c_compiler_stub",
         "cxx_compiler_stub",
         "cmake",
-        "make",
         "cargo-auditable",
         "cargo-bundle-licenses"
-      ],
-      "host": [
-        "openssl"
-      ],
-      "run": [
-        "patchelf"
       ]
     },
     "schema_version": 1,
@@ -1335,21 +1254,16 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
-        "make",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "patchelf"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
@@ -1370,16 +1284,10 @@
       "number": "0",
       "script": {
         "content": [
-          "set -x",
-          "export OPENSSL_DIR=\"$PREFIX\"",
-          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root ${PREFIX} --path . --no-track",
-          "cargo-bundle-licenses --format yaml --output ${SRC_DIR}/THIRDPARTY.yml",
-          "mkdir -p $PREFIX/share/zsh/site-functions",
-          "$PREFIX/bin/rattler-build completion --shell zsh > $PREFIX/share/zsh/site-functions/_rattler-build",
-          "mkdir -p $PREFIX/share/bash-completion/completions",
-          "$PREFIX/bin/rattler-build completion --shell bash > $PREFIX/share/bash-completion/completions/rattler-build",
-          "mkdir -p $PREFIX/share/fish/vendor_completions.d",
-          "$PREFIX/bin/rattler-build completion --shell fish > $PREFIX/share/fish/vendor_completions.d/rattler-build.fish"
+          "set CARGO_HOME=C:\\.cargo",
+          "md %CARGO_HOME%",
+          "cargo auditable install --locked --no-default-features --features native-tls,recipe-generation,s3,sigstore,performance --bin rattler-build --root %PREFIX% --path . --no-track",
+          "cargo-bundle-licenses --format yaml --output %SRC_DIR%/THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
@@ -1408,27 +1316,17 @@
             "c_compiler_stub",
             "cxx_compiler_stub",
             "cmake",
-            "make",
             "cargo-auditable",
             "cargo-bundle-licenses"
           ],
-          "host": [
-            "openssl"
-          ],
-          "run": [
-            "patchelf"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
             "package_contents": {
               "bin": [
                 "rattler-build"
-              ],
-              "files": [
-                "share/zsh/site-functions/_rattler-build",
-                "share/bash-completion/completions/rattler-build",
-                "share/fish/vendor_completions.d/rattler-build.fish"
               ],
               "strict": true
             }
@@ -1451,15 +1349,8 @@
         "c_compiler_stub",
         "cxx_compiler_stub",
         "cmake",
-        "make",
         "cargo-auditable",
         "cargo-bundle-licenses"
-      ],
-      "host": [
-        "openssl"
-      ],
-      "run": [
-        "patchelf"
       ]
     },
     "schema_version": 1,
@@ -1478,21 +1369,16 @@
         "cargo-bundle-licenses",
         "cmake",
         "cxx_compiler_stub",
-        "make",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "openssl"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "patchelf"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,

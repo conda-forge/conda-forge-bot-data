@@ -216,10 +216,6 @@
           "echo 'message = \"${{ self_update_msg }}\"' > \"$PREFIX\"/lib/mise-self-update-instructions.toml",
           "mkdir -p \"$PREFIX\"/share/man/man1",
           "cp man/man1/mise.1 \"$PREFIX\"/share/man/man1/mise.1",
-          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "\"$PREFIX\"/bin/mise completion bash > \"$PREFIX\"/share/bash-completion/completions/mise",
-          "\"$PREFIX\"/bin/mise completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/mise.fish",
-          "\"$PREFIX\"/bin/mise completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_mise",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -282,10 +278,7 @@
               ],
               "files": [
                 "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -380,11 +373,19 @@
           "\"$PREFIX\"/bin/mise completion bash > \"$PREFIX\"/share/bash-completion/completions/mise",
           "\"$PREFIX\"/bin/mise completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/mise.fish",
           "\"$PREFIX\"/bin/mise completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_mise",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml",
+          "powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"",
+          "set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"",
+          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --no-default-features --features=${{ base_features }}${{ extra_features }}",
+          "cargo auditable install --path=crates\\mise-shim --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins",
+          "if not exist \"%LIBRARY_PREFIX%\"\\lib mkdir \"%LIBRARY_PREFIX%\"\\lib",
+          "echo message = \"${{ self_update_msg }}\"> \"%LIBRARY_PREFIX%\"\\lib\\mise-self-update-instructions.toml",
+          "if not exist \"%LIBRARY_PREFIX%\"\\share\\man\\man1 mkdir \"%LIBRARY_PREFIX%\"\\share\\man\\man1",
+          "powershell -Command \"Copy-Item -Path 'man/man1/mise.1' -Destination '%LIBRARY_PREFIX%\\share\\man\\man1\\mise.1'\""
         ],
         "env": {
           "AR_x86_64_pc_windows_msvc": "llvm-lib",
-          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "AWS_LC_SYS_CMAKE_BUILDER": "1",
           "CARGO_PROFILE_RELEASE_LTO": "thin",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "CC_x86_64_pc_windows_msvc": "clang-cl",
@@ -496,10 +497,7 @@
               ],
               "files": [
                 "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -525,7 +523,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -550,10 +547,7 @@
               ],
               "files": [
                 "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -579,7 +573,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -604,10 +597,7 @@
               ],
               "files": [
                 "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -633,7 +623,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -654,14 +643,12 @@
           {
             "package_contents": {
               "bin": [
-                "mise"
+                "mise",
+                "mise-shim"
               ],
               "files": [
-                "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "Library/lib/mise-self-update-instructions.toml",
+                "Library/share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -687,7 +674,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -708,14 +694,12 @@
           {
             "package_contents": {
               "bin": [
-                "mise"
+                "mise",
+                "mise-shim"
               ],
               "files": [
-                "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "Library/lib/mise-self-update-instructions.toml",
+                "Library/share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -774,10 +758,6 @@
           "echo 'message = \"${{ self_update_msg }}\"' > \"$PREFIX\"/lib/mise-self-update-instructions.toml",
           "mkdir -p \"$PREFIX\"/share/man/man1",
           "cp man/man1/mise.1 \"$PREFIX\"/share/man/man1/mise.1",
-          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "\"$PREFIX\"/bin/mise completion bash > \"$PREFIX\"/share/bash-completion/completions/mise",
-          "\"$PREFIX\"/bin/mise completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/mise.fish",
-          "\"$PREFIX\"/bin/mise completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_mise",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -815,7 +795,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -840,10 +819,7 @@
               ],
               "files": [
                 "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -871,7 +847,6 @@
         "pkg-config"
       ],
       "host": [
-        "openssl",
         "usage"
       ]
     },
@@ -901,7 +876,6 @@
     "host": {
       "__set__": true,
       "elements": [
-        "openssl",
         "usage"
       ]
     },
@@ -934,10 +908,6 @@
           "echo 'message = \"${{ self_update_msg }}\"' > \"$PREFIX\"/lib/mise-self-update-instructions.toml",
           "mkdir -p \"$PREFIX\"/share/man/man1",
           "cp man/man1/mise.1 \"$PREFIX\"/share/man/man1/mise.1",
-          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "\"$PREFIX\"/bin/mise completion bash > \"$PREFIX\"/share/bash-completion/completions/mise",
-          "\"$PREFIX\"/bin/mise completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/mise.fish",
-          "\"$PREFIX\"/bin/mise completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_mise",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
@@ -975,7 +945,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -1000,10 +969,7 @@
               ],
               "files": [
                 "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -1031,7 +997,6 @@
         "pkg-config"
       ],
       "host": [
-        "openssl",
         "usage"
       ]
     },
@@ -1061,7 +1026,6 @@
     "host": {
       "__set__": true,
       "elements": [
-        "openssl",
         "usage"
       ]
     },
@@ -1202,21 +1166,19 @@
       "number": "0",
       "script": {
         "content": [
-          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --no-default-features --features=${{ base_features }}${{ extra_features }}",
-          "mkdir -p \"$PREFIX\"/lib",
-          "echo 'message = \"${{ self_update_msg }}\"' > \"$PREFIX\"/lib/mise-self-update-instructions.toml",
-          "mkdir -p \"$PREFIX\"/share/man/man1",
-          "cp man/man1/mise.1 \"$PREFIX\"/share/man/man1/mise.1",
-          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "\"$PREFIX\"/bin/mise completion bash > \"$PREFIX\"/share/bash-completion/completions/mise",
-          "\"$PREFIX\"/bin/mise completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/mise.fish",
-          "\"$PREFIX\"/bin/mise completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_mise",
+          "powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"",
+          "set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"",
+          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --no-default-features --features=${{ base_features }}${{ extra_features }}",
+          "cargo auditable install --path=crates\\mise-shim --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins",
+          "if not exist \"%LIBRARY_PREFIX%\"\\lib mkdir \"%LIBRARY_PREFIX%\"\\lib",
+          "echo message = \"${{ self_update_msg }}\"> \"%LIBRARY_PREFIX%\"\\lib\\mise-self-update-instructions.toml",
+          "if not exist \"%LIBRARY_PREFIX%\"\\share\\man\\man1 mkdir \"%LIBRARY_PREFIX%\"\\share\\man\\man1",
+          "powershell -Command \"Copy-Item -Path 'man/man1/mise.1' -Destination '%LIBRARY_PREFIX%\\share\\man\\man1\\mise.1'\"",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
           "AR_x86_64_pc_windows_msvc": "llvm-lib",
-          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "AWS_LC_SYS_CMAKE_BUILDER": "1",
           "CARGO_PROFILE_RELEASE_LTO": "thin",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "CC_x86_64_pc_windows_msvc": "clang-cl",
@@ -1249,7 +1211,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -1270,14 +1231,12 @@
           {
             "package_contents": {
               "bin": [
-                "mise"
+                "mise",
+                "mise-shim"
               ],
               "files": [
-                "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "Library/lib/mise-self-update-instructions.toml",
+                "Library/share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -1305,7 +1264,6 @@
         "pkg-config"
       ],
       "host": [
-        "openssl",
         "usage"
       ]
     },
@@ -1335,7 +1293,6 @@
     "host": {
       "__set__": true,
       "elements": [
-        "openssl",
         "usage"
       ]
     },
@@ -1362,21 +1319,19 @@
       "number": "0",
       "script": {
         "content": [
-          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --no-default-features --features=${{ base_features }}${{ extra_features }}",
-          "mkdir -p \"$PREFIX\"/lib",
-          "echo 'message = \"${{ self_update_msg }}\"' > \"$PREFIX\"/lib/mise-self-update-instructions.toml",
-          "mkdir -p \"$PREFIX\"/share/man/man1",
-          "cp man/man1/mise.1 \"$PREFIX\"/share/man/man1/mise.1",
-          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "\"$PREFIX\"/bin/mise completion bash > \"$PREFIX\"/share/bash-completion/completions/mise",
-          "\"$PREFIX\"/bin/mise completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/mise.fish",
-          "\"$PREFIX\"/bin/mise completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_mise",
+          "powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"",
+          "set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"",
+          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --no-default-features --features=${{ base_features }}${{ extra_features }}",
+          "cargo auditable install --path=crates\\mise-shim --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins",
+          "if not exist \"%LIBRARY_PREFIX%\"\\lib mkdir \"%LIBRARY_PREFIX%\"\\lib",
+          "echo message = \"${{ self_update_msg }}\"> \"%LIBRARY_PREFIX%\"\\lib\\mise-self-update-instructions.toml",
+          "if not exist \"%LIBRARY_PREFIX%\"\\share\\man\\man1 mkdir \"%LIBRARY_PREFIX%\"\\share\\man\\man1",
+          "powershell -Command \"Copy-Item -Path 'man/man1/mise.1' -Destination '%LIBRARY_PREFIX%\\share\\man\\man1\\mise.1'\"",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
         ],
         "env": {
           "AR_x86_64_pc_windows_msvc": "llvm-lib",
-          "AWS_LC_SYS_CMAKE_BUILDER": "0",
+          "AWS_LC_SYS_CMAKE_BUILDER": "1",
           "CARGO_PROFILE_RELEASE_LTO": "thin",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "CC_x86_64_pc_windows_msvc": "clang-cl",
@@ -1409,7 +1364,6 @@
             "pkg-config"
           ],
           "host": [
-            "openssl",
             "usage"
           ],
           "run": []
@@ -1430,14 +1384,12 @@
           {
             "package_contents": {
               "bin": [
-                "mise"
+                "mise",
+                "mise-shim"
               ],
               "files": [
-                "lib/mise-self-update-instructions.toml",
-                "share/man/man1/mise.1",
-                "share/bash-completion/completions/mise",
-                "share/fish/vendor_completions.d/mise.fish",
-                "share/zsh/site-functions/_mise"
+                "Library/lib/mise-self-update-instructions.toml",
+                "Library/share/man/man1/mise.1"
               ],
               "strict": true
             }
@@ -1465,7 +1417,6 @@
         "pkg-config"
       ],
       "host": [
-        "openssl",
         "usage"
       ]
     },
@@ -1495,7 +1446,6 @@
     "host": {
       "__set__": true,
       "elements": [
-        "openssl",
         "usage"
       ]
     },
