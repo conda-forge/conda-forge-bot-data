@@ -165,10 +165,6 @@
         "go build -o=\"$PREFIX\"/bin/gt -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-client -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-client",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-server -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/gt completion bash > \"$PREFIX\"/share/bash-completion/completions/gt",
-        "\"$PREFIX\"/bin/gt completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/gt.fish",
-        "\"$PREFIX\"/bin/gt completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_gt",
         "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
       ]
     },
@@ -209,11 +205,6 @@
                 "gt",
                 "gt-proxy-server",
                 "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
               ],
               "strict": true
             }
@@ -279,10 +270,6 @@
         "go build -o=\"$PREFIX\"/bin/gt -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-client -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-client",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-server -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/gt completion bash > \"$PREFIX\"/share/bash-completion/completions/gt",
-        "\"$PREFIX\"/bin/gt completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/gt.fish",
-        "\"$PREFIX\"/bin/gt completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_gt",
         "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
       ]
     },
@@ -323,11 +310,6 @@
                 "gt",
                 "gt-proxy-server",
                 "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
               ],
               "strict": true
             }
@@ -397,7 +379,12 @@
         "\"$PREFIX\"/bin/gt completion bash > \"$PREFIX\"/share/bash-completion/completions/gt",
         "\"$PREFIX\"/bin/gt completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/gt.fish",
         "\"$PREFIX\"/bin/gt completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_gt",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
+        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2",
+        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')\"`) do set BUILD_TIME=%%T",
+        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/gastown/commits/v${{ version }}').sha).Substring(0, 7)\"`) do set SHORT_COMMIT_HASH=%%T",
+        "go build -o=\"%LIBRARY_BIN%\"\\gt.exe -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=%BUILD_TIME% -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=%SHORT_COMMIT_HASH% -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
+        "go build -o=\"%LIBRARY_BIN%\"\\gt-proxy-server.exe -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=%BUILD_TIME% -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=%SHORT_COMMIT_HASH% -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
+        "xcopy \"library_licenses_2\\*\" \"library_licenses\\\" /E /I /Y & if errorlevel 1 exit /b %ERRORLEVEL% & rmdir /S /Q \"library_licenses_2\""
       ]
     },
     "extra": {
@@ -481,10 +468,43 @@
                 "gt-proxy-server",
                 "gt-proxy-client"
               ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.2.1"
+      },
+      {
+        "build": null,
+        "name": "gastown",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": {
+              "content": [
+                "gt --help",
+                "gt --version",
+                "gt-proxy-server --help",
+                "gt-proxy-client --help"
+              ],
+              "env": {
+                "GT_REAL_BIN": "bin/gt"
+              }
+            }
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "gt",
+                "gt-proxy-server",
+                "gt-proxy-client"
               ],
               "strict": true
             }
@@ -524,11 +544,6 @@
                 "gt-proxy-server",
                 "gt-proxy-client"
               ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
-              ],
               "strict": true
             }
           }
@@ -567,10 +582,41 @@
                 "gt-proxy-server",
                 "gt-proxy-client"
               ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.2.1"
+      },
+      {
+        "build": null,
+        "name": "gastown",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": {
+              "content": [
+                "gt --help",
+                "gt --version",
+                "gt-proxy-server --help"
+              ],
+              "env": {
+                "GT_REAL_BIN": "bin/gt"
+              }
+            }
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "gt",
+                "gt-proxy-server"
               ],
               "strict": true
             }
@@ -595,8 +641,7 @@
               "content": [
                 "gt --help",
                 "gt --version",
-                "gt-proxy-server --help",
-                "gt-proxy-client --help"
+                "gt-proxy-server --help"
               ],
               "env": {
                 "GT_REAL_BIN": "bin/gt"
@@ -607,99 +652,7 @@
             "package_contents": {
               "bin": [
                 "gt",
-                "gt-proxy-server",
-                "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
-              ],
-              "strict": true
-            }
-          }
-        ],
-        "version": "1.2.1"
-      },
-      {
-        "build": null,
-        "name": "gastown",
-        "requirements": {
-          "build": [
-            "go-nocgo_compiler_stub",
-            "go-licenses"
-          ],
-          "host": [],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": {
-              "content": [
-                "gt --help",
-                "gt --version",
-                "gt-proxy-server --help",
-                "gt-proxy-client --help"
-              ],
-              "env": {
-                "GT_REAL_BIN": "bin/gt"
-              }
-            }
-          },
-          {
-            "package_contents": {
-              "bin": [
-                "gt",
-                "gt-proxy-server",
-                "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
-              ],
-              "strict": true
-            }
-          }
-        ],
-        "version": "1.2.1"
-      },
-      {
-        "build": null,
-        "name": "gastown",
-        "requirements": {
-          "build": [
-            "go-nocgo_compiler_stub",
-            "go-licenses"
-          ],
-          "host": [],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": {
-              "content": [
-                "gt --help",
-                "gt --version",
-                "gt-proxy-server --help",
-                "gt-proxy-client --help"
-              ],
-              "env": {
-                "GT_REAL_BIN": "bin/gt"
-              }
-            }
-          },
-          {
-            "package_contents": {
-              "bin": [
-                "gt",
-                "gt-proxy-server",
-                "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
+                "gt-proxy-server"
               ],
               "strict": true
             }
@@ -745,10 +698,6 @@
         "go build -o=\"$PREFIX\"/bin/gt -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-client -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-client",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-server -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/gt completion bash > \"$PREFIX\"/share/bash-completion/completions/gt",
-        "\"$PREFIX\"/bin/gt completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/gt.fish",
-        "\"$PREFIX\"/bin/gt completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_gt",
         "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
       ]
     },
@@ -789,11 +738,6 @@
                 "gt",
                 "gt-proxy-server",
                 "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
               ],
               "strict": true
             }
@@ -859,10 +803,6 @@
         "go build -o=\"$PREFIX\"/bin/gt -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-client -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-client",
         "go build -o=\"$PREFIX\"/bin/gt-proxy-server -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/gt completion bash > \"$PREFIX\"/share/bash-completion/completions/gt",
-        "\"$PREFIX\"/bin/gt completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/gt.fish",
-        "\"$PREFIX\"/bin/gt completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_gt",
         "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
       ]
     },
@@ -903,11 +843,6 @@
                 "gt",
                 "gt-proxy-server",
                 "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
               ],
               "strict": true
             }
@@ -1043,16 +978,11 @@
       "number": "2",
       "script": [
         "go-licenses save ./cmd/gt ./cmd/gt-proxy-client ./cmd/gt-proxy-server --save_path=library_licenses --ignore=github.com/mattn/go-localereader",
-        "BUILD_TIME=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"",
-        "SHORT_COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/gastown/commits/v${{ version }}\" | jq -r '.sha' | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/gt -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
-        "go build -o=\"$PREFIX\"/bin/gt-proxy-client -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-client",
-        "go build -o=\"$PREFIX\"/bin/gt-proxy-server -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/gt completion bash > \"$PREFIX\"/share/bash-completion/completions/gt",
-        "\"$PREFIX\"/bin/gt completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/gt.fish",
-        "\"$PREFIX\"/bin/gt completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_gt",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
+        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')\"`) do set BUILD_TIME=%%T",
+        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/gastown/commits/v${{ version }}').sha).Substring(0, 7)\"`) do set SHORT_COMMIT_HASH=%%T",
+        "go build -o=\"%LIBRARY_BIN%\"\\gt.exe -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=%BUILD_TIME% -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=%SHORT_COMMIT_HASH% -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
+        "go build -o=\"%LIBRARY_BIN%\"\\gt-proxy-server.exe -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=%BUILD_TIME% -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=%SHORT_COMMIT_HASH% -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
+        "xcopy \"library_licenses_2\\*\" \"library_licenses\\\" /E /I /Y & if errorlevel 1 exit /b %ERRORLEVEL% & rmdir /S /Q \"library_licenses_2\""
       ]
     },
     "extra": {
@@ -1078,8 +1008,7 @@
               "content": [
                 "gt --help",
                 "gt --version",
-                "gt-proxy-server --help",
-                "gt-proxy-client --help"
+                "gt-proxy-server --help"
               ],
               "env": {
                 "GT_REAL_BIN": "bin/gt"
@@ -1090,13 +1019,7 @@
             "package_contents": {
               "bin": [
                 "gt",
-                "gt-proxy-server",
-                "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
+                "gt-proxy-server"
               ],
               "strict": true
             }
@@ -1157,16 +1080,11 @@
       "number": "2",
       "script": [
         "go-licenses save ./cmd/gt ./cmd/gt-proxy-client ./cmd/gt-proxy-server --save_path=library_licenses --ignore=github.com/mattn/go-localereader",
-        "BUILD_TIME=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"",
-        "SHORT_COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/gastown/commits/v${{ version }}\" | jq -r '.sha' | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/gt -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
-        "go build -o=\"$PREFIX\"/bin/gt-proxy-client -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-client",
-        "go build -o=\"$PREFIX\"/bin/gt-proxy-server -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=${BUILD_TIME} -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=${SHORT_COMMIT_HASH} -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/gt completion bash > \"$PREFIX\"/share/bash-completion/completions/gt",
-        "\"$PREFIX\"/bin/gt completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/gt.fish",
-        "\"$PREFIX\"/bin/gt completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_gt",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
+        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')\"`) do set BUILD_TIME=%%T",
+        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/gastown/commits/v${{ version }}').sha).Substring(0, 7)\"`) do set SHORT_COMMIT_HASH=%%T",
+        "go build -o=\"%LIBRARY_BIN%\"\\gt.exe -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=%BUILD_TIME% -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=%SHORT_COMMIT_HASH% -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt",
+        "go build -o=\"%LIBRARY_BIN%\"\\gt-proxy-server.exe -v -ldflags=\"-s -w -X github.com/steveyegge/gastown/internal/cmd.Build=conda-forge -X github.com/steveyegge/gastown/internal/cmd.BuildTime=%BUILD_TIME% -X github.com/steveyegge/gastown/internal/cmd.BuiltProperly=1 -X github.com/steveyegge/gastown/internal/cmd.Commit=%SHORT_COMMIT_HASH% -X github.com/steveyegge/gastown/internal/cmd.Version=${{ version }}\" -trimpath ./cmd/gt-proxy-server",
+        "xcopy \"library_licenses_2\\*\" \"library_licenses\\\" /E /I /Y & if errorlevel 1 exit /b %ERRORLEVEL% & rmdir /S /Q \"library_licenses_2\""
       ]
     },
     "extra": {
@@ -1192,8 +1110,7 @@
               "content": [
                 "gt --help",
                 "gt --version",
-                "gt-proxy-server --help",
-                "gt-proxy-client --help"
+                "gt-proxy-server --help"
               ],
               "env": {
                 "GT_REAL_BIN": "bin/gt"
@@ -1204,13 +1121,7 @@
             "package_contents": {
               "bin": [
                 "gt",
-                "gt-proxy-server",
-                "gt-proxy-client"
-              ],
-              "files": [
-                "share/bash-completion/completions/gt",
-                "share/fish/vendor_completions.d/gt.fish",
-                "share/zsh/site-functions/_gt"
+                "gt-proxy-server"
               ],
               "strict": true
             }
