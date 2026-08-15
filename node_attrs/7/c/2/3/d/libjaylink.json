@@ -566,9 +566,8 @@
                 "libjaylink/version.h"
               ],
               "lib": [
-                "libjaylink.so",
-                "libjaylink.so.0.2.1",
-                "libjaylink.so.0"
+                "libjaylink.dylib",
+                "libjaylink.0.dylib"
               ]
             }
           },
@@ -610,9 +609,8 @@
                 "libjaylink/version.h"
               ],
               "lib": [
-                "libjaylink.so",
-                "libjaylink.so.0.2.1",
-                "libjaylink.so.0"
+                "libjaylink.dylib",
+                "libjaylink.0.dylib"
               ]
             }
           },
@@ -636,7 +634,8 @@
             "c_stdlib_stub",
             "meson >=1.1.0",
             "ninja",
-            "pkg-config"
+            "pkg-config",
+            "m2w64-binutils"
           ],
           "host": [
             "libusb"
@@ -646,22 +645,45 @@
         "tests": [
           {
             "package_contents": {
+              "bin": [
+                "jaylink.dll",
+                "jaylink-0.dll",
+                "libjaylink.dll",
+                "libjaylink-0.dll"
+              ],
               "files": [
-                "lib/pkgconfig/libjaylink.pc"
+                "Library/lib/pkgconfig/libjaylink.pc",
+                "Library/lib/libjaylink.dll.a",
+                "Library/lib/libjaylink-0.dll.a"
               ],
               "include": [
                 "libjaylink/libjaylink.h",
                 "libjaylink/version.h"
               ],
               "lib": [
-                "libjaylink.so",
-                "libjaylink.so.0.2.1",
-                "libjaylink.so.0"
+                "jaylink.lib"
               ]
             }
           },
           {
-            "script": "echo \"Only windows is THAT high-maintenance!\""
+            "files": {
+              "recipe": [
+                "helpers/verify_dll_def.py"
+              ],
+              "source": [
+                "libjaylink/jaylink.def"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "m2w64-binutils",
+                "python"
+              ]
+            },
+            "script": [
+              "python helpers\\\\verify_dll_def.py %PREFIX%\\\\Library\\\\bin\\\\libjaylink-${{ major_so_version }}.dll libjaylink\\\\jaylink.def",
+              "python helpers\\\\verify_dll_def.py %PREFIX%\\\\Library\\\\bin\\\\libjaylink.dll libjaylink\\\\jaylink.def"
+            ]
           }
         ],
         "version": "0.4.0"
@@ -677,7 +699,8 @@
         "c_stdlib_stub",
         "meson >=1.1.0",
         "ninja",
-        "pkg-config"
+        "pkg-config",
+        "m2w64-binutils"
       ],
       "host": [
         "libusb"
@@ -685,6 +708,19 @@
     },
     "schema_version": 1,
     "source": {
+      "patches": [
+        "patches/add-jaylink.def.patch",
+        "patches/add-jaylink.lib-meson.build.patch",
+        "patches/enable-dynamic-library.patch",
+        "patches/fix-types-discovery_tcp.c.patch",
+        "patches/fix-types-discovery_usb.c.patch",
+        "patches/fix-types-fileio.c.patch",
+        "patches/fix-types-socket.c.patch",
+        "patches/fix-types-strutil.c.patch",
+        "patches/fix-types-transport_tcp.c.patch",
+        "patches/fix-types-transport_usb.c.patch",
+        "patches/fix-uninitialized.patch"
+      ],
       "sha256": "5557d623934a4bbc053c11f9a181375d7abeb76af910696d9e3d9b1de3bf6987",
       "url": "https://gitlab.zapb.de/libjaylink/libjaylink/-/archive/0.4.0/libjaylink-0.4.0.tar.gz"
     }
@@ -747,9 +783,8 @@
                 "libjaylink/version.h"
               ],
               "lib": [
-                "libjaylink.so",
-                "libjaylink.so.0.2.1",
-                "libjaylink.so.0"
+                "libjaylink.dylib",
+                "libjaylink.0.dylib"
               ]
             }
           },
@@ -865,9 +900,8 @@
                 "libjaylink/version.h"
               ],
               "lib": [
-                "libjaylink.so",
-                "libjaylink.so.0.2.1",
-                "libjaylink.so.0"
+                "libjaylink.dylib",
+                "libjaylink.0.dylib"
               ]
             }
           },
@@ -951,6 +985,7 @@
       "c_compiler_stub",
       "c_stdlib_stub",
       "libusb",
+      "m2w64-binutils",
       "meson",
       "ninja",
       "pkg-config"
@@ -962,6 +997,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "m2w64-binutils",
         "meson",
         "ninja",
         "pkg-config"
@@ -984,7 +1020,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "m2w64-binutils",
+        "python"
+      ]
     }
   },
   "strong_exports": false,
@@ -994,6 +1033,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "m2w64-binutils",
         "meson >=1.1.0",
         "ninja",
         "pkg-config"
@@ -1011,7 +1051,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "m2w64-binutils",
+        "python"
+      ]
     }
   },
   "url": "https://gitlab.zapb.de/libjaylink/libjaylink/-/archive/0.4.0/libjaylink-0.4.0.tar.gz",
@@ -1058,7 +1101,8 @@
             "c_stdlib_stub",
             "meson >=1.1.0",
             "ninja",
-            "pkg-config"
+            "pkg-config",
+            "m2w64-binutils"
           ],
           "host": [
             "libusb"
@@ -1068,22 +1112,45 @@
         "tests": [
           {
             "package_contents": {
+              "bin": [
+                "jaylink.dll",
+                "jaylink-0.dll",
+                "libjaylink.dll",
+                "libjaylink-0.dll"
+              ],
               "files": [
-                "lib/pkgconfig/libjaylink.pc"
+                "Library/lib/pkgconfig/libjaylink.pc",
+                "Library/lib/libjaylink.dll.a",
+                "Library/lib/libjaylink-0.dll.a"
               ],
               "include": [
                 "libjaylink/libjaylink.h",
                 "libjaylink/version.h"
               ],
               "lib": [
-                "libjaylink.so",
-                "libjaylink.so.0.2.1",
-                "libjaylink.so.0"
+                "jaylink.lib"
               ]
             }
           },
           {
-            "script": "echo \"Only windows is THAT high-maintenance!\""
+            "files": {
+              "recipe": [
+                "helpers/verify_dll_def.py"
+              ],
+              "source": [
+                "libjaylink/jaylink.def"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "m2w64-binutils",
+                "python"
+              ]
+            },
+            "script": [
+              "python helpers\\\\verify_dll_def.py %PREFIX%\\\\Library\\\\bin\\\\libjaylink-${{ major_so_version }}.dll libjaylink\\\\jaylink.def",
+              "python helpers\\\\verify_dll_def.py %PREFIX%\\\\Library\\\\bin\\\\libjaylink.dll libjaylink\\\\jaylink.def"
+            ]
           }
         ],
         "version": "0.4.0"
@@ -1099,7 +1166,8 @@
         "c_stdlib_stub",
         "meson >=1.1.0",
         "ninja",
-        "pkg-config"
+        "pkg-config",
+        "m2w64-binutils"
       ],
       "host": [
         "libusb"
@@ -1107,6 +1175,19 @@
     },
     "schema_version": 1,
     "source": {
+      "patches": [
+        "patches/add-jaylink.def.patch",
+        "patches/add-jaylink.lib-meson.build.patch",
+        "patches/enable-dynamic-library.patch",
+        "patches/fix-types-discovery_tcp.c.patch",
+        "patches/fix-types-discovery_usb.c.patch",
+        "patches/fix-types-fileio.c.patch",
+        "patches/fix-types-socket.c.patch",
+        "patches/fix-types-strutil.c.patch",
+        "patches/fix-types-transport_tcp.c.patch",
+        "patches/fix-types-transport_usb.c.patch",
+        "patches/fix-uninitialized.patch"
+      ],
       "sha256": "5557d623934a4bbc053c11f9a181375d7abeb76af910696d9e3d9b1de3bf6987",
       "url": "https://gitlab.zapb.de/libjaylink/libjaylink/-/archive/0.4.0/libjaylink-0.4.0.tar.gz"
     }
@@ -1117,6 +1198,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "m2w64-binutils",
         "meson",
         "ninja",
         "pkg-config"
@@ -1134,7 +1216,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "m2w64-binutils",
+        "python"
+      ]
     }
   }
 }
