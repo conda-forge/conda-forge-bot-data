@@ -417,7 +417,7 @@
     },
     "build": {
       "number": "1",
-      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE \\\n  -D GBS_USE_CUDA:BOOL=FALSE \\\n  -D GBS_USE_MODULES:BOOL=FALSE \\\n  -D GBS_BUILD_DOC:BOOL=FALSE \\\n  -D GBS_BUILD_STUBS:BOOL=FALSE \\\n  -D GBS_USE_RENDER:BOOL=TRUE \\\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE \\\n  -D GBS_BUILD_TESTS:BOOL=TRUE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n# C++ tests (ctest). gbs-render is a SHARED lib installed in $PREFIX/lib;\n# expose it (and vtk/nlopt/...) at run time. No display needed: gbs' CI\n# runs ctest without xvfb on every OS.\nexport LD_LIBRARY_PATH=\"$PREFIX/lib:${LD_LIBRARY_PATH:-}\"\nexport DYLD_FALLBACK_LIBRARY_PATH=\"$PREFIX/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}\"\nctest --test-dir _build --output-on-failure -C Release\n"
+      "script": "cmake %CMAKE_ARGS% -GNinja ^\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" ^\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE ^\n  -D GBS_USE_CUDA:BOOL=FALSE ^\n  -D GBS_USE_MODULES:BOOL=FALSE ^\n  -D GBS_BUILD_DOC:BOOL=FALSE ^\n  -D GBS_BUILD_STUBS:BOOL=FALSE ^\n  -D GBS_USE_RENDER:BOOL=TRUE ^\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE ^\n  -D GBS_BUILD_TESTS:BOOL=TRUE ^\n  -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^\n  -D CMAKE_RUNTIME_OUTPUT_DIRECTORY=%SRC_DIR%\\_build\\bin ^\n  . -B _build\nif errorlevel 1 exit 1\ncmake --build _build --parallel %CPU_COUNT%\nif errorlevel 1 exit 1\ncmake --install _build\nif errorlevel 1 exit 1\n:: C++ tests (ctest). Test exes + gbs-render.dll are co-located in\n:: _build\\bin (CMAKE_RUNTIME_OUTPUT_DIRECTORY) so gtest_discover_tests\n:: finds gbs-render.dll at build time; the other DLLs (vtk/nlopt/tbb)\n:: are in %LIBRARY_PREFIX%\\bin, already on PATH in the build env.\nctest --test-dir _build --output-on-failure -C Release\nif errorlevel 1 exit 1\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1048,7 +1048,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -1105,7 +1105,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -1162,7 +1162,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -1219,7 +1219,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -1276,7 +1276,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -1864,7 +1864,7 @@
     },
     "build": {
       "number": "1",
-      "script": "cmake ${CMAKE_ARGS} -GNinja \\\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" \\\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE \\\n  -D GBS_USE_CUDA:BOOL=FALSE \\\n  -D GBS_USE_MODULES:BOOL=FALSE \\\n  -D GBS_BUILD_DOC:BOOL=FALSE \\\n  -D GBS_BUILD_STUBS:BOOL=FALSE \\\n  -D GBS_USE_RENDER:BOOL=TRUE \\\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE \\\n  -D GBS_BUILD_TESTS:BOOL=TRUE \\\n  -D CMAKE_INSTALL_PREFIX=$PREFIX \\\n  . -B _build\ncmake --build _build --parallel ${CPU_COUNT}\ncmake --install _build\n# C++ tests (ctest). gbs-render is a SHARED lib installed in $PREFIX/lib;\n# expose it (and vtk/nlopt/...) at run time. No display needed: gbs' CI\n# runs ctest without xvfb on every OS.\nexport LD_LIBRARY_PATH=\"$PREFIX/lib:${LD_LIBRARY_PATH:-}\"\nexport DYLD_FALLBACK_LIBRARY_PATH=\"$PREFIX/lib:${DYLD_FALLBACK_LIBRARY_PATH:-}\"\nctest --test-dir _build --output-on-failure -C Release\n"
+      "script": "cmake %CMAKE_ARGS% -GNinja ^\n  -D CMAKE_BUILD_TYPE:STRING=\"Release\" ^\n  -D GBS_USE_OCCT_UTILS:BOOL=FALSE ^\n  -D GBS_USE_CUDA:BOOL=FALSE ^\n  -D GBS_USE_MODULES:BOOL=FALSE ^\n  -D GBS_BUILD_DOC:BOOL=FALSE ^\n  -D GBS_BUILD_STUBS:BOOL=FALSE ^\n  -D GBS_USE_RENDER:BOOL=TRUE ^\n  -D GBS_USE_PYTHON_BINDINGS:BOOL=TRUE ^\n  -D GBS_BUILD_TESTS:BOOL=TRUE ^\n  -D CMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^\n  -D CMAKE_RUNTIME_OUTPUT_DIRECTORY=%SRC_DIR%\\_build\\bin ^\n  . -B _build\nif errorlevel 1 exit 1\ncmake --build _build --parallel %CPU_COUNT%\nif errorlevel 1 exit 1\ncmake --install _build\nif errorlevel 1 exit 1\n:: C++ tests (ctest). Test exes + gbs-render.dll are co-located in\n:: _build\\bin (CMAKE_RUNTIME_OUTPUT_DIRECTORY) so gtest_discover_tests\n:: finds gbs-render.dll at build time; the other DLLs (vtk/nlopt/tbb)\n:: are in %LIBRARY_PREFIX%\\bin, already on PATH in the build env.\nctest --test-dir _build --output-on-failure -C Release\nif errorlevel 1 exit 1\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1925,7 +1925,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -1982,7 +1982,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -2039,7 +2039,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -2096,7 +2096,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
@@ -2153,7 +2153,7 @@
                 "pytest-timeout"
               ]
             },
-            "script": "export PYVISTA_OFF_SCREEN=true\npytest python/tests/ -v --timeout=120 -ra \\\n  --ignore=python/tests/test_json.py \\\n  --ignore=python/tests/test_mesh.py \\\n  --ignore=python/tests/test_shaping.py\n"
+            "script": "set PYVISTA_OFF_SCREEN=true\npytest python\\tests\\ -v --timeout=120 -ra ^\n  --ignore=python/tests/test_json.py ^\n  --ignore=python/tests/test_mesh.py ^\n  --ignore=python/tests/test_shaping.py\n"
           }
         ],
         "version": "0.4.5.4"
