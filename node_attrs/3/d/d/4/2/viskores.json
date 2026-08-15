@@ -397,8 +397,7 @@
         "cmake --build build ${{ parallel_build_flag }}",
         "cmake --install build",
         "Viskores_DIR=$PREFIX cmake -GNinja -S $SRC_DIR/examples/smoke_test/ -B smoke_test_build",
-        "cmake --build smoke_test_build",
-        "./smoke_test_build/smoke_test"
+        "cmake --build smoke_test_build"
       ]
     },
     "extra": {
@@ -733,7 +732,9 @@
         "cmake --install build",
         "Viskores_DIR=$PREFIX cmake -GNinja -S $SRC_DIR/examples/smoke_test/ -B smoke_test_build",
         "cmake --build smoke_test_build",
-        "./smoke_test_build/smoke_test"
+        "./smoke_test_build/smoke_test",
+        "cmake -GNinja -S %SRC_DIR% -B build -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ${{ common_flags }}",
+        "cmake --build build -j"
       ]
     },
     "extra": {
@@ -1209,7 +1210,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1218,13 +1219,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1244,7 +1245,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1253,13 +1254,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1279,7 +1280,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1288,13 +1289,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1314,7 +1315,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1323,13 +1324,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1349,7 +1350,6 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
             "ninja",
             "pkg-config"
           ],
@@ -1357,14 +1357,13 @@
             "glew",
             "hdf5",
             "mesalib",
-            "zfp",
-            "libgomp"
+            "zfp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for %%m in (${{ viskores_modules }}) do (\n  if not exist %LIBRARY_PREFIX%\\bin\\viskores_%%m-${{ soversion }}.dll exit 1\n  if not exist %LIBRARY_PREFIX%\\lib\\viskores_%%m-${{ soversion }}.lib exit 1\n)\nif not exist %LIBRARY_PREFIX%\\include\\viskores-${{ soversion }} exit 1\n"
           }
         ],
         "version": "1.1.1"
@@ -1384,7 +1383,6 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
             "ninja",
             "pkg-config"
           ],
@@ -1392,14 +1390,13 @@
             "glew",
             "hdf5",
             "mesalib",
-            "zfp",
-            "libgomp"
+            "zfp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for %%m in (${{ viskores_modules }}) do (\n  if not exist %LIBRARY_PREFIX%\\bin\\viskores_%%m-${{ soversion }}.dll exit 1\n  if not exist %LIBRARY_PREFIX%\\lib\\viskores_%%m-${{ soversion }}.lib exit 1\n)\nif not exist %LIBRARY_PREFIX%\\include\\viskores-${{ soversion }} exit 1\n"
           }
         ],
         "version": "1.1.1"
@@ -1419,7 +1416,8 @@
         "gnuconfig",
         "libgomp",
         "ninja",
-        "pkg-config"
+        "pkg-config",
+        "llvm-openmp"
       ],
       "host": [
         "glew",
@@ -1428,7 +1426,8 @@
         "zfp",
         "cuda-version 12.9.*",
         "libgomp",
-        "cuda-version 13.0.*"
+        "cuda-version 13.0.*",
+        "llvm-openmp"
       ],
       "run": [
         "__cuda"
@@ -1492,7 +1491,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1501,13 +1500,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1527,7 +1526,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1536,13 +1535,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1559,7 +1558,7 @@
         "c_stdlib_stub",
         "cmake >=3.23",
         "gnuconfig",
-        "libgomp",
+        "llvm-openmp",
         "ninja",
         "pkg-config"
       ],
@@ -1568,7 +1567,7 @@
         "hdf5",
         "mesalib",
         "zfp",
-        "libgomp"
+        "llvm-openmp"
       ]
     },
     "schema_version": 1,
@@ -1589,7 +1588,7 @@
         "cmake",
         "cxx_compiler_stub",
         "gnuconfig",
-        "libgomp",
+        "llvm-openmp",
         "ninja",
         "pkg-config"
       ]
@@ -1599,7 +1598,7 @@
       "elements": [
         "glew",
         "hdf5",
-        "libgomp",
+        "llvm-openmp",
         "mesalib",
         "zfp"
       ]
@@ -1636,8 +1635,7 @@
         "cmake --build build ${{ parallel_build_flag }}",
         "cmake --install build",
         "Viskores_DIR=$PREFIX cmake -GNinja -S $SRC_DIR/examples/smoke_test/ -B smoke_test_build",
-        "cmake --build smoke_test_build",
-        "./smoke_test_build/smoke_test"
+        "cmake --build smoke_test_build"
       ]
     },
     "extra": {
@@ -1661,7 +1659,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1670,13 +1668,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1696,7 +1694,7 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
+            "llvm-openmp",
             "ninja",
             "pkg-config"
           ],
@@ -1705,13 +1703,13 @@
             "hdf5",
             "mesalib",
             "zfp",
-            "libgomp"
+            "llvm-openmp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.${{ version }}.dylib\ndone\n"
           }
         ],
         "version": "1.1.1"
@@ -1728,7 +1726,7 @@
         "c_stdlib_stub",
         "cmake >=3.23",
         "gnuconfig",
-        "libgomp",
+        "llvm-openmp",
         "ninja",
         "pkg-config"
       ],
@@ -1737,7 +1735,7 @@
         "hdf5",
         "mesalib",
         "zfp",
-        "libgomp"
+        "llvm-openmp"
       ]
     },
     "schema_version": 1,
@@ -1758,7 +1756,7 @@
         "cmake",
         "cxx_compiler_stub",
         "gnuconfig",
-        "libgomp",
+        "llvm-openmp",
         "ninja",
         "pkg-config"
       ]
@@ -1768,7 +1766,7 @@
       "elements": [
         "glew",
         "hdf5",
-        "libgomp",
+        "llvm-openmp",
         "mesalib",
         "zfp"
       ]
@@ -1814,6 +1812,7 @@
       "gnuconfig",
       "hdf5",
       "libgomp",
+      "llvm-openmp",
       "mesalib",
       "ninja",
       "pkg-config",
@@ -1831,6 +1830,7 @@
         "cxx_compiler_stub",
         "gnuconfig",
         "libgomp",
+        "llvm-openmp",
         "ninja",
         "pkg-config"
       ]
@@ -1847,7 +1847,9 @@
         "glew",
         "hdf5",
         "libgomp",
+        "llvm-openmp",
         "mesalib",
+        "openmp",
         "zfp"
       ]
     },
@@ -1859,7 +1861,8 @@
         "c_stdlib_stub",
         "ctng-compilers",
         "cuda_compiler_stub",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "openmp"
       ]
     },
     "test": {
@@ -1879,6 +1882,7 @@
         "cxx_compiler_stub",
         "gnuconfig",
         "libgomp",
+        "llvm-openmp",
         "ninja",
         "pkg-config"
       ]
@@ -1891,6 +1895,7 @@
         "glew",
         "hdf5",
         "libgomp",
+        "llvm-openmp",
         "mesalib",
         "zfp"
       ]
@@ -1930,12 +1935,9 @@
         ]
       },
       "script": [
-        "cmake -GNinja -S $SRC_DIR -B build -DCMAKE_INSTALL_PREFIX=$PREFIX -DViskores_ENABLE_OPENMP=ON ${{ common_flags }} ${{ cuda_flags if cuda_compiler_version != \"None\" }}",
-        "cmake --build build ${{ parallel_build_flag }}",
-        "cmake --install build",
-        "Viskores_DIR=$PREFIX cmake -GNinja -S $SRC_DIR/examples/smoke_test/ -B smoke_test_build",
-        "cmake --build smoke_test_build",
-        "./smoke_test_build/smoke_test"
+        "cmake -GNinja -S %SRC_DIR% -B build -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ${{ common_flags }}",
+        "cmake --build build -j",
+        "cmake --install build"
       ]
     },
     "extra": {
@@ -1959,7 +1961,6 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
             "ninja",
             "pkg-config"
           ],
@@ -1967,14 +1968,13 @@
             "glew",
             "hdf5",
             "mesalib",
-            "zfp",
-            "libgomp"
+            "zfp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for %%m in (${{ viskores_modules }}) do (\n  if not exist %LIBRARY_PREFIX%\\bin\\viskores_%%m-${{ soversion }}.dll exit 1\n  if not exist %LIBRARY_PREFIX%\\lib\\viskores_%%m-${{ soversion }}.lib exit 1\n)\nif not exist %LIBRARY_PREFIX%\\include\\viskores-${{ soversion }} exit 1\n"
           }
         ],
         "version": "1.1.1"
@@ -1994,7 +1994,6 @@
             "c_stdlib_stub",
             "cmake >=3.23",
             "gnuconfig",
-            "libgomp",
             "ninja",
             "pkg-config"
           ],
@@ -2002,14 +2001,13 @@
             "glew",
             "hdf5",
             "mesalib",
-            "zfp",
-            "libgomp"
+            "zfp"
           ],
           "run": []
         },
         "tests": [
           {
-            "script": "for module in ${{ viskores_modules }}; do\n  test -f $PREFIX/lib/libviskores_${module}-${{ soversion }}.so.${{ version }}\ndone\n"
+            "script": "for %%m in (${{ viskores_modules }}) do (\n  if not exist %LIBRARY_PREFIX%\\bin\\viskores_%%m-${{ soversion }}.dll exit 1\n  if not exist %LIBRARY_PREFIX%\\lib\\viskores_%%m-${{ soversion }}.lib exit 1\n)\nif not exist %LIBRARY_PREFIX%\\include\\viskores-${{ soversion }} exit 1\n"
           }
         ],
         "version": "1.1.1"
@@ -2026,7 +2024,6 @@
         "c_stdlib_stub",
         "cmake >=3.23",
         "gnuconfig",
-        "libgomp",
         "ninja",
         "pkg-config"
       ],
@@ -2034,8 +2031,7 @@
         "glew",
         "hdf5",
         "mesalib",
-        "zfp",
-        "libgomp"
+        "zfp"
       ]
     },
     "schema_version": 1,
@@ -2056,7 +2052,6 @@
         "cmake",
         "cxx_compiler_stub",
         "gnuconfig",
-        "libgomp",
         "ninja",
         "pkg-config"
       ]
@@ -2066,7 +2061,6 @@
       "elements": [
         "glew",
         "hdf5",
-        "libgomp",
         "mesalib",
         "zfp"
       ]
