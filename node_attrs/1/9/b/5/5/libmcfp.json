@@ -401,7 +401,7 @@
           "libmcfp"
         ]
       },
-      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DBUILD_TESTING=ON\ncmake --build build --parallel ${CPU_COUNT}\nctest -V --test-dir build\ncmake --install build --parallel ${CPU_COUNT}\n"
+      "script": "@echo on\nset \"PATH=%SRC_DIR%\\build;%PATH%\"\n@REM MSVC constexpr workaround\nsed -i -E \"s/return .*isalnum.*;/return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_' || c == '-';/\" \"include/mcfp/mcfp.hpp\"\ncmake -S . -B build -G Ninja ^\n  %CMAKE_ARGS% ^\n  -DBUILD_SHARED_LIBS=ON ^\n  -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON ^\n  -DBUILD_TESTING=ON ^\n  || exit /b 1\ncmake --build build --parallel %CPU_COUNT% || exit /b 1\nctest -V --test-dir build || exit /b 1\ncmake --install build --parallel %CPU_COUNT% || exit /b 1\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -541,6 +541,7 @@
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "clang-tools",
             "cmake",
             "ninja"
           ],
@@ -581,6 +582,7 @@
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "clang-tools",
             "cmake",
             "ninja"
           ],
@@ -621,6 +623,7 @@
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "m2-sed",
             "cmake",
             "ninja"
           ],
@@ -659,7 +662,9 @@
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "ninja",
+        "clang-tools",
+        "m2-sed"
       ],
       "host": [
         "catch2",
@@ -669,7 +674,8 @@
     "schema_version": 1,
     "source": {
       "patches": [
-        "fix-config-category-last-option.patch"
+        "fix-config-category-last-option.patch",
+        "fix-config-name-char.patch"
       ],
       "sha256": "b1a714511b77e0c211ff99276e8658618997739a719cbd67e34df3067c68c74a",
       "url": "https://forge.hekkelman.net/maarten/mcfp/archive/v2.0.4.tar.gz"
@@ -714,6 +720,7 @@
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "clang-tools",
             "cmake",
             "ninja"
           ],
@@ -751,6 +758,7 @@
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
+        "clang-tools",
         "cmake",
         "ninja"
       ],
@@ -773,6 +781,7 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "clang-tools",
         "cmake",
         "cxx_compiler_stub",
         "ninja"
@@ -832,6 +841,7 @@
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "clang-tools",
             "cmake",
             "ninja"
           ],
@@ -869,6 +879,7 @@
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
+        "clang-tools",
         "cmake",
         "ninja"
       ],
@@ -891,6 +902,7 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "clang-tools",
         "cmake",
         "cxx_compiler_stub",
         "ninja"
@@ -936,9 +948,11 @@
     "elements": [
       "c_stdlib_stub",
       "catch2",
+      "clang-tools",
       "cmake",
       "cxx_compiler_stub",
       "fast_float",
+      "m2-sed",
       "ninja"
     ]
   },
@@ -947,8 +961,10 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "clang-tools",
         "cmake",
         "cxx_compiler_stub",
+        "m2-sed",
         "ninja"
       ]
     },
@@ -979,8 +995,10 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "clang-tools",
         "cmake",
         "cxx_compiler_stub",
+        "m2-sed",
         "ninja"
       ]
     },
@@ -1023,7 +1041,7 @@
           "libmcfp"
         ]
       },
-      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DBUILD_TESTING=ON\ncmake --build build --parallel ${CPU_COUNT}\nctest -V --test-dir build\ncmake --install build --parallel ${CPU_COUNT}\n"
+      "script": "@echo on\nset \"PATH=%SRC_DIR%\\build;%PATH%\"\n@REM MSVC constexpr workaround\nsed -i -E \"s/return .*isalnum.*;/return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_' || c == '-';/\" \"include/mcfp/mcfp.hpp\"\ncmake -S . -B build -G Ninja ^\n  %CMAKE_ARGS% ^\n  -DBUILD_SHARED_LIBS=ON ^\n  -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON ^\n  -DBUILD_TESTING=ON ^\n  || exit /b 1\ncmake --build build --parallel %CPU_COUNT% || exit /b 1\nctest -V --test-dir build || exit /b 1\ncmake --install build --parallel %CPU_COUNT% || exit /b 1\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1043,6 +1061,7 @@
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "m2-sed",
             "cmake",
             "ninja"
           ],
@@ -1080,6 +1099,7 @@
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
+        "m2-sed",
         "cmake",
         "ninja"
       ],
@@ -1091,6 +1111,7 @@
     "schema_version": 1,
     "source": {
       "patches": [
+        "fix-config-name-char.patch",
         "fix-config-category-last-option.patch"
       ],
       "sha256": "b1a714511b77e0c211ff99276e8658618997739a719cbd67e34df3067c68c74a",
@@ -1104,6 +1125,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
+        "m2-sed",
         "ninja"
       ]
     },
