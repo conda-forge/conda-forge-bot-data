@@ -421,7 +421,18 @@
         "mkdir -p ${PREFIX}/share/zsh/site-functions",
         "${CERN_SSO_CLI} completion zsh > ${PREFIX}/share/zsh/site-functions/_cern-sso-cli",
         "mkdir -p ${PREFIX}/share/fish/vendor_completions.d",
-        "${CERN_SSO_CLI} completion fish > ${PREFIX}/share/fish/vendor_completions.d/cern-sso-cli.fish"
+        "${CERN_SSO_CLI} completion fish > ${PREFIX}/share/fish/vendor_completions.d/cern-sso-cli.fish",
+        "go mod download",
+        "export FIDO2_MOD=$(go env GOPATH)/pkg/mod/$(go list -m -f '{{.Path}}@{{.Version}}' github.com/keys-pub/go-libfido2)",
+        "chmod -R u+w ${FIDO2_MOD}",
+        "echo '//go:build !dynamic' | cat - ${FIDO2_MOD}/fido2_static_amd64.go > /tmp/fido2_static_amd64.go && mv /tmp/fido2_static_amd64.go ${FIDO2_MOD}/fido2_static_amd64.go",
+        "echo '//go:build !dynamic' | cat - ${FIDO2_MOD}/fido2_static_arm64.go > /tmp/fido2_static_arm64.go && mv /tmp/fido2_static_arm64.go ${FIDO2_MOD}/fido2_static_arm64.go",
+        "sed -i '' \"s|-L/usr/local/lib|-L${PREFIX}/lib|g\" ${FIDO2_MOD}/fido2_dynamic.go",
+        "sed -i '' \"s|-I/usr/local/include|-I${PREFIX}/include|g\" ${FIDO2_MOD}/fido2_dynamic.go",
+        "sed -i '' \"s|-I/usr/local/opt/openssl/include|-I${PREFIX}/include|g\" ${FIDO2_MOD}/fido2_dynamic.go",
+        "go clean -cache",
+        "go build -tags dynamic -v -o $PREFIX/bin/cern-sso-cli -ldflags=\"-X main.version=${{ version }} -s -w\"",
+        "export DYLD_LIBRARY_PATH=${PREFIX}/lib:${DYLD_LIBRARY_PATH:-}"
       ]
     },
     "extra": {
@@ -563,7 +574,8 @@
           ],
           "host": [
             "libfido2",
-            "libudev"
+            "openssl",
+            "libcbor"
           ],
           "run": []
         },
@@ -605,7 +617,9 @@
       ],
       "host": [
         "libfido2",
-        "libudev"
+        "libudev",
+        "openssl",
+        "libcbor"
       ]
     },
     "schema_version": 1,
@@ -631,10 +645,19 @@
       "script": [
         "cd src",
         "go-licenses save . --save_path ../library_licenses",
-        "go build -v -o $PREFIX/bin/cern-sso-cli -ldflags=\"-X main.version=${{ version }} -s -w\"",
+        "go mod download",
+        "export FIDO2_MOD=$(go env GOPATH)/pkg/mod/$(go list -m -f '{{.Path}}@{{.Version}}' github.com/keys-pub/go-libfido2)",
+        "chmod -R u+w ${FIDO2_MOD}",
+        "echo '//go:build !dynamic' | cat - ${FIDO2_MOD}/fido2_static_amd64.go > /tmp/fido2_static_amd64.go && mv /tmp/fido2_static_amd64.go ${FIDO2_MOD}/fido2_static_amd64.go",
+        "echo '//go:build !dynamic' | cat - ${FIDO2_MOD}/fido2_static_arm64.go > /tmp/fido2_static_arm64.go && mv /tmp/fido2_static_arm64.go ${FIDO2_MOD}/fido2_static_arm64.go",
+        "sed -i '' \"s|-L/usr/local/lib|-L${PREFIX}/lib|g\" ${FIDO2_MOD}/fido2_dynamic.go",
+        "sed -i '' \"s|-I/usr/local/include|-I${PREFIX}/include|g\" ${FIDO2_MOD}/fido2_dynamic.go",
+        "sed -i '' \"s|-I/usr/local/opt/openssl/include|-I${PREFIX}/include|g\" ${FIDO2_MOD}/fido2_dynamic.go",
+        "go clean -cache",
+        "go build -tags dynamic -v -o $PREFIX/bin/cern-sso-cli -ldflags=\"-X main.version=${{ version }} -s -w\"",
         "chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)",
         "export CERN_SSO_CLI=$PREFIX/bin/cern-sso-cli",
-        "export LD_LIBRARY_PATH=${PREFIX}/lib:${LD_LIBRARY_PATH:-}",
+        "export DYLD_LIBRARY_PATH=${PREFIX}/lib:${DYLD_LIBRARY_PATH:-}",
         "mkdir -p ${PREFIX}/share/bash-completion/completions",
         "${CERN_SSO_CLI} completion bash > ${PREFIX}/share/bash-completion/completions/cern-sso-cli.bash",
         "mkdir -p ${PREFIX}/share/zsh/site-functions",
@@ -662,7 +685,8 @@
           ],
           "host": [
             "libfido2",
-            "libudev"
+            "openssl",
+            "libcbor"
           ],
           "run": []
         },
@@ -704,7 +728,8 @@
       ],
       "host": [
         "libfido2",
-        "libudev"
+        "openssl",
+        "libcbor"
       ]
     },
     "schema_version": 1,
@@ -727,8 +752,9 @@
     "host": {
       "__set__": true,
       "elements": [
+        "libcbor",
         "libfido2",
-        "libudev"
+        "openssl"
       ]
     },
     "run": {
@@ -764,8 +790,10 @@
       "c_stdlib_stub",
       "go-cgo_compiler_stub",
       "go-licenses",
+      "libcbor",
       "libfido2",
       "libudev",
+      "openssl",
       "pkg-config"
     ]
   },
@@ -785,8 +813,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "libcbor",
         "libfido2",
-        "libudev"
+        "libudev",
+        "openssl"
       ]
     },
     "run": {
@@ -816,8 +846,10 @@
     "host": {
       "__set__": true,
       "elements": [
+        "libcbor",
         "libfido2",
-        "libudev"
+        "libudev",
+        "openssl"
       ]
     },
     "run": {
