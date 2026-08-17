@@ -1,11 +1,8 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "alsa_lib:\n- '1.2'\nbrotli:\n- '1.2'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncurl:\n- '8'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndbus:\n- '1'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfontconfig:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\nicu:\n- '78'\nkrb5:\n- '1.22'\nlibjpeg_turbo:\n- '3'\nlibpng:\n- '1.6'\nlibsqlite:\n- '3'\nlibtiff:\n- '4.7'\nlibwebp:\n- '1'\nlibxcb:\n- '1'\nlibxml2_devel:\n- '2.14'\nopenssl:\n- '3.5'\npcre2:\n- '10.47'\nperl:\n- 5.32.1\npostgresql:\n- '18'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
+  "ci_support_linux_64_.yaml": "alsa_lib:\n- '1.2'\nbrotli:\n- '1.2'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncurl:\n- '8'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndbus:\n- '1'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfontconfig:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\nicu:\n- '78'\nkrb5:\n- '1.22'\nlibjpeg_turbo:\n- '3'\nlibpng:\n- '1.6'\nlibsqlite:\n- '3'\nlibtiff:\n- '4.7'\nlibwebp:\n- '1'\nlibxcb:\n- '1'\nlibxml2_devel:\n- '2.14'\nopenssl:\n- '3.5'\npcre2:\n- '10.47'\nperl:\n- 5.32.1\npostgresql:\n- '18'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
   "conda-forge.yml": {
-    "azure": {
-      "free_disk_space": true
-    },
     "bot": {
       "abi_migration_branches": [
         "qt5"
@@ -31,11 +28,12 @@
           "os": "win",
           "value": "C:\\bld\\"
         }
-      ]
+      ],
+      "free_disk_space": "quick"
     }
   },
-  "feedstock_hash": "6d4c63e6d236b14d33da54d296d7d999b7560476",
-  "feedstock_hash_ts": 1780593051,
+  "feedstock_hash": "671db17c3e462e01980e11b7ffd5efceb0b0e366",
+  "feedstock_hash_ts": 1787004440,
   "feedstock_name": "qt-main",
   "linux_64_meta_yaml": {
     "about": {
@@ -49,7 +47,7 @@
       "summary": "Qt is a cross-platform application and UI framework."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "qt6-main"
@@ -169,6 +167,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -178,6 +177,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make",
                 "libgl-devel",
                 "libegl-devel",
@@ -202,11 +202,15 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqxcb.so",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqeglfs.so",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -402,6 +406,7 @@
         "cxx_compiler_stub",
         "libegl-devel",
         "libgl-devel",
+        "libvulkan-headers",
         "make",
         "xcb-util",
         "xorg-libxdamage",
@@ -421,7 +426,7 @@
       "summary": "Qt is a cross-platform application and UI framework."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "qt6-main"
@@ -544,6 +549,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -553,6 +559,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make",
                 "libgl-devel",
                 "libegl-devel",
@@ -577,11 +584,15 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqxcb.so",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqeglfs.so",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -783,6 +794,7 @@
         "cxx_compiler_stub",
         "libegl-devel",
         "libgl-devel",
+        "libvulkan-headers",
         "make",
         "xcb-util",
         "xorg-libxdamage",
@@ -802,7 +814,7 @@
       "summary": "Qt is a cross-platform application and UI framework."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "qt6-main"
@@ -922,6 +934,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -931,6 +944,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make",
                 "libgl-devel",
                 "libegl-devel",
@@ -955,11 +969,15 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqxcb.so",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqeglfs.so",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -1065,6 +1083,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -1074,6 +1093,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make",
                 "libgl-devel",
                 "libegl-devel",
@@ -1098,11 +1118,15 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqxcb.so",
               "test -f $PREFIX/lib/qt6/plugins/platforms/libqeglfs.so",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -1147,6 +1171,9 @@
             "double-conversion",
             "libtiff",
             "libwebp",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "moltenvk",
             "postgresql"
           ],
           "run": []
@@ -1162,6 +1189,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -1171,6 +1199,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make"
               ]
             },
@@ -1190,9 +1219,14 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
+              "test -f $PREFIX/lib/qt6/plugins/platforms/libqcocoa${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -1237,6 +1271,9 @@
             "double-conversion",
             "libtiff",
             "libwebp",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "moltenvk",
             "postgresql"
           ],
           "run": []
@@ -1252,6 +1289,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -1261,6 +1299,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make"
               ]
             },
@@ -1280,9 +1319,14 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
+              "test -f $PREFIX/lib/qt6/plugins/platforms/libqcocoa${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -1346,6 +1390,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -1354,7 +1399,8 @@
               "run": [
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
-                "cmake >=3.16"
+                "cmake >=3.16",
+                "libvulkan-headers"
               ]
             },
             "script": [
@@ -1373,7 +1419,10 @@
               "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Qml.lib exit 1",
               "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Quick.lib exit 1",
               "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Widgets.lib exit 1",
-              "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Xml.lib exit 1"
+              "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Xml.lib exit 1",
+              "cmake -G\"NMake Makefiles\" -DCMAKE_PREFIX_PATH=\"%LIBRARY_PREFIX%\" -S test -B test-build",
+              "cmake --build test-build --config Release",
+              "ctest --test-dir test-build -C Release --output-on-failure"
             ]
           }
         ],
@@ -1455,7 +1504,8 @@
         "xorg-libice",
         "xorg-libxxf86vm",
         "xorg-libxtst",
-        "xorg-xorgproto"
+        "xorg-xorgproto",
+        "moltenvk"
       ],
       "run": [
         "libxcb",
@@ -1495,7 +1545,7 @@
       "summary": "Qt is a cross-platform application and UI framework."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "qt6-main"
@@ -1557,6 +1607,9 @@
             "double-conversion",
             "libtiff",
             "libwebp",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "moltenvk",
             "postgresql"
           ],
           "run": []
@@ -1572,6 +1625,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -1581,6 +1635,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make"
               ]
             },
@@ -1600,9 +1655,14 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
+              "test -f $PREFIX/lib/qt6/plugins/platforms/libqcocoa${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -1644,6 +1704,9 @@
         "double-conversion",
         "libtiff",
         "libwebp",
+        "libvulkan-headers",
+        "libvulkan-loader",
+        "moltenvk",
         "postgresql"
       ]
     },
@@ -1691,7 +1754,10 @@
         "libpng",
         "libsqlite",
         "libtiff",
+        "libvulkan-headers",
+        "libvulkan-loader",
         "libwebp",
+        "moltenvk",
         "openssl",
         "pcre2",
         "postgresql",
@@ -1709,6 +1775,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
+        "libvulkan-headers",
         "make"
       ]
     }
@@ -1725,7 +1792,7 @@
       "summary": "Qt is a cross-platform application and UI framework."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "qt6-main"
@@ -1787,6 +1854,9 @@
             "double-conversion",
             "libtiff",
             "libwebp",
+            "libvulkan-headers",
+            "libvulkan-loader",
+            "moltenvk",
             "postgresql"
           ],
           "run": []
@@ -1802,6 +1872,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -1811,6 +1882,7 @@
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
                 "cmake >=3.16",
+                "libvulkan-headers",
                 "make"
               ]
             },
@@ -1830,9 +1902,14 @@
               "test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}",
               "test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}",
+              "test -f $PREFIX/include/qt6/QtGui/QVulkanInstance",
+              "test -f $PREFIX/lib/qt6/plugins/platforms/libqcocoa${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}",
               "test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}",
-              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}"
+              "test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}",
+              "cmake -S test -B test-build",
+              "cmake --build test-build",
+              "ctest --test-dir test-build --output-on-failure"
             ]
           }
         ],
@@ -1874,6 +1951,9 @@
         "double-conversion",
         "libtiff",
         "libwebp",
+        "libvulkan-headers",
+        "libvulkan-loader",
+        "moltenvk",
         "postgresql"
       ]
     },
@@ -1921,7 +2001,10 @@
         "libpng",
         "libsqlite",
         "libtiff",
+        "libvulkan-headers",
+        "libvulkan-loader",
         "libwebp",
+        "moltenvk",
         "openssl",
         "pcre2",
         "postgresql",
@@ -1939,6 +2022,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
+        "libvulkan-headers",
         "make"
       ]
     }
@@ -1960,7 +2044,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/qt-main.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"6.11.1\"\n  maj_min: ${{ (version | split('.'))[:2] | join('.') }}\n\npackage:\n  name: qt6-main\n  version: ${{ version }}\n\nsource:\n  - url: https://ftp.fau.de/qtproject/official_releases/qt/${{ maj_min }}/${{ version }}/single/qt-everywhere-src-${{ version }}.tar.xz\n    md5: 25d4d1dd74c92b978f164e8f20805985\n    patches:\n      # qtbase\n      - patches/0003-qtbase-use-better-clang-optimize-size.patch\n\n      # dont look for qt.conf in bundle directory\n      - patches/0015-qt6-conf-osx.patch\n\n      # Ensure that cross-compiled builds and native builds generated the same cmake config files\n      - patches/0020-remove-qt-host-path-check-in-cross-compiled-builds.patch\n\n      # Ensure that QLibraryInfo::path(QLibraryInfo::PrefixPath) returns the correct value on Windows\n      # after .dll are copied from %CONDA_PREFIX%\\Library\\lib\\qt6\\bin to %CONDA_PREFIX%\\bin\n      # Fix for https://github.com/conda-forge/qt-main-feedstock/issues/275\n      # Never apply this to other operating systems, as there the libraries are not manually moved\n      - patches/0025-fix-qlibraryinfo-prefixpath-windows.patch\n\n      # qmake fails configuring qwt on osx: Could not find qmake spec 'macx-clang'\n      - patches/0034-specpath-macos.patch\n\n      # https://qt-project.atlassian.net/issues/QTBUG-145230\n      - patches/0040-qttools-concurrent.patch\n\n  - url: https://download.qt.io/development_releases/prebuilt/llvmpipe/windows/opengl32sw-64-mesa_12_0_rc2.7z\n    sha256: 2a0d2f92c60e0962ef5f6039d3793424c6f39e49ba27ac04a5b21ca4ae012e15\n    target_directory: opengl32sw\n\nbuild:\n  number: 1\n  # bumping qt version requires a 2-staged build as cross builds require the native package with the same version\n  # Once should be careful and \"merge\" when the native CIs pass\n  # Then on main:\n  #   - let the native CIs pass\n  #   - wait 1-2 hours for the CDN to propagate our artefacts\n  #   - restart the builds on the failed CIs\n  # skip: ${{ build_platform != target_platform }}\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - ninja\n    - curl\n    - perl\n    - if: unix\n      then:\n        # For fontconfig + freetype\n        - pkg-config\n        - make\n    - if: linux\n      then:\n        - ruby >=2.5\n        - bison\n        - flex\n        - gperf   \n    - if: win\n      then:\n        - m2-gperf\n        - m2-bison\n        - m2-flex\n        - m2-patch\n    - if: build_platform != target_platform\n      then:\n        # circular dependency... but it helps when cross compiling\n        - qt6-main ==${{ version }}\n        # explicit libxml2+icu\n        - libxml2-devel\n        - icu\n\n  host:\n    - brotli\n    - harfbuzz\n    - glib\n    - icu\n    - libjpeg-turbo\n    - libpng\n    - libsqlite\n    - pcre2\n    - zlib\n    - openssl\n    - zstd\n    - krb5\n    - double-conversion\n    - libtiff\n    - libwebp\n    - if: not osx\n      then:\n        - libvulkan-headers\n        - libvulkan-loader\n        - freetype\n    - if: not win\n      then:\n        # We are deciding not to depend on mysql-devel\n        # to keep this package obviously LGPL licensed\n        # as opposed to \"maybe GPL\"\n        # https://github.com/conda-forge/qt-main-feedstock/issues/335\n        # - mysql-devel\n        - postgresql\n    - if: linux\n      then:\n        # For pkg-config gl, fontconfig + freetype\n        - pthread-stubs\n        - libdrm\n        - libgl-devel\n        - libegl-devel\n        - dbus\n        - fontconfig\n        - libxml2-devel\n        - libxkbcommon\n        - libxcb\n        - libdrm\n        - libcups\n        - alsa-lib\n        - wayland\n        # The xcb-util packages are necessary to build the Qt xcb plugin.\n        # It was decided to not use CDTs for qt to resolve issues\n        # that may exhibit as segfault due to missing libraries\n        # in some lighter weight linux installations\n        # https://github.com/conda-forge/qt-main-feedstock/issues/32\n        - xcb-util\n        - xcb-util-wm\n        - xcb-util-keysyms\n        - xcb-util-image\n        - xcb-util-renderutil\n        - xcb-util-cursor\n        - xorg-libx11\n        - xorg-libxext\n        - xorg-libxdamage\n        - xorg-libxrandr\n        - xorg-libxcomposite\n        - xorg-libxcursor\n        - xorg-libsm\n        - xorg-libice\n        # https://github.com/conda-forge/staged-recipes/pull/22084\n        - xorg-libxxf86vm\n        - xorg-libxtst\n        - xorg-xorgproto\n  run:\n    - if: linux\n      then:\n        - libxcb\n        # Adding the following xcb-util run requirements resolves issue\n        # that may exhibit as segfault due to missing libraries\n        # in some lighter weight linux installations\n        # https://github.com/conda-forge/qt-main-feedstock/issues/32\n        - xcb-util\n        - xcb-util-wm\n        - xcb-util-keysyms\n        - xcb-util-image\n        - xcb-util-renderutil\n        - xcb-util-cursor\n        # these are useful for a devel package if ever created\n        - libgl-devel\n        - libegl-devel\n\n  run_constraints:\n    - qt ==${{ version }}\n  run_exports:\n    # Qt 6 guarantees backwards binary (ABI) compatibility across the entire\n    # 6.x series: an application compiled against an earlier Qt 6 release runs\n    # with any later Qt 6 release (same toolchain/config, dynamic builds). So we\n    # only need to pin the major version. See \"Qt Releases\":\n    # https://doc.qt.io/qt-6/qt-releases.html\n    #   \"Qt aims to keep backwards binary compatibility with previous Qt\n    #    releases of the same major version. That is, an application compiled\n    #    against Qt 6.0.0 should still run with any other Qt 6 release, but not\n    #    necessarily the other way around.\"\n    #   \"There is no universal C++ standard for Application Binary Interfaces\n    #    (ABIs), so this promise only applies when using the same toolchain\n    #    (compiler) and system environment for both versions.\"\n    - ${{ pin_subpackage('qt6-main', upper_bound='x') }}\n\ntests:\n  - script:\n      - qmake6 --version\n      - if: unix\n        then:\n          - test -d $PREFIX/include/qt6/QtCore\n          - test -f $PREFIX/lib/libQt6Core${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Gui${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Network${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6OpenGL${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6OpenGLWidgets${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6PrintSupport${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6ShaderTools${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Svg${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Test${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Qml${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}\n        else:\n          - if not exist %PREFIX%\\\\Library\\\\include\\\\qt6\\\\QtCore exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Core.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\bin\\\\Qt6Core.dll exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Gui.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Network.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6OpenGL.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6OpenGLWidgets.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6PrintSupport.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6ShaderTools.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Svg.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Test.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Qml.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Quick.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Widgets.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Xml.lib exit 1\n      - if: linux\n        then:\n          - test -f $PREFIX/lib/qt6/plugins/platforms/libqxcb.so\n          - test -f $PREFIX/lib/qt6/plugins/platforms/libqeglfs.so\n      - if: unix\n        then:\n          - test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}\n          - test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}\n          # We needed to add a related flag, but these two SO files should be part of the\n          # qt6-wayland conda package\n          - test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}\n    requirements:\n      run:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake >=3.16\n        - if: unix\n          then: make\n        - if: linux\n          then:\n            - libgl-devel\n            - libegl-devel\n            - xcb-util\n            - xorg-libxdamage\n            # https://github.com/conda-forge/staged-recipes/pull/22084\n            - xorg-libxxf86vm\n    files:\n      recipe:\n        - test/main-qtwebengine.cpp\n        - test/main.cpp\n        - test/main.qml\n        - test/qml.qrc\n        - test/qrc_qml.cpp\n        - test/test_qmimedatabase.cpp\n        - test/test_qlibraryinfo_prefixpath.cpp\n        - test/CMakeLists.txt\n        - test/main.pro\n\nabout:\n  homepage: https://qt.io\n  license: LGPL-3.0-only\n  license_file: LICENSES/LGPL-3.0-only.txt\n  summary: 'Qt is a cross-platform application and UI framework.'\n  description: |\n    Qt helps you create connected devices, UIs & applications that run\n    anywhere on any device, on any operating system at any time.\n  documentation: https://doc.qt.io/\n  repository: https://github.com/qt\n\nextra:\n  recipe-maintainers:\n    - traversaro\n    - andfoy\n    - ccordoba12\n    - gillins\n    - mingwandroid\n    - msarahan\n    - ocefpaf\n    - stuarteberg\n    - Tobias-Fischer\n    - matthiasdiener\n    - jschueller\n",
+  "raw_meta_yaml": "context:\n  version: \"6.11.1\"\n  maj_min: ${{ (version | split('.'))[:2] | join('.') }}\n\npackage:\n  name: qt6-main\n  version: ${{ version }}\n\nsource:\n  - url: https://ftp.fau.de/qtproject/official_releases/qt/${{ maj_min }}/${{ version }}/single/qt-everywhere-src-${{ version }}.tar.xz\n    md5: 25d4d1dd74c92b978f164e8f20805985\n    patches:\n      # qtbase\n      - patches/0003-qtbase-use-better-clang-optimize-size.patch\n\n      # dont look for qt.conf in bundle directory\n      - patches/0015-qt6-conf-osx.patch\n\n      # Ensure that cross-compiled builds and native builds generated the same cmake config files\n      - patches/0020-remove-qt-host-path-check-in-cross-compiled-builds.patch\n\n      # Ensure that QLibraryInfo::path(QLibraryInfo::PrefixPath) returns the correct value on Windows\n      # after .dll are copied from %CONDA_PREFIX%\\Library\\lib\\qt6\\bin to %CONDA_PREFIX%\\bin\n      # Fix for https://github.com/conda-forge/qt-main-feedstock/issues/275\n      # Never apply this to other operating systems, as there the libraries are not manually moved\n      - patches/0025-fix-qlibraryinfo-prefixpath-windows.patch\n\n      # qmake fails configuring qwt on osx: Could not find qmake spec 'macx-clang'\n      - patches/0034-specpath-macos.patch\n\n      # https://qt-project.atlassian.net/issues/QTBUG-145230\n      - patches/0040-qttools-concurrent.patch\n\n  - url: https://download.qt.io/development_releases/prebuilt/llvmpipe/windows/opengl32sw-64-mesa_12_0_rc2.7z\n    sha256: 2a0d2f92c60e0962ef5f6039d3793424c6f39e49ba27ac04a5b21ca4ae012e15\n    target_directory: opengl32sw\n\nbuild:\n  number: 2\n  # bumping qt version requires a 2-staged build as cross builds require the native package with the same version\n  # Once should be careful and \"merge\" when the native CIs pass\n  # Then on main:\n  #   - let the native CIs pass\n  #   - wait 1-2 hours for the CDN to propagate our artefacts\n  #   - restart the builds on the failed CIs\n  # skip: ${{ build_platform != target_platform }}\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - ninja\n    - curl\n    - perl\n    - if: unix\n      then:\n        # For fontconfig + freetype\n        - pkg-config\n        - make\n    - if: linux\n      then:\n        - ruby >=2.5\n        - bison\n        - flex\n        - gperf   \n    - if: win\n      then:\n        - m2-gperf\n        - m2-bison\n        - m2-flex\n        - m2-patch\n    - if: build_platform != target_platform\n      then:\n        # circular dependency... but it helps when cross compiling\n        - qt6-main ==${{ version }}\n        # explicit libxml2+icu\n        - libxml2-devel\n        - icu\n\n  host:\n    - brotli\n    - harfbuzz\n    - glib\n    - icu\n    - libjpeg-turbo\n    - libpng\n    - libsqlite\n    - pcre2\n    - zlib\n    - openssl\n    - zstd\n    - krb5\n    - double-conversion\n    - libtiff\n    - libwebp\n    - libvulkan-headers\n    - libvulkan-loader\n    - if: osx\n      then:\n        - moltenvk\n      else:\n        - freetype\n    - if: not win\n      then:\n        # We are deciding not to depend on mysql-devel\n        # to keep this package obviously LGPL licensed\n        # as opposed to \"maybe GPL\"\n        # https://github.com/conda-forge/qt-main-feedstock/issues/335\n        # - mysql-devel\n        - postgresql\n    - if: linux\n      then:\n        # For pkg-config gl, fontconfig + freetype\n        - pthread-stubs\n        - libdrm\n        - libgl-devel\n        - libegl-devel\n        - dbus\n        - fontconfig\n        - libxml2-devel\n        - libxkbcommon\n        - libxcb\n        - libdrm\n        - libcups\n        - alsa-lib\n        - wayland\n        # The xcb-util packages are necessary to build the Qt xcb plugin.\n        # It was decided to not use CDTs for qt to resolve issues\n        # that may exhibit as segfault due to missing libraries\n        # in some lighter weight linux installations\n        # https://github.com/conda-forge/qt-main-feedstock/issues/32\n        - xcb-util\n        - xcb-util-wm\n        - xcb-util-keysyms\n        - xcb-util-image\n        - xcb-util-renderutil\n        - xcb-util-cursor\n        - xorg-libx11\n        - xorg-libxext\n        - xorg-libxdamage\n        - xorg-libxrandr\n        - xorg-libxcomposite\n        - xorg-libxcursor\n        - xorg-libsm\n        - xorg-libice\n        # https://github.com/conda-forge/staged-recipes/pull/22084\n        - xorg-libxxf86vm\n        - xorg-libxtst\n        - xorg-xorgproto\n  run:\n    - if: linux\n      then:\n        - libxcb\n        # Adding the following xcb-util run requirements resolves issue\n        # that may exhibit as segfault due to missing libraries\n        # in some lighter weight linux installations\n        # https://github.com/conda-forge/qt-main-feedstock/issues/32\n        - xcb-util\n        - xcb-util-wm\n        - xcb-util-keysyms\n        - xcb-util-image\n        - xcb-util-renderutil\n        - xcb-util-cursor\n        # these are useful for a devel package if ever created\n        - libgl-devel\n        - libegl-devel\n\n  run_constraints:\n    - qt ==${{ version }}\n  run_exports:\n    # Qt 6 guarantees backwards binary (ABI) compatibility across the entire\n    # 6.x series: an application compiled against an earlier Qt 6 release runs\n    # with any later Qt 6 release (same toolchain/config, dynamic builds). So we\n    # only need to pin the major version. See \"Qt Releases\":\n    # https://doc.qt.io/qt-6/qt-releases.html\n    #   \"Qt aims to keep backwards binary compatibility with previous Qt\n    #    releases of the same major version. That is, an application compiled\n    #    against Qt 6.0.0 should still run with any other Qt 6 release, but not\n    #    necessarily the other way around.\"\n    #   \"There is no universal C++ standard for Application Binary Interfaces\n    #    (ABIs), so this promise only applies when using the same toolchain\n    #    (compiler) and system environment for both versions.\"\n    - ${{ pin_subpackage('qt6-main', upper_bound='x') }}\n\ntests:\n  - script:\n      - qmake6 --version\n      - if: unix\n        then:\n          - test -d $PREFIX/include/qt6/QtCore\n          - test -f $PREFIX/lib/libQt6Core${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Gui${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Network${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6OpenGL${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6OpenGLWidgets${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6PrintSupport${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6ShaderTools${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Svg${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Test${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Qml${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Quick${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Widgets${SHLIB_EXT}\n          - test -f $PREFIX/lib/libQt6Xml${SHLIB_EXT}\n          - test -f $PREFIX/include/qt6/QtGui/QVulkanInstance\n        else:\n          - if not exist %PREFIX%\\\\Library\\\\include\\\\qt6\\\\QtCore exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Core.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\bin\\\\Qt6Core.dll exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Gui.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Network.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6OpenGL.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6OpenGLWidgets.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6PrintSupport.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6ShaderTools.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Svg.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Test.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Qml.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Quick.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Widgets.lib exit 1\n          - if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Xml.lib exit 1\n      - if: linux\n        then:\n          - test -f $PREFIX/lib/qt6/plugins/platforms/libqxcb.so\n          - test -f $PREFIX/lib/qt6/plugins/platforms/libqeglfs.so\n      - if: osx\n        then:\n          - test -f $PREFIX/lib/qt6/plugins/platforms/libqcocoa${SHLIB_EXT}\n      - if: unix\n        then:\n          - test -f $PREFIX/lib/qt6/plugins/sqldrivers/libqsqlite${SHLIB_EXT}\n          - test -f $PREFIX/lib/qt6/plugins/imageformats/libqtiff${SHLIB_EXT}\n          # We needed to add a related flag, but these two SO files should be part of the\n          # qt6-wayland conda package\n          - test ! -f $PREFIX/lib/libQt6WaylandCompositor${SHLIB_EXT}\n      - if: unix\n        then:\n          - cmake -S test -B test-build\n          - cmake --build test-build\n          - ctest --test-dir test-build --output-on-failure\n        else:\n          - cmake -G\"NMake Makefiles\" -DCMAKE_PREFIX_PATH=\"%LIBRARY_PREFIX%\" -S test -B test-build\n          - cmake --build test-build --config Release\n          - ctest --test-dir test-build -C Release --output-on-failure\n    requirements:\n      run:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake >=3.16\n        - libvulkan-headers\n        - if: unix\n          then: make\n        - if: linux\n          then:\n            - libgl-devel\n            - libegl-devel\n            - xcb-util\n            - xorg-libxdamage\n            # https://github.com/conda-forge/staged-recipes/pull/22084\n            - xorg-libxxf86vm\n    files:\n      recipe:\n        - test/main-qtwebengine.cpp\n        - test/main.cpp\n        - test/main.qml\n        - test/qml.qrc\n        - test/qrc_qml.cpp\n        - test/test_qmimedatabase.cpp\n        - test/test_qlibraryinfo_prefixpath.cpp\n        - test/test_qvulkaninstance.cpp\n        - test/CMakeLists.txt\n        - test/main.pro\n\nabout:\n  homepage: https://qt.io\n  license: LGPL-3.0-only\n  license_file: LICENSES/LGPL-3.0-only.txt\n  summary: 'Qt is a cross-platform application and UI framework.'\n  description: |\n    Qt helps you create connected devices, UIs & applications that run\n    anywhere on any device, on any operating system at any time.\n  documentation: https://doc.qt.io/\n  repository: https://github.com/qt\n\nextra:\n  recipe-maintainers:\n    - traversaro\n    - andfoy\n    - ccordoba12\n    - gillins\n    - mingwandroid\n    - msarahan\n    - ocefpaf\n    - stuarteberg\n    - Tobias-Fischer\n    - matthiasdiener\n    - jschueller\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -2001,6 +2085,7 @@
       "m2-gperf",
       "m2-patch",
       "make",
+      "moltenvk",
       "ninja",
       "openssl",
       "pcre2",
@@ -2088,6 +2173,7 @@
         "libxcb",
         "libxkbcommon",
         "libxml2-devel",
+        "moltenvk",
         "openssl",
         "pcre2",
         "postgresql",
@@ -2139,6 +2225,7 @@
         "cxx_compiler_stub",
         "libegl-devel",
         "libgl-devel",
+        "libvulkan-headers",
         "make",
         "xcb-util",
         "xorg-libxdamage",
@@ -2200,6 +2287,7 @@
         "libxcb",
         "libxkbcommon",
         "libxml2-devel",
+        "moltenvk",
         "openssl",
         "pcre2",
         "postgresql",
@@ -2248,6 +2336,7 @@
         "cxx_compiler_stub",
         "libegl-devel",
         "libgl-devel",
+        "libvulkan-headers",
         "make",
         "xcb-util",
         "xorg-libxdamage",
@@ -2272,7 +2361,7 @@
       "summary": "Qt is a cross-platform application and UI framework."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "qt6-main"
@@ -2353,6 +2442,7 @@
                 "test/qrc_qml.cpp",
                 "test/test_qmimedatabase.cpp",
                 "test/test_qlibraryinfo_prefixpath.cpp",
+                "test/test_qvulkaninstance.cpp",
                 "test/CMakeLists.txt",
                 "test/main.pro"
               ]
@@ -2361,7 +2451,8 @@
               "run": [
                 "cxx_compiler_stub",
                 "c_stdlib_stub",
-                "cmake >=3.16"
+                "cmake >=3.16",
+                "libvulkan-headers"
               ]
             },
             "script": [
@@ -2380,7 +2471,10 @@
               "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Qml.lib exit 1",
               "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Quick.lib exit 1",
               "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Widgets.lib exit 1",
-              "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Xml.lib exit 1"
+              "if not exist %PREFIX%\\\\Library\\\\lib\\\\Qt6Xml.lib exit 1",
+              "cmake -G\"NMake Makefiles\" -DCMAKE_PREFIX_PATH=\"%LIBRARY_PREFIX%\" -S test -B test-build",
+              "cmake --build test-build --config Release",
+              "ctest --test-dir test-build -C Release --output-on-failure"
             ]
           }
         ],
@@ -2494,7 +2588,8 @@
       "elements": [
         "c_stdlib_stub",
         "cmake",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "libvulkan-headers"
       ]
     }
   }
