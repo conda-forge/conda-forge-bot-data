@@ -10,7 +10,9 @@
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
@@ -21,22 +23,23 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "bf13f1b0a47a53c72586c58dd5bf93b5c8f7d129",
-  "feedstock_hash_ts": 1786916171,
+  "feedstock_hash": "6a258ba0a376a064c5d5f0e5472cbd8824073c90",
+  "feedstock_hash_ts": 1786952422,
   "feedstock_name": "zenoh",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "home": "https://zenoh.io/",
       "license": "Apache-2.0 OR EPL-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0 OR EPL-2.0",
+      "license_file": "LICENSE",
       "summary": "zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "script": {
+        "file": "build_zenohd"
+      }
     },
     "extra": {
       "feedstock-name": "zenoh",
@@ -46,8 +49,35 @@
     },
     "outputs": [
       {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -56,101 +86,111 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
-      "name": "zenoh-split",
+      "name": "zenohd",
       "version": "1.10.0"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "zenoh-rust-abi 1.10.0.1.97.1.*"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
+      "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
+    }
   },
   "linux_64_requirements": {
     "build": {
@@ -159,6 +199,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "python",
         "rust_compiler_stub"
       ]
     },
@@ -185,14 +226,15 @@
     "about": {
       "home": "https://zenoh.io/",
       "license": "Apache-2.0 OR EPL-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0 OR EPL-2.0",
+      "license_file": "LICENSE",
       "summary": "zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "script": {
+        "file": "build_zenohd"
+      }
     },
     "extra": {
       "feedstock-name": "zenoh",
@@ -202,8 +244,35 @@
     },
     "outputs": [
       {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -212,101 +281,111 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
-      "name": "zenoh-split",
+      "name": "zenohd",
       "version": "1.10.0"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "zenoh-rust-abi 1.10.0.1.97.1.*"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
+      "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
+    }
   },
   "linux_aarch64_requirements": {
     "build": {
@@ -315,6 +394,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "python",
         "rust_compiler_stub"
       ]
     },
@@ -341,14 +421,15 @@
     "about": {
       "home": "https://zenoh.io/",
       "license": "Apache-2.0 OR EPL-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0 OR EPL-2.0",
+      "license_file": "LICENSE",
       "summary": "zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "script": {
+        "file": "build_zenohd"
+      }
     },
     "extra": {
       "feedstock-name": "zenoh",
@@ -358,8 +439,35 @@
     },
     "outputs": [
       {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -368,92 +476,120 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -462,92 +598,120 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -556,92 +720,120 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -650,92 +842,120 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -744,131 +964,129 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "bld_zenoh_rust_abi.bat",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "bld_zenohd.bat",
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenohd.exe exit 1"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "bld_zenoh_plugin_rest.bat",
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenoh_plugin_rest.dll exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "Library/bin/zenoh_plugin_rest.dll"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "bld_zenoh_plugin_storage_manager.bat",
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenoh_plugin_storage_manager.dll exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "Library/bin/zenoh_plugin_storage_manager.dll"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenohd.exe exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
-      "name": "zenoh-split",
+      "name": "zenohd",
       "version": "1.10.0"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      },
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      },
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      },
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      },
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "zenoh-rust-abi 1.10.0.1.97.1.*"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "fix-default-config-windows.patch"
+      ],
+      "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
+      "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
+    }
   },
-  "name": "zenoh-split",
+  "name": "zenohd",
   "osx_64_meta_yaml": {
     "about": {
       "home": "https://zenoh.io/",
       "license": "Apache-2.0 OR EPL-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0 OR EPL-2.0",
+      "license_file": "LICENSE",
       "summary": "zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "script": {
+        "file": "build_zenohd"
+      }
     },
     "extra": {
       "feedstock-name": "zenoh",
@@ -878,8 +1096,35 @@
     },
     "outputs": [
       {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -888,101 +1133,111 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
-      "name": "zenoh-split",
+      "name": "zenohd",
       "version": "1.10.0"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "zenoh-rust-abi 1.10.0.1.97.1.*"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
+      "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
+    }
   },
   "osx_64_requirements": {
     "build": {
@@ -991,6 +1246,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "python",
         "rust_compiler_stub"
       ]
     },
@@ -1017,14 +1273,15 @@
     "about": {
       "home": "https://zenoh.io/",
       "license": "Apache-2.0 OR EPL-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0 OR EPL-2.0",
+      "license_file": "LICENSE",
       "summary": "zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "script": {
+        "file": "build_zenohd"
+      }
     },
     "extra": {
       "feedstock-name": "zenoh",
@@ -1034,8 +1291,35 @@
     },
     "outputs": [
       {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -1044,101 +1328,111 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "build_zenoh_rust_abi.sh",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "build_zenohd.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_rest.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_rest"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "build_zenoh_plugin_storage_manager.sh",
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "lib": [
+                "zenoh_plugin_storage_manager"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "test -f ${PREFIX}/bin/zenohd"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
-      "name": "zenoh-split",
+      "name": "zenohd",
       "version": "1.10.0"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "zenoh-rust-abi 1.10.0.1.97.1.*"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
+      "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
+    }
   },
   "osx_arm64_requirements": {
     "build": {
@@ -1147,6 +1441,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "python",
         "rust_compiler_stub"
       ]
     },
@@ -1190,13 +1485,14 @@
   "pr_info": {
     "__lazy_json__": "pr_info/zenoh.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.10.0\" %}\npackage:\n  name: zenoh-split\n  version: {{ version }}\n\nsource:\n  - url: https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/{{ version }}.tar.gz\n    sha256: 84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3\n\nbuild:\n  number: 1\n\noutputs:\n  # This is just a meta packages used to capture the exact version of zenoh (to which a unique Cargo.lock\n  # used for all dependencies is associated) and the rust compiler version used, to capture the exacti ABI\n  # of the zenoh plugins, and ensure that at runtime incompatible zenohd and plugins are never installed.\n  - name: zenoh-rust-abi\n    version: {{ version }}.{{ rust_compiler_version }}\n    script: build_zenoh_rust_abi.sh  # [unix]\n    script: bld_zenoh_rust_abi.bat  # [win]\n    build:\n      run_exports:\n        - {{ pin_subpackage('zenoh-rust-abi', max_pin='x.x.x.x.x.x') }}\n    requirements:\n      build:\n        # In theory this is not necessary, but we exploit the fact that this is the first\n        # package built to generate the THIRDPARTY.yml file\n        - {{ compiler('rust') }}\n        - {{ stdlib('c') }}\n        - cargo-bundle-licenses\n    test:\n      commands:\n        - echo \"Metapackage, no test required\"\n\n  - name: zenohd\n    script: build_zenohd.sh  # [unix]\n    script: bld_zenohd.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('rust') }}\n        - {{ stdlib('c') }}\n        # required as on Linux unwind's rust functionality depends on gcc_s library\n        - {{ compiler('c') }}\n      host:\n        - zenoh-rust-abi {{ version }}.{{ rust_compiler_version }}\n    test:\n      commands:\n        - test -f ${PREFIX}/bin/zenohd  # [unix]\n        - if not exist %PREFIX%\\\\Library\\\\bin\\\\zenohd.exe exit 1  # [win]\n\n  - name: zenoh-plugin-rest\n    script: build_zenoh_plugin_rest.sh  # [unix]\n    script: bld_zenoh_plugin_rest.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('rust') }}\n        - {{ stdlib('c') }}\n        # required as on Linux unwind's rust functionality depends on gcc_s library\n        - {{ compiler('c') }}\n      host:\n        - zenoh-rust-abi {{ version }}.{{ rust_compiler_version }}\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libzenoh_plugin_rest${SHLIB_EXT}  # [unix]\n        - if not exist %PREFIX%\\\\Library\\\\bin\\\\zenoh_plugin_rest.dll exit 1  # [win]\n\n  - name: zenoh-plugin-storage-manager\n    script: build_zenoh_plugin_storage_manager.sh  # [unix]\n    script: bld_zenoh_plugin_storage_manager.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('rust') }}\n        - {{ stdlib('c') }}\n        # required as on Linux unwind's rust functionality depends on gcc_s library\n        - {{ compiler('c') }}\n      host:\n        - zenoh-rust-abi {{ version }}.{{ rust_compiler_version }}\n    test:\n      commands:\n        - test -f ${PREFIX}/lib/libzenoh_plugin_storage_manager${SHLIB_EXT}  # [unix]\n        - if not exist %PREFIX%\\\\Library\\\\bin\\\\zenoh_plugin_storage_manager.dll exit 1  # [win]\n\n  # The zenoh meta package is present in Debian and homebrew official packages and as of June 2024\n  # depends on zenohd, zenoh-plugin-rest and zenoh-plugin-storage-manager, if this changes in the future we need to keep aligned\n  # see https://github.com/eclipse-zenoh/homebrew-zenoh/blob/e29d4ac6b6848234ca596aaa1a2cce2090c43513/zenoh.rb#L9-L11\n  # https://github.com/eclipse-zenoh/homebrew-zenoh/blob/e29d4ac6b6848234ca596aaa1a2cce2090c43513/README.md#available-formulae\n  - name: zenoh\n    requirements:\n      run:\n        - {{ pin_subpackage('zenohd', exact=True) }}\n        - {{ pin_subpackage('zenoh-plugin-rest', exact=True) }}\n        - {{ pin_subpackage('zenoh-plugin-storage-manager', exact=True) }}\n    test:\n      commands:\n        - test -f ${PREFIX}/bin/zenohd  # [unix]\n        - if not exist %PREFIX%\\\\Library\\\\bin\\\\zenohd.exe exit 1  # [win]\n\nabout:\n  home: https://zenoh.io/\n  license: Apache-2.0 OR EPL-2.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  summary: zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks.\n\nextra:\n  feedstock-name: zenoh\n  recipe-maintainers:\n    - traversaro\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: 1.10.0\n\nrecipe:\n  name: zenoh-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/${{ version }}.tar.gz\n    sha256: 84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3\n    patches:\n      # The GitHub source archive contains zenoh/DEFAULT_CONFIG.json5 as a symlink,\n      # which rattler-build cannot extract as a usable file on Windows.\n      - if: win\n        then:\n          - fix-default-config-windows.patch\n\nbuild:\n  number: 2\n\noutputs:\n  # This is just a meta packages used to capture the exact version of zenoh (to which a unique Cargo.lock\n  # used for all dependencies is associated) and the rust compiler version used, to capture the exacti ABI\n  # of the zenoh plugins, and ensure that at runtime incompatible zenohd and plugins are never installed.\n  - package:\n      name: zenoh-rust-abi\n      version: ${{ version }}.${{ rust_compiler_version }}\n    build:\n      script:\n        file: build_zenoh_rust_abi\n    requirements:\n      build:\n        # Each rattler-build output has an independent source worktree, so outputs that\n        # package Rust binaries generate their own THIRDPARTY.yml file.\n        - ${{ compiler('rust') }}\n        - ${{ stdlib('c') }}\n        - cargo-bundle-licenses\n        - python\n      run_exports:\n        - ${{ pin_subpackage('zenoh-rust-abi', upper_bound='x.x.x.x.x.x') }}\n    tests:\n      - script:\n          - echo \"Metapackage, no test required\"\n\n  - package:\n      name: zenohd\n    build:\n      script:\n        file: build_zenohd\n    requirements:\n      build:\n        - ${{ compiler('rust') }}\n        - ${{ stdlib('c') }}\n        # required as on Linux unwind's rust functionality depends on gcc_s library\n        - ${{ compiler('c') }}\n        - cargo-bundle-licenses\n      host:\n        - zenoh-rust-abi ${{ version }}.${{ rust_compiler_version }}.*\n    tests:\n      - package_contents:\n          bin:\n            - zenohd\n\n  - package:\n      name: zenoh-plugin-rest\n    build:\n      script:\n        file: build_zenoh_plugin_rest\n    requirements:\n      build:\n        - ${{ compiler('rust') }}\n        - ${{ stdlib('c') }}\n        # required as on Linux unwind's rust functionality depends on gcc_s library\n        - ${{ compiler('c') }}\n        - cargo-bundle-licenses\n      host:\n        - zenoh-rust-abi ${{ version }}.${{ rust_compiler_version }}.*\n    tests:\n      - if: unix\n        then:\n          - package_contents:\n              lib:\n                - zenoh_plugin_rest\n      - if: win\n        then:\n          - package_contents:\n              files:\n                - Library/bin/zenoh_plugin_rest.dll\n\n  - package:\n      name: zenoh-plugin-storage-manager\n    build:\n      script:\n        file: build_zenoh_plugin_storage_manager\n    requirements:\n      build:\n        - ${{ compiler('rust') }}\n        - ${{ stdlib('c') }}\n        # required as on Linux unwind's rust functionality depends on gcc_s library\n        - ${{ compiler('c') }}\n        - cargo-bundle-licenses\n      host:\n        - zenoh-rust-abi ${{ version }}.${{ rust_compiler_version }}.*\n    tests:\n      - if: unix\n        then:\n          - package_contents:\n              lib:\n                - zenoh_plugin_storage_manager\n      - if: win\n        then:\n          - package_contents:\n              files:\n                - Library/bin/zenoh_plugin_storage_manager.dll\n\n  # The zenoh meta package is present in Debian and homebrew official packages and as of June 2024\n  # depends on zenohd, zenoh-plugin-rest and zenoh-plugin-storage-manager, if this changes in the future we need to keep aligned\n  # see https://github.com/eclipse-zenoh/homebrew-zenoh/blob/e29d4ac6b6848234ca596aaa1a2cce2090c43513/zenoh.rb#L9-L11\n  # https://github.com/eclipse-zenoh/homebrew-zenoh/blob/e29d4ac6b6848234ca596aaa1a2cce2090c43513/README.md#available-formulae\n  - package:\n      name: zenoh\n    about:\n      license_file: LICENSE\n    requirements:\n      run:\n        - ${{ pin_subpackage('zenohd', exact=True) }}\n        - ${{ pin_subpackage('zenoh-plugin-rest', exact=True) }}\n        - ${{ pin_subpackage('zenoh-plugin-storage-manager', exact=True) }}\n    tests:\n      - script:\n          - zenohd --version\n\nabout:\n  homepage: https://zenoh.io/\n  license: Apache-2.0 OR EPL-2.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  summary: zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks.\n\nextra:\n  feedstock-name: zenoh\n  recipe-maintainers:\n    - traversaro\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
       "cargo-bundle-licenses",
+      "python",
       "rust_compiler_stub",
       "zenoh-plugin-rest",
       "zenoh-plugin-storage-manager",
@@ -1211,6 +1507,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "python",
         "rust_compiler_stub"
       ]
     },
@@ -1245,13 +1542,14 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "python",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
-        "zenoh-rust-abi 1.10.0.1.97.1"
+        "zenoh-rust-abi 1.10.0.1.97.1.*"
       ]
     },
     "run": {
@@ -1276,14 +1574,15 @@
     "about": {
       "home": "https://zenoh.io/",
       "license": "Apache-2.0 OR EPL-2.0",
-      "license_file": [
-        "LICENSE",
-        "THIRDPARTY.yml"
-      ],
+      "license_family": "Apache-2.0 OR EPL-2.0",
+      "license_file": "LICENSE",
       "summary": "zenoh unifies data in motion, data in-use, data at rest and computations. It carefully blends traditional pub/sub with geo-distributed storages, queries and computations, while retaining a level of time and space efficiency that is well beyond any of the mainstream stacks."
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "script": {
+        "file": "build_zenohd"
+      }
     },
     "extra": {
       "feedstock-name": "zenoh",
@@ -1293,8 +1592,35 @@
     },
     "outputs": [
       {
+        "build": null,
+        "name": "zenohd",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "zenohd"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
+      },
+      {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "zenoh-rust-abi"
           ]
         },
@@ -1303,101 +1629,114 @@
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ]
+            "cargo-bundle-licenses",
+            "python"
+          ],
+          "host": [],
+          "run": []
         },
-        "script": "bld_zenoh_rust_abi.bat",
-        "test": {
-          "commands": [
-            "echo \"Metapackage, no test required\""
-          ]
-        },
+        "tests": [
+          {
+            "script": "echo \"Metapackage, no test required\""
+          }
+        ],
         "version": "1.10.0.1.97.1"
       },
       {
-        "name": "zenohd",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "c_compiler_stub"
-          ],
-          "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
-        },
-        "script": "bld_zenohd.bat",
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenohd.exe exit 1"
-          ]
-        }
-      },
-      {
+        "build": null,
         "name": "zenoh-plugin-rest",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "bld_zenoh_plugin_rest.bat",
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenoh_plugin_rest.dll exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "Library/bin/zenoh_plugin_rest.dll"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh-plugin-storage-manager",
         "requirements": {
           "build": [
             "rust_compiler_stub",
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cargo-bundle-licenses"
           ],
           "host": [
-            "zenoh-rust-abi 1.10.0.1.97.1"
-          ]
+            "zenoh-rust-abi 1.10.0.1.97.1.*"
+          ],
+          "run": []
         },
-        "script": "bld_zenoh_plugin_storage_manager.bat",
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenoh_plugin_storage_manager.dll exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "Library/bin/zenoh_plugin_storage_manager.dll"
+              ]
+            }
+          }
+        ],
+        "version": "1.10.0"
       },
       {
+        "build": null,
         "name": "zenoh",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "zenohd",
             "zenoh-plugin-rest",
             "zenoh-plugin-storage-manager"
           ]
         },
-        "test": {
-          "commands": [
-            "if not exist %PREFIX%\\\\Library\\\\bin\\\\zenohd.exe exit 1"
-          ]
-        }
+        "tests": [
+          {
+            "script": "zenohd --version"
+          }
+        ],
+        "version": "1.10.0"
       }
     ],
     "package": {
-      "name": "zenoh-split",
+      "name": "zenohd",
       "version": "1.10.0"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
-        "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "zenoh-rust-abi 1.10.0.1.97.1.*"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "fix-default-config-windows.patch"
+      ],
+      "sha256": "84f49e867d7645669e5c6ef3b898545aef403b7d6afec90b619800524f3359f3",
+      "url": "https://github.com/eclipse-zenoh/zenoh/archive/refs/tags/1.10.0.tar.gz"
+    }
   },
   "win_64_requirements": {
     "build": {
@@ -1406,6 +1745,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "python",
         "rust_compiler_stub"
       ]
     },
