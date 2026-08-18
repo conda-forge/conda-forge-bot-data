@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_blas_implblis.yaml": "blas_impl:\n- blis\nc_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfmt:\n- '12.1'\ngmp:\n- '6'\ngsl:\n- '2.7'\nhdf5:\n- 1.14.6\nlibboost_devel:\n- '1.88'\nmpich:\n- '4'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_blas_implblishdf51.14.6.yaml": "blas_impl:\n- blis\nc_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfmt:\n- '12.1'\ngmp:\n- '6'\ngsl:\n- '2.7'\nhdf5:\n- 1.14.6\nlibboost_devel:\n- '1.88'\nmpich:\n- '4'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -12,8 +12,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "ac2e343aaea5e8ef38129abda4d73768b21ae0e8",
-  "feedstock_hash_ts": 1787076714,
+  "feedstock_hash": "2b60d30d330a8f7b25d370e1b9a1b3d9fa89318a",
+  "feedstock_hash_ts": 1787087146,
   "feedstock_name": "nrgljubljana",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -30,7 +30,7 @@
       "ignore_run_exports_from": [
         "fmt"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -169,7 +169,7 @@
       "ignore_run_exports_from": [
         "fmt"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -260,7 +260,7 @@
       "ignore_run_exports_from": [
         "fmt"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -398,7 +398,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/nrgljubljana.json"
   },
-  "raw_meta_yaml": "{% set name = \"nrgljubljana\" %}\n{% set version = \"2026.06.1\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/rokzitko/nrgljubljana/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 00457de5ac001c6df78e1dc8cdb246eb536736be67aa130e8ce04314871112c0\n\nbuild:\n  number: 0\n  skip: true  # [win]\n  ignore_run_exports_from:\n    # fmt is used as a header-only library, so no libfmt runtime link is needed.\n    - fmt\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib(\"c\") }}\n    - cmake >=3.25\n    - ninja\n  host:\n    - blas-devel * *{{ blas_impl }}\n    - eigen\n    - fmt\n    - gmp\n    - gsl\n    - hdf5\n    - highfive\n    - libboost-devel\n    - libboost-mpi\n    - llvm-openmp\n    - mpich\n    - range-v3\n  run:\n    - gmp\n    - gsl\n    - hdf5\n    - libboost-mpi\n    - llvm-openmp\n    - blas-devel * *{{ blas_impl }}\n    - libblas * *{{ blas_impl }}\n    - libopenblas  # [blas_impl == \"openblas\"]\n    - blis  # [blas_impl == \"blis\"]\n    - liblapack  # [blas_impl == \"blis\"]\n    - mkl  # [blas_impl == \"mkl\"]\n    - mpich\n\ntest:\n  commands:\n    - test -x \"${PREFIX}/bin/nrg\"  # [unix]\n    - test -x \"${PREFIX}/bin/adapt\"  # [unix]\n    - test -x \"${PREFIX}/bin/instantiate\"  # [unix]\n    - test -x \"${PREFIX}/nrginit/nrginit\"  # [unix]\n    - test -f \"${PREFIX}/nrginit/nrginit.m\"  # [unix]\n    - test -z \"$(ldd \"${PREFIX}/bin/nrg\" | grep 'not found')\"  # [linux]\n    - test -f \"${PREFIX}/lib/libnrgljubljana_c.so\"  # [linux]\n    - test -f \"${PREFIX}/lib/libnrgljubljana_c.dylib\"  # [osx]\n    - test -f \"${PREFIX}/lib/cmake/nrgljubljana/nrgljubljana-config.cmake\"  # [unix]\n    - test -f \"${PREFIX}/etc/conda/activate.d/nrgljubljana.sh\"  # [unix]\n    - test -f \"${PREFIX}/etc/conda/deactivate.d/nrgljubljana.sh\"  # [unix]\n    - grep -q 'CONDA_PREFIX}/nrginit' \"${PREFIX}/etc/conda/activate.d/nrgljubljana.sh\"  # [unix]\n\nabout:\n  home: https://github.com/rokzitko/nrgljubljana\n  summary: Numerical renormalization group framework for quantum impurity problems\n  description: |\n    NRG Ljubljana is a framework for numerical renormalization group calculations\n    for quantum impurity problems. This recipe builds the C++ runtime and the\n    standalone tools from conda-packaged dependencies.\n\n    The nrginit scripts are installed as part of the package. Using them\n    requires Mathematica at runtime.\n  license: GPL-3.0-or-later\n  license_file: COPYING\n  dev_url: https://github.com/rokzitko/nrgljubljana\n  doc_url: http://auger.ijs.si/nrgljubljana/site/\n\nextra:\n  recipe-maintainers:\n    - rokzitko\n",
+  "raw_meta_yaml": "{% set name = \"nrgljubljana\" %}\n{% set version = \"2026.06.1\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/rokzitko/nrgljubljana/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 00457de5ac001c6df78e1dc8cdb246eb536736be67aa130e8ce04314871112c0\n\nbuild:\n  number: 1\n  skip: true  # [win]\n  ignore_run_exports_from:\n    # fmt is used as a header-only library, so no libfmt runtime link is needed.\n    - fmt\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib(\"c\") }}\n    - cmake >=3.25\n    - ninja\n  host:\n    - blas-devel * *{{ blas_impl }}\n    - eigen\n    - fmt\n    - gmp\n    - gsl\n    - hdf5\n    - highfive\n    - libboost-devel\n    - libboost-mpi\n    - llvm-openmp\n    - mpich\n    - range-v3\n  run:\n    - gmp\n    - gsl\n    - hdf5\n    - libboost-mpi\n    - llvm-openmp\n    - blas-devel * *{{ blas_impl }}\n    - libblas * *{{ blas_impl }}\n    - libopenblas  # [blas_impl == \"openblas\"]\n    - blis  # [blas_impl == \"blis\"]\n    - liblapack  # [blas_impl == \"blis\"]\n    - mkl  # [blas_impl == \"mkl\"]\n    - mpich\n\ntest:\n  commands:\n    - test -x \"${PREFIX}/bin/nrg\"  # [unix]\n    - test -x \"${PREFIX}/bin/adapt\"  # [unix]\n    - test -x \"${PREFIX}/bin/instantiate\"  # [unix]\n    - test -x \"${PREFIX}/nrginit/nrginit\"  # [unix]\n    - test -f \"${PREFIX}/nrginit/nrginit.m\"  # [unix]\n    - test -z \"$(ldd \"${PREFIX}/bin/nrg\" | grep 'not found')\"  # [linux]\n    - test -f \"${PREFIX}/lib/libnrgljubljana_c.so\"  # [linux]\n    - test -f \"${PREFIX}/lib/libnrgljubljana_c.dylib\"  # [osx]\n    - test -f \"${PREFIX}/lib/cmake/nrgljubljana/nrgljubljana-config.cmake\"  # [unix]\n    - test -f \"${PREFIX}/etc/conda/activate.d/nrgljubljana.sh\"  # [unix]\n    - test -f \"${PREFIX}/etc/conda/deactivate.d/nrgljubljana.sh\"  # [unix]\n    - grep -q 'CONDA_PREFIX}/nrginit' \"${PREFIX}/etc/conda/activate.d/nrgljubljana.sh\"  # [unix]\n\nabout:\n  home: https://github.com/rokzitko/nrgljubljana\n  summary: Numerical renormalization group framework for quantum impurity problems\n  description: |\n    NRG Ljubljana is a framework for numerical renormalization group calculations\n    for quantum impurity problems. This recipe builds the C++ runtime and the\n    standalone tools from conda-packaged dependencies.\n\n    The nrginit scripts are installed as part of the package. Using them\n    requires Mathematica at runtime.\n  license: GPL-3.0-or-later\n  license_file: COPYING\n  dev_url: https://github.com/rokzitko/nrgljubljana\n  doc_url: http://auger.ijs.si/nrgljubljana/site/\n\nextra:\n  recipe-maintainers:\n    - rokzitko\n",
   "req": {
     "__set__": true,
     "elements": [
