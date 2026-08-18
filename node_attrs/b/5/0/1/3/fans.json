@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.12.* *_cpython\nspdlog:\n- '1.17'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "azure": {
       "store_build_artifacts": true
@@ -24,13 +24,13 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "1675ee2bd611632a23c07e254bbf8003ce0a8f44",
-  "feedstock_hash_ts": 1785677331,
+  "feedstock_hash": "3cf0285810183a6d0d13829baec9551bd08bb35d",
+  "feedstock_hash_ts": 1787070507,
   "feedstock_name": "fans",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe package exposes the binary FANS and the Python-bindings via libFANS.",
+      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe `fans` package provides the FANS binary and the libFANS library; the\n`pyfans` package provides the Python bindings used by the preCICE Micro Manager.",
       "home": "https://github.com/DataAnalyticsEngineering/FANS",
       "license": "LGPL-3.0-only",
       "license_family": "LGPL-3.0-only",
@@ -38,13 +38,11 @@
       "summary": "FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
-        "mkdir build",
-        "cd build",
-        "cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON",
-        "cmake --build . -j",
-        "cmake --install ."
+        "cmake -S . -B build $CMAKE_ARGS",
+        "cmake --build build -j",
+        "cmake --install build"
       ]
     },
     "extra": {
@@ -65,11 +63,10 @@
             "c_stdlib_stub",
             "cmake",
             "make",
-            "ninja",
-            "pybind11"
+            "ninja"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -112,12 +109,53 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       }
     ],
     "package": {
       "name": "fans",
-      "version": "0.7.0"
+      "version": "0.8.1"
     },
     "requirements": {
       "build": [
@@ -126,11 +164,10 @@
         "c_stdlib_stub",
         "cmake",
         "make",
-        "ninja",
-        "pybind11"
+        "ninja"
       ],
       "host": [
-        "hdf5 * mpi_openmpi*",
+        "hdf5 >=1.14,<2 mpi_openmpi*",
         "fftw * mpi_openmpi*",
         "openmpi-mpicxx",
         "eigen",
@@ -140,8 +177,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "085e1a330125d05b890be4067eab16f22420e35370f2a12c886c9d7c8f089dd3",
-      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.7.0.tar.gz"
+      "sha256": "6d0063ba38ddac9d9f7f18d920a509a2d4496bf9afaf1cd9fb7088ceaf11e23d",
+      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.8.1.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -153,35 +190,43 @@
         "cmake",
         "cxx_compiler_stub",
         "make",
-        "ninja",
-        "pybind11"
+        "ninja"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "eigen",
+        "fans",
         "fftw",
         "hdf5",
+        "nanobind",
         "nlohmann_json",
         "openmpi-mpicxx",
+        "pip",
+        "python",
+        "scikit-build-core",
         "spdlog"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "fans",
+        "python"
+      ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "jq"
+        "jq",
+        "pip"
       ]
     }
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe package exposes the binary FANS and the Python-bindings via libFANS.",
+      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe `fans` package provides the FANS binary and the libFANS library; the\n`pyfans` package provides the Python bindings used by the preCICE Micro Manager.",
       "home": "https://github.com/DataAnalyticsEngineering/FANS",
       "license": "LGPL-3.0-only",
       "license_family": "LGPL-3.0-only",
@@ -189,7 +234,7 @@
       "summary": "FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
         "export OMPI_CC=$CC",
         "export OMPI_CXX=$CXX",
@@ -198,11 +243,9 @@
         "export FFLAGS=\"${FFLAGS} -DAVOID_MPI_IN_PLACE\"",
         "export LDFLAGS=\"${LDFLAGS} -headerpad_max_install_names\"",
         "# Filter out host-only CPU flags safely\nfor var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n  val=\"${!var}\"\n  # Remove -march=nocona and -mtune=haswell as whole tokens\n  val=\"$(echo \"$val\" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')\"\n  # Normalize spacing (trim and collapse multiple spaces)\n  val=\"$(echo \"$val\" | tr -s ' ' | sed -E 's/^ //; s/ $//')\"\n  export \"$var=$val\"\ndone\nfor var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n  echo \"$var cleaned: '${!var}'\"\ndone\n",
-        "mkdir build",
-        "cd build",
-        "cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON",
-        "cmake --build . -j",
-        "cmake --install ."
+        "cmake -S . -B build $CMAKE_ARGS",
+        "cmake --build build -j",
+        "cmake --install build"
       ]
     },
     "extra": {
@@ -224,11 +267,10 @@
             "cmake",
             "make",
             "ninja",
-            "pybind11",
             "openmpi-mpicxx"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -271,12 +313,56 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja",
+            "openmpi-mpicxx",
+            "python",
+            "cross-python_linux-aarch64"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       }
     ],
     "package": {
       "name": "fans",
-      "version": "0.7.0"
+      "version": "0.8.1"
     },
     "requirements": {
       "build": [
@@ -286,11 +372,10 @@
         "cmake",
         "make",
         "ninja",
-        "pybind11",
         "openmpi-mpicxx"
       ],
       "host": [
-        "hdf5 * mpi_openmpi*",
+        "hdf5 >=1.14,<2 mpi_openmpi*",
         "fftw * mpi_openmpi*",
         "openmpi-mpicxx",
         "eigen",
@@ -300,8 +385,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "085e1a330125d05b890be4067eab16f22420e35370f2a12c886c9d7c8f089dd3",
-      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.7.0.tar.gz"
+      "sha256": "6d0063ba38ddac9d9f7f18d920a509a2d4496bf9afaf1cd9fb7088ceaf11e23d",
+      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.8.1.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -311,38 +396,48 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
+        "cross-python_linux-aarch64",
         "cxx_compiler_stub",
         "make",
         "ninja",
         "openmpi-mpicxx",
-        "pybind11"
+        "python"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "eigen",
+        "fans",
         "fftw",
         "hdf5",
+        "nanobind",
         "nlohmann_json",
         "openmpi-mpicxx",
+        "pip",
+        "python",
+        "scikit-build-core",
         "spdlog"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "fans",
+        "python"
+      ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "jq"
+        "jq",
+        "pip"
       ]
     }
   },
   "meta_yaml": {
     "about": {
-      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe package exposes the binary FANS and the Python-bindings via libFANS.",
+      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe `fans` package provides the FANS binary and the libFANS library; the\n`pyfans` package provides the Python bindings used by the preCICE Micro Manager.",
       "home": "https://github.com/DataAnalyticsEngineering/FANS",
       "license": "LGPL-3.0-only",
       "license_family": "LGPL-3.0-only",
@@ -350,13 +445,11 @@
       "summary": "FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
-        "mkdir build",
-        "cd build",
-        "cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON",
-        "cmake --build . -j",
-        "cmake --install .",
+        "cmake -S . -B build $CMAKE_ARGS",
+        "cmake --build build -j",
+        "cmake --install build",
         "export OMPI_CC=$CC",
         "export OMPI_CXX=$CXX",
         "export OMPI_FC=$FC",
@@ -384,11 +477,10 @@
             "c_stdlib_stub",
             "cmake",
             "make",
-            "ninja",
-            "pybind11"
+            "ninja"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -431,7 +523,48 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       },
       {
         "build": null,
@@ -444,11 +577,10 @@
             "cmake",
             "make",
             "ninja",
-            "pybind11",
             "openmpi-mpicxx"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -491,7 +623,51 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja",
+            "openmpi-mpicxx",
+            "python",
+            "cross-python_linux-aarch64"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       },
       {
         "build": null,
@@ -504,11 +680,10 @@
             "cmake",
             "make",
             "ninja",
-            "pybind11",
             "openmpi-mpicxx"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -551,7 +726,51 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja",
+            "openmpi-mpicxx",
+            "python",
+            "cross-python_osx-64"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       },
       {
         "build": null,
@@ -564,11 +783,10 @@
             "cmake",
             "make",
             "ninja",
-            "pybind11",
             "openmpi-mpicxx"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -611,12 +829,56 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja",
+            "openmpi-mpicxx",
+            "python",
+            "cross-python_osx-arm64"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       }
     ],
     "package": {
       "name": "fans",
-      "version": "0.7.0"
+      "version": "0.8.1"
     },
     "requirements": {
       "build": [
@@ -626,11 +888,10 @@
         "cmake",
         "make",
         "ninja",
-        "pybind11",
         "openmpi-mpicxx"
       ],
       "host": [
-        "hdf5 * mpi_openmpi*",
+        "hdf5 >=1.14,<2 mpi_openmpi*",
         "fftw * mpi_openmpi*",
         "openmpi-mpicxx",
         "eigen",
@@ -640,14 +901,14 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "085e1a330125d05b890be4067eab16f22420e35370f2a12c886c9d7c8f089dd3",
-      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.7.0.tar.gz"
+      "sha256": "6d0063ba38ddac9d9f7f18d920a509a2d4496bf9afaf1cd9fb7088ceaf11e23d",
+      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.8.1.tar.gz"
     }
   },
   "name": "fans",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe package exposes the binary FANS and the Python-bindings via libFANS.",
+      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe `fans` package provides the FANS binary and the libFANS library; the\n`pyfans` package provides the Python bindings used by the preCICE Micro Manager.",
       "home": "https://github.com/DataAnalyticsEngineering/FANS",
       "license": "LGPL-3.0-only",
       "license_family": "LGPL-3.0-only",
@@ -655,7 +916,7 @@
       "summary": "FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
         "export OMPI_CC=$CC",
         "export OMPI_CXX=$CXX",
@@ -664,11 +925,9 @@
         "export FFLAGS=\"${FFLAGS} -DAVOID_MPI_IN_PLACE\"",
         "export LDFLAGS=\"${LDFLAGS} -headerpad_max_install_names\"",
         "# Filter out host-only CPU flags safely\nfor var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n  val=\"${!var}\"\n  # Remove -march=nocona and -mtune=haswell as whole tokens\n  val=\"$(echo \"$val\" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')\"\n  # Normalize spacing (trim and collapse multiple spaces)\n  val=\"$(echo \"$val\" | tr -s ' ' | sed -E 's/^ //; s/ $//')\"\n  export \"$var=$val\"\ndone\nfor var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n  echo \"$var cleaned: '${!var}'\"\ndone\n",
-        "mkdir build",
-        "cd build",
-        "cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON",
-        "cmake --build . -j",
-        "cmake --install ."
+        "cmake -S . -B build $CMAKE_ARGS",
+        "cmake --build build -j",
+        "cmake --install build"
       ]
     },
     "extra": {
@@ -690,11 +949,10 @@
             "cmake",
             "make",
             "ninja",
-            "pybind11",
             "openmpi-mpicxx"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -737,12 +995,56 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja",
+            "openmpi-mpicxx",
+            "python",
+            "cross-python_osx-64"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       }
     ],
     "package": {
       "name": "fans",
-      "version": "0.7.0"
+      "version": "0.8.1"
     },
     "requirements": {
       "build": [
@@ -752,11 +1054,10 @@
         "cmake",
         "make",
         "ninja",
-        "pybind11",
         "openmpi-mpicxx"
       ],
       "host": [
-        "hdf5 * mpi_openmpi*",
+        "hdf5 >=1.14,<2 mpi_openmpi*",
         "fftw * mpi_openmpi*",
         "openmpi-mpicxx",
         "eigen",
@@ -766,8 +1067,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "085e1a330125d05b890be4067eab16f22420e35370f2a12c886c9d7c8f089dd3",
-      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.7.0.tar.gz"
+      "sha256": "6d0063ba38ddac9d9f7f18d920a509a2d4496bf9afaf1cd9fb7088ceaf11e23d",
+      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.8.1.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -777,38 +1078,48 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
+        "cross-python_osx-64",
         "cxx_compiler_stub",
         "make",
         "ninja",
         "openmpi-mpicxx",
-        "pybind11"
+        "python"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "eigen",
+        "fans",
         "fftw",
         "hdf5",
+        "nanobind",
         "nlohmann_json",
         "openmpi-mpicxx",
+        "pip",
+        "python",
+        "scikit-build-core",
         "spdlog"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "fans",
+        "python"
+      ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "jq"
+        "jq",
+        "pip"
       ]
     }
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe package exposes the binary FANS and the Python-bindings via libFANS.",
+      "description": "Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\nFANS is written in C++, built using CMake, and it has MPI parallelization.\nThe `fans` package provides the FANS binary and the libFANS library; the\n`pyfans` package provides the Python bindings used by the preCICE Micro Manager.",
       "home": "https://github.com/DataAnalyticsEngineering/FANS",
       "license": "LGPL-3.0-only",
       "license_family": "LGPL-3.0-only",
@@ -816,7 +1127,7 @@
       "summary": "FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems."
     },
     "build": {
-      "number": "1",
+      "number": "0",
       "script": [
         "export OMPI_CC=$CC",
         "export OMPI_CXX=$CXX",
@@ -825,11 +1136,9 @@
         "export FFLAGS=\"${FFLAGS} -DAVOID_MPI_IN_PLACE\"",
         "export LDFLAGS=\"${LDFLAGS} -headerpad_max_install_names\"",
         "# Filter out host-only CPU flags safely\nfor var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n  val=\"${!var}\"\n  # Remove -march=nocona and -mtune=haswell as whole tokens\n  val=\"$(echo \"$val\" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')\"\n  # Normalize spacing (trim and collapse multiple spaces)\n  val=\"$(echo \"$val\" | tr -s ' ' | sed -E 's/^ //; s/ $//')\"\n  export \"$var=$val\"\ndone\nfor var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n  echo \"$var cleaned: '${!var}'\"\ndone\n",
-        "mkdir build",
-        "cd build",
-        "cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON",
-        "cmake --build . -j",
-        "cmake --install ."
+        "cmake -S . -B build $CMAKE_ARGS",
+        "cmake --build build -j",
+        "cmake --install build"
       ]
     },
     "extra": {
@@ -851,11 +1160,10 @@
             "cmake",
             "make",
             "ninja",
-            "pybind11",
             "openmpi-mpicxx"
           ],
           "host": [
-            "hdf5 * mpi_openmpi*",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
             "fftw * mpi_openmpi*",
             "openmpi-mpicxx",
             "eigen",
@@ -898,12 +1206,56 @@
             "script": "FANS --version"
           }
         ],
-        "version": "0.7.0"
+        "version": "0.8.1"
+      },
+      {
+        "build": null,
+        "name": "pyfans",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make",
+            "ninja",
+            "openmpi-mpicxx",
+            "python",
+            "cross-python_osx-arm64"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "scikit-build-core",
+            "nanobind",
+            "fans",
+            "hdf5 >=1.14,<2 mpi_openmpi*",
+            "fftw * mpi_openmpi*",
+            "openmpi-mpicxx",
+            "eigen",
+            "nlohmann_json",
+            "spdlog"
+          ],
+          "run": [
+            "python",
+            "fans"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "PyFANS"
+              ]
+            }
+          }
+        ],
+        "version": "0.8.1"
       }
     ],
     "package": {
       "name": "fans",
-      "version": "0.7.0"
+      "version": "0.8.1"
     },
     "requirements": {
       "build": [
@@ -913,11 +1265,10 @@
         "cmake",
         "make",
         "ninja",
-        "pybind11",
         "openmpi-mpicxx"
       ],
       "host": [
-        "hdf5 * mpi_openmpi*",
+        "hdf5 >=1.14,<2 mpi_openmpi*",
         "fftw * mpi_openmpi*",
         "openmpi-mpicxx",
         "eigen",
@@ -927,8 +1278,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "085e1a330125d05b890be4067eab16f22420e35370f2a12c886c9d7c8f089dd3",
-      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.7.0.tar.gz"
+      "sha256": "6d0063ba38ddac9d9f7f18d920a509a2d4496bf9afaf1cd9fb7088ceaf11e23d",
+      "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.8.1.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -938,39 +1289,50 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
+        "cross-python_osx-arm64",
         "cxx_compiler_stub",
         "make",
         "ninja",
         "openmpi-mpicxx",
-        "pybind11"
+        "python"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "eigen",
+        "fans",
         "fftw",
         "hdf5",
+        "nanobind",
         "nlohmann_json",
         "openmpi-mpicxx",
+        "pip",
+        "python",
+        "scikit-build-core",
         "spdlog"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "fans",
+        "python"
+      ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "jq"
+        "jq",
+        "pip"
       ]
     }
   },
   "outputs_names": {
     "__set__": true,
     "elements": [
-      "fans"
+      "fans",
+      "pyfans"
     ]
   },
   "parsing_error": false,
@@ -983,22 +1345,29 @@
   "pr_info": {
     "__lazy_json__": "pr_info/fans.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.7.0\"\n\npackage:\n  name: fans\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 085e1a330125d05b890be4067eab16f22420e35370f2a12c886c9d7c8f089dd3\n\nbuild:\n  number: 1\n  skip:\n    - win\n  script:\n    - if: unix\n      then:\n        - if: (build_platform != target_platform)\n          then:\n            # flags from https://conda-forge.org/docs/maintainer/knowledge_base/#cross-compilation and https://github.com/conda-forge/mumps-feedstock/blob/966474677d28486ef897b0d3bb2c10558dc9b5ca/recipe/build-mumps.sh\n            - export OMPI_CC=$CC\n            - export OMPI_CXX=$CXX\n            - export OMPI_FC=$FC\n            - export OPAL_PREFIX=\"$PREFIX\"\n            - export FFLAGS=\"${FFLAGS} -DAVOID_MPI_IN_PLACE\"\n            - export LDFLAGS=\"${LDFLAGS} -headerpad_max_install_names\"\n            - |\n              # Filter out host-only CPU flags safely\n              for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n                val=\"${!var}\"\n                # Remove -march=nocona and -mtune=haswell as whole tokens\n                val=\"$(echo \"$val\" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')\"\n                # Normalize spacing (trim and collapse multiple spaces)\n                val=\"$(echo \"$val\" | tr -s ' ' | sed -E 's/^ //; s/ $//')\"\n                export \"$var=$val\"\n              done\n              for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n                echo \"$var cleaned: '${!var}'\"\n              done\n        - mkdir build\n        - cd build\n        - cmake .. $CMAKE_ARGS -DFANS_LIBRARY_FOR_MICRO_MANAGER=ON\n        - cmake --build . -j\n        - cmake --install .\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake\n    - make\n    - ninja\n    - pybind11\n    - if: (build_platform != target_platform)\n      then:\n        - openmpi-mpicxx\n  host:\n    - hdf5 * mpi_openmpi*\n    - fftw * mpi_openmpi*\n    - openmpi-mpicxx\n    - eigen\n    - nlohmann_json\n    - spdlog\n\ntests:\n  - package_contents:\n      bin:\n        - FANS\n      lib:\n        - FANS\n  - script:\n      # JSON test file has relative path to h5 included - changing that\n      - JSON_FILE=\"$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json\"\n      - MODIFIED_JSON_FILE=\"$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json\"\n      - NEW_MS_FILENAME=\"$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/microstructures/sphere32.h5\"\n      # Use jq to create a modified copy of the JSON file\n      - jq --arg new_filename \"$NEW_MS_FILENAME\" '.microstructure.filepath = $new_filename' \"$JSON_FILE\" > \"$MODIFIED_JSON_FILE\"\n      # Run tests\n      - mpiexec -n 1 FANS \"$MODIFIED_JSON_FILE\" \"$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5\"\n    requirements:\n      run:\n        - jq\n    files:\n      source:\n        - test/\n  - script:\n      - FANS --version\n\nabout:\n  homepage: https://github.com/DataAnalyticsEngineering/FANS\n  summary: \"FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems.\"\n  description: |\n    Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\n    FANS is written in C++, built using CMake, and it has MPI parallelization.\n    The package exposes the binary FANS and the Python-bindings via libFANS.\n  license: LGPL-3.0-only\n  license_family: LGPL\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - sanathkeshav\n    - claudiushaag\n    - EMMAOpenSource\n",
+  "raw_meta_yaml": "context:\n  version: \"0.8.1\"\n  # abi3 floor; must match requires-python in pyfans/pyproject.toml\n  python_min: \"3.12\"\n\nrecipe:\n  name: fans\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 6d0063ba38ddac9d9f7f18d920a509a2d4496bf9afaf1cd9fb7088ceaf11e23d\n\nbuild:\n  number: 0\n  skip:\n    - win\n\noutputs:\n  # The solver: binary, library, headers and cmake package. No Python.\n  - package:\n      name: fans\n    build:\n      script:\n        - if: unix\n          then:\n            - if: (build_platform != target_platform)\n              then:\n                # flags from https://conda-forge.org/docs/maintainer/knowledge_base/#cross-compilation and https://github.com/conda-forge/mumps-feedstock/blob/966474677d28486ef897b0d3bb2c10558dc9b5ca/recipe/build-mumps.sh\n                - export OMPI_CC=$CC\n                - export OMPI_CXX=$CXX\n                - export OMPI_FC=$FC\n                - export OPAL_PREFIX=\"$PREFIX\"\n                - export FFLAGS=\"${FFLAGS} -DAVOID_MPI_IN_PLACE\"\n                - export LDFLAGS=\"${LDFLAGS} -headerpad_max_install_names\"\n                - |\n                  # Filter out host-only CPU flags safely\n                  for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n                    val=\"${!var}\"\n                    # Remove -march=nocona and -mtune=haswell as whole tokens\n                    val=\"$(echo \"$val\" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')\"\n                    # Normalize spacing (trim and collapse multiple spaces)\n                    val=\"$(echo \"$val\" | tr -s ' ' | sed -E 's/^ //; s/ $//')\"\n                    export \"$var=$val\"\n                  done\n                  for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n                    echo \"$var cleaned: '${!var}'\"\n                  done\n            - cmake -S . -B build $CMAKE_ARGS\n            - cmake --build build -j\n            - cmake --install build\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - make\n        - ninja\n        - if: (build_platform != target_platform)\n          then:\n            - openmpi-mpicxx\n      host:\n        # Pinned to 1.14 deliberately: unpinned resolves to hdf5 2.1, and every\n        # conda-forge fenics-dolfinx pins 1.14, so pyfans could not share an\n        # environment with the Micro Manager's macro side.\n        - hdf5 >=1.14,<2 mpi_openmpi*\n        - fftw * mpi_openmpi*\n        - openmpi-mpicxx\n        - eigen\n        - nlohmann_json\n        - spdlog\n    tests:\n      - package_contents:\n          bin:\n            - FANS\n          lib:\n            - FANS\n      - script:\n          # JSON test file has relative path to h5 included - changing that\n          - JSON_FILE=\"$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic.json\"\n          - MODIFIED_JSON_FILE=\"$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/input_files/test_LinearElastic_mod.json\"\n          - NEW_MS_FILENAME=\"$PREFIX/etc/conda/test-files/$PKG_NAME/0/test/microstructures/sphere32.h5\"\n          # Use jq to create a modified copy of the JSON file\n          - jq --arg new_filename \"$NEW_MS_FILENAME\" '.microstructure.filepath = $new_filename' \"$JSON_FILE\" > \"$MODIFIED_JSON_FILE\"\n          # Run tests\n          - mpiexec -n 1 FANS \"$MODIFIED_JSON_FILE\" \"$PREFIX/etc/conda/test-files/$PKG_NAME/0//test/test_results.h5\"\n        requirements:\n          run:\n            - jq\n        files:\n          source:\n            - test/\n      - script:\n          - FANS --version\n\n  # The nanobind bindings, built against the `fans` package above rather than\n  # rebuilding the solver. One abi3 build serves every supported Python.\n  - package:\n      name: pyfans\n    build:\n      # One abi3 build serves every Python from python_min up, so build it once\n      # rather than once per Python in the variant matrix.\n      skip:\n        - match(python, \"!=\" + python_min)\n      python:\n        version_independent: true\n      script:\n        - if: (build_platform != target_platform)\n          then:\n            # Same MPI wrapper setup and host-flag scrubbing the fans output\n            # needs when cross compiling.\n            - export OMPI_CC=$CC\n            - export OMPI_CXX=$CXX\n            - export OPAL_PREFIX=\"$PREFIX\"\n            - |\n              for var in CFLAGS CXXFLAGS DEBUG_CFLAGS DEBUG_CXXFLAGS; do\n                val=\"${!var}\"\n                val=\"$(echo \"$val\" | sed -E 's/(^|[[:space:]])-march=nocona([[:space:]]|$)/ /g; s/(^|[[:space:]])-mtune=haswell([[:space:]]|$)/ /g')\"\n                val=\"$(echo \"$val\" | tr -s ' ' | sed -E 's/^ //; s/ $//')\"\n                export \"$var=$val\"\n              done\n        - ${{ PYTHON }} -m pip install ./pyfans -vv --no-deps --no-build-isolation\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib('c') }}\n        - cmake\n        - make\n        - ninja\n        - if: (build_platform != target_platform)\n          then:\n            - openmpi-mpicxx\n            - python\n            - cross-python_${{ target_platform }}\n      host:\n        - python\n        - pip\n        - scikit-build-core\n        - nanobind\n        - ${{ pin_subpackage('fans', exact=True) }}\n        # FANSConfig.cmake re-resolves these through find_dependency.\n        - hdf5 >=1.14,<2 mpi_openmpi*\n        - fftw * mpi_openmpi*\n        - openmpi-mpicxx\n        - eigen\n        - nlohmann_json\n        - spdlog\n      run:\n        - python\n        - ${{ pin_subpackage('fans', exact=True) }}\n    tests:\n      - python:\n          imports:\n            - PyFANS\n\nabout:\n  homepage: https://github.com/DataAnalyticsEngineering/FANS\n  summary: \"FANS: an open-source, efficient, and parallel FFT-based homogenization solver designed to solve microscale multiphysics problems.\"\n  description: |\n    Fourier-Accelerated Nodal Solver (FANS) is an FFT-based homogenization solver for microscale multiphysics problems.\n    FANS is written in C++, built using CMake, and it has MPI parallelization.\n    The `fans` package provides the FANS binary and the libFANS library; the\n    `pyfans` package provides the Python bindings used by the preCICE Micro Manager.\n  license: LGPL-3.0-only\n  license_family: LGPL\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - sanathkeshav\n    - claudiushaag\n    - EMMAOpenSource\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
       "cmake",
+      "cross-python_linux-aarch64",
+      "cross-python_osx-64",
+      "cross-python_osx-arm64",
       "cxx_compiler_stub",
       "eigen",
+      "fans",
       "fftw",
       "hdf5",
       "make",
+      "nanobind",
       "ninja",
       "nlohmann_json",
       "openmpi-mpicxx",
-      "pybind11",
+      "pip",
+      "python",
+      "scikit-build-core",
       "spdlog"
     ]
   },
@@ -1009,11 +1378,14 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
+        "cross-python_linux-aarch64",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cxx_compiler_stub",
         "make",
         "ninja",
         "openmpi-mpicxx",
-        "pybind11"
+        "python"
       ]
     },
     "host": {
@@ -1021,12 +1393,18 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python",
         "cxx_compiler_stub",
         "eigen",
+        "fans",
         "fftw",
         "hdf5",
+        "nanobind",
         "nlohmann_json",
         "openmpi-mpicxx",
+        "pip",
+        "python",
+        "scikit-build-core",
         "spdlog"
       ]
     },
@@ -1035,13 +1413,17 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "cross-python",
+        "cxx_compiler_stub",
+        "fans",
+        "python"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "jq"
+        "jq",
+        "pip"
       ]
     }
   },
@@ -1053,37 +1435,49 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
+        "cross-python_linux-aarch64",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cxx_compiler_stub",
         "make",
         "ninja",
         "openmpi-mpicxx",
-        "pybind11"
+        "python"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "eigen",
+        "fans",
         "fftw * mpi_openmpi*",
-        "hdf5 * mpi_openmpi*",
+        "hdf5 >=1.14,<2 mpi_openmpi*",
+        "nanobind",
         "nlohmann_json",
         "openmpi-mpicxx",
+        "pip",
+        "python",
+        "scikit-build-core",
         "spdlog"
       ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "fans",
+        "python"
+      ]
     },
     "test": {
       "__set__": true,
       "elements": [
-        "jq"
+        "jq",
+        "pip"
       ]
     }
   },
-  "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.7.0.tar.gz",
-  "version": "0.7.0",
+  "url": "https://github.com/DataAnalyticsEngineering/FANS/archive/refs/tags/v0.8.1.tar.gz",
+  "version": "0.8.1",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/fans.json"
   }
