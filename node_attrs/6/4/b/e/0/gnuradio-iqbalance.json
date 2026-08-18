@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfftw:\n- '3'\ngmp:\n- '6'\ngnuradio_core:\n- 3.10.12\nlibboost_headers:\n- '1.88'\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfftw:\n- '3'\ngmp:\n- '6'\ngnuradio_core:\n- 3.10.12\nlibboost_headers:\n- '1.90'\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "azure": {
       "store_build_artifacts": true
@@ -24,8 +24,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "b3b6e8fd0f16dbd57ba7b6401d9cc0c496ecc0cc",
-  "feedstock_hash_ts": 1777046922,
+  "feedstock_hash": "c5c078b5c0e19be778ab0962a9d84cbed7d60ac1",
+  "feedstock_hash_ts": 1787082820,
   "feedstock_name": "gnuradio-iqbalance",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -41,7 +41,7 @@
       "ignore_run_exports_from": [
         "fftw"
       ],
-      "number": "2",
+      "number": "3",
       "run_exports": [
         "gnuradio-iqbalance"
       ]
@@ -150,7 +150,7 @@
       "ignore_run_exports_from": [
         "fftw"
       ],
-      "number": "2",
+      "number": "3",
       "run_exports": [
         "gnuradio-iqbalance"
       ]
@@ -259,7 +259,7 @@
       "ignore_run_exports_from": [
         "fftw"
       ],
-      "number": "2",
+      "number": "3",
       "run_exports": [
         "gnuradio-iqbalance"
       ]
@@ -368,7 +368,7 @@
       "ignore_run_exports_from": [
         "fftw"
       ],
-      "number": "2",
+      "number": "3",
       "run_exports": [
         "gnuradio-iqbalance"
       ]
@@ -447,7 +447,7 @@
       "ignore_run_exports_from": [
         "fftw"
       ],
-      "number": "2",
+      "number": "3",
       "run_exports": [
         "gnuradio-iqbalance"
       ]
@@ -554,7 +554,7 @@
       "ignore_run_exports_from": [
         "fftw"
       ],
-      "number": "2",
+      "number": "3",
       "run_exports": [
         "gnuradio-iqbalance"
       ]
@@ -666,7 +666,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/gnuradio-iqbalance.json"
   },
-  "raw_meta_yaml": "{% set name = \"gnuradio-iqbalance\" %}\n{% set version = \"0.38.3\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  # osmocom git is slow/offline\n  #url: https://gitea.osmocom.org/sdr/gr-iqbal/archive/v{{ version }}.tar.gz\n  #sha256: f06d24143a8b2015494c8a02ba27eb5cdcbdc2495e73435df9ca0b6c2e0ba944\n  url: https://github.com/osmocom/gr-iqbal/archive/refs/tags/v{{ version }}.tar.gz\n  sha256: dc1a25ec95c15335135776887e4a3127fb583123ff2b092b5113965bd099c53e\n  patches:\n    - 0001-Use-GNU-Radio-Python-binding-macros.patch\n    - 0002-Use-C-std-complex-type-for-portability.patch\n\nbuild:\n  number: 2\n  run_exports:\n    - {{ pin_subpackage('gnuradio-iqbalance', max_pin='x.x') }}\n  ignore_run_exports_from:\n    # CMakeLists.txt checks for fftw, but doesn't actually link to it\n    # (it would if libosmo-dsp was bundled in the package)\n    - fftw\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - cmake\n    - ninja\n    - pkg-config\n    # cross-compilation requirements\n    - python                              # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - numpy                               # [build_platform != target_platform]\n    - pybind11                            # [build_platform != target_platform]\n\n  host:\n    - fftw\n    - gmp  # [linux]\n    - gnuradio-core  # [not gnuradio_extra_pin]\n    - gnuradio-core {{ gnuradio_extra_pin }}.*  # [gnuradio_extra_pin]\n    - libboost-headers\n    - libosmo-dsp\n    - pip  # [win]\n    - pybind11\n    - python\n    - numpy\n\n  run:\n    - numpy\n    - python\n\ntest:\n  commands:\n    # verify that (some) headers get installed\n    - test -f $PREFIX/include/gnuradio/iqbalance/api.h  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\include\\\\gnuradio\\\\iqbalance\\\\api.h exit 1  # [win]\n\n    # verify that libraries get installed\n    - test -f $PREFIX/lib/lib{{ name }}${SHLIB_EXT}  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\bin\\\\{{ name }}.dll exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\lib\\\\{{ name }}.lib exit 1  # [win]\n\n    # verify that GRC blocks get installed\n    {% set blocks = [\"iqbalance_fix_cc\", \"iqbalance_optimize_c\"] %}\n\n    {% for block in blocks %}\n    - test -f $PREFIX/share/gnuradio/grc/blocks/{{ block }}.block.yml  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\share\\\\gnuradio\\\\grc\\\\blocks\\\\{{ block }}.block.yml exit 1  # [win]\n    {% endfor %}\n\n  imports:\n    - gnuradio.iqbalance\n\nabout:\n  home: https://gitea.osmocom.org/sdr/gr-iqbal\n  license: GPL-3.0-or-later\n  license_family: GPL\n  license_file: COPYING\n  summary: GNU Radio module for correcting I/Q imbalance in quadrature receivers\n  description: >\n    GNU Radio module to correct I/Q imbalance in quadrature receivers.\n\n    It's composed of two main blocks:\n\n      - *fix* : Given a phase and amplitude error, it will correct a complex signal\n      - *optimize*: Attempts to auto-detect the phase and amplitude error to feed to the fix block above\n\nextra:\n  recipe-maintainers:\n    - ryanvolz\n",
+  "raw_meta_yaml": "{% set name = \"gnuradio-iqbalance\" %}\n{% set version = \"0.38.3\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  # osmocom git is slow/offline\n  #url: https://gitea.osmocom.org/sdr/gr-iqbal/archive/v{{ version }}.tar.gz\n  #sha256: f06d24143a8b2015494c8a02ba27eb5cdcbdc2495e73435df9ca0b6c2e0ba944\n  url: https://github.com/osmocom/gr-iqbal/archive/refs/tags/v{{ version }}.tar.gz\n  sha256: dc1a25ec95c15335135776887e4a3127fb583123ff2b092b5113965bd099c53e\n  patches:\n    - 0001-Use-GNU-Radio-Python-binding-macros.patch\n    - 0002-Use-C-std-complex-type-for-portability.patch\n\nbuild:\n  number: 3\n  run_exports:\n    - {{ pin_subpackage('gnuradio-iqbalance', max_pin='x.x') }}\n  ignore_run_exports_from:\n    # CMakeLists.txt checks for fftw, but doesn't actually link to it\n    # (it would if libosmo-dsp was bundled in the package)\n    - fftw\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - cmake\n    - ninja\n    - pkg-config\n    # cross-compilation requirements\n    - python                              # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - numpy                               # [build_platform != target_platform]\n    - pybind11                            # [build_platform != target_platform]\n\n  host:\n    - fftw\n    - gmp  # [linux]\n    - gnuradio-core  # [not gnuradio_extra_pin]\n    - gnuradio-core {{ gnuradio_extra_pin }}.*  # [gnuradio_extra_pin]\n    - libboost-headers\n    - libosmo-dsp\n    - pip  # [win]\n    - pybind11\n    - python\n    - numpy\n\n  run:\n    - numpy\n    - python\n\ntest:\n  commands:\n    # verify that (some) headers get installed\n    - test -f $PREFIX/include/gnuradio/iqbalance/api.h  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\include\\\\gnuradio\\\\iqbalance\\\\api.h exit 1  # [win]\n\n    # verify that libraries get installed\n    - test -f $PREFIX/lib/lib{{ name }}${SHLIB_EXT}  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\bin\\\\{{ name }}.dll exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\lib\\\\{{ name }}.lib exit 1  # [win]\n\n    # verify that GRC blocks get installed\n    {% set blocks = [\"iqbalance_fix_cc\", \"iqbalance_optimize_c\"] %}\n\n    {% for block in blocks %}\n    - test -f $PREFIX/share/gnuradio/grc/blocks/{{ block }}.block.yml  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\share\\\\gnuradio\\\\grc\\\\blocks\\\\{{ block }}.block.yml exit 1  # [win]\n    {% endfor %}\n\n  imports:\n    - gnuradio.iqbalance\n\nabout:\n  home: https://gitea.osmocom.org/sdr/gr-iqbal\n  license: GPL-3.0-or-later\n  license_family: GPL\n  license_file: COPYING\n  summary: GNU Radio module for correcting I/Q imbalance in quadrature receivers\n  description: >\n    GNU Radio module to correct I/Q imbalance in quadrature receivers.\n\n    It's composed of two main blocks:\n\n      - *fix* : Given a phase and amplitude error, it will correct a complex signal\n      - *optimize*: Attempts to auto-detect the phase and amplitude error to feed to the fix block above\n\nextra:\n  recipe-maintainers:\n    - ryanvolz\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -788,7 +788,7 @@
       "ignore_run_exports_from": [
         "fftw"
       ],
-      "number": "2",
+      "number": "3",
       "run_exports": [
         "gnuradio-iqbalance"
       ]
