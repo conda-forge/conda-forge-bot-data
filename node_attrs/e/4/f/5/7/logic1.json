@@ -3,6 +3,9 @@
   "branch": "main",
   "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
+    "build_platform": {
+      "osx_arm64": "osx_64"
+    },
     "conda_build": {
       "error_overlinking": true
     },
@@ -11,10 +14,11 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "2934fea4e58b26ffa45e1285c02c5711fc181177",
-  "feedstock_hash_ts": 1787072723,
+  "feedstock_hash": "836b19f14f1cf4f56e088cb630442fb35f9d4d1e",
+  "feedstock_hash_ts": 1787082588,
   "feedstock_name": "logic1",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -29,7 +33,7 @@
       "summary": "Interpreted first-order logic in Python"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export CFLAGS=\"${CFLAGS} -I${SP_DIR}/gmpy2\"",
@@ -176,7 +180,7 @@
       "summary": "Interpreted first-order logic in Python"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export CFLAGS=\"${CFLAGS} -I${SP_DIR}/gmpy2\"",
@@ -247,7 +251,60 @@
         "requirements": {
           "build": [
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cross-python_osx-64",
+            "python",
+            "cython >=3.1.0"
+          ],
+          "host": [
+            "cython >=3.1.0",
+            "gmpy2",
+            "pip",
+            "python 3.14.* *_cp314",
+            "setuptools",
+            "setuptools_scm"
+          ],
+          "run": [
+            "gmpy2",
+            "more-itertools",
+            "pyeda",
+            "python 3.14.* *_cp314",
+            "python-flint",
+            "sage",
+            "typing-extensions"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "export DOT_SAGE=\"${PWD}/.sage\"",
+              "python -c \"import logic1\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "logic1/theories/Sets/test_qe.txt"
+              ]
+            },
+            "script": [
+              "export DOT_SAGE=\"${PWD}/.sage\"",
+              "python -m doctest -o NORMALIZE_WHITESPACE logic1/theories/Sets/test_qe.txt"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      },
+      {
+        "build": null,
+        "name": "logic1",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cross-python_osx-arm64",
+            "python",
+            "cython >=3.1.0"
           ],
           "host": [
             "cython >=3.1.0",
@@ -296,7 +353,11 @@
     "requirements": {
       "build": [
         "c_stdlib_stub",
-        "c_compiler_stub"
+        "c_compiler_stub",
+        "cross-python_osx-64",
+        "python",
+        "cython >=3.1.0",
+        "cross-python_osx-arm64"
       ],
       "host": [
         "cython >=3.1.0",
@@ -335,7 +396,7 @@
       "summary": "Interpreted first-order logic in Python"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "export CFLAGS=\"${CFLAGS} -I${SP_DIR}/gmpy2\"",
@@ -359,7 +420,10 @@
         "requirements": {
           "build": [
             "c_stdlib_stub",
-            "c_compiler_stub"
+            "c_compiler_stub",
+            "cross-python_osx-64",
+            "python",
+            "cython >=3.1.0"
           ],
           "host": [
             "cython >=3.1.0",
@@ -408,7 +472,10 @@
     "requirements": {
       "build": [
         "c_stdlib_stub",
-        "c_compiler_stub"
+        "c_compiler_stub",
+        "cross-python_osx-64",
+        "python",
+        "cython >=3.1.0"
       ],
       "host": [
         "cython >=3.1.0",
@@ -439,7 +506,166 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_osx-64",
+        "cython",
+        "python"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "gmpy2",
+        "pip",
+        "python",
+        "setuptools",
+        "setuptools_scm"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "gmpy2",
+        "more-itertools",
+        "pyeda",
+        "python",
+        "python-flint",
+        "sage",
+        "typing-extensions"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "description": "First-order logic recursively builds terms from variables and a specified set of function symbols with specified arities, which includes constant symbols with arity zero. Next, atomic formulas are built from terms and a specified set of relation symbols with specified arities. Finally, first-order formulas are recursively built from atomic formulas and a fixed set of logical operators.\n\nLogic1 focuses on interpreted first-order logic, where the above-mentioned function and relation symbols have implicit semantics, which is not explicitly expressed via axioms within the logical framework. Typical applications include algebraic decision procedures and, more generally, quantifier elimination procedures, e.g., over the real numbers.",
+      "dev_url": "https://github.com/logic1-eu/logic1",
+      "doc_url": "https://docs.logic1.eu/",
+      "home": "https://docs.logic1.eu/",
+      "license": "GPL-2.0-or-later",
+      "license_family": "GPL-2.0-or-later",
+      "license_file": "LICENSE",
+      "summary": "Interpreted first-order logic in Python"
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "export CFLAGS=\"${CFLAGS} -I${SP_DIR}/gmpy2\"",
+          "python -m pip install . -vv --no-deps --no-build-isolation"
+        ],
+        "env": {
+          "SETUPTOOLS_SCM_PRETEND_VERSION": "0.3.0"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "lorenzleutgeb",
+        "thomas-sturm"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "logic1",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cross-python_osx-arm64",
+            "python",
+            "cython >=3.1.0"
+          ],
+          "host": [
+            "cython >=3.1.0",
+            "gmpy2",
+            "pip",
+            "python 3.14.* *_cp314",
+            "setuptools",
+            "setuptools_scm"
+          ],
+          "run": [
+            "gmpy2",
+            "more-itertools",
+            "pyeda",
+            "python 3.14.* *_cp314",
+            "python-flint",
+            "sage",
+            "typing-extensions"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "export DOT_SAGE=\"${PWD}/.sage\"",
+              "python -c \"import logic1\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "logic1/theories/Sets/test_qe.txt"
+              ]
+            },
+            "script": [
+              "export DOT_SAGE=\"${PWD}/.sage\"",
+              "python -m doctest -o NORMALIZE_WHITESPACE logic1/theories/Sets/test_qe.txt"
+            ]
+          }
+        ],
+        "version": "0.3.0"
+      }
+    ],
+    "package": {
+      "name": "logic1",
+      "version": "0.3.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cross-python_osx-arm64",
+        "python",
+        "cython >=3.1.0"
+      ],
+      "host": [
+        "cython >=3.1.0",
+        "gmpy2",
+        "pip",
+        "python 3.14.* *_cp314",
+        "setuptools",
+        "setuptools_scm"
+      ],
+      "run": [
+        "gmpy2",
+        "more-itertools",
+        "pyeda",
+        "python 3.14.* *_cp314",
+        "python-flint",
+        "sage",
+        "typing-extensions"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "95f3a085ccaf56050daf14c3fc2ad20218ce3f783f46c55855eddbaa5f49a82a",
+      "url": "https://github.com/logic1-eu/logic1/archive/refs/tags/v0.3.0.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cross-python_osx-arm64",
+        "cython",
+        "python"
       ]
     },
     "host": {
@@ -479,17 +705,20 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "osx_64"
+    "osx_64",
+    "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/logic1.json"
   },
-  "raw_meta_yaml": "context:\n  version: 0.3.0\n  python_min: \"3.14\"\n  python_max: \"3.14\"\n\npackage:\n  name: logic1\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/logic1-eu/logic1/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 95f3a085ccaf56050daf14c3fc2ad20218ce3f783f46c55855eddbaa5f49a82a\n\nbuild:\n  number: 0\n  skip: win\n  script:\n    env:\n      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ version }}\n    content:\n      - export CFLAGS=\"${CFLAGS} -I${SP_DIR}/gmpy2\"\n      - python -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"c\") }}\n  host:\n    - cython >=3.1.0\n    - gmpy2\n    - pip\n    - python 3.14.* *_cp314\n    - setuptools\n    - setuptools_scm\n  run:\n    - gmpy2\n    - more-itertools\n    - pyeda\n    - python 3.14.* *_cp314\n    - python-flint\n    - sage\n    - typing-extensions\n\ntests:\n  - script:\n      - export DOT_SAGE=\"${PWD}/.sage\"\n      - python -c \"import logic1\"\n  - script:\n      - export DOT_SAGE=\"${PWD}/.sage\"\n      - python -m doctest -o NORMALIZE_WHITESPACE logic1/theories/Sets/test_qe.txt\n    files:\n      source:\n        - logic1/theories/Sets/test_qe.txt\n\nabout:\n  license: GPL-2.0-or-later\n  license_file: LICENSE\n  summary: Interpreted first-order logic in Python\n  homepage: https://docs.logic1.eu/\n  documentation: https://docs.logic1.eu/\n  description: |\n    First-order logic recursively builds terms from variables and a specified set of function symbols with specified arities, which includes constant symbols with arity zero. Next, atomic formulas are built from terms and a specified set of relation symbols with specified arities. Finally, first-order formulas are recursively built from atomic formulas and a fixed set of logical operators.\n\n    Logic1 focuses on interpreted first-order logic, where the above-mentioned function and relation symbols have implicit semantics, which is not explicitly expressed via axioms within the logical framework. Typical applications include algebraic decision procedures and, more generally, quantifier elimination procedures, e.g., over the real numbers.\n  repository: https://github.com/logic1-eu/logic1\n\nextra:\n  recipe-maintainers:\n    - lorenzleutgeb\n    - thomas-sturm\n",
+  "raw_meta_yaml": "context:\n  version: 0.3.0\n  python_min: \"3.14\"\n  python_max: \"3.14\"\n\npackage:\n  name: logic1\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/logic1-eu/logic1/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 95f3a085ccaf56050daf14c3fc2ad20218ce3f783f46c55855eddbaa5f49a82a\n\nbuild:\n  number: 1\n  skip: win\n  script:\n    env:\n      SETUPTOOLS_SCM_PRETEND_VERSION: ${{ version }}\n    content:\n      - export CFLAGS=\"${CFLAGS} -I${SP_DIR}/gmpy2\"\n      - python -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"c\") }}\n    - if: build_platform != host_platform\n      then:\n        - cross-python_${{ host_platform }}\n        - python\n        - cython >=3.1.0\n  host:\n    - cython >=3.1.0\n    - gmpy2\n    - pip\n    - python 3.14.* *_cp314\n    - setuptools\n    - setuptools_scm\n  run:\n    - gmpy2\n    - more-itertools\n    - pyeda\n    - python 3.14.* *_cp314\n    - python-flint\n    - sage\n    - typing-extensions\n\ntests:\n  - script:\n      - export DOT_SAGE=\"${PWD}/.sage\"\n      - python -c \"import logic1\"\n  - script:\n      - export DOT_SAGE=\"${PWD}/.sage\"\n      - python -m doctest -o NORMALIZE_WHITESPACE logic1/theories/Sets/test_qe.txt\n    files:\n      source:\n        - logic1/theories/Sets/test_qe.txt\n\nabout:\n  license: GPL-2.0-or-later\n  license_file: LICENSE\n  summary: Interpreted first-order logic in Python\n  homepage: https://docs.logic1.eu/\n  documentation: https://docs.logic1.eu/\n  description: |\n    First-order logic recursively builds terms from variables and a specified set of function symbols with specified arities, which includes constant symbols with arity zero. Next, atomic formulas are built from terms and a specified set of relation symbols with specified arities. Finally, first-order formulas are recursively built from atomic formulas and a fixed set of logical operators.\n\n    Logic1 focuses on interpreted first-order logic, where the above-mentioned function and relation symbols have implicit semantics, which is not explicitly expressed via axioms within the logical framework. Typical applications include algebraic decision procedures and, more generally, quantifier elimination procedures, e.g., over the real numbers.\n  repository: https://github.com/logic1-eu/logic1\n\nextra:\n  recipe-maintainers:\n    - lorenzleutgeb\n    - thomas-sturm\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cross-python_osx-64",
+      "cross-python_osx-arm64",
       "cython",
       "gmpy2",
       "more-itertools",
@@ -508,7 +737,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cython",
+        "python"
       ]
     },
     "host": {
@@ -516,6 +749,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python",
         "cython",
         "gmpy2",
         "pip",
@@ -529,6 +763,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python",
         "gmpy2",
         "more-itertools",
         "pyeda",
@@ -549,7 +784,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cython >=3.1.0",
+        "python"
       ]
     },
     "host": {
