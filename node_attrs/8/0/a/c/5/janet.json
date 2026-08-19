@@ -20,8 +20,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ee5585509753c0cd9f5f0bcd72b55e03ca390c12",
-  "feedstock_hash_ts": 1763358681,
+  "feedstock_hash": "09ebda2ae8d0704c8762f62e1a44fa118f4d7d46",
+  "feedstock_hash_ts": 1776982836,
   "feedstock_name": "janet",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -124,7 +124,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.so"
               ]
             }
           },
@@ -292,7 +292,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.so"
               ]
             }
           },
@@ -460,7 +460,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.so"
               ]
             }
           },
@@ -548,7 +548,15 @@
         "meson compile -C build-bin --jobs ${CPU_COUNT}",
         "meson install -C build-bin",
         "rm -rf \"${PREFIX}/lib/libjanet\"* \"${PREFIX}/lib/pkgconfig\" \"${PREFIX}/include\"",
-        "mkdir -p \"${PREFIX}/etc/conda/activate.d\" \"${PREFIX}/etc/conda/deactivate.d\""
+        "mkdir -p \"${PREFIX}/etc/conda/activate.d\" \"${PREFIX}/etc/conda/deactivate.d\"",
+        "meson setup build-bin %MESON_ARGS% --prefix=\"%LIBRARY_PREFIX%\" -Ddefault_library=shared -Dgit_hash=%PKG_VERSION%",
+        "meson compile -C build-bin --jobs %CPU_COUNT%",
+        "del /Q \"%LIBRARY_PREFIX%\\bin\\janet.dll\" 2>nul || ver>nul",
+        "del /Q \"%LIBRARY_PREFIX%\\lib\\libjanet.lib\" 2>nul || ver>nul",
+        "del /Q \"%LIBRARY_PREFIX%\\lib\\pkgconfig\\*\" 2>nul || ver>nul",
+        "rmdir /Q /S \"%LIBRARY_PREFIX%\\include\" 2>nul || ver>nul",
+        "if not exist \"%LIBRARY_PREFIX%\\etc\\conda\\activate.d\" mkdir \"%LIBRARY_PREFIX%\\etc\\conda\\activate.d\"",
+        "if not exist \"%LIBRARY_PREFIX%\\etc\\conda\\deactivate.d\" mkdir \"%LIBRARY_PREFIX%\\etc\\conda\\deactivate.d\""
       ]
     },
     "extra": {
@@ -628,7 +636,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.so"
               ]
             }
           },
@@ -713,7 +721,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.so"
               ]
             }
           },
@@ -798,7 +806,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.so"
               ]
             }
           },
@@ -883,7 +891,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.dylib"
               ]
             }
           },
@@ -968,7 +976,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.dylib"
               ]
             }
           },
@@ -1002,15 +1010,15 @@
           {
             "package_contents": {
               "bin": [
-                "janet"
+                "janet.exe"
               ]
             }
           },
           {
             "script": [
               "janet --version",
-              "janet -e '(printf \"%d\" (+ 2 2))'",
-              "janet -e \"(assert (= (dyn :syspath) \\\"${PREFIX}/lib/janet\\\") \\\"JANET_PATH not set correctly\\\")\""
+              "janet -e \"(printf \\\"%d\\\" (+ 2 2))\"",
+              "janet -e \"(assert (string/has-suffix? \\\"Library/lib/janet\\\" (dyn :syspath)) (string \\\"JANET_PATH not set correctly. Got \\\" (dyn :syspath)))\""
             ]
           },
           {
@@ -1021,8 +1029,8 @@
               ]
             },
             "script": [
-              "for f in test/suite*.janet; do\n  janet \"$f\" || exit 1\ndone\n",
-              "for f in examples/*.janet; do\n  janet -k \"$f\" || exit 1\ndone\n"
+              "for %%f in (test\\suite*.janet) do janet \"%%f\" || exit /b 1",
+              "for %%f in (examples\\*.janet) do janet -k \"%%f\" || exit /b 1"
             ]
           }
         ],
@@ -1053,17 +1061,9 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "janet-1.39.dll"
               ]
             }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pkg-config"
-              ]
-            },
-            "script": "pkg-config --modversion janet"
           }
         ],
         "version": "1.40.1"
@@ -1110,7 +1110,6 @@
       "number": "0",
       "script": [
         "export JANET_EXTRA_MESON=\"\"",
-        "export JANET_EXTRA_MESON=\"-Dc_args=-DJANET_SPAWN_NO_CHDIR\"",
         "meson setup build-bin ${MESON_ARGS} --prefix=\"${PREFIX}\" -Ddefault_library=shared -Dgit_hash=${PKG_VERSION} ${JANET_EXTRA_MESON}",
         "meson compile -C build-bin --jobs ${CPU_COUNT}",
         "meson install -C build-bin",
@@ -1195,7 +1194,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.dylib"
               ]
             }
           },
@@ -1278,7 +1277,6 @@
       "number": "0",
       "script": [
         "export JANET_EXTRA_MESON=\"\"",
-        "export JANET_EXTRA_MESON=\"-Dc_args=-DJANET_SPAWN_NO_CHDIR\"",
         "meson setup build-bin ${MESON_ARGS} --prefix=\"${PREFIX}\" -Ddefault_library=shared -Dgit_hash=${PKG_VERSION} ${JANET_EXTRA_MESON}",
         "meson compile -C build-bin --jobs ${CPU_COUNT}",
         "meson install -C build-bin",
@@ -1363,7 +1361,7 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "libjanet.dylib"
               ]
             }
           },
@@ -1438,7 +1436,7 @@
       "libjanet"
     ]
   },
-  "parsing_error": "feedstock parsing error: Error running 'conda-forge-tick-container parse-feedstock --existing-feedstock-node-attrs - --log-level info --mark-not-archived' in container - error CalledProcessError raised:\n1, ['rattler-build', 'build', '--render-only', '--variant-config', '/tmp/tmp55slxuqc/janet-feedstock-main/.ci_support/linux_64_.yaml', '--target-platform', 'linux-64'], '', ' Processing recipe at path: /tmp/.tmpcsd5Wz/recipe.yaml\n\n ╭─ Finding outputs from recipe\n │ Loading variant config from: /tmp/tmp55slxuqc/janet-feedstock-main/.ci_support/linux_64_.yaml\n │\n ╰─────────────────── (took 0 seconds)\nError:   × Failed to render recipe with variants\n  ╰─▶ Jinja template error: Template rendering failed: undefined value (in\n      <string>:1) (template: libjanet${{ SHLIB_EXT }})\n    ╭─[/tmp/.tmpcsd5Wz/recipe.yaml:59:21]\n 58 │             - if: unix\n 59 │               then: libjanet${{ SHLIB_EXT }}\n    ·                     ─────┬─────\n    ·                          ╰── Template rendering failed: undefined value (in <string>:1) (template: libjanet${{ SHLIB_EXT }})\n 60 │             - if: win\n    ╰────\n\n'\nTraceback (most recent call last):\n  File \"/home/runner/work/conda-forge-bot/conda-forge-bot/conda-forge-bot/conda_forge_tick/make_graph.py\", line 140, in try_load_feedstock\n    data = load_feedstock(name, attrs.data, mark_not_archived=mark_not_archived)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/conda-forge-bot/conda-forge-bot/conda-forge-bot/conda_forge_tick/feedstock_parser.py\", line 818, in load_feedstock\n    return load_feedstock_containerized(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/conda-forge-bot/conda-forge-bot/conda-forge-bot/conda_forge_tick/feedstock_parser.py\", line 765, in load_feedstock_containerized\n    data = run_container_operation(\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/micromamba/envs/conda-forge-bot/lib/python3.12/site-packages/conda_forge_feedstock_ops/container_utils.py\", line 231, in run_container_operation\n    raise ContainerRuntimeError(\nconda_forge_feedstock_ops.container_utils.ContainerRuntimeError: Error running 'conda-forge-tick-container parse-feedstock --existing-feedstock-node-attrs - --log-level info --mark-not-archived' in container - error CalledProcessError raised:\n1, ['rattler-build', 'build', '--render-only', '--variant-config', '/tmp/tmp55slxuqc/janet-feedstock-main/.ci_support/linux_64_.yaml', '--target-platform', 'linux-64'], '', ' Processing recipe at path: /tmp/.tmpcsd5Wz/recipe.yaml\n\n ╭─ Finding outputs from recipe\n │ Loading variant config from: /tmp/tmp55slxuqc/janet-feedstock-main/.ci_support/linux_64_.yaml\n │\n ╰─────────────────── (took 0 seconds)\nError:   × Failed to render recipe with variants\n  ╰─▶ Jinja template error: Template rendering failed: undefined value (in\n      <string>:1) (template: libjanet${{ SHLIB_EXT }})\n    ╭─[/tmp/.tmpcsd5Wz/recipe.yaml:59:21]\n 58 │             - if: unix\n 59 │               then: libjanet${{ SHLIB_EXT }}\n    ·                     ─────┬─────\n    ·                          ╰── Template rendering failed: undefined value (in <string>:1) (template: libjanet${{ SHLIB_EXT }})\n 60 │             - if: win\n    ╰────\n\n'\n",
+  "parsing_error": false,
   "platforms": [
     "linux_64",
     "linux_aarch64",
@@ -1540,13 +1538,15 @@
     "build": {
       "number": "0",
       "script": [
-        "export JANET_EXTRA_MESON=\"\"",
-        "export JANET_EXTRA_MESON=\"-Dc_args=-DJANET_SPAWN_NO_CHDIR\"",
-        "meson setup build-bin ${MESON_ARGS} --prefix=\"${PREFIX}\" -Ddefault_library=shared -Dgit_hash=${PKG_VERSION} ${JANET_EXTRA_MESON}",
-        "meson compile -C build-bin --jobs ${CPU_COUNT}",
+        "meson setup build-bin %MESON_ARGS% --prefix=\"%LIBRARY_PREFIX%\" -Ddefault_library=shared -Dgit_hash=%PKG_VERSION%",
+        "meson compile -C build-bin --jobs %CPU_COUNT%",
         "meson install -C build-bin",
-        "rm -rf \"${PREFIX}/lib/libjanet\"* \"${PREFIX}/lib/pkgconfig\" \"${PREFIX}/include\"",
-        "mkdir -p \"${PREFIX}/etc/conda/activate.d\" \"${PREFIX}/etc/conda/deactivate.d\""
+        "del /Q \"%LIBRARY_PREFIX%\\bin\\janet.dll\" 2>nul || ver>nul",
+        "del /Q \"%LIBRARY_PREFIX%\\lib\\libjanet.lib\" 2>nul || ver>nul",
+        "del /Q \"%LIBRARY_PREFIX%\\lib\\pkgconfig\\*\" 2>nul || ver>nul",
+        "rmdir /Q /S \"%LIBRARY_PREFIX%\\include\" 2>nul || ver>nul",
+        "if not exist \"%LIBRARY_PREFIX%\\etc\\conda\\activate.d\" mkdir \"%LIBRARY_PREFIX%\\etc\\conda\\activate.d\"",
+        "if not exist \"%LIBRARY_PREFIX%\\etc\\conda\\deactivate.d\" mkdir \"%LIBRARY_PREFIX%\\etc\\conda\\deactivate.d\""
       ]
     },
     "extra": {
@@ -1575,15 +1575,15 @@
           {
             "package_contents": {
               "bin": [
-                "janet"
+                "janet.exe"
               ]
             }
           },
           {
             "script": [
               "janet --version",
-              "janet -e '(printf \"%d\" (+ 2 2))'",
-              "janet -e \"(assert (= (dyn :syspath) \\\"${PREFIX}/lib/janet\\\") \\\"JANET_PATH not set correctly\\\")\""
+              "janet -e \"(printf \\\"%d\\\" (+ 2 2))\"",
+              "janet -e \"(assert (string/has-suffix? \\\"Library/lib/janet\\\" (dyn :syspath)) (string \\\"JANET_PATH not set correctly. Got \\\" (dyn :syspath)))\""
             ]
           },
           {
@@ -1594,8 +1594,8 @@
               ]
             },
             "script": [
-              "for f in test/suite*.janet; do\n  janet \"$f\" || exit 1\ndone\n",
-              "for f in examples/*.janet; do\n  janet -k \"$f\" || exit 1\ndone\n"
+              "for %%f in (test\\suite*.janet) do janet \"%%f\" || exit /b 1",
+              "for %%f in (examples\\*.janet) do janet -k \"%%f\" || exit /b 1"
             ]
           }
         ],
@@ -1626,17 +1626,9 @@
                 "janet/janet_1.40.1.h"
               ],
               "lib": [
-                "libjanet"
+                "janet-1.39.dll"
               ]
             }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pkg-config"
-              ]
-            },
-            "script": "pkg-config --modversion janet"
           }
         ],
         "version": "1.40.1"
@@ -1689,9 +1681,7 @@
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pkg-config"
-      ]
+      "elements": []
     }
   }
 }
