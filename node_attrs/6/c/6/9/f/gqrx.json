@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ngnuradio_core:\n- 3.10.12\ngnuradio_extra_pin:\n- ''\nlibboost_headers:\n- '1.88'\npulseaudio:\n- '17.0'\npython_min:\n- '3.10'\nqt_main:\n- '5.15'\ntarget_platform:\n- linux-64\nvolk:\n- '3.3'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ngnuradio_core:\n- 3.10.12\ngnuradio_extra_pin:\n- ''\nlibboost_headers:\n- '1.90'\npulseaudio:\n- '17.0'\npython_min:\n- '3.10'\nqt_main:\n- '5.15'\ntarget_platform:\n- linux-64\nvolk:\n- '3.3'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -21,8 +21,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "c206862af9f3278c474d7b264ad8e5a141faa38a",
-  "feedstock_hash_ts": 1777047400,
+  "feedstock_hash": "121399389447b7bbd8251473311ab707ecaf42de",
+  "feedstock_hash_ts": 1787116058,
   "feedstock_name": "gqrx",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -46,7 +46,7 @@
     },
     "build": {
       "ignore_run_exports": null,
-      "number": "3"
+      "number": "4"
     },
     "extra": {
       "recipe-maintainers": [
@@ -150,7 +150,7 @@
     },
     "build": {
       "ignore_run_exports": null,
-      "number": "3"
+      "number": "4"
     },
     "extra": {
       "recipe-maintainers": [
@@ -253,7 +253,7 @@
     },
     "build": {
       "ignore_run_exports": null,
-      "number": "3"
+      "number": "4"
     },
     "extra": {
       "recipe-maintainers": [
@@ -356,7 +356,7 @@
     },
     "build": {
       "ignore_run_exports": null,
-      "number": "3"
+      "number": "4"
     },
     "extra": {
       "recipe-maintainers": [
@@ -429,7 +429,7 @@
     },
     "build": {
       "ignore_run_exports": null,
-      "number": "3"
+      "number": "4"
     },
     "extra": {
       "recipe-maintainers": [
@@ -529,7 +529,7 @@
     },
     "build": {
       "ignore_run_exports": null,
-      "number": "3"
+      "number": "4"
     },
     "extra": {
       "recipe-maintainers": [
@@ -626,7 +626,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/gqrx.json"
   },
-  "raw_meta_yaml": "{% set name = \"gqrx\" %}\n{% set version = \"2.17.7\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/gqrx-sdr/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: 4aaab8a3c185cd99d6dda56d95b8f1b20128a6acfd2e86e0349d432a5fdcbce4\n  patches:\n    - 0001-Don-t-build-a-resource-file-for-the-executable-on-Wi.patch  # [win]\n    - 0002-Don-t-build-a-win32-app-instead-of-a-console-app.patch  # [win]\n\nbuild:\n  number: 3\n  ignore_run_exports:\n    # see below, workaround for cross-compilation\n    # ignore python specifically b/c its run_export could come from python or cross-python\n    - python  # [build_platform != target_platform]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - cmake\n    - ninja\n    - pkg-config  # [not win]\n    # cross-compilation requirements\n    # (gnuradio needs to find this even though we don't use it)\n    # (specify >= to avoid pin / build matrix and get latest version)\n    - python >={{ python_min }}           # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - pybind11                            # [build_platform != target_platform]\n  host:\n    - gnuradio-core  # [not gnuradio_extra_pin]\n    - gnuradio-core {{ gnuradio_extra_pin }}.*  # [gnuradio_extra_pin]\n    - gnuradio-osmosdr\n    - libboost-headers\n    - libgl-devel  # [linux]\n    - pybind11\n    - pulseaudio  # [linux]\n    - qt-main\n    - volk\n\ntest:\n  requires:\n    - coreutils  # [not win]\n  commands:\n    - test -f $PREFIX/bin/gqrx  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\bin\\\\gqrx.exe exit 1  # [win]\n    - xvfb-run -a -s \"-screen 0 1024x768x24\" bash -c 'timeout --preserve-status 10 gqrx -r || [[ $? -eq 143 ]]'  # [linux and x86_64]\n    - timeout --preserve-status 10 gqrx -r || [[ $? -eq 143 ]]  # [not linux and not win]\n    - start gqrx -r && ping -n 30 127.0.0.1 >nul && taskkill /im gqrx.exe /f  # [win]\n\napp:\n  entry: gqrx --edit\n  icon: gqrx-icon.png\n  summary: gqrx\n  type: desk\n\nabout:\n  home: https://gqrx.dk/\n  license: GPL-3.0-or-later AND Apache-2.0\n  license_family: GPL\n  license_file:\n    - COPYING\n    - LICENSE-CTK\n  summary: Software defined radio receiver powered by GNU Radio and Qt\n  description: |\n    Gqrx is an open source software defined radio (SDR) receiver implemented using GNU\n    Radio and the Qt GUI toolkit. Currently it works on Linux and Mac with hardware\n    supported by gr-osmosdr, including Funcube Dongle, RTL-SDR, Airspy, HackRF,\n    BladeRF, RFSpace, USRP and SoapySDR.\n\n    Gqrx can operate as an AM/FM/SSB receiver with audio output or as an FFT-only\n    instrument. There are also various hooks for interacting with external application\n    using network sockets.\n  dev_url: https://github.com/gqrx-sdr/gqrx\n\nextra:\n  recipe-maintainers:\n    - ryanvolz\n",
+  "raw_meta_yaml": "{% set name = \"gqrx\" %}\n{% set version = \"2.17.7\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/gqrx-sdr/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: 4aaab8a3c185cd99d6dda56d95b8f1b20128a6acfd2e86e0349d432a5fdcbce4\n  patches:\n    - 0001-Don-t-build-a-resource-file-for-the-executable-on-Wi.patch  # [win]\n    - 0002-Don-t-build-a-win32-app-instead-of-a-console-app.patch  # [win]\n\nbuild:\n  number: 4\n  ignore_run_exports:\n    # see below, workaround for cross-compilation\n    # ignore python specifically b/c its run_export could come from python or cross-python\n    - python  # [build_platform != target_platform]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - cmake\n    - ninja\n    - pkg-config  # [not win]\n    # cross-compilation requirements\n    # (gnuradio needs to find this even though we don't use it)\n    # (specify >= to avoid pin / build matrix and get latest version)\n    - python >={{ python_min }}           # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - pybind11                            # [build_platform != target_platform]\n  host:\n    - gnuradio-core  # [not gnuradio_extra_pin]\n    - gnuradio-core {{ gnuradio_extra_pin }}.*  # [gnuradio_extra_pin]\n    - gnuradio-osmosdr\n    - libboost-headers\n    - libgl-devel  # [linux]\n    - pybind11\n    - pulseaudio  # [linux]\n    - qt-main\n    - volk\n\ntest:\n  requires:\n    - coreutils  # [not win]\n  commands:\n    - test -f $PREFIX/bin/gqrx  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\bin\\\\gqrx.exe exit 1  # [win]\n    - xvfb-run -a -s \"-screen 0 1024x768x24\" bash -c 'timeout --preserve-status 10 gqrx -r || [[ $? -eq 143 ]]'  # [linux and x86_64]\n    - timeout --preserve-status 10 gqrx -r || [[ $? -eq 143 ]]  # [not linux and not win]\n    - start gqrx -r && ping -n 30 127.0.0.1 >nul && taskkill /im gqrx.exe /f  # [win]\n\napp:\n  entry: gqrx --edit\n  icon: gqrx-icon.png\n  summary: gqrx\n  type: desk\n\nabout:\n  home: https://gqrx.dk/\n  license: GPL-3.0-or-later AND Apache-2.0\n  license_family: GPL\n  license_file:\n    - COPYING\n    - LICENSE-CTK\n  summary: Software defined radio receiver powered by GNU Radio and Qt\n  description: |\n    Gqrx is an open source software defined radio (SDR) receiver implemented using GNU\n    Radio and the Qt GUI toolkit. Currently it works on Linux and Mac with hardware\n    supported by gr-osmosdr, including Funcube Dongle, RTL-SDR, Airspy, HackRF,\n    BladeRF, RFSpace, USRP and SoapySDR.\n\n    Gqrx can operate as an AM/FM/SSB receiver with audio output or as an FFT-only\n    instrument. There are also various hooks for interacting with external application\n    using network sockets.\n  dev_url: https://github.com/gqrx-sdr/gqrx\n\nextra:\n  recipe-maintainers:\n    - ryanvolz\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -748,7 +748,7 @@
     },
     "build": {
       "ignore_run_exports": null,
-      "number": "3"
+      "number": "4"
     },
     "extra": {
       "recipe-maintainers": [
