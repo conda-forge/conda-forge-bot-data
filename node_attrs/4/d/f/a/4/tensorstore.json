@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.11.____cpython.yaml": "bzip2:\n- '1'\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibavif:\n- '1'\nlibcurl:\n- '8'\nlibjpeg_turbo:\n- '3'\nliblzma_devel:\n- '5'\nlibpng:\n- '1.6'\nlibprotobuf:\n- 6.33.5\nlibwebp:\n- '1'\nnumpy:\n- '2'\nopenssl:\n- '3.5'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npybind11_abi:\n- '11'\npython:\n- 3.11.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_python3.11.____cpython.yaml": "bzip2:\n- '1'\nc_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibavif:\n- '1'\nlibcurl:\n- '8'\nlibjpeg_turbo:\n- '3'\nliblzma_devel:\n- '5'\nlibpng:\n- '1.6'\nlibprotobuf:\n- 7.35.1\nlibwebp:\n- '1'\nnumpy:\n- '2'\nopenssl:\n- '3.5'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npybind11_abi:\n- '11'\npython:\n- 3.11.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64"
@@ -22,8 +22,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "d4d843de5f07232c31c05aea4c9f8c04e2260a35",
-  "feedstock_hash_ts": 1779978284,
+  "feedstock_hash": "1d14c0422af64696e54a81db97bee1ac908d8d2d",
+  "feedstock_hash_ts": 1787247369,
   "feedstock_name": "tensorstore",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -36,7 +36,7 @@
       "summary": "Read and write large, multi-dimensional arrays"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -456,7 +456,7 @@
       "summary": "Read and write large, multi-dimensional arrays"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -919,7 +919,7 @@
       "summary": "Read and write large, multi-dimensional arrays"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -2287,7 +2287,7 @@
       "summary": "Read and write large, multi-dimensional arrays"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -2758,7 +2758,7 @@
       "summary": "Read and write large, multi-dimensional arrays"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -3236,7 +3236,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/tensorstore.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: tensorstore\n  version: \"0.1.84\"\n  # Bazel version is specified upstream, file .bazelversion\n  # https://github.com/google/tensorstore/blob/master/.bazelversion\n  bazel_version: 8.*\n  python_min: \"3.11\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/tensorstore-${{ version }}.tar.gz\n  sha256: 3cb091dfde68600e6d8f03a389ccc92ffa7c0798a0c600d1013c0138d7163e6b\n  patches:\n    # MacOS needs an extra linker flag so pybind11 finds the python symbols in _tensorstore.so :shrug:\n    - if: osx\n      then: patches/pybind11-linkopts.patch\n    - if: target_platform == \"osx-arm64\" or target_platform == \"linux-aarch64\"\n      then: patches/0001-Explicitly-select-blake3-for-arm64.patch\n    - patches/0003-use-system-libs.patch\n    - patches/0004-use-system-numpy.patch\n    - patches/0005-aws-c-common-avx2.patch\n    - patches/0007-aws-c-common-cpuid-fallback.patch\n    - if: osx\n      then:\n        - patches/0008-protobuf-upb-no-werror.patch\n        - patches/0009-c-ares-darwin-no-msg_nosignal.patch\nbuild:\n  number: 0\n  skip: win or match(python, \"<3.11\")\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler('cxx') }}\n    # Keep bazel listed twice here to help the migrators track dependencies\n    - bazel\n    - bazel ${{ bazel_version }}\n    - bazel-toolchain\n    # https://github.com/conda-forge/bazel-toolchain-feedstock/pull/22\n    - if: osx\n      then: bazel-toolchain <0.3\n    - if: target_platform != build_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - numpy\n        - pybind11\n        - pybind11-abi\n        - zlib\n  host:\n    - pip\n    - python\n    - wheel\n    - setuptools\n    - setuptools-scm\n    - numpy\n    # we use openssl instead of boringssl\n    - openssl\n    - bzip2\n    - blosc\n    - libcurl\n    - libjpeg-turbo\n    - libpng\n    - libwebp\n    - lz4\n    - liblzma-devel\n    - zlib\n    - libprotobuf\n    # unvendored\n    - pybind11\n    - pybind11-abi\n    # Use the one from https://github.com/google/tensorstore/blob/master/third_party/com_github_nlohmann_json/workspace.bzl\n    - nlohmann_json 3.10.5.*\n    - libavif\n    # needs to be built with bazel\n    # https://github.com/abseil/abseil-cpp/blob/ee0ebda/FAQ.md#what-is-abi-and-why-dont-you-recommend-using-a-pre-compiled-version-of-abseil\n    # - abseil-cpp\n  run:\n    - ml_dtypes\n    - python\n\ntests:\n  - python:\n      imports:\n        - tensorstore\n      pip_check: true\n  - requirements:\n      run:\n        - pip\n    script:\n      - pip list\n\nabout:\n  summary: Read and write large, multi-dimensional arrays\n  license: Apache-2.0 AND MIT AND BSD-3-Clause AND BSD-2-Clause\n  license_file:\n    - LICENSE\n    - licenses/abseil-cpp.txt\n    - licenses/re2.txt\n    - licenses/riegeli.txt\n    - licenses/net_sourceforge_half.txt\n  homepage: https://pypi.org/project/tensorstore/\n  repository: https://github.com/google/tensorstore\n\nextra:\n  recipe-maintainers:\n    - goanpeca\n    - jaimergp\n    - traversaro\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: tensorstore\n  version: \"0.1.84\"\n  # Bazel version is specified upstream, file .bazelversion\n  # https://github.com/google/tensorstore/blob/master/.bazelversion\n  bazel_version: 8.*\n  python_min: \"3.11\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/tensorstore-${{ version }}.tar.gz\n  sha256: 3cb091dfde68600e6d8f03a389ccc92ffa7c0798a0c600d1013c0138d7163e6b\n  patches:\n    # MacOS needs an extra linker flag so pybind11 finds the python symbols in _tensorstore.so :shrug:\n    - if: osx\n      then: patches/pybind11-linkopts.patch\n    - if: target_platform == \"osx-arm64\" or target_platform == \"linux-aarch64\"\n      then: patches/0001-Explicitly-select-blake3-for-arm64.patch\n    - patches/0003-use-system-libs.patch\n    - patches/0004-use-system-numpy.patch\n    - patches/0005-aws-c-common-avx2.patch\n    - patches/0007-aws-c-common-cpuid-fallback.patch\n    - if: osx\n      then:\n        - patches/0008-protobuf-upb-no-werror.patch\n        - patches/0009-c-ares-darwin-no-msg_nosignal.patch\nbuild:\n  number: 1\n  skip: win or match(python, \"<3.11\")\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler('cxx') }}\n    # Keep bazel listed twice here to help the migrators track dependencies\n    - bazel\n    - bazel ${{ bazel_version }}\n    - bazel-toolchain\n    # https://github.com/conda-forge/bazel-toolchain-feedstock/pull/22\n    - if: osx\n      then: bazel-toolchain <0.3\n    - if: target_platform != build_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - numpy\n        - pybind11\n        - pybind11-abi\n        - zlib\n  host:\n    - pip\n    - python\n    - wheel\n    - setuptools\n    - setuptools-scm\n    - numpy\n    # we use openssl instead of boringssl\n    - openssl\n    - bzip2\n    - blosc\n    - libcurl\n    - libjpeg-turbo\n    - libpng\n    - libwebp\n    - lz4\n    - liblzma-devel\n    - zlib\n    - libprotobuf\n    # unvendored\n    - pybind11\n    - pybind11-abi\n    # Use the one from https://github.com/google/tensorstore/blob/master/third_party/com_github_nlohmann_json/workspace.bzl\n    - nlohmann_json 3.10.5.*\n    - libavif\n    # needs to be built with bazel\n    # https://github.com/abseil/abseil-cpp/blob/ee0ebda/FAQ.md#what-is-abi-and-why-dont-you-recommend-using-a-pre-compiled-version-of-abseil\n    # - abseil-cpp\n  run:\n    - ml_dtypes\n    - python\n\ntests:\n  - python:\n      imports:\n        - tensorstore\n      pip_check: true\n  - requirements:\n      run:\n        - pip\n    script:\n      - pip list\n\nabout:\n  summary: Read and write large, multi-dimensional arrays\n  license: Apache-2.0 AND MIT AND BSD-3-Clause AND BSD-2-Clause\n  license_file:\n    - LICENSE\n    - licenses/abseil-cpp.txt\n    - licenses/re2.txt\n    - licenses/riegeli.txt\n    - licenses/net_sourceforge_half.txt\n  homepage: https://pypi.org/project/tensorstore/\n  repository: https://github.com/google/tensorstore\n\nextra:\n  recipe-maintainers:\n    - goanpeca\n    - jaimergp\n    - traversaro\n",
   "req": {
     "__set__": true,
     "elements": [
