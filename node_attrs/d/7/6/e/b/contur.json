@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -14,8 +14,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "fbf73ac91ed441bd11203deb75957fffbc8cf22d",
-  "feedstock_hash_ts": 1780555806,
+  "feedstock_hash": "42350f39436a58bd5177b69847d34b6fe4f82ab2",
+  "feedstock_hash_ts": 1787210632,
   "feedstock_name": "contur",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -31,7 +31,7 @@
     },
     "build": {
       "noarch": "python",
-      "number": "1",
+      "number": "2",
       "script": [
         "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
         "mkdir -p \"${PREFIX}/etc/conda/activate.d\"",
@@ -117,9 +117,19 @@
             }
           },
           {
+            "files": {
+              "recipe": [
+                "test_rivet_analysis.cc"
+              ]
+            },
             "script": [
               "contur --version",
-              "contur --help"
+              "contur --help",
+              "test -f \"${CONTUR_USER_DIR}/analysis-list\"",
+              "cp test_rivet_analysis.cc \"${CONTUR_DATA_PATH}/data/Rivet/SmokeTest.cc\"",
+              "rm -rf \"${CONTUR_USER_DIR}\"",
+              "env -u CC -u CXX -u FC -u CFLAGS -u CXXFLAGS -u CPPFLAGS -u LDFLAGS bash -c '. \"${CONDA_PREFIX}/etc/conda/activate.d/zzz-activate-contur.sh\" && test -f \"${CONTUR_USER_DIR}/Rivet-ConturOverload.so\" && test -f \"${CONTUR_USER_DIR}/analysis-list\"'",
+              "rm -f \"${CONTUR_DATA_PATH}/data/Rivet/SmokeTest.cc\""
             ]
           }
         ],
@@ -219,7 +229,7 @@
     },
     "build": {
       "noarch": "python",
-      "number": "1",
+      "number": "2",
       "script": [
         "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation",
         "mkdir -p \"${PREFIX}/etc/conda/activate.d\"",
@@ -305,9 +315,19 @@
             }
           },
           {
+            "files": {
+              "recipe": [
+                "test_rivet_analysis.cc"
+              ]
+            },
             "script": [
               "contur --version",
-              "contur --help"
+              "contur --help",
+              "test -f \"${CONTUR_USER_DIR}/analysis-list\"",
+              "cp test_rivet_analysis.cc \"${CONTUR_DATA_PATH}/data/Rivet/SmokeTest.cc\"",
+              "rm -rf \"${CONTUR_USER_DIR}\"",
+              "env -u CC -u CXX -u FC -u CFLAGS -u CXXFLAGS -u CPPFLAGS -u LDFLAGS bash -c '. \"${CONDA_PREFIX}/etc/conda/activate.d/zzz-activate-contur.sh\" && test -f \"${CONTUR_USER_DIR}/Rivet-ConturOverload.so\" && test -f \"${CONTUR_USER_DIR}/analysis-list\"'",
+              "rm -f \"${CONTUR_DATA_PATH}/data/Rivet/SmokeTest.cc\""
             ]
           }
         ],
@@ -365,7 +385,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/contur.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"3.1.4\"\n  # Need Python 3.10+ to avoid rivet/libfastjet.so.0 ImportError\n  python_min: \"3.10\"\n\npackage:\n  name: contur\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/c/contur/contur-${{ version }}.tar.gz\n  sha256: 2f44c58f6af41c1a50ecf90fc6e997d8433977356a87c4056084b6112d200010\n\nbuild:\n  number: 1\n  noarch: python\n  script:\n    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\n    # Add the post activate/deactivate scripts\n\n    # The scripts are executed in lexicographical order, so use zzz-/0- to ensure\n    # last/first to manipulate RIVET environment variables\n    # (lowercase letters have highest value)\n\n    - mkdir -p \"${PREFIX}/etc/conda/activate.d\"\n    # Run **after** anything else that might set Rivet environment variables\n    - cp \"${RECIPE_DIR}/activate.sh\" \"${PREFIX}/etc/conda/activate.d/zzz-activate-${PKG_NAME}.sh\"\n    - cp \"${RECIPE_DIR}/activate.csh\" \"${PREFIX}/etc/conda/activate.d/zzz-activate-${PKG_NAME}.csh\"\n    - cp \"${RECIPE_DIR}/activate.fish\" \"${PREFIX}/etc/conda/activate.d/zzz-activate-${PKG_NAME}.fish\"\n\n    - mkdir -p \"${PREFIX}/etc/conda/deactivate.d\"\n    # Run **before** anything else that might unset Rivet environment variables\n    - cp \"${RECIPE_DIR}/deactivate.sh\" \"${PREFIX}/etc/conda/deactivate.d/0-deactivate-${PKG_NAME}.sh\"\n    - cp \"${RECIPE_DIR}/deactivate.csh\" \"${PREFIX}/etc/conda/deactivate.d/0-deactivate-${PKG_NAME}.csh\"\n    - cp \"${RECIPE_DIR}/deactivate.fish\" \"${PREFIX}/etc/conda/deactivate.d/0-deactivate-${PKG_NAME}.fish\"\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - pip\n    - setuptools >=64\n  run:\n    - python >=${{ python_min }}\n    - click\n    - configobj\n    - matplotlib-base\n    - numpy\n    - pandas\n    - pathos\n    - pyslha\n    - pyyaml\n    - scikit-learn\n    - scipy\n    - tqdm\n    - uncertainties\n    - pytest\n    - rivet\n    # Needed to create \"${CONTUR_USER_DIR}/analysis-list\" in activate.sh\n    - cxx-compiler\n    - make\n    # Avoid broken installs on Windows given rivet is unix only\n    - __unix\n\ntests:\n  - package_contents:\n      # FIXME: Relocate python-scripts/ contents to bin/\n      files:\n        - python-scripts/contur\n        - python-scripts/contur-batch\n        - python-scripts/contur-export\n        - python-scripts/contur-extract-xs-bf\n        - python-scripts/contur-gridtool\n        - python-scripts/contur-init\n        - python-scripts/contur-mapmerge\n        - python-scripts/contur-mkbib\n        - python-scripts/contur-mkthy\n        - python-scripts/contur-oracle\n        - python-scripts/contur-plot\n        - python-scripts/contur-profile\n        - python-scripts/contur-rivetplots\n        - python-scripts/contur-scan-xs-bf\n        - python-scripts/contur-scan-xs-bf-alt\n        - python-scripts/contur-smtest\n  - python:\n      imports:\n        - contur\n      pip_check: true\n      python_version:\n        - ${{ python_min }}.*\n        - \"*\"\n  - script:\n      - contur --version\n      - contur --help\n\nabout:\n  license: GPL-3.0-or-later\n  license_file: COPYING\n  summary: Package for model interpretation of collider-physics measurements\n  description: |\n    Contur is a procedure and toolkit designed to probe theories Beyond the\n    Standard Model using measurements at particle colliders.\n  homepage: https://hepcedar.gitlab.io/contur-webpage/\n  repository: https://gitlab.com/hepcedar/contur\n  documentation: https://hepcedar.gitlab.io/contur-webpage/\n\nextra:\n  recipe-maintainers:\n    - matthewfeickert\n    - conda-forge/hepmc3\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"3.1.4\"\n  # Need Python 3.10+ to avoid rivet/libfastjet.so.0 ImportError\n  python_min: \"3.10\"\n\npackage:\n  name: contur\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/c/contur/contur-${{ version }}.tar.gz\n  sha256: 2f44c58f6af41c1a50ecf90fc6e997d8433977356a87c4056084b6112d200010\n\nbuild:\n  number: 2\n  noarch: python\n  script:\n    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\n    # Add the post activate/deactivate scripts\n\n    # The scripts are executed in lexicographical order, so use zzz-/0- to ensure\n    # last/first to manipulate RIVET environment variables\n    # (lowercase letters have highest value)\n\n    - mkdir -p \"${PREFIX}/etc/conda/activate.d\"\n    # Run **after** anything else that might set Rivet environment variables\n    - cp \"${RECIPE_DIR}/activate.sh\" \"${PREFIX}/etc/conda/activate.d/zzz-activate-${PKG_NAME}.sh\"\n    - cp \"${RECIPE_DIR}/activate.csh\" \"${PREFIX}/etc/conda/activate.d/zzz-activate-${PKG_NAME}.csh\"\n    - cp \"${RECIPE_DIR}/activate.fish\" \"${PREFIX}/etc/conda/activate.d/zzz-activate-${PKG_NAME}.fish\"\n\n    - mkdir -p \"${PREFIX}/etc/conda/deactivate.d\"\n    # Run **before** anything else that might unset Rivet environment variables\n    - cp \"${RECIPE_DIR}/deactivate.sh\" \"${PREFIX}/etc/conda/deactivate.d/0-deactivate-${PKG_NAME}.sh\"\n    - cp \"${RECIPE_DIR}/deactivate.csh\" \"${PREFIX}/etc/conda/deactivate.d/0-deactivate-${PKG_NAME}.csh\"\n    - cp \"${RECIPE_DIR}/deactivate.fish\" \"${PREFIX}/etc/conda/deactivate.d/0-deactivate-${PKG_NAME}.fish\"\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - pip\n    - setuptools >=64\n  run:\n    - python >=${{ python_min }}\n    - click\n    - configobj\n    - matplotlib-base\n    - numpy\n    - pandas\n    - pathos\n    - pyslha\n    - pyyaml\n    - scikit-learn\n    - scipy\n    - tqdm\n    - uncertainties\n    - pytest\n    - rivet\n    # Needed to create \"${CONTUR_USER_DIR}/analysis-list\" in activate.sh\n    - cxx-compiler\n    - make\n    # Avoid broken installs on Windows given rivet is unix only\n    - __unix\n\ntests:\n  - package_contents:\n      # FIXME: Relocate python-scripts/ contents to bin/\n      files:\n        - python-scripts/contur\n        - python-scripts/contur-batch\n        - python-scripts/contur-export\n        - python-scripts/contur-extract-xs-bf\n        - python-scripts/contur-gridtool\n        - python-scripts/contur-init\n        - python-scripts/contur-mapmerge\n        - python-scripts/contur-mkbib\n        - python-scripts/contur-mkthy\n        - python-scripts/contur-oracle\n        - python-scripts/contur-plot\n        - python-scripts/contur-profile\n        - python-scripts/contur-rivetplots\n        - python-scripts/contur-scan-xs-bf\n        - python-scripts/contur-scan-xs-bf-alt\n        - python-scripts/contur-smtest\n\n  - python:\n      imports:\n        - contur\n      pip_check: true\n      python_version:\n        - ${{ python_min }}.*\n        - \"*\"\n\n  - files:\n      recipe:\n        - test_rivet_analysis.cc\n    script:\n      - contur --version\n      - contur --help\n      # Activation-time 'make' must have produced the analysis list\n      - test -f \"${CONTUR_USER_DIR}/analysis-list\"\n      # Verify that runtime compilation of Rivet analyses works with\n      # minimally activated compilers that do not set environmental variables.\n      - cp test_rivet_analysis.cc \"${CONTUR_DATA_PATH}/data/Rivet/SmokeTest.cc\"\n      - rm -rf \"${CONTUR_USER_DIR}\"\n      - >-\n        env -u CC -u CXX -u FC -u CFLAGS -u CXXFLAGS -u CPPFLAGS -u LDFLAGS\n        bash -c '. \"${CONDA_PREFIX}/etc/conda/activate.d/zzz-activate-contur.sh\"\n        && test -f \"${CONTUR_USER_DIR}/Rivet-ConturOverload.so\"\n        && test -f \"${CONTUR_USER_DIR}/analysis-list\"'\n      - rm -f \"${CONTUR_DATA_PATH}/data/Rivet/SmokeTest.cc\"\n\nabout:\n  license: GPL-3.0-or-later\n  license_file: COPYING\n  summary: Package for model interpretation of collider-physics measurements\n  description: |\n    Contur is a procedure and toolkit designed to probe theories Beyond the\n    Standard Model using measurements at particle colliders.\n  homepage: https://hepcedar.gitlab.io/contur-webpage/\n  repository: https://gitlab.com/hepcedar/contur\n  documentation: https://hepcedar.gitlab.io/contur-webpage/\n\nextra:\n  recipe-maintainers:\n    - matthewfeickert\n    - conda-forge/hepmc3\n",
   "req": {
     "__set__": true,
     "elements": [
