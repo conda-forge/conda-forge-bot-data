@@ -1,95 +1,316 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "cdt_name:\n- cos6\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-cos7-x86_64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\n- None\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\npython_min:\n- '3.10'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
+    },
+    "provider": {
+      "linux_64": "azure",
+      "osx_64": false,
+      "osx_arm64": false,
+      "win_64": false
+    },
+    "workflow_settings": {
+      "free_disk_space": "max"
     }
   },
-  "feedstock_hash": "23c5fef788aaec9e7eb0a0593f4e58ae29dafbf5",
-  "feedstock_hash_ts": 1786396601,
+  "feedstock_hash": "253bf704308cc9dc5ab81ebd6a627f59052710e7",
+  "feedstock_hash_ts": 1787260766,
   "feedstock_name": "groundingdino-py",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "home": "https://github.com/giswqs/GroundingDINO",
+      "description": "GroundingDINO marries DINO with grounded pre-training for open-set object\ndetection: it detects objects named by a free-form text prompt rather than\nby a fixed label set.\n\nThis feedstock publishes the project as several packages.  The Python is\nidentical across all of them; they differ only in whether the\n`groundingdino._C` deformable-attention extension is present.  Without it\nthe model runs the pure-PyTorch implementation, which is correct but\nsubstantially slower, and requires float32 -- `F.grid_sample` has no\nhalf-precision CPU kernel.",
+      "dev_url": "https://github.com/IDEA-Research/GroundingDINO",
+      "home": "https://github.com/IDEA-Research/GroundingDINO",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
-      "summary": "open-set object detector"
+      "summary": "Open-set object detector"
     },
     "build": {
       "noarch": "python",
       "number": "0",
-      "script": "PYTHON -m pip install . -vv"
+      "script": {
+        "content": "python -m pip install . --no-deps --no-build-isolation -vv"
+      }
     },
     "extra": {
       "recipe-maintainers": [
-        "phreed",
-        "giswqs"
+        "giswqs",
+        "phreed"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "groundingdino-py",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0"
+          ],
+          "run": [
+            "python >=3.10",
+            "pytorch >=2.1.0",
+            "torchvision",
+            "numpy >=1.26.2",
+            "opencv",
+            "supervision >=0.22.0",
+            "pycocotools",
+            "transformers >=4.49.0",
+            "addict",
+            "yapf",
+            "timm"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "groundingdino",
+                "groundingdino.util.inference"
+              ],
+              "python_version": "3.10.*"
+            }
+          },
+          {
+            "script": "python -c \"from groundingdino.models.GroundingDINO.ms_deform_attn import multi_scale_deformable_attn_pytorch\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      }
+    ],
     "package": {
       "name": "groundingdino-py",
-      "version": "0.4.0"
+      "version": "0.4.1"
     },
     "requirements": {
       "host": [
-        "python >=3.7",
-        "pip"
+        "python 3.10.*",
+        "pip",
+        "setuptools",
+        "wheel",
+        "pytorch >=2.1.0"
       ],
       "run": [
-        "python >=3.7",
-        "pytorch",
+        "python >=3.10",
+        "pytorch >=2.1.0",
         "torchvision",
-        "transformers",
+        "numpy >=1.26.2",
+        "opencv",
+        "supervision >=0.22.0",
+        "pycocotools",
+        "transformers >=4.49.0",
         "addict",
         "yapf",
-        "timm",
-        "numpy",
-        "opencv",
-        "supervision ==0.6.0",
-        "pycocotools"
+        "timm"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "23de56af498b7cdcc024eb1062fc3179e3cc4dacd92adbfb625097065377700f",
-      "url": "https://pypi.io/packages/source/g/groundingdino-py/groundingdino-py-0.4.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
+      "patches": [
+        "patches/0001-transformers-api-compat.patch",
+        "patches/0002-cuda-fp16-include.patch",
+        "patches/0003-version-attribute.patch",
+        "patches/0004-aten-deprecated-type.patch"
       ],
-      "imports": [
-        "groundingdino"
-      ],
-      "requires": [
-        "pip"
-      ]
+      "sha256": "37b98b28341f95d1283631570c56b5ed3c92ea4af9717045f55f5045ca6fb2a0",
+      "url": "https://github.com/IDEA-Research/GroundingDINO/archive/856dde20aee659246248e20734ef9ba5214f5e44.tar.gz"
     }
   },
   "linux_64_requirements": {
     "build": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cuda_compiler_stub",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "cuda-cudart-dev",
+        "cuda-version",
+        "libcublas-dev",
+        "libcurand-dev",
+        "libcusolver-dev",
+        "libcusparse-dev",
         "pip",
-        "python"
+        "python",
+        "pytorch",
+        "setuptools",
+        "wheel"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
         "addict",
+        "groundingdino-py",
         "numpy",
         "opencv",
         "pycocotools",
@@ -111,67 +332,263 @@
   },
   "meta_yaml": {
     "about": {
-      "home": "https://github.com/giswqs/GroundingDINO",
+      "description": "GroundingDINO marries DINO with grounded pre-training for open-set object\ndetection: it detects objects named by a free-form text prompt rather than\nby a fixed label set.\n\nThis feedstock publishes the project as several packages.  The Python is\nidentical across all of them; they differ only in whether the\n`groundingdino._C` deformable-attention extension is present.  Without it\nthe model runs the pure-PyTorch implementation, which is correct but\nsubstantially slower, and requires float32 -- `F.grid_sample` has no\nhalf-precision CPU kernel.",
+      "dev_url": "https://github.com/IDEA-Research/GroundingDINO",
+      "home": "https://github.com/IDEA-Research/GroundingDINO",
       "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
       "license_file": "LICENSE",
-      "summary": "open-set object detector"
+      "summary": "Open-set object detector"
     },
     "build": {
       "noarch": "python",
       "number": "0",
-      "script": "PYTHON -m pip install . -vv"
+      "script": {
+        "content": "python -m pip install . --no-deps --no-build-isolation -vv"
+      }
     },
     "extra": {
       "recipe-maintainers": [
-        "phreed",
-        "giswqs"
+        "giswqs",
+        "phreed"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "groundingdino-py",
+        "requirements": {
+          "build": [],
+          "host": [
+            "python 3.10.*",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0"
+          ],
+          "run": [
+            "python >=3.10",
+            "pytorch >=2.1.0",
+            "torchvision",
+            "numpy >=1.26.2",
+            "opencv",
+            "supervision >=0.22.0",
+            "pycocotools",
+            "transformers >=4.49.0",
+            "addict",
+            "yapf",
+            "timm"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "groundingdino",
+                "groundingdino.util.inference"
+              ],
+              "python_version": "3.10.*"
+            }
+          },
+          {
+            "script": "python -c \"from groundingdino.models.GroundingDINO.ms_deform_attn import multi_scale_deformable_attn_pytorch\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      },
+      {
+        "build": null,
+        "name": "groundingdino-py-cuda",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "cuda_compiler_stub",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "pip",
+            "setuptools",
+            "wheel",
+            "pytorch >=2.1.0 *cuda*",
+            "cuda-version ==12.9",
+            "cuda-cudart-dev",
+            "libcublas-dev",
+            "libcusparse-dev",
+            "libcusolver-dev",
+            "libcurand-dev"
+          ],
+          "run": [
+            "python",
+            "groundingdino-py",
+            "pytorch >=2.1.0 *cuda*"
+          ]
+        },
+        "tests": [
+          {
+            "script": "python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\""
+          }
+        ],
+        "version": "0.4.1"
+      }
+    ],
     "package": {
       "name": "groundingdino-py",
-      "version": "0.4.0"
+      "version": "0.4.1"
     },
     "requirements": {
       "host": [
-        "python >=3.7",
-        "pip"
+        "python 3.10.*",
+        "pip",
+        "setuptools",
+        "wheel",
+        "pytorch >=2.1.0"
       ],
       "run": [
-        "python >=3.7",
-        "pytorch",
+        "python >=3.10",
+        "pytorch >=2.1.0",
         "torchvision",
-        "transformers",
+        "numpy >=1.26.2",
+        "opencv",
+        "supervision >=0.22.0",
+        "pycocotools",
+        "transformers >=4.49.0",
         "addict",
         "yapf",
-        "timm",
-        "numpy",
-        "opencv",
-        "supervision ==0.6.0",
-        "pycocotools"
+        "timm"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "23de56af498b7cdcc024eb1062fc3179e3cc4dacd92adbfb625097065377700f",
-      "url": "https://pypi.io/packages/source/g/groundingdino-py/groundingdino-py-0.4.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check"
+      "patches": [
+        "patches/0001-transformers-api-compat.patch",
+        "patches/0002-cuda-fp16-include.patch",
+        "patches/0003-version-attribute.patch",
+        "patches/0004-aten-deprecated-type.patch"
       ],
-      "imports": [
-        "groundingdino"
-      ],
-      "requires": [
-        "pip"
-      ]
+      "sha256": "37b98b28341f95d1283631570c56b5ed3c92ea4af9717045f55f5045ca6fb2a0",
+      "url": "https://github.com/IDEA-Research/GroundingDINO/archive/856dde20aee659246248e20734ef9ba5214f5e44.tar.gz"
     }
   },
   "name": "groundingdino-py",
   "outputs_names": {
     "__set__": true,
     "elements": [
-      "groundingdino-py"
+      "groundingdino-py",
+      "groundingdino-py-cuda"
     ]
   },
   "parsing_error": false,
@@ -181,40 +598,78 @@
   "pr_info": {
     "__lazy_json__": "pr_info/groundingdino-py.json"
   },
-  "raw_meta_yaml": "{% set name = \"groundingdino-py\" %}\n{% set version = \"0.4.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/groundingdino-py-{{ version }}.tar.gz\n  sha256: 23de56af498b7cdcc024eb1062fc3179e3cc4dacd92adbfb625097065377700f\n\nbuild:\n  noarch: python\n  script: {{ PYTHON }} -m pip install . -vv\n  number: 0\n\nrequirements:\n  host:\n    - python >=3.7\n    - pip\n  run:\n    - python >=3.7\n    - pytorch\n    - torchvision\n    - transformers\n    - addict\n    - yapf\n    - timm\n    - numpy\n    - opencv\n    - supervision ==0.6.0\n    - pycocotools\n\ntest:\n  imports:\n    - groundingdino\n  commands:\n    - pip check\n  requires:\n    - pip\n\nabout:\n  home: https://github.com/giswqs/GroundingDINO\n  summary: open-set object detector\n  license: Apache-2.0\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - phreed\n    - giswqs\n",
+  "raw_meta_yaml": "schema_version: 1\n\n# GroundingDINO, built as a multi-output recipe for rattler-build.\n#\n# The package splits along the one axis that actually exists in the source:\n# whether the `groundingdino._C` deformable-attention extension is compiled.\n#\n#   groundingdino-py        the package.  Pure Python, no extension.  Imports\n#                           fine everywhere; ms_deform_attn.py guards\n#                           `from groundingdino import _C` in a try/except and\n#                           falls back to multi_scale_deformable_attn_pytorch.\n#   groundingdino-py-cuda   the CUDA-compiled `_C` alone, one file, depending on\n#                           the package above.\n#\n# Two outputs, not four.  An earlier draft had a `-base` holding the Python with\n# `groundingdino-py` an empty metapackage in front of it, plus a `-cpu`\n# metapackage differing from that only by a constraint keeping `-cuda` out.\n#\n# Neither earned its place.  The indirection bought nothing that naming the\n# Python package `groundingdino-py` does not, and `-cpu` guarded against\n# something that cannot happen by accident: `-cuda` is opt-in, so nothing pulls\n# it in unasked.  Not installing it is how you do not install it.\n#\n# There is deliberately no rocm or vulkan output.  See the note at the foot of\n# this file: neither backend exists in the source to build against.\n\ncontext:\n  name: groundingdino-py\n  version: \"0.4.1\"\n  # Upstream's own tree, not the PyPI sdist.\n  # The sdist ships no `csrc/`,\n  # so the CUDA extension cannot be built from it at all --\n  # which is why the primary package is pure Python\n  # and why anyone wanting the compiled kernel has had to build it themselves.\n  #\n  # Upstream has cut no release since this commit;\n  # it is `main` at the time of writing, pinned by hash.\n  commit: 856dde20aee659246248e20734ef9ba5214f5e44\n  # Architectures the extension is compiled for ahead of time.  conda-forge's\n  # builders have no GPU, so nothing may depend on torch.cuda.is_available().\n  cuda_arch_list: \"8.0;8.6;8.9\"\n\nrecipe:\n  name: groundingdino-py-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/IDEA-Research/GroundingDINO/archive/${{ commit }}.tar.gz\n    sha256: 37b98b28341f95d1283631570c56b5ed3c92ea4af9717045f55f5045ca6fb2a0\n    # Fixes submitted upstream and not yet merged.  Carried here rather than\n    # waiting, because two of the three are load-bearing for this feedstock:\n    # without 0002 the CUDA extension does not compile under CUDA 12 at all, and\n    # without 0003 there is no version for packaging to read.  Drop each patch as\n    # its pull request lands.\n    #\n    #   0001  IDEA-Research/GroundingDINO#458  transformers >= 4.49 compatibility\n    #   0002  IDEA-Research/GroundingDINO#459  cuda_fp16.h include, fixes CUDA 12\n    #   0003  IDEA-Research/GroundingDINO#460  __version__ attribute\n    #   0004  IDEA-Research/GroundingDINO#462  Tensor::type() is deprecated and\n    #                                          no longer converts, so the kernel\n    #                                          does not compile under CUDA 12.9\n    #\n    # IDEA-Research/GroundingDINO#461 is deliberately *not* carried.  It extends\n    # the SwinB config with training parameters, which is a proposal rather than\n    # a fix, and no consumer of this package needs it: the configs are read from\n    # disk by path, so a project wanting tuned ones ships its own.\n    patches:\n      - patches/0001-transformers-api-compat.patch\n      - patches/0002-cuda-fp16-include.patch\n      - patches/0003-version-attribute.patch\n      - patches/0004-aten-deprecated-type.patch\n\nbuild:\n  # The recipe-wide build number.  Each output may override it; none do, so\n  # bumping here bumps all of them together, which is what a rebuild against new\n  # pinnings wants.\n  number: 0\n\noutputs:\n\n  # ── Pure Python ─────────────────────────────────────────────────────────────\n  # Everything except the compiled extension.  `noarch: python` is correct here\n  # precisely because the arch-dependent part is factored into the cuda output.\n  - package:\n      name: ${{ name }}\n      version: ${{ version }}\n\n    build:\n      noarch: python\n      number: 0\n      script:\n        # No compiler and no TORCH_CUDA_ARCH_LIST in this environment, so\n        # setup.py's get_extensions() takes its else branch and returns None.\n        # The wheel that results is pure Python -- which is what `noarch`\n        # asserts, so the two have to stay in step.\n        content:\n          - python -m pip install . --no-deps --no-build-isolation -vv\n\n    requirements:\n      host:\n        - python ${{ python_min }}.*\n        - pip\n        - setuptools\n        - wheel\n        # setup.py does `import torch` at module level -- and, failing that,\n        # tries to pip-install it, which cannot work in a sandboxed build.  It\n        # is needed to read the metadata even though this output compiles\n        # nothing.\n        - pytorch >=2.1.0\n      run:\n        - python >=${{ python_min }}\n        - pytorch >=2.1.0\n        - torchvision\n        - numpy >=1.26.2\n        - opencv\n        - supervision >=0.22.0\n        - pycocotools\n        - transformers >=4.49.0\n        - addict\n        - yapf\n        - timm\n\n    tests:\n      - python:\n          imports:\n            - groundingdino\n            - groundingdino.util.inference\n          python_version: ${{ python_min }}.*\n      - script:\n          # The fallback is the contract of this output: importing the model\n          # code must not require the extension.\n          - python -c \"from groundingdino.models.GroundingDINO.ms_deform_attn import multi_scale_deformable_attn_pytorch\"\n\n  # ── CUDA extension ──────────────────────────────────────────────────────────\n  # Ships only `groundingdino/_C*.so`; the Python lives in the base output.\n  # Two packages may populate the same site-packages directory as long as they\n  # do not claim the same file.\n  - package:\n      name: groundingdino-py-cuda\n      version: ${{ version }}\n\n    build:\n      number: 0\n      string: cuda${{ cuda_compiler_version | default(\"None\") | replace(\".\", \"\") }}_py${{ python | replace(\".\", \"\") }}_h${{ hash }}_${{ build_number }}\n      skip:\n        # `undefined` and `\"None\"` both mean \"no CUDA on this platform\", and they\n        # are not interchangeable: conda-forge's pinning omits the key entirely\n        # for osx, so testing only against \"None\" lets the output through and the\n        # template below fails during output discovery, before skip is consulted.\n        - cuda_compiler_version is undefined or cuda_compiler_version == \"None\"\n        - match(python, \"<3.10\")\n      script:\n        content:\n          # CUDA_HOME has to be exported from the script rather than declared in\n          # `env:` below, because only here does $BUILD_PREFIX expand.  It must\n          # point at the prefix holding bin/nvcc: torch resolves its own\n          # CUDA_HOME from this and silently falls back to a no-extension build\n          # when it cannot find the compiler, which produces a py3-none-any\n          # wheel rather than an error.\n          - export CUDA_HOME=\"${BUILD_PREFIX}\"\n          - echo \"CUDA_HOME=$CUDA_HOME\"\n          - ls -l \"$CUDA_HOME/bin/nvcc\"\n          - python -c \"import torch; print('torch', torch.__version__, 'built against CUDA', torch.version.cuda)\"\n          - python -c \"from torch.utils.cpp_extension import CUDA_HOME; print('torch sees CUDA_HOME:', CUDA_HOME); assert CUDA_HOME, 'torch found no CUDA toolkit'\"\n          - python -m pip install . --no-deps --no-build-isolation -vv\n          # Keep the extension, discard the Python that groundingdino-py-base\n          # already owns.  Without this the two outputs collide on every .py.\n          - python \"$RECIPE_DIR/prune_to_extension.py\" \"$SP_DIR\"\n        env:\n          # Compiled ahead of time.  setup.py takes its CUDA branch when\n          # TORCH_CUDA_ARCH_LIST is set even though no GPU is present, which is\n          # what makes this buildable on GPU-less CI at all.\n          FORCE_CUDA: \"1\"\n          TORCH_CUDA_ARCH_LIST: ${{ cuda_arch_list }}\n\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib('c') }}\n        - ${{ compiler('cxx') }}\n        - ${{ compiler('cuda') }}\n        - ninja\n      host:\n        - python\n        - pip\n        - setuptools\n        - wheel\n        # The CUDA build specifically.  A CPU-built pytorch reports\n        # torch.version.cuda == None, and torch then discards CUDA_HOME however\n        # the environment is set -- so setup.py takes its no-extension branch\n        # and quietly produces a py3-none-any wheel.\n        - pytorch >=2.1.0 *cuda*\n        - cuda-version ==${{ cuda_compiler_version | default(\"None\") }}\n        # torch's own CUDA headers include cusparse.h, cublas, cusolver and\n        # curand transitively, so building any extension against them needs the\n        # development packages present even though this kernel calls none of\n        # them directly.  SelectiveTracking's pixi.toml had already accumulated\n        # exactly this list.\n        - cuda-cudart-dev\n        - libcublas-dev\n        - libcusparse-dev\n        - libcusolver-dev\n        - libcurand-dev\n      run:\n        - python\n        - ${{ pin_subpackage(name, exact=False) }}\n        - pytorch >=2.1.0 *cuda*\n      run_constraints:\n        - __cuda >=12.0\n\n    tests:\n      - script:\n          # An import test would need a GPU; checking the object exists and\n          # carries its entry points does not.\n          - python -c \"import groundingdino, pathlib, glob, sys; p = pathlib.Path(groundingdino.__file__).parent; assert glob.glob(str(p / '_C*.so')), 'the compiled extension is missing'\"\n\nabout:\n  homepage: https://github.com/IDEA-Research/GroundingDINO\n  summary: Open-set object detector\n  description: |\n    GroundingDINO marries DINO with grounded pre-training for open-set object\n    detection: it detects objects named by a free-form text prompt rather than\n    by a fixed label set.\n\n    This feedstock publishes the project as several packages.  The Python is\n    identical across all of them; they differ only in whether the\n    `groundingdino._C` deformable-attention extension is present.  Without it\n    the model runs the pure-PyTorch implementation, which is correct but\n    substantially slower, and requires float32 -- `F.grid_sample` has no\n    half-precision CPU kernel.\n  license: Apache-2.0\n  license_file: LICENSE\n  repository: https://github.com/IDEA-Research/GroundingDINO\n\nextra:\n  recipe-maintainers:\n    - giswqs\n    - phreed\n\n# ── Why there is no rocm or vulkan output ─────────────────────────────────────\n#\n# Both were considered and neither can be built from this source today.\n#\n# rocm:    the only HIP reference in the project is setup.py's non-CUDA branch,\n#          which sets define_macros += [(\"WITH_HIP\", None)] and then returns\n#          None before the macro reaches a compiler -- so it is dead code, not a\n#          backend.  csrc/ contains one CUDA kernel (ms_deform_attn_cuda.cu,\n#          plus ms_deform_im2col_cuda.cuh) written against the CUDA runtime.\n#          A rocm output needs that kernel hipified and a HIP build path added\n#          to setup.py.  That is upstream work, and until it lands a rocm output\n#          would ship the pure-Python fallback under a name promising otherwise.\n#\n# vulkan:  there is no Vulkan reference anywhere in the project, and PyTorch's\n#          Vulkan backend does not support custom operators, so there is nothing\n#          for a Vulkan output to compile.  An AMD or Intel GPU user is served\n#          by groundingdino-py-cpu today.\n#\n",
   "req": {
     "__set__": true,
     "elements": [
       "addict",
+      "c_compiler_stub",
+      "c_stdlib_stub",
+      "cuda-cudart-dev",
+      "cuda-version",
+      "cuda_compiler_stub",
+      "cxx_compiler_stub",
+      "groundingdino-py",
+      "libcublas-dev",
+      "libcurand-dev",
+      "libcusolver-dev",
+      "libcusparse-dev",
+      "ninja",
       "numpy",
       "opencv",
       "pip",
       "pycocotools",
       "python",
       "pytorch",
+      "setuptools",
       "supervision",
       "timm",
       "torchvision",
       "transformers",
+      "wheel",
       "yapf"
     ]
   },
   "requirements": {
     "build": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cuda_compiler_stub",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cuda-cudart-dev",
+        "cuda-version",
+        "cuda_compiler_stub",
+        "cxx_compiler_stub",
+        "libcublas-dev",
+        "libcurand-dev",
+        "libcusolver-dev",
+        "libcusparse-dev",
         "pip",
-        "python"
+        "python",
+        "pytorch",
+        "setuptools",
+        "wheel"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
         "addict",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cuda_compiler_stub",
+        "cxx_compiler_stub",
+        "groundingdino-py",
         "numpy",
         "opencv",
         "pycocotools",
@@ -238,28 +693,48 @@
   "total_requirements": {
     "build": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cuda_compiler_stub",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
     },
     "host": {
       "__set__": true,
       "elements": [
+        "cuda-cudart-dev",
+        "cuda-version ==12.9",
+        "libcublas-dev",
+        "libcurand-dev",
+        "libcusolver-dev",
+        "libcusparse-dev",
         "pip",
-        "python >=3.7"
+        "python",
+        "python 3.10.*",
+        "pytorch >=2.1.0",
+        "pytorch >=2.1.0 *cuda*",
+        "setuptools",
+        "wheel"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
         "addict",
-        "numpy",
+        "groundingdino-py",
+        "numpy >=1.26.2",
         "opencv",
         "pycocotools",
-        "python >=3.7",
-        "pytorch",
-        "supervision ==0.6.0",
+        "python",
+        "python >=3.10",
+        "pytorch >=2.1.0",
+        "pytorch >=2.1.0 *cuda*",
+        "supervision >=0.22.0",
         "timm",
         "torchvision",
-        "transformers",
+        "transformers >=4.49.0",
         "yapf"
       ]
     },
@@ -270,8 +745,8 @@
       ]
     }
   },
-  "url": "https://pypi.io/packages/source/g/groundingdino-py/groundingdino-py-0.4.0.tar.gz",
-  "version": "0.4.0",
+  "url": "https://github.com/IDEA-Research/GroundingDINO/archive/856dde20aee659246248e20734ef9ba5214f5e44.tar.gz",
+  "version": "0.4.1",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/groundingdino-py.json"
   }
