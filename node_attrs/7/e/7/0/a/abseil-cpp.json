@@ -1,10 +1,11 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibabseil:\n- '20250512'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibabseil:\n- '20260107'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64",
       "win_arm64": "win_64"
     },
     "conda_build": {
@@ -21,8 +22,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "e1043f0404313f1a778345b368e46e6011918a8c",
-  "feedstock_hash_ts": 1780524335,
+  "feedstock_hash": "17650f5b446d827c2ba2e97ffb0f4dcc821bb3b8",
+  "feedstock_hash_ts": 1787216796,
   "feedstock_name": "abseil-cpp",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -37,7 +38,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -55,7 +56,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -247,7 +248,249 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
+        },
+        "name": "libabseil-tests",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "gtest",
+            "libabseil"
+          ],
+          "run": [
+            "gtest",
+            "libabseil"
+          ]
+        },
+        "script": "build-abseil.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libabsl_scoped_mock_log${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_scoped_mock_log.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_scoped_mock_log",
+            "cd cmake_test",
+            "export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"",
+            "cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD=17 .",
+            "export TRY_TEST_TARGET=1",
+            "cmake --build .",
+            "./flags_example"
+          ],
+          "files": [
+            "cmake_test/"
+          ],
+          "requires": [
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libabseil",
+            "libabseil =*=cxx17*"
+          ],
+          "string": "cxx17_h1234567_2"
+        },
+        "name": "libabseil",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "run_constrained": [
+            "libabseil-static =20260526.0=cxx17*",
+            "abseil-cpp =20260526.0"
+          ]
+        },
+        "script": "build-abseil.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libabsl_decode_rust_punycode${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_decode_rust_punycode.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_decode_rust_punycode",
+            "test -f $PREFIX/lib/libabsl_demangle_rust${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_demangle_rust.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_demangle_rust",
+            "test -f $PREFIX/lib/libabsl_flags_commandlineflag${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_commandlineflag.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_commandlineflag",
+            "test -f $PREFIX/lib/libabsl_flags_config${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_config.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_config",
+            "test -f $PREFIX/lib/libabsl_flags_marshalling${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_marshalling.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_marshalling",
+            "test -f $PREFIX/lib/libabsl_flags_parse${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_parse.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_parse",
+            "test -f $PREFIX/lib/libabsl_flags_private_handle_accessor${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_private_handle_accessor.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_private_handle_accessor",
+            "test -f $PREFIX/lib/libabsl_flags_program_name${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_program_name.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_program_name",
+            "test -f $PREFIX/lib/libabsl_flags_reflection${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_reflection.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_reflection",
+            "test -f $PREFIX/lib/libabsl_flags_usage${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_usage.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_usage",
+            "test -f $PREFIX/lib/libabsl_hashtable_profiler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_hashtable_profiler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_hashtable_profiler",
+            "test -f $PREFIX/lib/libabsl_log_flags${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_log_flags.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_log_flags",
+            "test -f $PREFIX/lib/libabsl_poison${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_poison.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_poison",
+            "test -f $PREFIX/lib/libabsl_profile_builder${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_profile_builder.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_profile_builder",
+            "test -f $PREFIX/lib/libabsl_base${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_base.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_base",
+            "test -f $PREFIX/lib/libabsl_civil_time${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_civil_time.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_civil_time",
+            "test -f $PREFIX/lib/libabsl_crc_cord_state${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_crc_cord_state.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_crc_cord_state",
+            "test -f $PREFIX/lib/libabsl_crc_cpu_detect${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_crc_cpu_detect.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_crc_cpu_detect",
+            "test -f $PREFIX/lib/libabsl_crc32c${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_crc32c.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_crc32c",
+            "test -f $PREFIX/lib/libabsl_cord${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cord.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cord",
+            "test -f $PREFIX/lib/libabsl_cordz_functions${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_functions.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_functions",
+            "test -f $PREFIX/lib/libabsl_cordz_handle${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_handle.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_handle",
+            "test -f $PREFIX/lib/libabsl_cordz_info${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_info.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_info",
+            "test -f $PREFIX/lib/libabsl_cordz_sample_token${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_sample_token.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_sample_token",
+            "test -f $PREFIX/lib/libabsl_die_if_null${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_die_if_null.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_die_if_null",
+            "test -f $PREFIX/lib/libabsl_examine_stack${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_examine_stack.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_examine_stack",
+            "test -f $PREFIX/lib/libabsl_exponential_biased${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_exponential_biased.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_exponential_biased",
+            "test -f $PREFIX/lib/libabsl_failure_signal_handler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_failure_signal_handler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_failure_signal_handler",
+            "test -f $PREFIX/lib/libabsl_hash${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_hash.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_hash",
+            "test -f $PREFIX/lib/libabsl_hashtablez_sampler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_hashtablez_sampler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_hashtablez_sampler",
+            "test -f $PREFIX/lib/libabsl_int128${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_int128.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_int128",
+            "test -f $PREFIX/lib/libabsl_log_severity${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_log_severity.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_log_severity",
+            "test -f $PREFIX/lib/libabsl_periodic_sampler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_periodic_sampler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_periodic_sampler",
+            "test -f $PREFIX/lib/libabsl_random_distributions${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_random_distributions.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_random_distributions",
+            "test -f $PREFIX/lib/libabsl_random_seed_gen_exception${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_random_seed_gen_exception.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_random_seed_gen_exception",
+            "test -f $PREFIX/lib/libabsl_random_seed_sequences${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_random_seed_sequences.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_random_seed_sequences",
+            "test -f $PREFIX/lib/libabsl_raw_hash_set${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_raw_hash_set.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_raw_hash_set",
+            "test -f $PREFIX/lib/libabsl_scoped_set_env${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_scoped_set_env.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_scoped_set_env",
+            "test -f $PREFIX/lib/libabsl_spinlock_wait${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_spinlock_wait.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_spinlock_wait",
+            "test -f $PREFIX/lib/libabsl_stacktrace${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_stacktrace.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_stacktrace",
+            "test -f $PREFIX/lib/libabsl_status${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_status.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_status",
+            "test -f $PREFIX/lib/libabsl_statusor${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_statusor.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_statusor",
+            "test -f $PREFIX/lib/libabsl_strerror${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_strerror.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_strerror",
+            "test -f $PREFIX/lib/libabsl_strings${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_strings.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_strings",
+            "test -f $PREFIX/lib/libabsl_symbolize${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_symbolize.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_symbolize",
+            "test -f $PREFIX/lib/libabsl_synchronization${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_synchronization.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_synchronization",
+            "test -f $PREFIX/lib/libabsl_throw_delegate${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_throw_delegate.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_throw_delegate",
+            "test -f $PREFIX/lib/libabsl_time${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_time.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_time",
+            "test -f $PREFIX/lib/libabsl_time_zone${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_time_zone.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_time_zone",
+            "test ! -f $PREFIX/lib/libabsl_scoped_mock_log${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_scoped_mock_log.a",
+            "cd cmake_test",
+            "export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"",
+            "cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD=17 .",
+            "cmake --build .",
+            "./flags_example",
+            "grep -q SHELL $PREFIX/lib/pkgconfig/absl_random_internal_randen_hwaes.pc && exit 1 || exit 0"
+          ],
+          "files": [
+            "cmake_test/"
+          ],
+          "requires": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "always_include_files": [
+            "lib/cmake/absl/"
+          ],
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -355,7 +598,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -373,7 +616,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -565,7 +808,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -673,7 +916,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -691,7 +934,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -883,7 +1126,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -991,7 +1234,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -1009,7 +1252,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -1201,7 +1444,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -1251,7 +1494,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -1443,7 +1686,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -1493,7 +1736,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -1685,7 +1928,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -1735,7 +1978,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -1927,7 +2170,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -1977,7 +2220,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -2169,7 +2412,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -2219,7 +2462,249 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
+        },
+        "name": "libabseil",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "run_constrained": [
+            "libabseil-static =20260526.0=cxx17*",
+            "abseil-cpp =20260526.0"
+          ]
+        },
+        "script": "build-abseil.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libabsl_decode_rust_punycode${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_decode_rust_punycode.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_decode_rust_punycode",
+            "test -f $PREFIX/lib/libabsl_demangle_rust${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_demangle_rust.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_demangle_rust",
+            "test -f $PREFIX/lib/libabsl_flags_commandlineflag${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_commandlineflag.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_commandlineflag",
+            "test -f $PREFIX/lib/libabsl_flags_config${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_config.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_config",
+            "test -f $PREFIX/lib/libabsl_flags_marshalling${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_marshalling.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_marshalling",
+            "test -f $PREFIX/lib/libabsl_flags_parse${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_parse.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_parse",
+            "test -f $PREFIX/lib/libabsl_flags_private_handle_accessor${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_private_handle_accessor.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_private_handle_accessor",
+            "test -f $PREFIX/lib/libabsl_flags_program_name${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_program_name.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_program_name",
+            "test -f $PREFIX/lib/libabsl_flags_reflection${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_reflection.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_reflection",
+            "test -f $PREFIX/lib/libabsl_flags_usage${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_flags_usage.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_flags_usage",
+            "test -f $PREFIX/lib/libabsl_hashtable_profiler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_hashtable_profiler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_hashtable_profiler",
+            "test -f $PREFIX/lib/libabsl_log_flags${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_log_flags.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_log_flags",
+            "test -f $PREFIX/lib/libabsl_poison${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_poison.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_poison",
+            "test -f $PREFIX/lib/libabsl_profile_builder${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_profile_builder.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_profile_builder",
+            "test -f $PREFIX/lib/libabsl_base${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_base.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_base",
+            "test -f $PREFIX/lib/libabsl_civil_time${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_civil_time.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_civil_time",
+            "test -f $PREFIX/lib/libabsl_crc_cord_state${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_crc_cord_state.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_crc_cord_state",
+            "test -f $PREFIX/lib/libabsl_crc_cpu_detect${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_crc_cpu_detect.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_crc_cpu_detect",
+            "test -f $PREFIX/lib/libabsl_crc32c${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_crc32c.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_crc32c",
+            "test -f $PREFIX/lib/libabsl_cord${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cord.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cord",
+            "test -f $PREFIX/lib/libabsl_cordz_functions${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_functions.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_functions",
+            "test -f $PREFIX/lib/libabsl_cordz_handle${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_handle.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_handle",
+            "test -f $PREFIX/lib/libabsl_cordz_info${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_info.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_info",
+            "test -f $PREFIX/lib/libabsl_cordz_sample_token${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_cordz_sample_token.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_cordz_sample_token",
+            "test -f $PREFIX/lib/libabsl_die_if_null${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_die_if_null.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_die_if_null",
+            "test -f $PREFIX/lib/libabsl_examine_stack${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_examine_stack.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_examine_stack",
+            "test -f $PREFIX/lib/libabsl_exponential_biased${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_exponential_biased.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_exponential_biased",
+            "test -f $PREFIX/lib/libabsl_failure_signal_handler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_failure_signal_handler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_failure_signal_handler",
+            "test -f $PREFIX/lib/libabsl_hash${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_hash.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_hash",
+            "test -f $PREFIX/lib/libabsl_hashtablez_sampler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_hashtablez_sampler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_hashtablez_sampler",
+            "test -f $PREFIX/lib/libabsl_int128${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_int128.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_int128",
+            "test -f $PREFIX/lib/libabsl_log_severity${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_log_severity.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_log_severity",
+            "test -f $PREFIX/lib/libabsl_periodic_sampler${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_periodic_sampler.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_periodic_sampler",
+            "test -f $PREFIX/lib/libabsl_random_distributions${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_random_distributions.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_random_distributions",
+            "test -f $PREFIX/lib/libabsl_random_seed_gen_exception${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_random_seed_gen_exception.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_random_seed_gen_exception",
+            "test -f $PREFIX/lib/libabsl_random_seed_sequences${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_random_seed_sequences.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_random_seed_sequences",
+            "test -f $PREFIX/lib/libabsl_raw_hash_set${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_raw_hash_set.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_raw_hash_set",
+            "test -f $PREFIX/lib/libabsl_scoped_set_env${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_scoped_set_env.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_scoped_set_env",
+            "test -f $PREFIX/lib/libabsl_spinlock_wait${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_spinlock_wait.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_spinlock_wait",
+            "test -f $PREFIX/lib/libabsl_stacktrace${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_stacktrace.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_stacktrace",
+            "test -f $PREFIX/lib/libabsl_status${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_status.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_status",
+            "test -f $PREFIX/lib/libabsl_statusor${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_statusor.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_statusor",
+            "test -f $PREFIX/lib/libabsl_strerror${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_strerror.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_strerror",
+            "test -f $PREFIX/lib/libabsl_strings${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_strings.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_strings",
+            "test -f $PREFIX/lib/libabsl_symbolize${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_symbolize.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_symbolize",
+            "test -f $PREFIX/lib/libabsl_synchronization${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_synchronization.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_synchronization",
+            "test -f $PREFIX/lib/libabsl_throw_delegate${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_throw_delegate.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_throw_delegate",
+            "test -f $PREFIX/lib/libabsl_time${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_time.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_time",
+            "test -f $PREFIX/lib/libabsl_time_zone${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_time_zone.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_time_zone",
+            "test ! -f $PREFIX/lib/libabsl_scoped_mock_log${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_scoped_mock_log.a",
+            "cd cmake_test",
+            "export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"",
+            "cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD=17 .",
+            "cmake --build .",
+            "./flags_example",
+            "grep -q SHELL $PREFIX/lib/pkgconfig/absl_random_internal_randen_hwaes.pc && exit 1 || exit 0"
+          ],
+          "files": [
+            "cmake_test/"
+          ],
+          "requires": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "always_include_files": [
+            "lib/cmake/absl/"
+          ],
+          "string": "cxx17_h1234567_2"
+        },
+        "name": "libabseil-tests",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "gtest",
+            "libabseil"
+          ],
+          "run": [
+            "gtest",
+            "libabseil"
+          ]
+        },
+        "script": "build-abseil.sh",
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libabsl_scoped_mock_log${SHLIB_EXT}",
+            "test ! -f $PREFIX/lib/libabsl_scoped_mock_log.a",
+            "pkg-config --print-errors --exact-version \"20260526\" absl_scoped_mock_log",
+            "cd cmake_test",
+            "export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"",
+            "cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD=17 .",
+            "export TRY_TEST_TARGET=1",
+            "cmake --build .",
+            "./flags_example"
+          ],
+          "files": [
+            "cmake_test/"
+          ],
+          "requires": [
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja",
+            "pkg-config"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "libabseil",
+            "libabseil =*=cxx17*"
+          ],
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -2365,7 +2850,7 @@
           "always_include_files": [
             "Library/lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -2416,7 +2901,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -2562,7 +3047,7 @@
           "always_include_files": [
             "Library/lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -2636,7 +3121,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -2654,7 +3139,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -2846,7 +3331,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -2954,7 +3439,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -2972,7 +3457,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -3164,7 +3649,7 @@
           "always_include_files": [
             "lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -3280,7 +3765,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/abseil-cpp.json"
   },
-  "raw_meta_yaml": "{% set version = \"20260526.0\" %}\n{% set v_major = version.split(\".\")[0] %}\n# needs to match across all dependent packages; using C++20\n# is potentially problematic in some cases, see #45\n{% set cxx_standard = 17 %}\n\n# shared builds for flags_* libraries are not supported on windows, see\n# https://github.com/abseil/abseil-cpp/pull/1115\n{% set absl_libs_always_static_on_win = [\n    \"decode_rust_punycode\", \"demangle_rust\", \"flags_commandlineflag\", \"flags_config\", \"flags_marshalling\",\n    \"flags_parse\", \"flags_private_handle_accessor\", \"flags_program_name\", \"flags_reflection\", \"flags_usage\",\n    \"hashtable_profiler\", \"log_flags\", \"poison\", \"profile_builder\"\n] %}\n\n{% set absl_libs = absl_libs_always_static_on_win + [\n    \"base\", \"civil_time\", \"crc_cord_state\", \"crc_cpu_detect\", \"crc32c\", \"cord\", \"cordz_functions\",\n    \"cordz_handle\", \"cordz_info\", \"cordz_sample_token\", \"die_if_null\", \"examine_stack\", \"exponential_biased\",\n    \"failure_signal_handler\", \"hash\", \"hashtablez_sampler\", \"int128\", \"log_severity\", \"periodic_sampler\",\n    \"random_distributions\", \"random_seed_gen_exception\", \"random_seed_sequences\", \"raw_hash_set\",\n    \"scoped_set_env\", \"spinlock_wait\", \"stacktrace\", \"status\", \"statusor\", \"strerror\", \"strings\",\n    \"symbolize\", \"synchronization\", \"throw_delegate\", \"time\", \"time_zone\"\n] %}\n# test helper targets (but used e.g. by protobuf)\n{% set absl_test_libs = [\"scoped_mock_log\"] %}\n\npackage:\n  name: abseil-split\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/abseil/abseil-cpp/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 6e1aee535473414164bf83e4ebc40240dec71a4701f8a642d906e95bea1aea0c\n  patches:\n    # Helps downstream packages import the dll without an extra define\n    # https://github.com/conda-forge/abseil-cpp-feedstock/issues/43#issuecomment-1242969515\n    - patches/0001-default-dll-import-for-windows.patch\n    # avoid that compilation in C++20 mode changes the ABI vs. C++17\n    - patches/0002-don-t-use-C-20-stdlib-features-which-change-ABI-comp.patch\n    # Avoid SHELL:-Xarch… flags leaking into pkg-config files\n    # These flagse are not used anyways in our setup\n    - patches/0003-Don-t-try-to-compile-to-multiple-OSX-arches.patch\n\nbuild:\n  number: 1\n\noutputs:\n  # default behaviour is shared; however note that upstream does not support\n  # fully shared builds on windows, and some static libs will remain, see above\n  - name: libabseil\n    script: build-abseil.sh  # [unix]\n    script: build-abseil.bat  # [win]\n    build:\n      string: cxx{{ cxx_standard }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n      run_exports:\n        - {{ pin_subpackage(\"libabseil\", max_pin=\"x\") }}\n        # also pin on ABI variant\n        - libabseil =*=cxx{{ cxx_standard }}*\n\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      run_constrained:\n        - libabseil-static ={{ version }}=cxx{{ cxx_standard }}*\n        # make sure we don't co-install with old version of old package name\n        - abseil-cpp ={{ version }}\n\n    test:\n      requires:\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n        - pkg-config\n      files:\n        - cmake_test/\n      commands:\n        # windows-only (almost-)all-in-one DLL + import library\n        - if not exist %LIBRARY_BIN%\\\\abseil_dll.dll exit 1           # [win]\n        - if not exist %LIBRARY_LIB%\\\\abseil_dll.lib exit 1           # [win]\n        # absence of test targets in regular abseil output\n        - if exist %LIBRARY_BIN%\\\\abseil_test_dll.dll exit 1          # [win]\n        - if exist %LIBRARY_LIB%\\\\abseil_test_dll.lib exit 1          # [win]\n\n        # absl_* libraries\n      {% for each_lib in absl_libs %}\n        # presence of shared libs\n        - test -f $PREFIX/lib/libabsl_{{ each_lib }}${SHLIB_EXT}      # [unix]\n        # absence of static libs\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}.a              # [unix]\n\n        # some static libs remain on windows even for shared builds, see above\n        {% if each_lib in absl_libs_always_static_on_win %}\n        - if not exist %LIBRARY_LIB%\\\\absl_{{ each_lib }}.lib exit 1  # [win]\n        {% else %}\n        - if exist %LIBRARY_LIB%\\\\absl_{{ each_lib }}.lib exit 1      # [win]\n        {% endif %}\n\n        # pkg-config (should point to abseil_dll on shared windows builds)\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" absl_{{ each_lib }}\n      {% endfor %}\n\n        # absence of test targets in regular abseil output\n      {% for each_lib in absl_test_libs %}\n        # absence of all libs\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}${SHLIB_EXT}    # [unix]\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}.a              # [unix]\n        - if exist %LIBRARY_LIB%\\\\absl_{{ each_lib }}.lib exit 1      # [win]\n      {% endfor %}\n\n        # pkg-config (abseil_dll)\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" abseil_dll  # [win]\n\n        # CMake integration\n        - cd cmake_test\n        - export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"  # [unix]\n        - set \"CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_BUILD_TYPE=Release\"    # [win]\n        - cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [unix]\n        - cmake %CMAKE_ARGS% -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [win]\n        - cmake --build .\n        - ./flags_example    # [unix]\n        - flags_example.exe  # [win]\n        # Check for absence of disturbing SHELL:-Xarch... content in pkg-config files\n        - grep -q SHELL $PREFIX/lib/pkgconfig/absl_random_internal_randen_hwaes.pc && exit 1 || exit 0  # [unix]\n\n  # tests & test-helpers\n  - name: libabseil-tests\n    script: build-abseil.sh  # [unix]\n    script: build-abseil.bat  # [win]\n    build:\n      string: cxx{{ cxx_standard }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n      always_include_files:\n        # Must overwrite cmake metadata from libabseil\n        - lib/cmake/absl/          # [unix]\n        - Library/lib/cmake/absl/  # [win]\n\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      host:\n        - gtest\n        - {{ pin_subpackage(\"libabseil\", exact=True) }}\n      run:\n        - gtest\n        - {{ pin_subpackage(\"libabseil\", exact=True) }}\n\n    test:\n      requires:\n        - {{ compiler('cxx') }}\n        - cmake\n        - ninja\n        - pkg-config\n      files:\n        - cmake_test/\n      commands:\n        # windows-only (almost-)all-in-one DLL + import library\n        - if not exist %LIBRARY_BIN%\\\\abseil_test_dll.dll exit 1      # [win]\n        - if not exist %LIBRARY_LIB%\\\\abseil_test_dll.lib exit 1      # [win]\n\n        # absl_* libraries\n      {% for each_lib in absl_test_libs %}\n        # presence of shared libs\n        - test -f $PREFIX/lib/libabsl_{{ each_lib }}${SHLIB_EXT}      # [unix]\n        # absence of static libs\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}.a              # [unix]\n\n        # pkg-config (should point to abseil_test_dll on shared windows builds)\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" absl_{{ each_lib }}\n      {% endfor %}\n\n        # pkg-config abseil_test_dll\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" abseil_test_dll  # [win]\n\n        # CMake integration\n        - cd cmake_test\n        - export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"  # [unix]\n        - set \"CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_BUILD_TYPE=Release\"    # [win]\n        - cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [unix]\n        - cmake %CMAKE_ARGS% -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [win]\n        # enable search for test target\n        - export TRY_TEST_TARGET=1  # [unix]\n        - set TRY_TEST_TARGET=1     # [win]\n        - cmake --build .\n        - ./flags_example    # [unix]\n        - flags_example.exe  # [win]\nabout:\n  home: https://github.com/abseil/abseil-cpp\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE\n  summary: Abseil Common Libraries (C++)\n  description: |\n    Abseil is an open-source collection of C++ code (compliant to C++11)\n    designed to augment the C++ standard library.\n  doc_url: https://github.com/abseil/abseil-cpp\n  dev_url: https://github.com/abseil/abseil-cpp\n\nextra:\n  recipe-maintainers:\n    - njzjz\n    - bluescarni\n    - xhochy\n    - h-vetinari\n  feedstock-name: abseil-cpp\n",
+  "raw_meta_yaml": "{% set version = \"20260526.0\" %}\n{% set v_major = version.split(\".\")[0] %}\n# needs to match across all dependent packages; using C++20\n# is potentially problematic in some cases, see #45\n{% set cxx_standard = 17 %}\n\n# shared builds for flags_* libraries are not supported on windows, see\n# https://github.com/abseil/abseil-cpp/pull/1115\n{% set absl_libs_always_static_on_win = [\n    \"decode_rust_punycode\", \"demangle_rust\", \"flags_commandlineflag\", \"flags_config\", \"flags_marshalling\",\n    \"flags_parse\", \"flags_private_handle_accessor\", \"flags_program_name\", \"flags_reflection\", \"flags_usage\",\n    \"hashtable_profiler\", \"log_flags\", \"poison\", \"profile_builder\"\n] %}\n\n{% set absl_libs = absl_libs_always_static_on_win + [\n    \"base\", \"civil_time\", \"crc_cord_state\", \"crc_cpu_detect\", \"crc32c\", \"cord\", \"cordz_functions\",\n    \"cordz_handle\", \"cordz_info\", \"cordz_sample_token\", \"die_if_null\", \"examine_stack\", \"exponential_biased\",\n    \"failure_signal_handler\", \"hash\", \"hashtablez_sampler\", \"int128\", \"log_severity\", \"periodic_sampler\",\n    \"random_distributions\", \"random_seed_gen_exception\", \"random_seed_sequences\", \"raw_hash_set\",\n    \"scoped_set_env\", \"spinlock_wait\", \"stacktrace\", \"status\", \"statusor\", \"strerror\", \"strings\",\n    \"symbolize\", \"synchronization\", \"throw_delegate\", \"time\", \"time_zone\"\n] %}\n# test helper targets (but used e.g. by protobuf)\n{% set absl_test_libs = [\"scoped_mock_log\"] %}\n\npackage:\n  name: abseil-split\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/abseil/abseil-cpp/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 6e1aee535473414164bf83e4ebc40240dec71a4701f8a642d906e95bea1aea0c\n  patches:\n    # Helps downstream packages import the dll without an extra define\n    # https://github.com/conda-forge/abseil-cpp-feedstock/issues/43#issuecomment-1242969515\n    - patches/0001-default-dll-import-for-windows.patch\n    # avoid that compilation in C++20 mode changes the ABI vs. C++17\n    - patches/0002-don-t-use-C-20-stdlib-features-which-change-ABI-comp.patch\n    # Avoid SHELL:-Xarch… flags leaking into pkg-config files\n    # These flagse are not used anyways in our setup\n    - patches/0003-Don-t-try-to-compile-to-multiple-OSX-arches.patch\n\nbuild:\n  number: 2\n\noutputs:\n  # default behaviour is shared; however note that upstream does not support\n  # fully shared builds on windows, and some static libs will remain, see above\n  - name: libabseil\n    script: build-abseil.sh  # [unix]\n    script: build-abseil.bat  # [win]\n    build:\n      string: cxx{{ cxx_standard }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n      run_exports:\n        - {{ pin_subpackage(\"libabseil\", max_pin=\"x\") }}\n        # also pin on ABI variant\n        - libabseil =*=cxx{{ cxx_standard }}*\n\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      run_constrained:\n        - libabseil-static ={{ version }}=cxx{{ cxx_standard }}*\n        # make sure we don't co-install with old version of old package name\n        - abseil-cpp ={{ version }}\n\n    test:\n      requires:\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n        - pkg-config\n      files:\n        - cmake_test/\n      commands:\n        # windows-only (almost-)all-in-one DLL + import library\n        - if not exist %LIBRARY_BIN%\\\\abseil_dll.dll exit 1           # [win]\n        - if not exist %LIBRARY_LIB%\\\\abseil_dll.lib exit 1           # [win]\n        # absence of test targets in regular abseil output\n        - if exist %LIBRARY_BIN%\\\\abseil_test_dll.dll exit 1          # [win]\n        - if exist %LIBRARY_LIB%\\\\abseil_test_dll.lib exit 1          # [win]\n\n        # absl_* libraries\n      {% for each_lib in absl_libs %}\n        # presence of shared libs\n        - test -f $PREFIX/lib/libabsl_{{ each_lib }}${SHLIB_EXT}      # [unix]\n        # absence of static libs\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}.a              # [unix]\n\n        # some static libs remain on windows even for shared builds, see above\n        {% if each_lib in absl_libs_always_static_on_win %}\n        - if not exist %LIBRARY_LIB%\\\\absl_{{ each_lib }}.lib exit 1  # [win]\n        {% else %}\n        - if exist %LIBRARY_LIB%\\\\absl_{{ each_lib }}.lib exit 1      # [win]\n        {% endif %}\n\n        # pkg-config (should point to abseil_dll on shared windows builds)\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" absl_{{ each_lib }}\n      {% endfor %}\n\n        # absence of test targets in regular abseil output\n      {% for each_lib in absl_test_libs %}\n        # absence of all libs\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}${SHLIB_EXT}    # [unix]\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}.a              # [unix]\n        - if exist %LIBRARY_LIB%\\\\absl_{{ each_lib }}.lib exit 1      # [win]\n      {% endfor %}\n\n        # pkg-config (abseil_dll)\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" abseil_dll  # [win]\n\n        # CMake integration\n        - cd cmake_test\n        - export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"  # [unix]\n        - set \"CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_BUILD_TYPE=Release\"    # [win]\n        - cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [unix]\n        - cmake %CMAKE_ARGS% -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [win]\n        - cmake --build .\n        - ./flags_example    # [unix]\n        - flags_example.exe  # [win]\n        # Check for absence of disturbing SHELL:-Xarch... content in pkg-config files\n        - grep -q SHELL $PREFIX/lib/pkgconfig/absl_random_internal_randen_hwaes.pc && exit 1 || exit 0  # [unix]\n\n  # tests & test-helpers\n  - name: libabseil-tests\n    script: build-abseil.sh  # [unix]\n    script: build-abseil.bat  # [win]\n    build:\n      string: cxx{{ cxx_standard }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n      always_include_files:\n        # Must overwrite cmake metadata from libabseil\n        - lib/cmake/absl/          # [unix]\n        - Library/lib/cmake/absl/  # [win]\n\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n        - cmake\n        - ninja\n      host:\n        - gtest\n        - {{ pin_subpackage(\"libabseil\", exact=True) }}\n      run:\n        - gtest\n        - {{ pin_subpackage(\"libabseil\", exact=True) }}\n\n    test:\n      requires:\n        - {{ compiler('cxx') }}\n        - cmake\n        - ninja\n        - pkg-config\n      files:\n        - cmake_test/\n      commands:\n        # windows-only (almost-)all-in-one DLL + import library\n        - if not exist %LIBRARY_BIN%\\\\abseil_test_dll.dll exit 1      # [win]\n        - if not exist %LIBRARY_LIB%\\\\abseil_test_dll.lib exit 1      # [win]\n\n        # absl_* libraries\n      {% for each_lib in absl_test_libs %}\n        # presence of shared libs\n        - test -f $PREFIX/lib/libabsl_{{ each_lib }}${SHLIB_EXT}      # [unix]\n        # absence of static libs\n        - test ! -f $PREFIX/lib/libabsl_{{ each_lib }}.a              # [unix]\n\n        # pkg-config (should point to abseil_test_dll on shared windows builds)\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" absl_{{ each_lib }}\n      {% endfor %}\n\n        # pkg-config abseil_test_dll\n        - pkg-config --print-errors --exact-version \"{{ v_major }}\" abseil_test_dll  # [win]\n\n        # CMake integration\n        - cd cmake_test\n        - export CMAKE_ARGS=\"$CMAKE_ARGS -GNinja -DCMAKE_BUILD_TYPE=Release\"  # [unix]\n        - set \"CMAKE_ARGS=%CMAKE_ARGS% -GNinja -DCMAKE_BUILD_TYPE=Release\"    # [win]\n        - cmake $CMAKE_ARGS  -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [unix]\n        - cmake %CMAKE_ARGS% -DCMAKE_CXX_STANDARD={{ cxx_standard }} .        # [win]\n        # enable search for test target\n        - export TRY_TEST_TARGET=1  # [unix]\n        - set TRY_TEST_TARGET=1     # [win]\n        - cmake --build .\n        - ./flags_example    # [unix]\n        - flags_example.exe  # [win]\nabout:\n  home: https://github.com/abseil/abseil-cpp\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE\n  summary: Abseil Common Libraries (C++)\n  description: |\n    Abseil is an open-source collection of C++ code (compliant to C++11)\n    designed to augment the C++ standard library.\n  doc_url: https://github.com/abseil/abseil-cpp\n  dev_url: https://github.com/abseil/abseil-cpp\n\nextra:\n  recipe-maintainers:\n    - njzjz\n    - bluescarni\n    - xhochy\n    - h-vetinari\n  feedstock-name: abseil-cpp\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -3389,7 +3874,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -3407,7 +3892,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -3553,7 +4038,7 @@
           "always_include_files": [
             "Library/lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
@@ -3662,7 +4147,7 @@
       "summary": "Abseil Common Libraries (C++)"
     },
     "build": {
-      "number": "1"
+      "number": "2"
     },
     "extra": {
       "feedstock-name": "abseil-cpp",
@@ -3680,7 +4165,7 @@
             "libabseil",
             "libabseil =*=cxx17*"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil",
         "requirements": {
@@ -3826,7 +4311,7 @@
           "always_include_files": [
             "Library/lib/cmake/absl/"
           ],
-          "string": "cxx17_h1234567_1"
+          "string": "cxx17_h1234567_2"
         },
         "name": "libabseil-tests",
         "requirements": {
