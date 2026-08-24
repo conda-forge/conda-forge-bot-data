@@ -1,12 +1,10 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_is_python_mintruepython3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nis_abi3:\n- true\nis_python_min:\n- true\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npython_min:\n- '3.10'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - python\n  - is_python_min\n",
   "conda-forge.yml": {
     "build_platform": {
-      "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "linux_ppc64le": "linux_64"
     },
     "conda_build": {
       "error_overlinking": true
@@ -18,10 +16,15 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default",
+      "win_arm64": "default"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "c90bff08f097ec0ec87e4c8a499fc648bd83ce7e",
-  "feedstock_hash_ts": 1787579640,
+  "feedstock_hash": "3b21d2030d0acbf26eaa24d654ff349658155857",
+  "feedstock_hash_ts": 1787581047,
   "feedstock_name": "pyrage",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -33,7 +36,17 @@
       "summary": "Python bindings for rage (age in Rust)"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -54,7 +67,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -65,130 +79,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -208,7 +112,8 @@
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
@@ -235,7 +140,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -247,6 +153,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -260,7 +167,17 @@
       "summary": "Python bindings for rage (age in Rust)"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -284,7 +201,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -295,139 +213,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -450,7 +249,8 @@
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
@@ -480,7 +280,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -492,6 +293,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -505,7 +307,17 @@
       "summary": "Python bindings for rage (age in Rust)"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -529,7 +341,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -540,139 +353,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-ppc64le",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-ppc64le",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-ppc64le",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -695,7 +389,8 @@
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
@@ -725,7 +420,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -737,6 +433,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -750,7 +447,17 @@
       "summary": "Python bindings for rage (age in Rust)"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -771,7 +478,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -782,130 +490,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -926,7 +524,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -937,139 +536,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -1090,7 +570,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -1101,139 +582,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-ppc64le",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-ppc64le",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_linux-ppc64le",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -1254,7 +616,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -1265,139 +628,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -1418,7 +662,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -1429,139 +674,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -1582,7 +708,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -1593,16 +720,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
+            "script": "abi3audit %SP_DIR%/pyrage/pyrage.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -1613,7 +744,7 @@
         "requirements": {
           "build": [
             "python",
-            "cross-python_win-64",
+            "cross-python_win-arm64",
             "maturin >=1.0,<2.0",
             "rust_compiler_stub",
             "c_compiler_stub",
@@ -1623,7 +754,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -1634,98 +766,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.14.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_win-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_win-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit %SP_DIR%/pyrage/pyrage.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -1747,12 +801,14 @@
         "cross-python_linux-ppc64le",
         "cross-python_osx-64",
         "cross-python_osx-arm64",
-        "cross-python_win-64"
+        "cross-python_win-64",
+        "cross-python_win-arm64"
       ],
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
@@ -1774,7 +830,17 @@
       "summary": "Python bindings for rage (age in Rust)"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -1798,7 +864,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -1809,139 +876,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -1964,7 +912,8 @@
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
@@ -1994,7 +943,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -2006,6 +956,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -2019,7 +970,17 @@
       "summary": "Python bindings for rage (age in Rust)"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -2043,7 +1004,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -2054,139 +1016,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -2209,7 +1052,8 @@
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
@@ -2239,7 +1083,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -2251,6 +1096,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -2268,12 +1114,13 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/pyrage.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: pyrage\n  version: \"1.4.0\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/pyrage-${{ version }}.tar.gz\n  sha256: 545bf188e8d217ec88c32bc8e8bf56026c8c0b1b1f96d2688cedf1427ab0e827\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - maturin >=1.0,<2.0\n    - ${{ compiler('rust') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n  host:\n    - python\n    - maturin >=1.0,<2.0\n    - pip\n  run:\n    - python\n\ntests:\n  - python:\n      imports:\n        - pyrage\n  - requirements:\n      run:\n        - pip\n    script:\n      - pip check\n\nabout:\n  summary: Python bindings for rage (age in Rust)\n  license: MIT\n  license_file:\n    - LICENSE\n    - pyrage-stubs/LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/woodruffw/pyrage\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.4.0\"\n\npackage:\n  name: pyrage\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/p/pyrage/pyrage-${{ version }}.tar.gz\n  sha256: 545bf188e8d217ec88c32bc8e8bf56026c8c0b1b1f96d2688cedf1427ab0e827\n\nbuild:\n  number: 1\n  skip: is_abi3 and not is_python_min\n  python:\n    version_independent: ${{ is_abi3 }}\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content:\n      - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n      - python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - maturin >=1.0,<2.0\n    - ${{ compiler('rust') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib(\"c\") }}\n    - cargo-bundle-licenses\n  host:\n    - python\n    - maturin >=1.0,<2.0\n    - pip\n    - if: is_abi3\n      then: python-abi3\n  run:\n    - python\n\ntests:\n  - python:\n      imports:\n        - pyrage\n      python_version:\n        - ${{ python_min }}.*\n        - '*'\n      pip_check: true\n  - if: is_abi3\n    then:\n      script:\n        - if: win\n          then: abi3audit %SP_DIR%/pyrage/pyrage.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n          else: abi3audit $SP_DIR/pyrage/pyrage.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n      requirements:\n        run:\n          - abi3audit\n\nabout:\n  summary: Python bindings for rage (age in Rust)\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/woodruffw/pyrage\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -2285,9 +1132,11 @@
       "cross-python_osx-64",
       "cross-python_osx-arm64",
       "cross-python_win-64",
+      "cross-python_win-arm64",
       "maturin",
       "pip",
       "python",
+      "python-abi3",
       "rust_compiler_stub"
     ]
   },
@@ -2303,6 +1152,7 @@
         "cross-python_osx-64",
         "cross-python_osx-arm64",
         "cross-python_win-64",
+        "cross-python_win-arm64",
         "maturin",
         "python",
         "rust_compiler_stub"
@@ -2316,7 +1166,8 @@
         "cross-python",
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -2331,6 +1182,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -2348,6 +1200,7 @@
         "cross-python_osx-64",
         "cross-python_osx-arm64",
         "cross-python_win-64",
+        "cross-python_win-arm64",
         "maturin >=1.0,<2.0",
         "python",
         "rust_compiler_stub"
@@ -2358,7 +1211,8 @@
       "elements": [
         "maturin >=1.0,<2.0",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -2370,6 +1224,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip"
       ]
     }
@@ -2388,7 +1243,17 @@
       "summary": "Python bindings for rage (age in Rust)"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -2412,7 +1277,8 @@
           "host": [
             "python",
             "maturin >=1.0,<2.0",
-            "pip"
+            "pip",
+            "python-abi3"
           ],
           "run": [
             "python"
@@ -2423,139 +1289,20 @@
             "python": {
               "imports": [
                 "pyrage"
+              ],
+              "python_version": [
+                "3.10.*",
+                "*"
               ]
             }
           },
           {
             "requirements": {
               "run": [
-                "pip"
+                "abi3audit"
               ]
             },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_win-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_win-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
-          }
-        ],
-        "version": "1.4.0"
-      },
-      {
-        "build": null,
-        "name": "pyrage",
-        "requirements": {
-          "build": [
-            "python",
-            "cross-python_win-64",
-            "maturin >=1.0,<2.0",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses"
-          ],
-          "host": [
-            "python",
-            "maturin >=1.0,<2.0",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "pyrage"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip"
-              ]
-            },
-            "script": "pip check"
+            "script": "abi3audit %SP_DIR%/pyrage/pyrage.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "1.4.0"
@@ -2578,7 +1325,8 @@
       "host": [
         "python",
         "maturin >=1.0,<2.0",
-        "pip"
+        "pip",
+        "python-abi3"
       ],
       "run": [
         "python"
@@ -2608,7 +1356,8 @@
       "elements": [
         "maturin",
         "pip",
-        "python"
+        "python",
+        "python-abi3"
       ]
     },
     "run": {
@@ -2620,6 +1369,147 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
+        "pip"
+      ]
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/woodruffw/pyrage",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Python bindings for rage (age in Rust)"
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "python -m pip install . --no-deps --ignore-installed -vv --no-build-isolation --disable-pip-version-check"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "pyrage",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_win-arm64",
+            "maturin >=1.0,<2.0",
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.0,<2.0",
+            "pip",
+            "python-abi3"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "pyrage"
+              ],
+              "python_version": [
+                "3.14.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit %SP_DIR%/pyrage/pyrage.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+          }
+        ],
+        "version": "1.4.0"
+      }
+    ],
+    "package": {
+      "name": "pyrage",
+      "version": "1.4.0"
+    },
+    "requirements": {
+      "build": [
+        "python",
+        "cross-python_win-arm64",
+        "maturin >=1.0,<2.0",
+        "rust_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "python",
+        "maturin >=1.0,<2.0",
+        "pip",
+        "python-abi3"
+      ],
+      "run": [
+        "python"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "545bf188e8d217ec88c32bc8e8bf56026c8c0b1b1f96d2688cedf1427ab0e827",
+      "url": "https://pypi.org/packages/source/p/pyrage/pyrage-1.4.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cross-python_win-arm64",
+        "maturin",
+        "python",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "maturin",
+        "pip",
+        "python",
+        "python-abi3"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
         "pip"
       ]
     }
