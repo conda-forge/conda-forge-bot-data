@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_is_abi3false.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nis_abi3:\n- false\nis_python_min:\n- false\nopenssl:\n- '3.5'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.14.* *_cp314t\npython_min:\n- '3.10'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - python\n  - is_python_min\n  - is_abi3\n",
+  "ci_support_linux_64_is_abi3false.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nis_abi3:\n- false\nis_python_min:\n- false\nopenssl:\n- '3.5'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.14.* *_cp314t\npython_min:\n- '3.10'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - python\n  - is_python_min\n  - is_abi3\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": "version"
@@ -22,12 +22,13 @@
     "provider": {
       "linux_aarch64": "default",
       "linux_ppc64le": "default",
-      "osx_arm64": "default"
+      "osx_arm64": "default",
+      "win_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "d39a7fdb80aeb191a2ff1ed4282005000a6ba4cd",
-  "feedstock_hash_ts": 1784707831,
+  "feedstock_hash": "70a716103eeb260f92d6ee828087fb313515a1c8",
+  "feedstock_hash_ts": 1787739054,
   "feedstock_name": "py-rattler",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -1051,6 +1052,94 @@
           }
         ],
         "version": "0.25.0"
+      },
+      {
+        "build": null,
+        "name": "py-rattler",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_win-arm64",
+            "maturin >=1.2.2,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.2.2,<2",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "rattler"
+              ],
+              "python_version": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "version": "0.25.0"
+      },
+      {
+        "build": null,
+        "name": "py-rattler",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_win-arm64",
+            "maturin >=1.2.2,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "maturin >=1.2.2,<2",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "rattler"
+              ],
+              "python_version": [
+                "3.14.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+          }
+        ],
+        "version": "0.25.0"
       }
     ],
     "package": {
@@ -1070,7 +1159,10 @@
         "cross-python_linux-ppc64le",
         "cross-python_osx-64",
         "cross-python_osx-arm64",
-        "cross-python_win-64"
+        "cross-python_win-64",
+        "cross-python_win-arm64",
+        "cmake",
+        "ninja"
       ],
       "host": [
         "python",
@@ -1462,12 +1554,13 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/py-rattler.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.25.0\"\n\nrecipe:\n  name: py-rattler\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/p/py-rattler/py_rattler-${{ version }}.tar.gz\n  sha256: 62d282870d08404898cec16da39f6085964117d19ee2f6d4a15f3ae19bd07860\n\nbuild:\n  number: 2\n\noutputs:\n  - package:\n      name: py-rattler\n    build:\n      skip:\n        - is_abi3 and not is_python_min\n        - not is_abi3 and target_platform == \"linux-ppc64le\"\n      script: build_base\n      python:\n        version_independent: ${{ is_abi3 }}\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - maturin >=1.2.2,<2\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('rust') }}\n        - cargo-bundle-licenses\n        - cargo-auditable\n      host:\n        - python\n        - if: is_abi3\n          then: python-abi3\n        - maturin >=1.2.2,<2\n        - pip\n        - if: unix\n          then:\n            - openssl\n      run:\n        - python\n    tests:\n      - python:\n          imports:\n            - rattler\n          python_version:\n            - if: is_abi3\n              then: ${{ python_min }}.*\n            - \"*\"\n      - if: is_abi3\n        then:\n          script:\n            - if: win\n              then: abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n              else: abi3audit $SP_DIR/rattler/rattler.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n          requirements:\n            run:\n              - abi3audit\n\n  - package:\n      name: py_rattler\n    build:\n      noarch: generic\n      skip: not (target_platform == \"linux-64\" and is_abi3 and is_python_min)\n    requirements:\n      run:\n        - ${{ pin_subpackage('py-rattler', upper_bound=\"x.x.x\") }}\n    tests:\n      - python:\n          imports:\n            - rattler\n    about:\n      license_file: []\n\nabout:\n  homepage: https://github.com/conda/rattler\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - py-rattler/THIRDPARTY.yml\n  summary: A blazing fast library to work with the conda ecosystem\n  description: |\n    Rattler is a library that provides common functionality used within the conda\n    ecosystem. The goal of the library is to enable programs and other libraries to\n    easily interact with the conda ecosystem without being dependent on Python. Its\n    primary use case is as a library that you can use to provide conda related\n    workflows in your own tools.\n  repository: https://github.com/conda/rattler\n\nextra:\n  feedstock-name: py-rattler\n  recipe-maintainers:\n    - baszalmstra\n    - pavelzw\n",
+  "raw_meta_yaml": "context:\n  version: \"0.25.0\"\n\nrecipe:\n  name: py-rattler\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/p/py-rattler/py_rattler-${{ version }}.tar.gz\n  sha256: 62d282870d08404898cec16da39f6085964117d19ee2f6d4a15f3ae19bd07860\n\nbuild:\n  number: 2\n\noutputs:\n  - package:\n      name: py-rattler\n    build:\n      skip:\n        - is_abi3 and not is_python_min\n        - not is_abi3 and target_platform == \"linux-ppc64le\"\n      script: build_base\n      python:\n        version_independent: ${{ is_abi3 }}\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - maturin >=1.2.2,<2\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('rust') }}\n        - cargo-bundle-licenses\n        - cargo-auditable\n        - if: target_platform == \"win-arm64\"\n          then:\n            - cmake\n            - ninja\n      host:\n        - python\n        - if: is_abi3\n          then: python-abi3\n        - maturin >=1.2.2,<2\n        - pip\n        - if: unix\n          then:\n            - openssl\n      run:\n        - python\n    tests:\n      - python:\n          imports:\n            - rattler\n          python_version:\n            - if: is_abi3\n              then: ${{ python_min }}.*\n            - \"*\"\n      - if: is_abi3\n        then:\n          script:\n            - if: win\n              then: abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n              else: abi3audit $SP_DIR/rattler/rattler.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n          requirements:\n            run:\n              - abi3audit\n\n  - package:\n      name: py_rattler\n    build:\n      noarch: generic\n      skip: not (target_platform == \"linux-64\" and is_abi3 and is_python_min)\n    requirements:\n      run:\n        - ${{ pin_subpackage('py-rattler', upper_bound=\"x.x.x\") }}\n    tests:\n      - python:\n          imports:\n            - rattler\n    about:\n      license_file: []\n\nabout:\n  homepage: https://github.com/conda/rattler\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - py-rattler/THIRDPARTY.yml\n  summary: A blazing fast library to work with the conda ecosystem\n  description: |\n    Rattler is a library that provides common functionality used within the conda\n    ecosystem. The goal of the library is to enable programs and other libraries to\n    easily interact with the conda ecosystem without being dependent on Python. Its\n    primary use case is as a library that you can use to provide conda related\n    workflows in your own tools.\n  repository: https://github.com/conda/rattler\n\nextra:\n  feedstock-name: py-rattler\n  recipe-maintainers:\n    - baszalmstra\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1475,12 +1568,15 @@
       "c_stdlib_stub",
       "cargo-auditable",
       "cargo-bundle-licenses",
+      "cmake",
       "cross-python_linux-aarch64",
       "cross-python_linux-ppc64le",
       "cross-python_osx-64",
       "cross-python_osx-arm64",
       "cross-python_win-64",
+      "cross-python_win-arm64",
       "maturin",
+      "ninja",
       "openssl",
       "pip",
       "py-rattler",
@@ -1497,12 +1593,15 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cmake",
         "cross-python_linux-aarch64",
         "cross-python_linux-ppc64le",
         "cross-python_osx-64",
         "cross-python_osx-arm64",
         "cross-python_win-64",
+        "cross-python_win-arm64",
         "maturin",
+        "ninja",
         "python",
         "rust_compiler_stub"
       ]
@@ -1547,12 +1646,15 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cmake",
         "cross-python_linux-aarch64",
         "cross-python_linux-ppc64le",
         "cross-python_osx-64",
         "cross-python_osx-arm64",
         "cross-python_win-64",
+        "cross-python_win-arm64",
         "maturin >=1.2.2,<2",
+        "ninja",
         "python",
         "rust_compiler_stub"
       ]
@@ -1735,6 +1837,189 @@
         "cargo-bundle-licenses",
         "cross-python_win-64",
         "maturin",
+        "python",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "maturin",
+        "pip",
+        "python",
+        "python-abi3"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
+        "pip"
+      ]
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "Rattler is a library that provides common functionality used within the conda\necosystem. The goal of the library is to enable programs and other libraries to\neasily interact with the conda ecosystem without being dependent on Python. Its\nprimary use case is as a library that you can use to provide conda related\nworkflows in your own tools.",
+      "dev_url": "https://github.com/conda/rattler",
+      "home": "https://github.com/conda/rattler",
+      "license": "BSD-3-Clause",
+      "license_family": "BSD-3-Clause",
+      "license_file": "LICENSE",
+      "summary": "A blazing fast library to work with the conda ecosystem"
+    },
+    "build": {
+      "number": "2",
+      "script": "build_base"
+    },
+    "extra": {
+      "feedstock-name": "py-rattler",
+      "recipe-maintainers": [
+        "baszalmstra",
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "py-rattler",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_win-arm64",
+            "maturin >=1.2.2,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "maturin >=1.2.2,<2",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "rattler"
+              ],
+              "python_version": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "version": "0.25.0"
+      },
+      {
+        "build": null,
+        "name": "py-rattler",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_win-arm64",
+            "maturin >=1.2.2,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "maturin >=1.2.2,<2",
+            "pip"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "rattler"
+              ],
+              "python_version": [
+                "3.14.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+          }
+        ],
+        "version": "0.25.0"
+      }
+    ],
+    "package": {
+      "name": "py-rattler",
+      "version": "0.25.0"
+    },
+    "requirements": {
+      "build": [
+        "python",
+        "cross-python_win-arm64",
+        "maturin >=1.2.2,<2",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "cmake",
+        "ninja"
+      ],
+      "host": [
+        "python",
+        "maturin >=1.2.2,<2",
+        "pip",
+        "python-abi3"
+      ],
+      "run": [
+        "python"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "62d282870d08404898cec16da39f6085964117d19ee2f6d4a15f3ae19bd07860",
+      "url": "https://pypi.org/packages/source/p/py-rattler/py_rattler-0.25.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cmake",
+        "cross-python_win-arm64",
+        "maturin",
+        "ninja",
         "python",
         "rust_compiler_stub"
       ]
