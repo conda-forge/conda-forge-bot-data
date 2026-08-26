@@ -1,11 +1,8 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '14'\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - fortran_compiler_version\n",
+  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfortran_compiler:\n- gfortran\nfortran_compiler_version:\n- '15'\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - fortran_compiler_version\n",
   "conda-forge.yml": {
-    "build_platform": {
-      "osx_arm64": "osx_64"
-    },
     "conda_build": {
       "error_overlinking": true
     },
@@ -14,10 +11,13 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "osx_arm64": "default"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "671966ca931d7cbee299b14a0f95f66a052e34e0",
-  "feedstock_hash_ts": 1776879764,
+  "feedstock_hash": "f96ccf0ad55ee2b9dbdc39dce7f870281be6fe83",
+  "feedstock_hash_ts": 1787740825,
   "feedstock_name": "pygotm",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -30,7 +30,7 @@
       "summary": "Python interface to the General Ocean Turbulence Model"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -45,9 +45,9 @@
       "build": [
         "cmake",
         "make",
+        "c_stdlib_stub",
         "c_compiler_stub",
-        "fortran_compiler_stub",
-        "c_stdlib_stub"
+        "fortran_compiler_stub"
       ],
       "host": [
         "python",
@@ -113,7 +113,7 @@
       "summary": "Python interface to the General Ocean Turbulence Model"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -128,13 +128,10 @@
       "build": [
         "cmake",
         "make",
+        "c_stdlib_stub",
         "c_compiler_stub",
         "fortran_compiler_stub",
-        "c_stdlib_stub",
-        "ninja",
-        "m2w64_c_compiler_stub",
-        "m2w64_fortran_compiler_stub",
-        "m2w64_c_stdlib_stub"
+        "ninja"
       ],
       "host": [
         "python",
@@ -142,7 +139,7 @@
         "pip",
         "setuptools",
         "numpy",
-        "libpython"
+        "distutils-activate-mingw"
       ],
       "run": [
         "python"
@@ -170,7 +167,7 @@
       "summary": "Python interface to the General Ocean Turbulence Model"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -185,9 +182,9 @@
       "build": [
         "cmake",
         "make",
+        "c_stdlib_stub",
         "c_compiler_stub",
-        "fortran_compiler_stub",
-        "c_stdlib_stub"
+        "fortran_compiler_stub"
       ],
       "host": [
         "python",
@@ -253,7 +250,7 @@
       "summary": "Python interface to the General Ocean Turbulence Model"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -268,9 +265,9 @@
       "build": [
         "cmake",
         "make",
+        "c_stdlib_stub",
         "c_compiler_stub",
-        "fortran_compiler_stub",
-        "c_stdlib_stub"
+        "fortran_compiler_stub"
       ],
       "host": [
         "python",
@@ -342,7 +339,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pygotm.json"
   },
-  "raw_meta_yaml": "{% set version = \"0.1.5\" %}\n{% set build = 0 %}\n\npackage:\n  name: pygotm\n  version: {{ version }}\n\nsource:\n  #git_url: https://github.com/BoldingBruggeman/pygotm.git\n  url: https://github.com/BoldingBruggeman/pygotm/releases/download/v{{ version }}/code.tar.gz\n  sha256: f8876848717a5bd5211e481e93437b01b20633d48dd9e286f0a38896a7e7e335\n\nbuild:\n  number: {{ build }}\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n    - cmake\n    - make                                   # [not win]\n    - {{ compiler('c') }}                    # [not win] NB on windows this would activate Visual Studio and make that the default C/C++ compiler\n    - {{ compiler('fortran') }}              # [not win]\n    - {{ stdlib(\"c\") }}                      # [not win] on Windows this pulls in VS and causes cmake to use its cl.exe, which is incompatible with the m2w64 version of windres.exe\n    - ninja                                  # [win]\n    - {{ compiler('m2w64_c') }}              # [win]\n    - {{ compiler('m2w64_fortran') }}        # [win]\n    - {{ stdlib(\"m2w64_c\") }}                # [win]\n  host:\n    - python {{ python }}\n    - cython\n    - pip\n    - setuptools\n    - numpy\n    - libpython                              # [win]\n  run:\n    - python\n    #- m2w64-gcc-libgfortran                  # [win] NB m2w64-gcc-libs and m2w64-gcc-libs-core are added automatically by m2w64 compiler functions under build\n\n\ntest:\n  imports:\n    - pygotm\n\nabout:\n  home: https://github.com/BoldingBruggeman/pygotm\n  summary: 'Python interface to the General Ocean Turbulence Model'\n  description: |\n    This package provides access to the turbulence and vertical diffusion\n    algorithms of the General Ocean Turbulence Model\n  license: GPL-2.0-only\n  license_family: GPL\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - jornbr\n",
+  "raw_meta_yaml": "{% set version = \"0.1.5\" %}\n{% set build = 1 %}\n\npackage:\n  name: pygotm\n  version: {{ version }}\n\nsource:\n  #git_url: https://github.com/BoldingBruggeman/pygotm.git\n  url: https://github.com/BoldingBruggeman/pygotm/releases/download/v{{ version }}/code.tar.gz\n  sha256: f8876848717a5bd5211e481e93437b01b20633d48dd9e286f0a38896a7e7e335\n\nbuild:\n  number: {{ build }}\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n    - cmake\n    - make                                   # [not win]\n    - ninja                                  # [win]\n    # uses m2w64 toolchain on windows, see conda_build_config.yaml\n    - {{ stdlib(\"c\") }}\n    - {{ compiler(\"c\") }}\n    - {{ compiler(\"fortran\") }}\n  host:\n    - python {{ python }}\n    - cython\n    - pip\n    - setuptools\n    - numpy\n    - distutils-activate-mingw               # [win]\n  run:\n    - python\n    #- m2w64-gcc-libgfortran                  # [win] NB m2w64-gcc-libs and m2w64-gcc-libs-core are added automatically by m2w64 compiler functions under build\n\n\ntest:\n  imports:\n    - pygotm\n\nabout:\n  home: https://github.com/BoldingBruggeman/pygotm\n  summary: 'Python interface to the General Ocean Turbulence Model'\n  description: |\n    This package provides access to the turbulence and vertical diffusion\n    algorithms of the General Ocean Turbulence Model\n  license: GPL-2.0-only\n  license_family: GPL\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - jornbr\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -350,11 +347,8 @@
       "c_stdlib_stub",
       "cmake",
       "cython",
+      "distutils-activate-mingw",
       "fortran_compiler_stub",
-      "libpython",
-      "m2w64_c_compiler_stub",
-      "m2w64_c_stdlib_stub",
-      "m2w64_fortran_compiler_stub",
       "make",
       "ninja",
       "numpy",
@@ -371,9 +365,6 @@
         "c_stdlib_stub",
         "cmake",
         "fortran_compiler_stub",
-        "m2w64_c_compiler_stub",
-        "m2w64_c_stdlib_stub",
-        "m2w64_fortran_compiler_stub",
         "make",
         "ninja"
       ]
@@ -384,8 +375,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cython",
+        "distutils-activate-mingw",
         "fortran_compiler_stub",
-        "libpython",
         "numpy",
         "pip",
         "python",
@@ -415,9 +406,6 @@
         "c_stdlib_stub",
         "cmake",
         "fortran_compiler_stub",
-        "m2w64_c_compiler_stub",
-        "m2w64_c_stdlib_stub",
-        "m2w64_fortran_compiler_stub",
         "make",
         "ninja"
       ]
@@ -426,7 +414,7 @@
       "__set__": true,
       "elements": [
         "cython",
-        "libpython",
+        "distutils-activate-mingw",
         "numpy",
         "pip",
         "python",
@@ -459,7 +447,7 @@
       "summary": "Python interface to the General Ocean Turbulence Model"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -474,9 +462,9 @@
       "build": [
         "cmake",
         "ninja",
-        "m2w64_c_compiler_stub",
-        "m2w64_fortran_compiler_stub",
-        "m2w64_c_stdlib_stub"
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "fortran_compiler_stub"
       ],
       "host": [
         "python",
@@ -484,7 +472,7 @@
         "pip",
         "setuptools",
         "numpy",
-        "libpython"
+        "distutils-activate-mingw"
       ],
       "run": [
         "python"
@@ -505,10 +493,10 @@
     "build": {
       "__set__": true,
       "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
         "cmake",
-        "m2w64_c_compiler_stub",
-        "m2w64_c_stdlib_stub",
-        "m2w64_fortran_compiler_stub",
+        "fortran_compiler_stub",
         "ninja"
       ]
     },
@@ -516,7 +504,7 @@
       "__set__": true,
       "elements": [
         "cython",
-        "libpython",
+        "distutils-activate-mingw",
         "numpy",
         "pip",
         "python",
