@@ -7,9 +7,9 @@
       "automerge": true
     },
     "build_platform": {
-      "linux_aarch64": "linux_64",
+      "linux_aarch64": "linux_aarch64",
       "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "osx_arm64": "osx_arm64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -21,12 +21,13 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "linux_ppc64le": "default",
+      "osx_arm64": "github_actions"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "a663d246323d0738f93824673d64e867630f6068",
-  "feedstock_hash_ts": 1787719338,
+  "feedstock_hash": "10e18e5d9be9c0f3f22c8a84213146d545060de8",
+  "feedstock_hash_ts": 1787751782,
   "feedstock_name": "python-suitesparse-graphblas",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -88,6 +89,7 @@
         "pip check",
         "python -c \"import platform ; print(platform.machine())\"",
         "python -c \"from suitesparse_graphblas import lib, ffi\"",
+        "python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"",
         "pytest -v --pyargs suitesparse_graphblas"
       ],
       "imports": [
@@ -195,6 +197,7 @@
         "pip check",
         "python -c \"import platform ; print(platform.machine())\"",
         "python -c \"from suitesparse_graphblas import lib, ffi\"",
+        "python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"",
         "pytest -v --pyargs suitesparse_graphblas"
       ],
       "imports": [
@@ -302,6 +305,7 @@
         "pip check",
         "python -c \"import platform ; print(platform.machine())\"",
         "python -c \"from suitesparse_graphblas import lib, ffi\"",
+        "python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"",
         "pytest -v --pyargs suitesparse_graphblas"
       ],
       "imports": [
@@ -409,6 +413,7 @@
         "pip check",
         "python -c \"import platform ; print(platform.machine())\"",
         "python -c \"from suitesparse_graphblas import lib, ffi\"",
+        "python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"",
         "pytest -v --pyargs suitesparse_graphblas"
       ],
       "imports": [
@@ -480,6 +485,7 @@
         "pip check",
         "python -c \"import platform ; print(platform.machine())\"",
         "python -c \"from suitesparse_graphblas import lib, ffi\"",
+        "python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"",
         "pytest -v --pyargs suitesparse_graphblas"
       ],
       "imports": [
@@ -587,6 +593,7 @@
         "pip check",
         "python -c \"import platform ; print(platform.machine())\"",
         "python -c \"from suitesparse_graphblas import lib, ffi\"",
+        "python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"",
         "pytest -v --pyargs suitesparse_graphblas"
       ],
       "imports": [
@@ -653,7 +660,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/python-suitesparse-graphblas.json"
   },
-  "raw_meta_yaml": "{% set name = \"python-suitesparse-graphblas\" %}\n{% set version = \"10.5.0.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://files.pythonhosted.org/packages/source/s/suitesparse_graphblas/suitesparse_graphblas-{{ version }}.tar.gz\n  sha256: 66aec95b05bc6ebb2c85d4f41ff906ec954db51d95158e1b168056dfd475d683\n\nbuild:\n  skip: true  # [py<311]\n  number: 0\n  script:\n    # The sdist ships a utils.c that was cythonized against numpy 2.5 and only compiles\n    # with numpy >=2.5 headers; drop it so it is regenerated for the numpy used here.\n    - {{ PYTHON }} -c \"import pathlib; pathlib.Path('suitesparse_graphblas/utils.c').unlink(missing_ok=True)\"\n    - {{ PYTHON }} -m pip install . -vv\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n    - cffi                                   # [build_platform != target_platform]\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n  host:\n    - python\n    - pip\n    - setuptools >=77\n    - setuptools-git-versioning\n    - cffi\n    - cython\n    - graphblas ={{ version.rsplit('.', 1)[0] }}\n    - numpy\n  run:\n    - python\n    - cffi\n    - numpy >=1.24\n\ntest:\n  imports:\n    - suitesparse_graphblas\n  commands:\n    - pip check\n    - python -c \"import platform ; print(platform.machine())\"\n    - python -c \"from suitesparse_graphblas import lib, ffi\"\n    - pytest -v --pyargs suitesparse_graphblas\n  requires:\n    - pip\n    - pytest\n\nabout:\n  home: https://github.com/GraphBLAS/python-suitesparse-graphblas\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE\n  summary: Python CFFI binding around SuiteSparse::GraphBLAS\n  description: |\n    Python CFFI binding around SuiteSparse::GraphBLAS. This is a base package that exposes\n    only the low level CFFI API bindings and symbols. This package is shared by the syntax\n    bindings pygraphblas and python-graphblas.\n  dev_url: https://github.com/GraphBLAS/python-suitesparse-graphblas\n\nextra:\n  recipe-maintainers:\n    - jim22k\n    - eriknw\n    - michelp\n",
+  "raw_meta_yaml": "{% set name = \"python-suitesparse-graphblas\" %}\n{% set version = \"10.5.0.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://files.pythonhosted.org/packages/source/s/suitesparse_graphblas/suitesparse_graphblas-{{ version }}.tar.gz\n  sha256: 66aec95b05bc6ebb2c85d4f41ff906ec954db51d95158e1b168056dfd475d683\n\nbuild:\n  skip: true  # [py<311]\n  number: 0\n  script:\n    # The sdist ships a utils.c that was cythonized against numpy 2.5 and only compiles\n    # with numpy >=2.5 headers; drop it so it is regenerated for the numpy used here.\n    - {{ PYTHON }} -c \"import pathlib; pathlib.Path('suitesparse_graphblas/utils.c').unlink(missing_ok=True)\"\n    - {{ PYTHON }} -m pip install . -vv\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n    - cffi                                   # [build_platform != target_platform]\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n  host:\n    - python\n    - pip\n    - setuptools >=77\n    - setuptools-git-versioning\n    - cffi\n    - cython\n    - graphblas ={{ version.rsplit('.', 1)[0] }}\n    - numpy\n  run:\n    - python\n    - cffi\n    - numpy >=1.24\n\ntest:\n  imports:\n    - suitesparse_graphblas\n  commands:\n    - pip check\n    - python -c \"import platform ; print(platform.machine())\"\n    - python -c \"from suitesparse_graphblas import lib, ffi\"\n    # Fail loudly if libgraphblas was built without OpenMP. GraphBLAS only\n    # warns at configure time and still builds a serial library, so this is\n    # otherwise invisible: graphblas 10.5.0 shipped that way on osx-arm64\n    # while still depending on llvm-openmp.\n    - python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"\n    - pytest -v --pyargs suitesparse_graphblas\n  requires:\n    - pip\n    - pytest\n\nabout:\n  home: https://github.com/GraphBLAS/python-suitesparse-graphblas\n  license: Apache-2.0\n  license_family: Apache\n  license_file: LICENSE\n  summary: Python CFFI binding around SuiteSparse::GraphBLAS\n  description: |\n    Python CFFI binding around SuiteSparse::GraphBLAS. This is a base package that exposes\n    only the low level CFFI API bindings and symbols. This package is shared by the syntax\n    bindings pygraphblas and python-graphblas.\n  dev_url: https://github.com/GraphBLAS/python-suitesparse-graphblas\n\nextra:\n  recipe-maintainers:\n    - jim22k\n    - eriknw\n    - michelp\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -812,6 +819,7 @@
         "pip check",
         "python -c \"import platform ; print(platform.machine())\"",
         "python -c \"from suitesparse_graphblas import lib, ffi\"",
+        "python -c \"import suitesparse_graphblas as s; from suitesparse_graphblas import lib, ffi; s.initialize(); p = ffi.new('int32_t*'); assert lib.GrB_Global_get_INT32(lib.GrB_GLOBAL, p, lib.GxB_LIBRARY_OPENMP) == lib.GrB_SUCCESS; assert p[0], 'libgraphblas was built without OpenMP'\"",
         "pytest -v --pyargs suitesparse_graphblas"
       ],
       "imports": [
