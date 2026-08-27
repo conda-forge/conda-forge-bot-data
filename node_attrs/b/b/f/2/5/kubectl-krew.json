@@ -1,46 +1,52 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ngo_compiler:\n- go-nocgo\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
     },
     "build_platform": {
-      "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "linux_riscv64": "linux_64",
+      "win_arm64": "win_64"
     },
     "conda_build": {
-      "error_overlinking": true
+      "error_overlinking": true,
+      "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "07ddad72195f26199590f103046f4438601935da",
-  "feedstock_hash_ts": 1776814026,
+  "feedstock_hash": "3ff71a53630a7056180070275b026803f2b2621c",
+  "feedstock_hash_ts": 1787835531,
   "feedstock_name": "kubectl-krew",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
       "home": "https://github.com/kubernetes-sigs/krew",
       "license": "Apache-2.0",
-      "license_file": [
-        "src/github.com/kubernetes-sigs/krew/LICENSE",
-        "library_licenses/"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
       "summary": "Krew is the package manager for kubectl plugins"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "pushd src/github.com/kubernetes-sigs/krew",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o $PREFIX/bin/kubectl-krew -tags netgo ./cmd/krew",
-        "go-licenses save ./cmd/krew --save_path ../../../../library_licenses",
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"$PREFIX/bin/kubectl-krew\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses",
         "chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)"
       ]
     },
@@ -49,33 +55,90 @@
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "kubectl-krew",
       "version": "0.5.0"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub",
+        "go-nocgo_compiler_stub",
         "go-licenses"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "kubectl-krew version",
-        "kubectl-krew update",
-        "kubectl-krew install ctx"
-      ],
-      "requires": [
-        "git"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -83,7 +146,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -103,20 +166,19 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
       "home": "https://github.com/kubernetes-sigs/krew",
       "license": "Apache-2.0",
-      "license_file": [
-        "src/github.com/kubernetes-sigs/krew/LICENSE",
-        "library_licenses/"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
       "summary": "Krew is the package manager for kubectl plugins"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "pushd src/github.com/kubernetes-sigs/krew",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o $PREFIX/bin/kubectl-krew -tags netgo ./cmd/krew",
-        "go-licenses save ./cmd/krew --save_path ../../../../library_licenses",
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"$PREFIX/bin/kubectl-krew\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses",
         "chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)"
       ]
     },
@@ -125,33 +187,56 @@
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "kubectl-krew",
       "version": "0.5.0"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub",
+        "go-nocgo_compiler_stub",
         "go-licenses"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "kubectl-krew version",
-        "kubectl-krew update",
-        "kubectl-krew install ctx"
-      ],
-      "requires": [
-        "git"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -159,7 +244,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -179,20 +264,19 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
       "home": "https://github.com/kubernetes-sigs/krew",
       "license": "Apache-2.0",
-      "license_file": [
-        "src/github.com/kubernetes-sigs/krew/LICENSE",
-        "library_licenses/"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
       "summary": "Krew is the package manager for kubectl plugins"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "pushd src/github.com/kubernetes-sigs/krew",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o $PREFIX/bin/kubectl-krew -tags netgo ./cmd/krew",
-        "go-licenses save ./cmd/krew --save_path ../../../../library_licenses",
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"$PREFIX/bin/kubectl-krew\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses",
         "chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)"
       ]
     },
@@ -201,33 +285,56 @@
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "kubectl-krew",
       "version": "0.5.0"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub",
+        "go-nocgo_compiler_stub",
         "go-licenses"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "kubectl-krew version",
-        "kubectl-krew update",
-        "kubectl-krew install ctx"
-      ],
-      "requires": [
-        "git"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -235,7 +342,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -255,22 +362,21 @@
   },
   "meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
       "home": "https://github.com/kubernetes-sigs/krew",
       "license": "Apache-2.0",
-      "license_file": [
-        "src/github.com/kubernetes-sigs/krew/LICENSE",
-        "library_licenses/"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
       "summary": "Krew is the package manager for kubectl plugins"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "pushd src/github.com/kubernetes-sigs/krew",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o $PREFIX/bin/kubectl-krew -tags netgo ./cmd/krew",
-        "go-licenses save ./cmd/krew --save_path ../../../../library_licenses",
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"$PREFIX/bin/kubectl-krew\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses",
         "chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o %LIBRARY_BIN%\\kubectl-krew.exe -tags netgo ./cmd/krew"
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"%LIBRARY_BIN%\\kubectl-krew.exe\" -tags netgo ./cmd/krew"
       ]
     },
     "extra": {
@@ -278,77 +384,302 @@
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      },
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "script": "kubectl-krew version"
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "kubectl-krew",
       "version": "0.5.0"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub",
+        "go-nocgo_compiler_stub",
         "go-licenses"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      },
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      },
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      },
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      },
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      },
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "kubectl-krew version",
-        "kubectl-krew update",
-        "kubectl-krew install ctx"
-      ],
-      "requires": [
-        "git"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
     }
   },
   "name": "kubectl-krew",
   "osx_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
       "home": "https://github.com/kubernetes-sigs/krew",
       "license": "Apache-2.0",
-      "license_file": [
-        "src/github.com/kubernetes-sigs/krew/LICENSE",
-        "library_licenses/"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
       "summary": "Krew is the package manager for kubectl plugins"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "pushd src/github.com/kubernetes-sigs/krew",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o $PREFIX/bin/kubectl-krew -tags netgo ./cmd/krew",
-        "go-licenses save ./cmd/krew --save_path ../../../../library_licenses",
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"$PREFIX/bin/kubectl-krew\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses",
         "chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)"
       ]
     },
@@ -357,33 +688,56 @@
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "kubectl-krew",
       "version": "0.5.0"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub",
+        "go-nocgo_compiler_stub",
         "go-licenses"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "kubectl-krew version",
-        "kubectl-krew update",
-        "kubectl-krew install ctx"
-      ],
-      "requires": [
-        "git"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -391,7 +745,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -411,20 +765,19 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
       "home": "https://github.com/kubernetes-sigs/krew",
       "license": "Apache-2.0",
-      "license_file": [
-        "src/github.com/kubernetes-sigs/krew/LICENSE",
-        "library_licenses/"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
       "summary": "Krew is the package manager for kubectl plugins"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "pushd src/github.com/kubernetes-sigs/krew",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o $PREFIX/bin/kubectl-krew -tags netgo ./cmd/krew",
-        "go-licenses save ./cmd/krew --save_path ../../../../library_licenses",
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"$PREFIX/bin/kubectl-krew\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses",
         "chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)"
       ]
     },
@@ -433,33 +786,56 @@
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update",
+              "kubectl-krew install ctx"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "kubectl-krew",
       "version": "0.5.0"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub",
+        "go-nocgo_compiler_stub",
         "go-licenses"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "kubectl-krew version",
-        "kubectl-krew update",
-        "kubectl-krew install ctx"
-      ],
-      "requires": [
-        "git"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -467,7 +843,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -498,17 +874,18 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/kubectl-krew.json"
   },
-  "raw_meta_yaml": "{% set goname = \"github.com/kubernetes-sigs/krew\" %}\n{% set version = \"0.5.0\" %}\n\n{% set name = goname.split('/')[-1] %}\n{% set pkg_src = ('src/'+goname).replace(\"/\",os.sep) %}\n\npackage:\n  name: kubectl-{{ name|lower }}\n  version: {{ version|replace(\"-\", \"_\") }}\n\nsource:\n  - folder: {{ pkg_src }}\n    url: https://{{ goname }}/archive/v{{ version }}.tar.gz\n    sha256: 2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469\n\nbuild:\n  number: 0\n  script:\n    - pushd {{ pkg_src }}\n    - go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v{{ version }}\" -v -o $PREFIX/bin/kubectl-krew -tags netgo ./cmd/krew  # [not win]\n    - go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v{{ version }}\" -v -o %LIBRARY_BIN%\\kubectl-krew.exe -tags netgo ./cmd/krew  # [win]\n    - go-licenses save ./cmd/krew --save_path ../../../../library_licenses\n    # Clear out cache to avoid file not removable warnings\n    - chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)  # [unix]\n\nrequirements:\n  build:\n    - {{ compiler('go') }}\n    - go-licenses\n\ntest:\n  requires:\n    - git\n  commands:\n    - kubectl-krew version\n    - kubectl-krew update\n    - kubectl-krew install ctx  # [not win]\n\nabout:\n  home: https://{{ goname }}\n  license: Apache-2.0\n  license_file:\n    - {{ pkg_src }}/LICENSE\n    - library_licenses/\n  summary: Krew is the package manager for kubectl plugins\n\nextra:\n  recipe-maintainers:\n    - dbast\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: kubectl-krew\n  version: 0.5.0\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/kubernetes-sigs/krew/archive/v${{ version }}.tar.gz\n  sha256: 2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469\n  target_directory: src\n\nbuild:\n  number: 1\n  script:\n    - cd src\n    - if: unix\n      then: go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"$PREFIX/bin/kubectl-krew\" -tags netgo ./cmd/krew\n    - if: win\n      then: go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"%LIBRARY_BIN%\\kubectl-krew.exe\" -tags netgo ./cmd/krew\n    - go-licenses save ./cmd/krew --save_path ../library_licenses\n    - if: unix\n      then: chmod -R u+w $(go env GOPATH) && rm -r $(go env GOPATH)\n\nrequirements:\n  build:\n    - ${{ compiler('go-nocgo') }}\n    - go-licenses\n\ntests:\n  - package_contents:\n      bin:\n        - kubectl-krew\n  - requirements:\n      run:\n        - if: not riscv64 and not (win and arm64)\n          then: git\n    script:\n      - kubectl-krew version\n      - if: not riscv64 and not (win and arm64)\n        then: kubectl-krew update\n      - if: not win and not riscv64\n        then: kubectl-krew install ctx\n\nabout:\n  homepage: https://github.com/kubernetes-sigs/krew\n  repository: https://github.com/kubernetes-sigs/krew\n  license: Apache-2.0\n  license_file:\n    - src/LICENSE\n    - library_licenses/\n  summary: Krew is the package manager for kubectl plugins\n\nextra:\n  recipe-maintainers:\n    - dbast\n",
   "req": {
     "__set__": true,
     "elements": [
       "go-licenses",
-      "go_compiler_stub"
+      "go-nocgo_compiler_stub"
     ]
   },
   "requirements": {
@@ -516,7 +893,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -540,7 +917,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -565,20 +942,19 @@
   },
   "win_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
       "home": "https://github.com/kubernetes-sigs/krew",
       "license": "Apache-2.0",
-      "license_file": [
-        "src/github.com/kubernetes-sigs/krew/LICENSE",
-        "library_licenses/"
-      ],
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
       "summary": "Krew is the package manager for kubectl plugins"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "pushd src/github.com/kubernetes-sigs/krew",
-        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v0.5.0\" -v -o %LIBRARY_BIN%\\kubectl-krew.exe -tags netgo ./cmd/krew",
-        "go-licenses save ./cmd/krew --save_path ../../../../library_licenses"
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"%LIBRARY_BIN%\\kubectl-krew.exe\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses"
       ]
     },
     "extra": {
@@ -586,32 +962,55 @@
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "git"
+              ]
+            },
+            "script": [
+              "kubectl-krew version",
+              "kubectl-krew update"
+            ]
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
     "package": {
       "name": "kubectl-krew",
       "version": "0.5.0"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub",
+        "go-nocgo_compiler_stub",
         "go-licenses"
       ]
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "src/github.com/kubernetes-sigs/krew",
-        "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
-        "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
-      }
-    ],
-    "test": {
-      "commands": [
-        "kubectl-krew version",
-        "kubectl-krew update"
-      ],
-      "requires": [
-        "git"
-      ]
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -619,7 +1018,7 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go_compiler_stub"
+        "go-nocgo_compiler_stub"
       ]
     },
     "host": {
@@ -635,6 +1034,92 @@
       "elements": [
         "git"
       ]
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/kubernetes-sigs/krew",
+      "home": "https://github.com/kubernetes-sigs/krew",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "src/LICENSE",
+      "summary": "Krew is the package manager for kubectl plugins"
+    },
+    "build": {
+      "number": "1",
+      "script": [
+        "cd src",
+        "go build -ldflags \"-w -X sigs.k8s.io/krew/internal/version.gitTag=v${{ version }}\" -v -o \"%LIBRARY_BIN%\\kubectl-krew.exe\" -tags netgo ./cmd/krew",
+        "go-licenses save ./cmd/krew --save_path ../library_licenses"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "dbast"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "kubectl-krew",
+        "requirements": {
+          "build": [
+            "go-nocgo_compiler_stub",
+            "go-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "kubectl-krew"
+              ]
+            }
+          },
+          {
+            "script": "kubectl-krew version"
+          }
+        ],
+        "version": "0.5.0"
+      }
+    ],
+    "package": {
+      "name": "kubectl-krew",
+      "version": "0.5.0"
+    },
+    "requirements": {
+      "build": [
+        "go-nocgo_compiler_stub",
+        "go-licenses"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "2a9a751d63f67dfc21998774ec9cccf19aa5f1a22596f43226e211578f9f6469",
+      "url": "https://github.com/kubernetes-sigs/krew/archive/v0.5.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "go-licenses",
+        "go-nocgo_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
     }
   }
 }
