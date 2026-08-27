@@ -16,8 +16,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "a64d167cc1c45d511222b06261e0ab107bf5764a",
-  "feedstock_hash_ts": 1787811100,
+  "feedstock_hash": "c4d862a6e14d4ce5e0e15b57a18956f98a03091b",
+  "feedstock_hash_ts": 1787816673,
   "feedstock_name": "finesse",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -95,7 +95,8 @@
     "source": {
       "patches": [
         "ignore-scipy-checks.patch",
-        "comment-environment-test.patch"
+        "comment-environment-test.patch",
+        "skip-failing-plot-windows.patch"
       ],
       "sha256": "cabc6c4a660343cd2a4dd77b086122e53c1666fa70421e77f070fcd103e14516",
       "url": "https://files.pythonhosted.org/packages/source/f/finesse/finesse-3.0.2.tar.gz"
@@ -280,7 +281,8 @@
     "source": {
       "patches": [
         "ignore-scipy-checks.patch",
-        "comment-environment-test.patch"
+        "comment-environment-test.patch",
+        "skip-failing-plot-windows.patch"
       ],
       "sha256": "cabc6c4a660343cd2a4dd77b086122e53c1666fa70421e77f070fcd103e14516",
       "url": "https://files.pythonhosted.org/packages/source/f/finesse/finesse-3.0.2.tar.gz"
@@ -396,7 +398,8 @@
     "source": {
       "patches": [
         "ignore-scipy-checks.patch",
-        "comment-environment-test.patch"
+        "comment-environment-test.patch",
+        "skip-failing-plot-windows.patch"
       ],
       "sha256": "cabc6c4a660343cd2a4dd77b086122e53c1666fa70421e77f070fcd103e14516",
       "url": "https://files.pythonhosted.org/packages/source/f/finesse/finesse-3.0.2.tar.gz"
@@ -579,7 +582,8 @@
     "source": {
       "patches": [
         "ignore-scipy-checks.patch",
-        "comment-environment-test.patch"
+        "comment-environment-test.patch",
+        "skip-failing-plot-windows.patch"
       ],
       "sha256": "cabc6c4a660343cd2a4dd77b086122e53c1666fa70421e77f070fcd103e14516",
       "url": "https://files.pythonhosted.org/packages/source/f/finesse/finesse-3.0.2.tar.gz"
@@ -703,7 +707,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/finesse.json"
   },
-  "raw_meta_yaml": "{% set name = \"finesse\" %}\n{% set version = \"3.0.2\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://files.pythonhosted.org/packages/source/{{ name[0] }}/{{ name }}/finesse-{{ version }}.tar.gz\n  sha256: cabc6c4a660343cd2a4dd77b086122e53c1666fa70421e77f070fcd103e14516\n  patches:\n    # The scipy checks are causing issues when importing scipy during the installation\n    # procedure\n    - ignore-scipy-checks.patch\n    # This test requires the git repo to be present, commenting it out\n    - comment-environment-test.patch\n\nbuild:\n  number: 0\n  skip: true  # [py<311]\n  entry_points:\n    - kat3 = finesse.__main__:cli\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - libgomp  # [linux]\n    - llvm-openmp  # [osx]\n    # extras for cross-compiling\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - cython                              # [build_platform != target_platform]\n    - numpy >=2                           # [build_platform != target_platform]\n    - python                              # [build_platform != target_platform]\n    - matplotlib-base >=3.10\n  host:\n    - cython\n    - distutils-activate-mingw  # [win]\n    - numpy >=2\n    - pip\n    - python\n    - scipy >=1.4\n    # https://gitlab.com/ifosim/finesse/finesse3/-/issues/693\n    - setuptools\n    - setuptools-scm\n    - tqdm\n    - wheel\n    - suitesparse\n    - quantiphy\n    - matplotlib-base >=3.10\n  run:\n    - click >=7.1\n    - click-default-group >=1.2.2\n    - control >0.9\n    - deprecated >=1.2\n    - h5py >=3.0\n    - matplotlib-base >=3.10\n    - numpy >=1.22\n    # numpy version issues\n    - networkx >=2.4\n    - pyspellchecker >=0.6\n    - python\n    - scipy >=1.4\n    - sly >=0.4\n    - sympy >=1.6\n    - tqdm\n    - quantiphy\n    - dill\n    - pathos\ntest:\n  requires:\n    - pytest\n    - pytest-benchmark !=5.3.0\n    - pytest-xdist\n    - faker\n    - hypothesis\n    - docutils\n    - black\n    - autoflake\n    - isort\n    - jupyter-sphinx >=0.4\n    - pyyaml\n    - pip\n    - psutil\n  source_files:\n    - tests/\n    - scripts/\n    - environment.yml\n    - environment-win.yml\n    - pyproject.toml\n  imports:\n    - finesse\n    - finesse.analysis\n  commands:\n    # check requirements\n    - python -m pip check\n    # check entry points\n    - kat3 --help\n    # Skipping still runs test_benchmark_creation which fails on linux \n    - rm -rf tests/benchmarks\n    # run unit tests\n    - python -m pytest tests --import-mode=importlib --benchmark-skip\n\nabout:\n  home: https://finesse.ifosim.org/\n  dev_url: https://gitlab.com/ifosim/finesse/finesse3\n  doc_url: https://finesse.ifosim.org/docs/\n  license: GPL-3.0-or-later\n  license_file: LICENSE.md\n  summary: A simulation tool for modelling laser interferometers\n  description: |\n    Finesse 3 is a Python based interferometer simulation software.\n\nextra:\n  recipe-maintainers:\n    - msalle\n    - JGobeil\n    - danielbrown2\n    - duncanmmacleod\n    - freise\n    - mironleon\n",
+  "raw_meta_yaml": "{% set name = \"finesse\" %}\n{% set version = \"3.0.2\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://files.pythonhosted.org/packages/source/{{ name[0] }}/{{ name }}/finesse-{{ version }}.tar.gz\n  sha256: cabc6c4a660343cd2a4dd77b086122e53c1666fa70421e77f070fcd103e14516\n  patches:\n    # The scipy checks are causing issues when importing scipy during the installation\n    # procedure\n    - ignore-scipy-checks.patch\n    # This test requires the git repo to be present, commenting it out\n    - comment-environment-test.patch\n    - skip-failing-plot-windows.patch\n\nbuild:\n  number: 0\n  skip: true  # [py<311]\n  entry_points:\n    - kat3 = finesse.__main__:cli\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - libgomp  # [linux]\n    - llvm-openmp  # [osx]\n    # extras for cross-compiling\n    - cross-python_{{ target_platform }}  # [build_platform != target_platform]\n    - cython                              # [build_platform != target_platform]\n    - numpy >=2                           # [build_platform != target_platform]\n    - python                              # [build_platform != target_platform]\n    - matplotlib-base >=3.10\n  host:\n    - cython\n    - distutils-activate-mingw  # [win]\n    - numpy >=2\n    - pip\n    - python\n    - scipy >=1.4\n    # https://gitlab.com/ifosim/finesse/finesse3/-/issues/693\n    - setuptools\n    - setuptools-scm\n    - tqdm\n    - wheel\n    - suitesparse\n    - quantiphy\n    - matplotlib-base >=3.10\n  run:\n    - click >=7.1\n    - click-default-group >=1.2.2\n    - control >0.9\n    - deprecated >=1.2\n    - h5py >=3.0\n    - matplotlib-base >=3.10\n    - numpy >=1.22\n    # numpy version issues\n    - networkx >=2.4\n    - pyspellchecker >=0.6\n    - python\n    - scipy >=1.4\n    - sly >=0.4\n    - sympy >=1.6\n    - tqdm\n    - quantiphy\n    - dill\n    - pathos\ntest:\n  requires:\n    - pytest\n    - pytest-benchmark !=5.3.0\n    - pytest-xdist\n    - faker\n    - hypothesis\n    - docutils\n    - black\n    - autoflake\n    - isort\n    - jupyter-sphinx >=0.4\n    - pyyaml\n    - pip\n    - psutil\n  source_files:\n    - tests/\n    - scripts/\n    - environment.yml\n    - environment-win.yml\n    - pyproject.toml\n  imports:\n    - finesse\n    - finesse.analysis\n  commands:\n    # check requirements\n    - python -m pip check\n    # check entry points\n    - kat3 --help\n    # Skipping still runs test_benchmark_creation which fails on linux \n    - rm -rf tests/benchmarks\n    # run unit tests\n    - python -m pytest tests --import-mode=importlib --benchmark-skip\n\nabout:\n  home: https://finesse.ifosim.org/\n  dev_url: https://gitlab.com/ifosim/finesse/finesse3\n  doc_url: https://finesse.ifosim.org/docs/\n  license: GPL-3.0-or-later\n  license_file: LICENSE.md\n  summary: A simulation tool for modelling laser interferometers\n  description: |\n    Finesse 3 is a Python based interferometer simulation software.\n\nextra:\n  recipe-maintainers:\n    - msalle\n    - JGobeil\n    - danielbrown2\n    - duncanmmacleod\n    - freise\n    - mironleon\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -966,7 +970,8 @@
     "source": {
       "patches": [
         "ignore-scipy-checks.patch",
-        "comment-environment-test.patch"
+        "comment-environment-test.patch",
+        "skip-failing-plot-windows.patch"
       ],
       "sha256": "cabc6c4a660343cd2a4dd77b086122e53c1666fa70421e77f070fcd103e14516",
       "url": "https://files.pythonhosted.org/packages/source/f/finesse/finesse-3.0.2.tar.gz"
