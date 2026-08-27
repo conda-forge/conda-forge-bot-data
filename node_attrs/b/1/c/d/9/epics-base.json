@@ -21,8 +21,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "12df62748309e68efdfa01aac5e31186e48c3160",
-  "feedstock_hash_ts": 1787577478,
+  "feedstock_hash": "86b221f304bb6fa95ec0598c33f6489b3b1bfd59",
+  "feedstock_hash_ts": 1787819738,
   "feedstock_name": "epics-base",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -34,7 +34,7 @@
       "summary": "EPICS Base Library"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "epics-base"
@@ -210,7 +210,7 @@
       "summary": "EPICS Base Library"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "epics-base"
@@ -386,7 +386,7 @@
       "summary": "EPICS Base Library"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "epics-base"
@@ -803,35 +803,6 @@
           }
         ],
         "version": "7.0.10.0"
-      },
-      {
-        "build": {
-          "strong": [],
-          "weak": [
-            "epics-base"
-          ]
-        },
-        "name": "epics-base-static-libs",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cxx_compiler_stub",
-            "make",
-            "perl",
-            "m2-patch"
-          ],
-          "host": [],
-          "run": [
-            "perl"
-          ]
-        },
-        "tests": [
-          {
-            "script": []
-          }
-        ],
-        "version": "7.0.10.0"
       }
     ],
     "package": {
@@ -877,7 +848,7 @@
       "summary": "EPICS Base Library"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "epics-base"
@@ -1053,7 +1024,7 @@
       "summary": "EPICS Base Library"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "epics-base"
@@ -1238,7 +1209,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/epics-base.json"
   },
-  "raw_meta_yaml": "# Always use 4 numbers in the version to match run_exports!\n# Add .0 if official version is on 3 numbers\nschema_version: 1\n\ncontext:\n  name: epics-base\n  version: 7.0.10.0\n\nrecipe:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  # The recipe version always carries 4 numbers to match run_exports, while\n  # upstream omits a zero patch level from release names (x.y.z, not x.y.z.0)\n  # - so don't template the version into the URL.\n  # Upstream's release asset bundles the submodules, unlike the auto-generated\n  # tag archive.\n  # Prefer the GitHub release asset over epics-controls.org: GH can re-cut\n  # assets after the initial publish, while epics-controls keeps the first\n  # cut and will then fail the recorded sha256 (useless as a mirror).\n  url: https://github.com/epics-base/${{ name }}/releases/download/R7.0.10/base-7.0.10.tar.gz\n  sha256: 44193e962793de514ead442e9b5096a13109f1ee275f131995826468aa89b839\n  patches:\n    - RULES_BUILD_remove_mkdir.patch\n    - increase_default_errlog_size.patch\n    - if: win\n      then:\n        - iocshTest-patch-for-windows-line-endings.patch\n        - skip_testCaProvider_on_windows.patch\n\nbuild:\n  number: 1\n\noutputs:\n  - package:\n      name: epics-base\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - make\n        - perl\n        - if: unix\n          then: sed\n        - if: win\n          then: m2-patch\n      host:\n        - if: unix\n          then: readline\n      run:\n        - perl\n      run_exports:\n        - ${{ pin_subpackage('epics-base', upper_bound='x.x.x.x') }}\n    build:\n      script: build\n      files:\n        - etc\n        - epics/bin\n        - epics/cfg\n        - epics/configure\n        - epics/db\n        - epics/dbd\n        - epics/html\n        - epics/include\n        # windows .dll are under bin\n        - if: win\n          then:\n            - epics/bin/*/*.dll\n            - epics/lib/*/*.lib\n            - Library/lib/*.lib\n            - Library/bin/*.dll\n        - if: osx\n          then: epics/lib/*/*.dylib\n        - if: linux\n          then: epics/lib/*/*.so*\n        - epics/lib/perl\n        - epics/lib/pkgconfig\n        - epics/templates\n    tests:\n      - script:\n          - caget -h\n          - cainfo -h\n          - caput -h\n          - camonitor -h\n          - pvget -h\n          - pvput -h\n          - pvinfo -h\n          - pvlist -h\n          - softIoc -h\n          - softIocPVA -h\n          - p2p -C modules/pva2pva/loopback.conf\n          - if: not win\n            then:\n              - test -f ${EPICS_BASE}/bin/${EPICS_HOST_ARCH}/caget\n              - test -f ${EPICS_BASE}/include/epicsVersion.h\n              - test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libCom${SHLIB_EXT}\n              - test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libca${SHLIB_EXT}\n          - if: win\n            then:\n              - if not exist %EPICS_BASE%\\bin\\%EPICS_HOST_ARCH%\\caget.exe exit 1\n              - if not exist %EPICS_BASE%\\bin\\%EPICS_HOST_ARCH%\\Com.dll exit 1\n              - if not exist %EPICS_BASE%\\bin\\%EPICS_HOST_ARCH%\\ca.dll exit 1\n              - if not exist %EPICS_BASE%\\include\\epicsVersion.h exit 1\n              - if not exist %EPICS_BASE%\\lib\\%EPICS_HOST_ARCH%\\ca.lib exit 1\n              - if not exist %EPICS_BASE%\\lib\\%EPICS_HOST_ARCH%\\Com.lib exit 1\n              - if not exist %PREFIX%\\Library\\bin\\Com.dll exit 1\n              - if not exist %PREFIX%\\Library\\lib\\Com.lib exit 1\n        files:\n          source:\n            - modules/pva2pva/loopback.conf\n\n  - package:\n      name: epics-base-static-libs\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - make\n        - perl\n        - if: win\n          then: m2-patch\n      host:\n        - if: unix\n          then: readline\n      run:\n        - if: not win\n          then: ${{ pin_subpackage('epics-base', exact=True) }}\n        - perl\n      run_exports:\n        - ${{ pin_subpackage('epics-base', upper_bound='x.x.x.x') }}\n    build:\n      script: build\n      files:\n        - if: not win\n          then: epics/lib/*/*.a\n    tests:\n      - script:\n          - if: not win\n            then: test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libca.a\n          - if: not win\n            then: test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libCom.a\n\nabout:\n  license: EPICS\n  license_file: LICENSE\n  summary: EPICS Base Library\n  homepage: http://www.aps.anl.gov/epics\n\nextra:\n  recipe-maintainers:\n    - anderslindho\n    - lucmaga\n    - beenje\n    - mrakitin\n    - tacaswell\n    - aharrisson\n    - simon-ess\n",
+  "raw_meta_yaml": "# Always use 4 numbers in the version to match run_exports!\n# Add .0 if official version is on 3 numbers\nschema_version: 1\n\ncontext:\n  name: epics-base\n  version: 7.0.10.0\n\nrecipe:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  # The recipe version always carries 4 numbers to match run_exports, while\n  # upstream omits a zero patch level from release names (x.y.z, not x.y.z.0)\n  # - so don't template the version into the URL.\n  # Upstream's release asset bundles the submodules, unlike the auto-generated\n  # tag archive.\n  # Prefer the GitHub release asset over epics-controls.org: GH can re-cut\n  # assets after the initial publish, while epics-controls keeps the first\n  # cut and will then fail the recorded sha256 (useless as a mirror).\n  url: https://github.com/epics-base/${{ name }}/releases/download/R7.0.10/base-7.0.10.tar.gz\n  sha256: 44193e962793de514ead442e9b5096a13109f1ee275f131995826468aa89b839\n  patches:\n    - RULES_BUILD_remove_mkdir.patch\n    - increase_default_errlog_size.patch\n    - if: win\n      then:\n        - iocshTest-patch-for-windows-line-endings.patch\n        - skip_testCaProvider_on_windows.patch\n\nbuild:\n  number: 2\n\noutputs:\n  - package:\n      name: epics-base\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - make\n        - perl\n        - if: unix\n          then: sed\n        - if: win\n          then: m2-patch\n      host:\n        - if: unix\n          then: readline\n      run:\n        - perl\n      run_exports:\n        - ${{ pin_subpackage('epics-base', upper_bound='x.x.x.x') }}\n    build:\n      script: build\n      files:\n        - etc\n        - epics/bin\n        - epics/cfg\n        - epics/configure\n        - epics/db\n        - epics/dbd\n        - epics/html\n        - epics/include\n        # windows .dll are under bin\n        - if: win\n          then:\n            - epics/bin/*/*.dll\n            - epics/lib/*/*.lib\n            - Library/lib/*.lib\n            - Library/bin/*.dll\n        - if: osx\n          then: epics/lib/*/*.dylib\n        - if: linux\n          then: epics/lib/*/*.so*\n        - epics/lib/perl\n        - epics/lib/pkgconfig\n        - epics/templates\n    tests:\n      - script:\n          - caget -h\n          - cainfo -h\n          - caput -h\n          - camonitor -h\n          - pvget -h\n          - pvput -h\n          - pvinfo -h\n          - pvlist -h\n          - softIoc -h\n          - softIocPVA -h\n          - p2p -C modules/pva2pva/loopback.conf\n          - if: not win\n            then:\n              - test -f ${EPICS_BASE}/bin/${EPICS_HOST_ARCH}/caget\n              - test -f ${EPICS_BASE}/include/epicsVersion.h\n              - test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libCom${SHLIB_EXT}\n              - test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libca${SHLIB_EXT}\n          - if: win\n            then:\n              - if not exist %EPICS_BASE%\\bin\\%EPICS_HOST_ARCH%\\caget.exe exit 1\n              - if not exist %EPICS_BASE%\\bin\\%EPICS_HOST_ARCH%\\Com.dll exit 1\n              - if not exist %EPICS_BASE%\\bin\\%EPICS_HOST_ARCH%\\ca.dll exit 1\n              - if not exist %EPICS_BASE%\\include\\epicsVersion.h exit 1\n              - if not exist %EPICS_BASE%\\lib\\%EPICS_HOST_ARCH%\\ca.lib exit 1\n              - if not exist %EPICS_BASE%\\lib\\%EPICS_HOST_ARCH%\\Com.lib exit 1\n              - if not exist %PREFIX%\\Library\\bin\\Com.dll exit 1\n              - if not exist %PREFIX%\\Library\\lib\\Com.lib exit 1\n        files:\n          source:\n            - modules/pva2pva/loopback.conf\n\n  - package:\n      name: epics-base-static-libs\n    build:\n      skip:\n        - win\n      script: build\n      files:\n        - epics/lib/*/*.a\n    requirements:\n      build:\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('cxx') }}\n        - make\n        - perl\n      host:\n        - if: unix\n          then: readline\n      run:\n        - ${{ pin_subpackage('epics-base', exact=True) }}\n        - perl\n      run_exports:\n        - ${{ pin_subpackage('epics-base', upper_bound='x.x.x.x') }}\n    tests:\n      - script:\n          - test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libca.a\n          - test -f ${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/libCom.a\n\nabout:\n  license: EPICS\n  license_file: LICENSE\n  summary: EPICS Base Library\n  homepage: http://www.aps.anl.gov/epics\n\nextra:\n  recipe-maintainers:\n    - anderslindho\n    - lucmaga\n    - beenje\n    - mrakitin\n    - tacaswell\n    - aharrisson\n    - simon-ess\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1336,7 +1307,7 @@
       "summary": "EPICS Base Library"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "epics-base"
@@ -1406,35 +1377,6 @@
               "if not exist %PREFIX%\\Library\\bin\\Com.dll exit 1",
               "if not exist %PREFIX%\\Library\\lib\\Com.lib exit 1"
             ]
-          }
-        ],
-        "version": "7.0.10.0"
-      },
-      {
-        "build": {
-          "strong": [],
-          "weak": [
-            "epics-base"
-          ]
-        },
-        "name": "epics-base-static-libs",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "cxx_compiler_stub",
-            "make",
-            "perl",
-            "m2-patch"
-          ],
-          "host": [],
-          "run": [
-            "perl"
-          ]
-        },
-        "tests": [
-          {
-            "script": []
           }
         ],
         "version": "7.0.10.0"
