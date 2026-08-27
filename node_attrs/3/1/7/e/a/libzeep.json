@@ -25,8 +25,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "99ea7b00a71837ba6ede0a5848ac7de22b375384",
-  "feedstock_hash_ts": 1786816658,
+  "feedstock_hash": "b20b2c1024eee675d8263c1942d1c0f0e05b05df",
+  "feedstock_hash_ts": 1787871068,
   "feedstock_name": "libzeep",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -47,7 +47,7 @@
           "libzeep"
         ]
       },
-      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DTEST_STD_CHRONO_ZONED_TIME_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
+      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DCMAKE_CROSSCOMPILING=ON\"\n    if [[ ${target_platform} == linux-* ]]; then\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=0\"\n    else\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=ON\"\n    fi\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -72,11 +72,12 @@
             "pkg-config"
           ],
           "host": [
+            "maartens_resource_compiler",
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
-            "maartens_resource_compiler",
             "nlohmann_json",
             "openssl"
           ],
@@ -94,12 +95,12 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       }
     ],
     "package": {
       "name": "libzeep",
-      "version": "8.2.0"
+      "version": "8.4.0"
     },
     "requirements": {
       "build": [
@@ -110,19 +111,23 @@
         "pkg-config"
       ],
       "host": [
+        "maartens_resource_compiler",
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
-        "maartens_resource_compiler",
         "nlohmann_json",
         "openssl"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec",
-      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz"
+      "patches": [
+        "disable-flat-map-on-libstdcxx.patch"
+      ],
+      "sha256": "6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff",
+      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -142,6 +147,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp",
         "libzeem",
         "maartens_resource_compiler",
         "nlohmann_json",
@@ -175,7 +181,7 @@
           "libzeep"
         ]
       },
-      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DTEST_STD_CHRONO_ZONED_TIME_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
+      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DCMAKE_CROSSCOMPILING=ON\"\n    if [[ ${target_platform} == linux-* ]]; then\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=0\"\n    else\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=ON\"\n    fi\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -200,11 +206,12 @@
             "pkg-config"
           ],
           "host": [
+            "maartens_resource_compiler",
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
-            "maartens_resource_compiler",
             "nlohmann_json",
             "openssl"
           ],
@@ -222,12 +229,12 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       }
     ],
     "package": {
       "name": "libzeep",
-      "version": "8.2.0"
+      "version": "8.4.0"
     },
     "requirements": {
       "build": [
@@ -238,19 +245,23 @@
         "pkg-config"
       ],
       "host": [
+        "maartens_resource_compiler",
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
-        "maartens_resource_compiler",
         "nlohmann_json",
         "openssl"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec",
-      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz"
+      "patches": [
+        "disable-flat-map-on-libstdcxx.patch"
+      ],
+      "sha256": "6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff",
+      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -270,6 +281,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp",
         "libzeem",
         "maartens_resource_compiler",
         "nlohmann_json",
@@ -303,7 +315,7 @@
           "libzeep"
         ]
       },
-      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DTEST_STD_CHRONO_ZONED_TIME_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
+      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DCMAKE_CROSSCOMPILING=ON\"\n    if [[ ${target_platform} == linux-* ]]; then\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=0\"\n    else\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=ON\"\n    fi\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -328,11 +340,12 @@
             "pkg-config"
           ],
           "host": [
+            "maartens_resource_compiler",
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
-            "maartens_resource_compiler",
             "nlohmann_json",
             "openssl"
           ],
@@ -350,12 +363,12 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       }
     ],
     "package": {
       "name": "libzeep",
-      "version": "8.2.0"
+      "version": "8.4.0"
     },
     "requirements": {
       "build": [
@@ -366,19 +379,23 @@
         "pkg-config"
       ],
       "host": [
+        "maartens_resource_compiler",
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
-        "maartens_resource_compiler",
         "nlohmann_json",
         "openssl"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec",
-      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz"
+      "patches": [
+        "disable-flat-map-on-libstdcxx.patch"
+      ],
+      "sha256": "6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff",
+      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -398,6 +415,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp",
         "libzeem",
         "maartens_resource_compiler",
         "nlohmann_json",
@@ -456,11 +474,12 @@
             "pkg-config"
           ],
           "host": [
+            "maartens_resource_compiler",
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
-            "maartens_resource_compiler",
             "nlohmann_json",
             "openssl"
           ],
@@ -478,7 +497,7 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       },
       {
         "build": {
@@ -497,11 +516,12 @@
             "pkg-config"
           ],
           "host": [
+            "maartens_resource_compiler",
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
-            "maartens_resource_compiler",
             "nlohmann_json",
             "openssl"
           ],
@@ -519,7 +539,7 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       },
       {
         "build": {
@@ -538,11 +558,12 @@
             "pkg-config"
           ],
           "host": [
+            "maartens_resource_compiler",
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
-            "maartens_resource_compiler",
             "nlohmann_json",
             "openssl"
           ],
@@ -560,7 +581,7 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       },
       {
         "build": {
@@ -583,6 +604,7 @@
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
             "nlohmann_json",
             "openssl"
@@ -601,7 +623,7 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       },
       {
         "build": {
@@ -624,6 +646,7 @@
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
             "nlohmann_json",
             "openssl"
@@ -642,7 +665,7 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       },
       {
         "build": {
@@ -664,6 +687,7 @@
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
             "nlohmann_json",
             "openssl"
@@ -682,12 +706,12 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       }
     ],
     "package": {
       "name": "libzeep",
-      "version": "8.2.0"
+      "version": "8.4.0"
     },
     "requirements": {
       "build": [
@@ -699,19 +723,23 @@
         "clang-tools"
       ],
       "host": [
+        "maartens_resource_compiler",
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
-        "maartens_resource_compiler",
         "nlohmann_json",
         "openssl"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec",
-      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz"
+      "patches": [
+        "disable-flat-map-on-libstdcxx.patch"
+      ],
+      "sha256": "6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff",
+      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz"
     }
   },
   "name": "libzeep",
@@ -733,7 +761,7 @@
           "libzeep"
         ]
       },
-      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DTEST_STD_CHRONO_ZONED_TIME_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
+      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DCMAKE_CROSSCOMPILING=ON\"\n    if [[ ${target_platform} == linux-* ]]; then\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=0\"\n    else\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=ON\"\n    fi\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -762,6 +790,7 @@
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
             "nlohmann_json",
             "openssl"
@@ -780,12 +809,12 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       }
     ],
     "package": {
       "name": "libzeep",
-      "version": "8.2.0"
+      "version": "8.4.0"
     },
     "requirements": {
       "build": [
@@ -800,6 +829,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
         "nlohmann_json",
         "openssl"
@@ -807,8 +837,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec",
-      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz"
+      "patches": [
+        "disable-flat-map-on-libstdcxx.patch"
+      ],
+      "sha256": "6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff",
+      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -829,6 +862,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp",
         "libzeem",
         "nlohmann_json",
         "openssl"
@@ -861,7 +895,7 @@
           "libzeep"
         ]
       },
-      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DTEST_STD_CHRONO_ZONED_TIME_R=ON -DCMAKE_CROSSCOMPILING=ON\"\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
+      "script": "set -exo pipefail\nexport CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\nif [[ ${build_platform} != ${target_platform} ]]; then\n    extra_cmake_args=\"-DCMAKE_CROSSCOMPILING=ON\"\n    if [[ ${target_platform} == linux-* ]]; then\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=0\"\n    else\n        extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=ON\"\n    fi\nfi\ncmake -S . -B build -G Ninja \\\n  ${CMAKE_ARGS} \\\n  -DBUILD_SHARED_LIBS=ON \\\n  -DZEEP_USE_BOOST_ASIO=OFF \\\n  ${extra_cmake_args}\ncmake --build build --parallel ${CPU_COUNT}\nif [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n    ctest -V --test-dir build\nfi\ncmake --install build\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -890,6 +924,7 @@
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
             "nlohmann_json",
             "openssl"
@@ -908,12 +943,12 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       }
     ],
     "package": {
       "name": "libzeep",
-      "version": "8.2.0"
+      "version": "8.4.0"
     },
     "requirements": {
       "build": [
@@ -928,6 +963,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
         "nlohmann_json",
         "openssl"
@@ -935,8 +971,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec",
-      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz"
+      "patches": [
+        "disable-flat-map-on-libstdcxx.patch"
+      ],
+      "sha256": "6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff",
+      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -957,6 +996,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp",
         "libzeem",
         "nlohmann_json",
         "openssl"
@@ -989,7 +1029,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libzeep.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"8.2.0\"\n\npackage:\n  name: libzeep\n  version: ${{ version }}\n\nsource:\n  url: https://forge.hekkelman.net/maarten/zeep/archive/v${{ version }}.tar.gz\n  sha256: f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec\nbuild:\n  number: 0\n  script:\n    - if: unix\n      then: |\n        set -exo pipefail\n        export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\n        if [[ ${build_platform} != ${target_platform} ]]; then\n            extra_cmake_args=\"-DTEST_STD_CHRONO_ZONED_TIME_R=ON -DCMAKE_CROSSCOMPILING=ON\"\n        fi\n        cmake -S . -B build -G Ninja \\\n          ${CMAKE_ARGS} \\\n          -DBUILD_SHARED_LIBS=ON \\\n          -DZEEP_USE_BOOST_ASIO=OFF \\\n          ${extra_cmake_args}\n        cmake --build build --parallel ${CPU_COUNT}\n        if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n            ctest -V --test-dir build\n        fi\n        cmake --install build\n    - if: win\n      then: |\n        @echo on\n        cmake -S . -B build -G Ninja ^\n          %CMAKE_ARGS% ^\n          -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON ^\n          -DBUILD_SHARED_LIBS=ON ^\n          -DZEEP_USE_BOOST_ASIO=OFF ^\n          || exit /b 1\n        cmake --build build --parallel %CPU_COUNT% || exit /b 1\n        set PATH=%SRC_DIR%\\build;%PATH%\n        @REM Run tests, excluding the http-test/fuzz-el-test which brings about a SEGFAULT/stack overflow error\n        ctest -V --test-dir build -E \"(http-test|fuzz-el-test)\" || exit /b 1\n        cmake --install build || exit /b 1\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ \"clang-tools\" if osx }}\n    - cmake\n    - ninja\n    - pkg-config\n  host:\n    - asio\n    - catch2\n    - howardhinnant_date\n    - libzeem\n    - ${{ \"maartens_resource_compiler\" if linux }}\n    - nlohmann_json\n    - openssl\n  run_exports:\n    - ${{ pin_subpackage(\"libzeep\", upper_bound=\"x\") }}\n  ignore_run_exports:\n    from_package:\n      - catch2\n\ntests:\n  - package_contents:\n      include:\n        - zeep/*\n      lib:\n        - zeep\n\nabout:\n  homepage: https://mhekkel.github.io/libzeep\n  repository: https://forge.hekkelman.net/maarten/zeep\n  documentation: https://mhekkel.github.io/libzeep\n  license: BSD-2-Clause AND BSL-1.0\n  license_file: LICENSES/\n  summary: \"C++ library for reading and writing XML and creating web, REST and SOAP servers\"\n  description: |\n    Libzeep is a web application framework written in C++.\n    To see a starter project visit the [libzeep-webapp-starter](https://github.com/mhekkel/libzeep-webapp-starter.git) page.\n\nextra:\n  recipe-maintainers:\n    - eunos-1128\n",
+  "raw_meta_yaml": "context:\n  version: \"8.4.0\"\n\npackage:\n  name: libzeep\n  version: ${{ version }}\n\nsource:\n  url: https://forge.hekkelman.net/maarten/zeep/archive/v${{ version }}.tar.gz\n  sha256: 6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff\n  patches:\n    - disable-flat-map-on-libstdcxx.patch\n  \nbuild:\n  number: 0\n  script:\n    - if: unix\n      then: |\n        set -exo pipefail\n        export CXXFLAGS=\"${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY\"\n        if [[ ${build_platform} != ${target_platform} ]]; then\n            extra_cmake_args=\"-DCMAKE_CROSSCOMPILING=ON\"\n            if [[ ${target_platform} == linux-* ]]; then\n                extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=0\"\n            else\n                extra_cmake_args=\"${extra_cmake_args} -DTEST_STD_CHRONO_ZONED_TIME_R=ON\"\n            fi\n        fi\n        cmake -S . -B build -G Ninja \\\n          ${CMAKE_ARGS} \\\n          -DBUILD_SHARED_LIBS=ON \\\n          -DZEEP_USE_BOOST_ASIO=OFF \\\n          ${extra_cmake_args}\n        cmake --build build --parallel ${CPU_COUNT}\n        if [[ \"${CONDA_BUILD_CROSS_COMPILATION:-}\" != \"1\" || \"${CROSSCOMPILING_EMULATOR}\" != \"\" ]]; then\n            ctest -V --test-dir build\n        fi\n        cmake --install build\n    - if: win\n      then: |\n        @echo on\n        cmake -S . -B build -G Ninja ^\n          %CMAKE_ARGS% ^\n          -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON ^\n          -DBUILD_SHARED_LIBS=ON ^\n          -DZEEP_USE_BOOST_ASIO=OFF ^\n          || exit /b 1\n        cmake --build build --parallel %CPU_COUNT% || exit /b 1\n        set PATH=%SRC_DIR%\\build;%PATH%\n        @REM Run tests, excluding the http-test/fuzz-el-test which brings about a SEGFAULT/stack overflow error\n        ctest -V --test-dir build -E \"(http-test|fuzz-el-test)\" || exit /b 1\n        cmake --install build || exit /b 1\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ \"clang-tools\" if osx }}\n    - cmake\n    - ninja\n    - pkg-config\n  host:\n    - ${{ \"maartens_resource_compiler\" if linux }}\n    - asio\n    - catch2\n    - howardhinnant_date\n    - libmcfp <2.0.5\n    - libzeem\n    - nlohmann_json\n    - openssl\n  run_exports:\n    - ${{ pin_subpackage(\"libzeep\", upper_bound=\"x\") }}\n  ignore_run_exports:\n    from_package:\n      - catch2\n      - libmcfp\n\ntests:\n  - package_contents:\n      include:\n        - zeep/*\n      lib:\n        - zeep\n\nabout:\n  homepage: https://mhekkel.github.io/libzeep\n  repository: https://forge.hekkelman.net/maarten/zeep\n  documentation: https://mhekkel.github.io/libzeep\n  license: BSD-2-Clause AND BSL-1.0\n  license_file: LICENSES/\n  summary: \"C++ library for reading and writing XML and creating web, REST and SOAP servers\"\n  description: |\n    Libzeep is a web application framework written in C++.\n    To see a starter project visit the [libzeep-webapp-starter](https://github.com/mhekkel/libzeep-webapp-starter.git) page.\n\nextra:\n  recipe-maintainers:\n    - eunos-1128\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1000,6 +1040,7 @@
       "cmake",
       "cxx_compiler_stub",
       "howardhinnant_date",
+      "libmcfp",
       "libzeem",
       "maartens_resource_compiler",
       "ninja",
@@ -1028,6 +1069,7 @@
         "catch2",
         "cxx_compiler_stub",
         "howardhinnant_date",
+        "libmcfp",
         "libzeem",
         "maartens_resource_compiler",
         "nlohmann_json",
@@ -1065,6 +1107,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
         "maartens_resource_compiler",
         "nlohmann_json",
@@ -1080,8 +1123,8 @@
       "elements": []
     }
   },
-  "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz",
-  "version": "8.2.0",
+  "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz",
+  "version": "8.4.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/libzeep.json"
   },
@@ -1131,6 +1174,7 @@
             "asio",
             "catch2",
             "howardhinnant_date",
+            "libmcfp <2.0.5",
             "libzeem",
             "nlohmann_json",
             "openssl"
@@ -1149,12 +1193,12 @@
             }
           }
         ],
-        "version": "8.2.0"
+        "version": "8.4.0"
       }
     ],
     "package": {
       "name": "libzeep",
-      "version": "8.2.0"
+      "version": "8.4.0"
     },
     "requirements": {
       "build": [
@@ -1168,6 +1212,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp <2.0.5",
         "libzeem",
         "nlohmann_json",
         "openssl"
@@ -1175,8 +1220,11 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "f42a87e53f79fa602b2714354ea7f12c2156f0ac6e88fbe62fd9588b567b3aec",
-      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.2.0.tar.gz"
+      "patches": [
+        "disable-flat-map-on-libstdcxx.patch"
+      ],
+      "sha256": "6ff7cb193a5b674958a6b6318bff8350d92b39f9d778f6fafec179a118967dff",
+      "url": "https://forge.hekkelman.net/maarten/zeep/archive/v8.4.0.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -1196,6 +1244,7 @@
         "asio",
         "catch2",
         "howardhinnant_date",
+        "libmcfp",
         "libzeem",
         "nlohmann_json",
         "openssl"
