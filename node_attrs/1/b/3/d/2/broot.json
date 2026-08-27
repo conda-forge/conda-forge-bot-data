@@ -6,9 +6,15 @@
     "bot": {
       "automerge": true
     },
+    "build_platform": {
+      "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64",
+      "win_arm64": "win_64"
+    },
     "conda_build": {
       "error_overdepending": true,
-      "error_overlinking": true
+      "error_overlinking": true,
+      "pkg_format": "2"
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
@@ -19,14 +25,12 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default",
-      "osx_arm64": "default",
-      "win_arm64": "default"
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "eb933a0f9b808ab66260b206785b7f4f24b30eec",
-  "feedstock_hash_ts": 1787454898,
+  "feedstock_hash": "7dc892bfa9d0fc96bf462da2b9514bd6ff5f03a0",
+  "feedstock_hash_ts": 1787822496,
   "feedstock_name": "broot",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -41,7 +45,7 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard",
@@ -64,6 +68,44 @@
       ]
     },
     "outputs": [
+      {
+        "build": null,
+        "name": "broot",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "broot --help",
+              "broot --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "broot"
+              ],
+              "files": [
+                "share/bash-completion/completions/broot",
+                "share/fish/vendor_completions.d/broot.fish",
+                "share/zsh/site-functions/_broot",
+                "share/man/man1/broot.1"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.59.0"
+      },
       {
         "build": null,
         "name": "broot",
@@ -158,7 +200,7 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard",
@@ -275,9 +317,10 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
+          "export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"",
           "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard",
           "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions \"$PREFIX\"/share/man/man1",
           "cp target/*/release/build/broot-*/out/broot.bash \"$PREFIX\"/share/bash-completion/completions/broot",
@@ -392,7 +435,7 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard",
@@ -402,6 +445,7 @@
           "cp target/*/release/build/broot-*/out/_broot     \"$PREFIX\"/share/zsh/site-functions/_broot",
           "cp man/page                                      \"$PREFIX\"/share/man/man1/broot.1",
           "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml",
+          "export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"",
           "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard",
           "mkdir %LIBRARY_PREFIX%\\share\\bash-completion\\completions",
           "mkdir %LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d",
@@ -410,7 +454,8 @@
           "powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\broot.bash' -Destination '%LIBRARY_PREFIX%\\share\\bash-completion\\completions\\broot'\"",
           "powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\broot.fish' -Destination '%LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d\\broot.fish'\"",
           "powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\_broot'     -Destination '%LIBRARY_PREFIX%\\share\\zsh\\site-functions\\_broot'\"",
-          "powershell -Command \"Copy-Item -Path 'man\\page'                                      -Destination '%LIBRARY_PREFIX%\\share\\man\\man1\\broot.1'\""
+          "powershell -Command \"Copy-Item -Path 'man\\page'                                      -Destination '%LIBRARY_PREFIX%\\share\\man\\man1\\broot.1'\"",
+          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard --target aarch64-pc-windows-msvc"
         ],
         "env": {
           "CARGO_PROFILE_RELEASE_LTO": "fat",
@@ -424,6 +469,44 @@
       ]
     },
     "outputs": [
+      {
+        "build": null,
+        "name": "broot",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-auditable",
+            "cargo-bundle-licenses"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "broot --help",
+              "broot --version"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "broot"
+              ],
+              "files": [
+                "share/bash-completion/completions/broot",
+                "share/fish/vendor_completions.d/broot.fish",
+                "share/zsh/site-functions/_broot",
+                "share/man/man1/broot.1"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.59.0"
+      },
       {
         "build": null,
         "name": "broot",
@@ -723,7 +806,7 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard",
@@ -840,7 +923,7 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard",
@@ -964,7 +1047,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/broot.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.59.0\"\n\npackage:\n  name: broot\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Canop/broot/archive/v${{ version }}.tar.gz\n  sha256: 61cb29922ef3953bae7f696b9f33fef51d85b5a4d85075c3612fcc6824663c37\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard\n          # copy shell completion files and prebuilt man page\n          - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions \"$PREFIX\"/share/man/man1\n          - cp target/*/release/build/broot-*/out/broot.bash \"$PREFIX\"/share/bash-completion/completions/broot\n          - cp target/*/release/build/broot-*/out/broot.fish \"$PREFIX\"/share/fish/vendor_completions.d/broot.fish\n          - cp target/*/release/build/broot-*/out/_broot     \"$PREFIX\"/share/zsh/site-functions/_broot\n          - cp man/page                                      \"$PREFIX\"/share/man/man1/broot.1\n      - if: win\n        then:\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard\n          # copy shell completion files and prebuilt man page\n          - mkdir %LIBRARY_PREFIX%\\share\\bash-completion\\completions\n          - mkdir %LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d\n          - mkdir %LIBRARY_PREFIX%\\share\\zsh\\site-functions\n          - mkdir %LIBRARY_PREFIX%\\share\\man\\man1\n          - powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\broot.bash' -Destination '%LIBRARY_PREFIX%\\share\\bash-completion\\completions\\broot'\"\n          - powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\broot.fish' -Destination '%LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d\\broot.fish'\"\n          - powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\_broot'     -Destination '%LIBRARY_PREFIX%\\share\\zsh\\site-functions\\_broot'\"\n          - powershell -Command \"Copy-Item -Path 'man\\page'                                      -Destination '%LIBRARY_PREFIX%\\share\\man\\man1\\broot.1'\"\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n\ntests:\n  - script:\n      - broot --help\n      - broot --version\n  - package_contents:\n      bin:\n        - broot\n      files:\n        - if: unix\n          then:\n            - share/bash-completion/completions/broot\n            - share/fish/vendor_completions.d/broot.fish\n            - share/zsh/site-functions/_broot\n            - share/man/man1/broot.1\n        - if: win\n          then:\n            - Library/share/bash-completion/completions/broot\n            - Library/share/fish/vendor_completions.d/broot.fish\n            - Library/share/zsh/site-functions/_broot\n            - Library/share/man/man1/broot.1\n      strict: true\n\nabout:\n  summary: Broot is a better way to navigate directories, find files, and launch commands.\n  description: |\n    Broot is a high-performance terminal file manager and navigator designed to provide a comprehensive overview of\n    large directory structures using a balanced, tree-based visualization. It enables users to instantly locate files\n    through fuzzy searching, navigate deeply nested hierarchies without losing context, and perform file manipulations\n    or custom shell commands directly from the interface.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://dystroy.org/broot/\n  documentation: https://dystroy.org/broot/\n  repository: https://github.com/Canop/broot\n\nextra:\n  recipe-maintainers:\n    - dbast\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.59.0\"\n\npackage:\n  name: broot\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Canop/broot/archive/v${{ version }}.tar.gz\n  sha256: 61cb29922ef3953bae7f696b9f33fef51d85b5a4d85075c3612fcc6824663c37\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: target_platform == \"linux-ppc64le\"\n        then: export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\n      - if: unix\n        then:\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins --features=clipboard\n          # copy shell completion files and prebuilt man page\n          - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions \"$PREFIX\"/share/man/man1\n          - cp target/*/release/build/broot-*/out/broot.bash \"$PREFIX\"/share/bash-completion/completions/broot\n          - cp target/*/release/build/broot-*/out/broot.fish \"$PREFIX\"/share/fish/vendor_completions.d/broot.fish\n          - cp target/*/release/build/broot-*/out/_broot     \"$PREFIX\"/share/zsh/site-functions/_broot\n          - cp man/page                                      \"$PREFIX\"/share/man/man1/broot.1\n      - if: target_platform == \"win-arm64\"\n        then: cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard --target aarch64-pc-windows-msvc\n      - if: target_platform == \"win-64\"\n        then: cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard\n      - if: win\n        then:\n          # copy shell completion files and prebuilt man page\n          - mkdir %LIBRARY_PREFIX%\\share\\bash-completion\\completions\n          - mkdir %LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d\n          - mkdir %LIBRARY_PREFIX%\\share\\zsh\\site-functions\n          - mkdir %LIBRARY_PREFIX%\\share\\man\\man1\n          - powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\broot.bash' -Destination '%LIBRARY_PREFIX%\\share\\bash-completion\\completions\\broot'\"\n          - powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\broot.fish' -Destination '%LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d\\broot.fish'\"\n          - powershell -Command \"Copy-Item -Path 'target\\*\\release\\build\\broot-*\\out\\_broot'     -Destination '%LIBRARY_PREFIX%\\share\\zsh\\site-functions\\_broot'\"\n          - powershell -Command \"Copy-Item -Path 'man\\page'                                      -Destination '%LIBRARY_PREFIX%\\share\\man\\man1\\broot.1'\"\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n\ntests:\n  - script:\n      - broot --help\n      - broot --version\n  - package_contents:\n      bin:\n        - broot\n      files:\n        - if: unix\n          then:\n            - share/bash-completion/completions/broot\n            - share/fish/vendor_completions.d/broot.fish\n            - share/zsh/site-functions/_broot\n            - share/man/man1/broot.1\n        - if: win\n          then:\n            - Library/share/bash-completion/completions/broot\n            - Library/share/fish/vendor_completions.d/broot.fish\n            - Library/share/zsh/site-functions/_broot\n            - Library/share/man/man1/broot.1\n      strict: true\n\nabout:\n  summary: Broot is a better way to navigate directories, find files, and launch commands.\n  description: |\n    Broot is a high-performance terminal file manager and navigator designed to provide a comprehensive overview of\n    large directory structures using a balanced, tree-based visualization. It enables users to instantly locate files\n    through fuzzy searching, navigate deeply nested hierarchies without losing context, and perform file manipulations\n    or custom shell commands directly from the interface.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://dystroy.org/broot/\n  documentation: https://dystroy.org/broot/\n  repository: https://github.com/Canop/broot\n\nextra:\n  recipe-maintainers:\n    - dbast\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1047,7 +1130,7 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard",
@@ -1167,10 +1250,10 @@
       "summary": "Broot is a better way to navigate directories, find files, and launch commands."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard",
+          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins --features=clipboard --target aarch64-pc-windows-msvc",
           "mkdir %LIBRARY_PREFIX%\\share\\bash-completion\\completions",
           "mkdir %LIBRARY_PREFIX%\\share\\fish\\vendor_completions.d",
           "mkdir %LIBRARY_PREFIX%\\share\\zsh\\site-functions",
