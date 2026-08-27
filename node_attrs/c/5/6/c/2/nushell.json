@@ -8,8 +8,7 @@
     },
     "build_platform": {
       "linux_aarch64": "linux_64",
-      "linux_riscv64": "linux_64",
-      "win_arm64": "win_64"
+      "linux_riscv64": "linux_64"
     },
     "conda_build": {
       "error_overlinking": true
@@ -22,12 +21,13 @@
       "tooling_branch_name": "main"
     },
     "provider": {
-      "osx_arm64": "azure"
+      "osx_arm64": "azure",
+      "win_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "8d919ac2a37fa2ac50e5e84556742e94c6917221",
-  "feedstock_hash_ts": 1787753113,
+  "feedstock_hash": "19c52311469a3e54b015d0822964c24f7950d2c0",
+  "feedstock_hash_ts": 1787819450,
   "feedstock_name": "nushell",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -40,7 +40,7 @@
       "summary": "A new type of shell"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build.nu"
     },
     "extra": {
@@ -219,7 +219,7 @@
       "summary": "A new type of shell"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build.nu"
     },
     "extra": {
@@ -349,7 +349,7 @@
       "summary": "A new type of shell"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build.nu"
     },
     "extra": {
@@ -749,7 +749,7 @@
       "summary": "A new type of shell"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build.nu"
     },
     "extra": {
@@ -882,7 +882,7 @@
       "summary": "A new type of shell"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build.nu"
     },
     "extra": {
@@ -1023,7 +1023,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/nushell.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.115.1\"\n\npackage:\n  name: nushell\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/nushell/nushell/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 06df93281a0f858019d09ea6cf821b19a7cd9017cdfb9e898cfe8dd4bd8101c2\n\nbuild:\n  number: 1\n  script: build.nu\n  # https://github.com/prefix-dev/rattler-build/issues/2133\n  prefix_detection:\n    ignore_binary_files: true\n\nrequirements:\n  build:\n    - ${{ compiler('rust') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler('cxx') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    - nushell # script dependency\n    - if: osx-64\n      then: clangdev\n    - cmake\n    - if: unix\n      then: make\n  host:\n    - zlib\n    - openssl\n    - if: osx\n      then: libgit2\n\ntests:\n  - package_contents:\n      strict: true\n      bin:\n        - nu\n      files:\n        - bin/nu_plugin_*\n        - etc/pixi/nu/global-ignore-conda-prefix\n        # https://github.com/prefix-dev/rattler-build/issues/2133\n        - if: not win\n          then: etc/conda/env_vars.d/nushell.json\n          else:\n            - etc/conda/activate.d/nushell_activate.bat\n            - etc/conda/activate.d/nushell_activate.sh\n            - etc/conda/deactivate.d/nushell_deactivate.bat\n            - etc/conda/deactivate.d/nushell_deactivate.sh\n  - script:\n      - if: unix\n        then: nu -c 'print ($NU_LIB_DIRS)'\n        else: nu -c \"print ($NU_LIB_DIRS)\"\n      - nu --version\n      - nu --help\n      - if: unix\n        then:\n          - mkdir -p $CONDA_PREFIX/share/nushell/lib\n          - echo \"export def hi [] { \\\"foo\\\" }\" > $CONDA_PREFIX/share/nushell/lib/foo.nu\n        else:\n          - mkdir %CONDA_PREFIX%\\share\\nushell\\lib\n          - echo export def hi [] { \"foo\" }> %CONDA_PREFIX%\\share\\nushell\\lib\\foo.nu\n      - nu -c \"use foo.nu hi; hi\"\n\nabout:\n  homepage: https://nushell.sh\n  license: MIT\n  license_file:\n    - LICENSE\n    - license-files/\n  summary: A new type of shell\n  repository: https://github.com/nushell/nushell\n\nextra:\n  recipe-maintainers:\n    - thebigdalt\n    - pavelzw\n",
+  "raw_meta_yaml": "context:\n  version: \"0.115.1\"\n\npackage:\n  name: nushell\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/nushell/nushell/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 06df93281a0f858019d09ea6cf821b19a7cd9017cdfb9e898cfe8dd4bd8101c2\n\nbuild:\n  number: 2\n  script: build.nu\n  # https://github.com/prefix-dev/rattler-build/issues/2133\n  prefix_detection:\n    ignore_binary_files: true\n\nrequirements:\n  build:\n    - ${{ compiler('rust') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler('cxx') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    - nushell # script dependency\n    - if: osx-64\n      then: clangdev\n    - cmake\n    - if: unix\n      then: make\n  host:\n    - zlib\n    - openssl\n    - if: osx\n      then: libgit2\n\ntests:\n  - package_contents:\n      strict: true\n      bin:\n        - nu\n      files:\n        - bin/nu_plugin_*\n        - etc/pixi/nu/global-ignore-conda-prefix\n        # https://github.com/prefix-dev/rattler-build/issues/2133\n        - if: not win\n          then: etc/conda/env_vars.d/nushell.json\n          else:\n            - etc/conda/activate.d/nushell_activate.bat\n            - etc/conda/activate.d/nushell_activate.sh\n            - etc/conda/deactivate.d/nushell_deactivate.bat\n            - etc/conda/deactivate.d/nushell_deactivate.sh\n  - script:\n      - if: unix\n        then: nu -c 'print ($NU_LIB_DIRS)'\n        else: nu -c \"print ($NU_LIB_DIRS)\"\n      - nu --version\n      - nu --help\n      - if: unix\n        then:\n          - mkdir -p $CONDA_PREFIX/share/nushell/lib\n          - echo \"export def hi [] { \\\"foo\\\" }\" > $CONDA_PREFIX/share/nushell/lib/foo.nu\n        else:\n          - mkdir %CONDA_PREFIX%\\share\\nushell\\lib\n          - echo export def hi [] { \"foo\" }> %CONDA_PREFIX%\\share\\nushell\\lib\\foo.nu\n      - nu -c \"use foo.nu hi; hi\"\n\nabout:\n  homepage: https://nushell.sh\n  license: MIT\n  license_file:\n    - LICENSE\n    - license-files/\n  summary: A new type of shell\n  repository: https://github.com/nushell/nushell\n\nextra:\n  recipe-maintainers:\n    - thebigdalt\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1131,7 +1131,7 @@
       "summary": "A new type of shell"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build.nu"
     },
     "extra": {
@@ -1261,7 +1261,7 @@
       "summary": "A new type of shell"
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "script": "build.nu"
     },
     "extra": {
