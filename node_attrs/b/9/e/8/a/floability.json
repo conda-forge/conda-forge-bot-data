@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npython_min:\n- '3.10'\n",
+  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npython_min:\n- '3.10'\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
@@ -14,8 +14,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "357a37a0d13b72d2fee8a17fa6093fd909cc6331",
-  "feedstock_hash_ts": 1776993083,
+  "feedstock_hash": "9a837e100a2865f91d33a362884d026106bab678",
+  "feedstock_hash_ts": 1787865033,
   "feedstock_name": "floability",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -26,12 +26,12 @@
       "license": "GPL-2.0-only",
       "license_family": "GPL-2.0-only",
       "license_file": "COPYING",
-      "summary": "Floability CLI for workflow management"
+      "summary": "Deploy portable TaskVine workflow backpacks on HPC systems"
     },
     "build": {
       "noarch": "python",
       "number": "0",
-      "script": "${{ PYTHON }} -m pip install . -vv"
+      "script": "SETUPTOOLS_SCM_PRETEND_VERSION_FOR_FLOABILITY=${{ version }} ${{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv"
     },
     "extra": {
       "recipe-maintainers": [
@@ -47,24 +47,26 @@
         "requirements": {
           "build": [],
           "host": [
-            "python 3.10.*",
+            "python 3.11.*",
             "pip",
-            "setuptools >=61.0",
-            "wheel",
-            "conda-pack"
+            "setuptools >=77",
+            "setuptools_scm >=8",
+            "wheel"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
+            "boto3",
+            "botocore",
             "conda-pack",
+            "jupyter",
+            "jupyter_client",
+            "nbformat",
+            "ndcctools",
+            "pelicanfs",
             "pyyaml",
             "requests",
             "tqdm",
-            "ndcctools",
-            "nbformat",
-            "jupyter_client",
-            "boto3",
-            "botocore",
-            "pelicanfs"
+            "xrootd"
           ]
         },
         "tests": [
@@ -74,51 +76,62 @@
                 "floability",
                 "yaml"
               ],
-              "python_version": "3.10.*"
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
             }
           },
           {
             "requirements": {
               "run": [
-                "python 3.10.*"
+                "python 3.11.*"
               ]
             },
-            "script": "floability --help"
+            "script": [
+              "floability --version",
+              "floability --help",
+              "python -c \"import floability; assert floability.__version__ == '${{ version }}'\"",
+              "vine_factory --version",
+              "vine_worker --version"
+            ]
           }
         ],
-        "version": "0.2.0"
+        "version": "0.3.0"
       }
     ],
     "package": {
       "name": "floability",
-      "version": "0.2.0"
+      "version": "0.3.0"
     },
     "requirements": {
       "host": [
-        "python 3.10.*",
+        "python 3.11.*",
         "pip",
-        "setuptools >=61.0",
-        "wheel",
-        "conda-pack"
+        "setuptools >=77",
+        "setuptools_scm >=8",
+        "wheel"
       ],
       "run": [
-        "python >=3.10",
+        "python >=3.11",
+        "boto3",
+        "botocore",
         "conda-pack",
+        "jupyter",
+        "jupyter_client",
+        "nbformat",
+        "ndcctools",
+        "pelicanfs",
         "pyyaml",
         "requests",
         "tqdm",
-        "ndcctools",
-        "nbformat",
-        "jupyter_client",
-        "boto3",
-        "botocore",
-        "pelicanfs"
+        "xrootd"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "0f93305ad445c53db14bfa64a48b0d458b9f7ad4a6e97362c42e86d7e061d8d8",
-      "url": "https://github.com/floability/floability-cli/archive/refs/tags/v0.2.0.tar.gz"
+      "sha256": "2c025331bbe8a8d2b7d8f713b1e7fac57ca84d5b27c4e51e19842968aca90402",
+      "url": "https://github.com/floability/floability-cli/archive/refs/tags/v0.3.0.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -129,10 +142,10 @@
     "host": {
       "__set__": true,
       "elements": [
-        "conda-pack",
         "pip",
         "python",
         "setuptools",
+        "setuptools_scm",
         "wheel"
       ]
     },
@@ -142,6 +155,7 @@
         "boto3",
         "botocore",
         "conda-pack",
+        "jupyter",
         "jupyter_client",
         "nbformat",
         "ndcctools",
@@ -149,7 +163,8 @@
         "python",
         "pyyaml",
         "requests",
-        "tqdm"
+        "tqdm",
+        "xrootd"
       ]
     },
     "test": {
@@ -168,12 +183,12 @@
       "license": "GPL-2.0-only",
       "license_family": "GPL-2.0-only",
       "license_file": "COPYING",
-      "summary": "Floability CLI for workflow management"
+      "summary": "Deploy portable TaskVine workflow backpacks on HPC systems"
     },
     "build": {
       "noarch": "python",
       "number": "0",
-      "script": "${{ PYTHON }} -m pip install . -vv"
+      "script": "SETUPTOOLS_SCM_PRETEND_VERSION_FOR_FLOABILITY=${{ version }} ${{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv"
     },
     "extra": {
       "recipe-maintainers": [
@@ -189,24 +204,26 @@
         "requirements": {
           "build": [],
           "host": [
-            "python 3.10.*",
+            "python 3.11.*",
             "pip",
-            "setuptools >=61.0",
-            "wheel",
-            "conda-pack"
+            "setuptools >=77",
+            "setuptools_scm >=8",
+            "wheel"
           ],
           "run": [
-            "python >=3.10",
+            "python >=3.11",
+            "boto3",
+            "botocore",
             "conda-pack",
+            "jupyter",
+            "jupyter_client",
+            "nbformat",
+            "ndcctools",
+            "pelicanfs",
             "pyyaml",
             "requests",
             "tqdm",
-            "ndcctools",
-            "nbformat",
-            "jupyter_client",
-            "boto3",
-            "botocore",
-            "pelicanfs"
+            "xrootd"
           ]
         },
         "tests": [
@@ -216,51 +233,62 @@
                 "floability",
                 "yaml"
               ],
-              "python_version": "3.10.*"
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
             }
           },
           {
             "requirements": {
               "run": [
-                "python 3.10.*"
+                "python 3.11.*"
               ]
             },
-            "script": "floability --help"
+            "script": [
+              "floability --version",
+              "floability --help",
+              "python -c \"import floability; assert floability.__version__ == '${{ version }}'\"",
+              "vine_factory --version",
+              "vine_worker --version"
+            ]
           }
         ],
-        "version": "0.2.0"
+        "version": "0.3.0"
       }
     ],
     "package": {
       "name": "floability",
-      "version": "0.2.0"
+      "version": "0.3.0"
     },
     "requirements": {
       "host": [
-        "python 3.10.*",
+        "python 3.11.*",
         "pip",
-        "setuptools >=61.0",
-        "wheel",
-        "conda-pack"
+        "setuptools >=77",
+        "setuptools_scm >=8",
+        "wheel"
       ],
       "run": [
-        "python >=3.10",
+        "python >=3.11",
+        "boto3",
+        "botocore",
         "conda-pack",
+        "jupyter",
+        "jupyter_client",
+        "nbformat",
+        "ndcctools",
+        "pelicanfs",
         "pyyaml",
         "requests",
         "tqdm",
-        "ndcctools",
-        "nbformat",
-        "jupyter_client",
-        "boto3",
-        "botocore",
-        "pelicanfs"
+        "xrootd"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "0f93305ad445c53db14bfa64a48b0d458b9f7ad4a6e97362c42e86d7e061d8d8",
-      "url": "https://github.com/floability/floability-cli/archive/refs/tags/v0.2.0.tar.gz"
+      "sha256": "2c025331bbe8a8d2b7d8f713b1e7fac57ca84d5b27c4e51e19842968aca90402",
+      "url": "https://github.com/floability/floability-cli/archive/refs/tags/v0.3.0.tar.gz"
     }
   },
   "name": "floability",
@@ -277,13 +305,14 @@
   "pr_info": {
     "__lazy_json__": "pr_info/floability.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: floability\n  version: 0.2.0\n  python_min: \"3.10\"\n\npackage:\n  name: ${{ name | lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/floability/floability-cli/archive/refs/tags/v0.2.0.tar.gz\n  sha256: 0f93305ad445c53db14bfa64a48b0d458b9f7ad4a6e97362c42e86d7e061d8d8\n\nbuild:\n  number: 0\n  noarch: python\n  script: ${{ PYTHON }} -m pip install . -vv\n  python:\n    entry_points:\n      - floability=floability.cli:main\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - pip\n    - setuptools >=61.0\n    - wheel\n    - conda-pack\n  run:\n    - python >=${{ python_min }}\n    - conda-pack\n    - pyyaml\n    - requests\n    - tqdm\n    - ndcctools\n    - nbformat\n    - jupyter_client\n    - boto3\n    - botocore\n    - pelicanfs\n\ntests:\n  - python:\n      imports:\n        - floability\n        - yaml\n      python_version: ${{ python_min }}.*\n  - requirements:\n      run:\n        - python ${{ python_min }}.*\n    script:\n      - floability --help\n\nabout:\n  summary: Floability CLI for workflow management\n  license: GPL-2.0-only\n  license_file: COPYING\n  homepage: https://floability.github.io/\n  repository: https://github.com/floability/floability-cli\n  documentation: https://floability.readthedocs.io/\n\nextra:\n  recipe-maintainers:\n    - saifulislampi\n    - btovar\n    - dthain\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: floability\n  version: 0.3.0\n  python_min: \"3.11\"\n\npackage:\n  name: ${{ name | lower }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/floability/floability-cli/archive/refs/tags/v0.3.0.tar.gz\n  sha256: 2c025331bbe8a8d2b7d8f713b1e7fac57ca84d5b27c4e51e19842968aca90402\n\nbuild:\n  number: 0\n  noarch: python\n  script: SETUPTOOLS_SCM_PRETEND_VERSION_FOR_FLOABILITY=${{ version }} ${{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv\n\nrequirements:\n  host:\n    - python ${{ python_min }}.*\n    - pip\n    - setuptools >=77\n    - setuptools_scm >=8\n    - wheel\n  run:\n    - python >=${{ python_min }}\n    - boto3\n    - botocore\n    - conda-pack\n    - jupyter\n    - jupyter_client\n    - nbformat\n    - ndcctools\n    - pelicanfs\n    - pyyaml\n    - requests\n    - tqdm\n    - xrootd\n\ntests:\n  - python:\n      imports:\n        - floability\n        - yaml\n      python_version: \n        - ${{ python_min }}.*\n        - \"*\"\n  - requirements:\n      run:\n        - python ${{ python_min }}.*\n    script:\n      - floability --version\n      - floability --help\n      - python -c \"import floability; assert floability.__version__ == '${{ version }}'\"\n      - vine_factory --version\n      - vine_worker --version\n\nabout:\n  summary: Deploy portable TaskVine workflow backpacks on HPC systems\n  license: GPL-2.0-only\n  license_file: COPYING\n  homepage: https://floability.github.io/\n  repository: https://github.com/floability/floability-cli\n  documentation: https://floability.readthedocs.io/\n\nextra:\n  recipe-maintainers:\n    - saifulislampi\n    - btovar\n    - dthain\n",
   "req": {
     "__set__": true,
     "elements": [
       "boto3",
       "botocore",
       "conda-pack",
+      "jupyter",
       "jupyter_client",
       "nbformat",
       "ndcctools",
@@ -293,8 +322,10 @@
       "pyyaml",
       "requests",
       "setuptools",
+      "setuptools_scm",
       "tqdm",
-      "wheel"
+      "wheel",
+      "xrootd"
     ]
   },
   "requirements": {
@@ -305,10 +336,10 @@
     "host": {
       "__set__": true,
       "elements": [
-        "conda-pack",
         "pip",
         "python",
         "setuptools",
+        "setuptools_scm",
         "wheel"
       ]
     },
@@ -318,6 +349,7 @@
         "boto3",
         "botocore",
         "conda-pack",
+        "jupyter",
         "jupyter_client",
         "nbformat",
         "ndcctools",
@@ -325,7 +357,8 @@
         "python",
         "pyyaml",
         "requests",
-        "tqdm"
+        "tqdm",
+        "xrootd"
       ]
     },
     "test": {
@@ -345,10 +378,10 @@
     "host": {
       "__set__": true,
       "elements": [
-        "conda-pack",
         "pip",
-        "python 3.10.*",
-        "setuptools >=61.0",
+        "python 3.11.*",
+        "setuptools >=77",
+        "setuptools_scm >=8",
         "wheel"
       ]
     },
@@ -358,26 +391,28 @@
         "boto3",
         "botocore",
         "conda-pack",
+        "jupyter",
         "jupyter_client",
         "nbformat",
         "ndcctools",
         "pelicanfs",
-        "python >=3.10",
+        "python >=3.11",
         "pyyaml",
         "requests",
-        "tqdm"
+        "tqdm",
+        "xrootd"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
         "pip",
-        "python 3.10.*"
+        "python 3.11.*"
       ]
     }
   },
-  "url": "https://github.com/floability/floability-cli/archive/refs/tags/v0.2.0.tar.gz",
-  "version": "0.2.0",
+  "url": "https://github.com/floability/floability-cli/archive/refs/tags/v0.3.0.tar.gz",
+  "version": "0.3.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/floability.json"
   }
