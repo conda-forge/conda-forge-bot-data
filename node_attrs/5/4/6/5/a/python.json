@@ -13,6 +13,7 @@
     },
     "build_platform": {
       "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64",
       "win_arm64": "win_64"
     },
     "conda_build": {
@@ -29,8 +30,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "663c2af350b70a5d5771ff9788b6318dba71e2fd",
-  "feedstock_hash_ts": 1787779184,
+  "feedstock_hash": "7b1693335c3d958139d3a2c598f0b7195e1abe68",
+  "feedstock_hash_ts": 1787873497,
   "feedstock_name": "python",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -1105,6 +1106,1042 @@
           "__unix"
         ],
         "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "101",
+          "python_site_packages_path": "lib/python3.14/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314",
+              "python 3.14.* *_debug_cp314"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=no"
+          ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_101_debug_cp314",
+          "track_features": null
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_debug_cp314"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_101_debug_cp314",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_debug_cp314"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "1",
+          "python_site_packages_path": "lib/python3.14t/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314t",
+              "python 3.14.* *_debug_cp314t"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=yes"
+          ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_1_debug_cp314t",
+          "track_features": [
+            "py_freethreading"
+          ]
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314t"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_debug_cp314t"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_1_debug_cp314t",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_debug_cp314t"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "101",
+          "python_site_packages_path": "lib/python3.14/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=no"
+          ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_101_cp314",
+          "track_features": null
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_cp314"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "test -f ${PREFIX}/lib/libpython3.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_101_cp314",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_cp314"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "1",
+          "python_site_packages_path": "lib/python3.14t/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314t"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=yes"
+          ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_1_cp314t",
+          "track_features": [
+            "py_freethreading"
+          ]
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314t"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_cp314t"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "test -f ${PREFIX}/lib/libpython3.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_1_cp314t",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_cp314t"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
       }
     ],
     "package": {
@@ -1122,7 +2159,23 @@
         "ld_impl_linux-64",
         "binutils_impl_linux-64",
         "clang-19",
-        "llvm-tools-19"
+        "llvm-tools-19",
+        "ld_impl_linux-riscv64",
+        "binutils_impl_linux-riscv64",
+        "bzip2",
+        "expat",
+        "libffi",
+        "liblzma-devel",
+        "libmpdec-devel",
+        "libsqlite",
+        "libuuid",
+        "libxcrypt",
+        "ncurses",
+        "openssl",
+        "readline",
+        "tk",
+        "zlib",
+        "zstd"
       ],
       "host": [
         "ld_impl_linux-64 >=2.36",
@@ -1140,11 +2193,138 @@
         "xorg-libx11",
         "xorg-xorgproto",
         "zlib",
-        "zstd"
+        "zstd",
+        "ld_impl_linux-riscv64 >=2.36"
       ]
     },
     "schema_version": 0,
     "source": [
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch",
+          "patches/0026-Set-Py_GIL_DISABLED-in-windows-to-match-unix.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch",
+          "patches/0026-Set-Py_GIL_DISABLED-in-windows-to-match-unix.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
       {
         "patches": [
           "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
@@ -1278,15 +2458,31 @@
       "__set__": true,
       "elements": [
         "binutils_impl_linux-64",
+        "binutils_impl_linux-riscv64",
+        "bzip2",
         "c_compiler_stub",
         "c_stdlib_stub",
         "clang-19",
         "cxx_compiler_stub",
+        "expat",
         "ld_impl_linux-64",
+        "ld_impl_linux-riscv64",
+        "libffi",
+        "liblzma-devel",
+        "libmpdec-devel",
+        "libsqlite",
         "libtool",
+        "libuuid",
+        "libxcrypt",
         "llvm-tools-19",
         "make",
-        "pkg-config"
+        "ncurses",
+        "openssl",
+        "pkg-config",
+        "readline",
+        "tk",
+        "zlib",
+        "zstd"
       ]
     },
     "host": {
@@ -1295,6 +2491,7 @@
         "bzip2",
         "expat",
         "ld_impl_linux-64",
+        "ld_impl_linux-riscv64",
         "libffi",
         "liblzma-devel",
         "libmpdec-devel",
@@ -1318,6 +2515,7 @@
         "__unix",
         "cpython",
         "ld_impl_linux-64",
+        "ld_impl_linux-riscv64",
         "libpython",
         "python",
         "python_abi",
@@ -5033,6 +6231,1042 @@
             "PY_INTERP_DEBUG=yes",
             "PY_FREETHREADING=no"
           ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_101_debug_cp314",
+          "track_features": null
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_debug_cp314"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_101_debug_cp314",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_debug_cp314"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "1",
+          "python_site_packages_path": "lib/python3.14t/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314t",
+              "python 3.14.* *_debug_cp314t"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=yes"
+          ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_1_debug_cp314t",
+          "track_features": [
+            "py_freethreading"
+          ]
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314t"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_debug_cp314t"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_1_debug_cp314t",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_debug_cp314t"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "VERABI=${VERABI}d",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"ON;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "101",
+          "python_site_packages_path": "lib/python3.14/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=no"
+          ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_101_cp314",
+          "track_features": null
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_cp314"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "test -f ${PREFIX}/lib/libpython3.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_101_cp314",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "101",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=no"
+          ],
+          "string": "h1234567_101_cp314"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;OFF\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "1",
+          "python_site_packages_path": "lib/python3.14t/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314t"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=yes"
+          ],
+          "skip_compile_pyc": [
+            "*.py"
+          ],
+          "string": "h1234567_1_cp314t",
+          "track_features": [
+            "py_freethreading"
+          ]
+        },
+        "name": "python",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libpython",
+            "bzip2",
+            "libsqlite",
+            "liblzma-devel",
+            "zlib",
+            "zstd",
+            "openssl",
+            "readline",
+            "tk",
+            "xorg-libx11",
+            "xorg-xorgproto",
+            "ncurses",
+            "libffi",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "libuuid",
+            "libmpdec-devel",
+            "expat"
+          ],
+          "run": [
+            "libpython",
+            "ld_impl_linux-riscv64 >=2.36.1",
+            "tzdata",
+            "python_abi 3.14.* *_cp314t"
+          ]
+        },
+        "script": "install_base.sh",
+        "test": {
+          "commands": [
+            "python -V",
+            "python3 -V",
+            "pydoc -h",
+            "python3-config --help",
+            "python -c \"from zoneinfo import ZoneInfo; from datetime import datetime; dt = datetime(2020, 10, 31, 12, tzinfo=ZoneInfo('America/Los_Angeles')); print(dt.tzname())\"",
+            "python -m venv test-venv",
+            "test-venv/bin/python -c \"import ctypes\"",
+            "python -c \"import sysconfig; print(sysconfig.get_config_var('CC'))\"",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.a",
+            "test ! -f ${PREFIX}/lib/libpython${PKG_VERSION%.*}.nolto.a",
+            "pushd tests",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Module\"  .",
+            "popd",
+            "python run_test.py",
+            "python3.1 --version",
+            "python -c \"from ctypes import CFUNCTYPE; CFUNCTYPE(None)(id)\"",
+            "TERM=xterm >/dev/null python -c \"import curses; scr = curses.initscr(); curses.unget_wch('x'); assert 'x' ==  scr.get_wch()\""
+          ],
+          "downstreams": [
+            "cython",
+            "setuptools"
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/cython/*",
+            "run_test.py"
+          ],
+          "requires": [
+            "ripgrep",
+            "cmake",
+            "ninja",
+            "openssl 3.5",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "xorg-libx11"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_cp314t"
+        },
+        "name": "libpython",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ]
+        },
+        "script": "install_shared.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.so",
+            "test -f ${PREFIX}/lib/libpython3.so",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "python 3.14.7 *_1_cp314t",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "ignore_run_exports": [
+            "python_abi"
+          ],
+          "number": "1",
+          "script_env": [
+            "PY_INTERP_DEBUG=no",
+            "PY_FREETHREADING=yes"
+          ],
+          "string": "h1234567_1_cp314t"
+        },
+        "name": "libpython-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "python"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "script": "install_static.sh",
+        "test": {
+          "commands": [
+            "VER=${PKG_VERSION%.*}",
+            "VERABI=${VER}",
+            "VERABI=${VERABI}t",
+            "VERABI_NO_DBG=${VERABI}",
+            "test -f ${PREFIX}/lib/libpython${VERABI}.a",
+            "test -f ${PREFIX}/lib/libpython${VERABI_NO_DBG}.nolto.a",
+            "pushd tests",
+            "pushd prefix-replacement",
+            "bash build-and-test.sh",
+            "popd",
+            "pushd cmake",
+            "cmake -GNinja  -DPython_FIND_ABI=\"OFF;ANY;ANY;ON\" -DPY_VER=3.14.7 -DEXTRA_COMPONENTS=\"Development.Embed\"  ."
+          ],
+          "files": [
+            "tests/cmake/*",
+            "tests/prefix-replacement/*"
+          ],
+          "requires": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "ripgrep",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "cpython",
+        "requirements": [
+          "python 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-freethreading",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic",
+          "skip": true
+        },
+        "name": "python-gil",
+        "requirements": [
+          "cpython 3.14.7",
+          "python_abi * *_cp314t"
+        ]
+      },
+      {
+        "build": {
+          "noarch": "generic"
+        },
+        "name": "python-jit",
+        "requirements": [
+          "cpython 3.14.7",
+          "__unix"
+        ],
+        "script": "install_jit_activation.sh"
+      },
+      {
+        "build": {
+          "activate_in_script": true,
+          "detect_binary_files_with_prefix": true,
+          "ignore_run_exports_from": [
+            "cxx_compiler_stub",
+            "xorg-libx11",
+            "xorg-xorgproto"
+          ],
+          "no_link": null,
+          "number": "101",
+          "python_site_packages_path": "lib/python3.14/site-packages",
+          "run_exports": {
+            "noarch": [
+              "python"
+            ],
+            "weak": [
+              "python_abi 3.14.* *_cp314",
+              "python 3.14.* *_debug_cp314"
+            ]
+          },
+          "script_env": [
+            "PY_INTERP_DEBUG=yes",
+            "PY_FREETHREADING=no"
+          ],
           "skip_compile_pyc": null,
           "string": "h1234567_101_debug_cp314",
           "track_features": null
@@ -10145,6 +12379,22 @@
         "binutils_impl_linux-64",
         "clang-19",
         "llvm-tools-19",
+        "ld_impl_linux-riscv64",
+        "binutils_impl_linux-riscv64",
+        "bzip2",
+        "expat",
+        "libffi",
+        "liblzma-devel",
+        "libmpdec-devel",
+        "libsqlite",
+        "libuuid",
+        "libxcrypt",
+        "ncurses",
+        "openssl",
+        "readline",
+        "tk",
+        "zlib",
+        "zstd",
         "ld_impl_linux-aarch64",
         "binutils_impl_linux-aarch64",
         "ld_impl_linux-ppc64le",
@@ -10170,12 +12420,139 @@
         "xorg-xorgproto",
         "zlib",
         "zstd",
+        "ld_impl_linux-riscv64 >=2.36",
         "ld_impl_linux-aarch64 >=2.36",
         "ld_impl_linux-ppc64le >=2.36"
       ]
     },
     "schema_version": 0,
     "source": [
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch",
+          "patches/0026-Set-Py_GIL_DISABLED-in-windows-to-match-unix.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
+      {
+        "patches": [
+          "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
+          "patches/0002-Win32-Do-not-download-externals.patch",
+          "patches/0003-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch",
+          "patches/0004-Disable-registry-lookup-unless-CONDA_PY_ALLOW_REG_PA.patch",
+          "patches/0005-Unvendor-openssl.patch",
+          "patches/0006-Unvendor-sqlite3.patch",
+          "patches/0007-Add-CondaEcosystemModifyDllSearchPath.patch",
+          "patches/0008-Doing-d1trimfile.patch",
+          "patches/0009-cross-compile-darwin.patch",
+          "patches/0010-Fix-TZPATH-on-windows.patch",
+          "patches/0011-Make-dyld-search-work-with-SYSTEM_VERSION_COMPAT-1.patch",
+          "patches/0012-Unvendor-bzip2.patch",
+          "patches/0013-Unvendor-libffi.patch",
+          "patches/0014-Unvendor-tcltk.patch",
+          "patches/0015-unvendor-xz.patch",
+          "patches/0016-unvendor-zlib.patch",
+          "patches/0017-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch",
+          "patches/0018-Unvendor-expat.patch",
+          "patches/0019-Remove-unused-readelf.patch",
+          "patches/0020-Don-t-checksharedmods-if-cross-compiling.patch",
+          "patches/0021-Override-configure-LIBFFI.patch",
+          "patches/0022-Unvendor-libmpdec.patch",
+          "patches/0023-Brand-conda-forge.patch",
+          "patches/0024-Do-not-define-pid_t-as-it-might-conflict-with-the-ac.patch",
+          "patches/0025-Unvendor-zstd.patch",
+          "patches/0026-Set-Py_GIL_DISABLED-in-windows-to-match-unix.patch"
+        ],
+        "sha256": "3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81",
+        "url": "https://www.python.org/ftp/python/3.14.7/Python-3.14.7.tar.xz"
+      },
       {
         "patches": [
           "patches/0001-Win32-Change-FD_SETSIZE-from-512-to-2048.patch",
@@ -13547,6 +15924,7 @@
       "binutils_impl_linux-64",
       "binutils_impl_linux-aarch64",
       "binutils_impl_linux-ppc64le",
+      "binutils_impl_linux-riscv64",
       "bzip2",
       "c_compiler_stub",
       "c_stdlib_stub",
@@ -13558,6 +15936,7 @@
       "ld_impl_linux-64",
       "ld_impl_linux-aarch64",
       "ld_impl_linux-ppc64le",
+      "ld_impl_linux-riscv64",
       "libffi",
       "liblzma-devel",
       "libmpdec-devel",
@@ -13565,6 +15944,7 @@
       "libsqlite",
       "libtool",
       "libuuid",
+      "libxcrypt",
       "llvm-tools",
       "llvm-tools-19",
       "make",
@@ -13589,19 +15969,35 @@
         "binutils_impl_linux-64",
         "binutils_impl_linux-aarch64",
         "binutils_impl_linux-ppc64le",
+        "binutils_impl_linux-riscv64",
+        "bzip2",
         "c_compiler_stub",
         "c_stdlib_stub",
         "clang",
         "clang-19",
         "cxx_compiler_stub",
+        "expat",
         "ld_impl_linux-64",
         "ld_impl_linux-aarch64",
         "ld_impl_linux-ppc64le",
+        "ld_impl_linux-riscv64",
+        "libffi",
+        "liblzma-devel",
+        "libmpdec-devel",
+        "libsqlite",
         "libtool",
+        "libuuid",
+        "libxcrypt",
         "llvm-tools",
         "llvm-tools-19",
         "make",
-        "pkg-config"
+        "ncurses",
+        "openssl",
+        "pkg-config",
+        "readline",
+        "tk",
+        "zlib",
+        "zstd"
       ]
     },
     "host": {
@@ -13615,6 +16011,7 @@
         "ld_impl_linux-64",
         "ld_impl_linux-aarch64",
         "ld_impl_linux-ppc64le",
+        "ld_impl_linux-riscv64",
         "libffi",
         "liblzma-devel",
         "libmpdec-devel",
@@ -13644,6 +16041,7 @@
         "ld_impl_linux-64",
         "ld_impl_linux-aarch64",
         "ld_impl_linux-ppc64le",
+        "ld_impl_linux-riscv64",
         "libpython",
         "python",
         "python_abi",
@@ -13673,20 +16071,36 @@
         "binutils_impl_linux-64",
         "binutils_impl_linux-aarch64",
         "binutils_impl_linux-ppc64le",
+        "binutils_impl_linux-riscv64",
+        "bzip2",
         "c_compiler_stub",
         "c_stdlib_stub",
         "clang 19.*",
         "clang-19",
         "cxx_compiler_stub",
+        "expat",
         "ld_impl_linux-64",
         "ld_impl_linux-aarch64",
         "ld_impl_linux-ppc64le",
+        "ld_impl_linux-riscv64",
+        "libffi",
+        "liblzma-devel",
+        "libmpdec-devel",
+        "libsqlite",
         "libtool",
+        "libuuid",
+        "libxcrypt",
         "llvm-tools",
         "llvm-tools 19.*",
         "llvm-tools-19",
         "make",
-        "pkg-config"
+        "ncurses",
+        "openssl",
+        "pkg-config",
+        "readline",
+        "tk",
+        "zlib",
+        "zstd"
       ]
     },
     "host": {
@@ -13700,6 +16114,8 @@
         "ld_impl_linux-aarch64 >=2.36.1",
         "ld_impl_linux-ppc64le >=2.36",
         "ld_impl_linux-ppc64le >=2.36.1",
+        "ld_impl_linux-riscv64 >=2.36",
+        "ld_impl_linux-riscv64 >=2.36.1",
         "libffi",
         "liblzma-devel",
         "libmpdec-devel",
@@ -13726,6 +16142,7 @@
         "ld_impl_linux-64 >=2.36.1",
         "ld_impl_linux-aarch64 >=2.36.1",
         "ld_impl_linux-ppc64le >=2.36.1",
+        "ld_impl_linux-riscv64 >=2.36.1",
         "libpython",
         "python",
         "python 3.14.7",
