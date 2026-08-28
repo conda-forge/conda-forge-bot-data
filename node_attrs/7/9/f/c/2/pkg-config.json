@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_ppc64le": "linux_64",
@@ -23,8 +23,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "8d2d9d43ab9470139465dfd0fa69f9c8068b7294",
-  "feedstock_hash_ts": 1786352254,
+  "feedstock_hash": "722a7af36cbaa10ccda824039a9526e90dbccf5c",
+  "feedstock_hash_ts": 1787956157,
   "feedstock_name": "pkg-config",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -39,7 +39,7 @@
       "summary": "Interface for querying installed libraries for use during compilation."
     },
     "build": {
-      "number": "1011",
+      "number": "1012",
       "script": "build"
     },
     "extra": {
@@ -168,7 +168,7 @@
       "summary": "Interface for querying installed libraries for use during compilation."
     },
     "build": {
-      "number": "1011",
+      "number": "1012",
       "script": "build"
     },
     "extra": {
@@ -275,7 +275,7 @@
       "summary": "Interface for querying installed libraries for use during compilation."
     },
     "build": {
-      "number": "1011",
+      "number": "1012",
       "script": "build"
     },
     "extra": {
@@ -382,7 +382,7 @@
       "summary": "Interface for querying installed libraries for use during compilation."
     },
     "build": {
-      "number": "1011",
+      "number": "1012",
       "script": "build"
     },
     "extra": {
@@ -643,7 +643,7 @@
       "summary": "Interface for querying installed libraries for use during compilation."
     },
     "build": {
-      "number": "1011",
+      "number": "1012",
       "script": "build"
     },
     "extra": {
@@ -753,7 +753,7 @@
       "summary": "Interface for querying installed libraries for use during compilation."
     },
     "build": {
-      "number": "1011",
+      "number": "1012",
       "script": "build"
     },
     "extra": {
@@ -869,7 +869,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pkg-config.json"
   },
-  "raw_meta_yaml": "context:\n  version: 0.29.2\n\npackage:\n  name: pkg-config\n  version: ${{ version }}\n\nsource:\n  url: https://pkg-config.freedesktop.org/releases/pkg-config-${{ version }}.tar.gz\n  sha256: 6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591\n\nbuild:\n  number: 1011\n  script: build\n  variant:\n    ignore_keys:\n      - python\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - if: unix\n      then:\n        - libtool\n        - automake\n        - make\n        - python\n  host:\n    # To avoid a cyclic dependency when bootstrapping linux-riscv64, use the\n    # bundled GLib there. Other cross builds and all Windows builds use GLib.\n    - if: win or (build_platform != target_platform and not riscv64)\n      then: glib\n    - if: osx\n      then: libiconv\n\ntests:\n  - package_contents:\n      bin:\n        - pkg-config\n  - script:\n      - pkg-config --help\n\nabout:\n  homepage: http://www.freedesktop.org/wiki/Software/pkg-config/\n  license: GPL-2.0-or-later\n  license_file: COPYING\n  summary: Interface for querying installed libraries for use during compilation.\n  description: |\n    pkg-config is a script to make putting together all the build\n    flags when compiling/linking a lot easier.\n  documentation: https://people.freedesktop.org/~dbn/pkg-config-guide.html\n  repository: https://cgit.freedesktop.org/pkg-config\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - mdboom\n    - ocefpaf\n    - tacaswell\n    - h-vetinari\n",
+  "raw_meta_yaml": "context:\n  version: 0.29.2\n\npackage:\n  name: pkg-config\n  version: ${{ version }}\n\nsource:\n  url: https://pkg-config.freedesktop.org/releases/pkg-config-${{ version }}.tar.gz\n  sha256: 6fc69c01688c9458a57eb9a1664c9aba372ccda420a02bf4429fe610e7e7d591\n\nbuild:\n  number: 1012\n  script: build\n  variant:\n    ignore_keys:\n      - python\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - if: unix\n      then:\n        - libtool\n        - automake\n        - make\n        - python\n  host:\n    # To avoid a cyclic dependency when building, we avoid glib when not cross-compiling.\n    # This assumes that both pkg-config and glib are cross-compiled or neither is.\n    # Windows does not participate in these games though, we always want glib there\n    - if: win or (build_platform != target_platform)\n      then: glib\n    - if: osx\n      then: libiconv\n\ntests:\n  - package_contents:\n      bin:\n        - pkg-config\n  - script:\n      - pkg-config --help\n\nabout:\n  homepage: http://www.freedesktop.org/wiki/Software/pkg-config/\n  license: GPL-2.0-or-later\n  license_file: COPYING\n  summary: Interface for querying installed libraries for use during compilation.\n  description: |\n    pkg-config is a script to make putting together all the build\n    flags when compiling/linking a lot easier.\n  documentation: https://people.freedesktop.org/~dbn/pkg-config-guide.html\n  repository: https://cgit.freedesktop.org/pkg-config\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - mdboom\n    - ocefpaf\n    - tacaswell\n    - h-vetinari\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -962,7 +962,7 @@
       "summary": "Interface for querying installed libraries for use during compilation."
     },
     "build": {
-      "number": "1011",
+      "number": "1012",
       "script": "build"
     },
     "extra": {
