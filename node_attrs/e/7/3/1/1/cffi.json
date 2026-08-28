@@ -7,7 +7,8 @@
       "inspection": "update-grayskull"
     },
     "build_platform": {
-      "linux_ppc64le": "linux_64"
+      "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -24,8 +25,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "c745afb6067eb98031e26da7501c7f9299e59d2c",
-  "feedstock_hash_ts": 1786774928,
+  "feedstock_hash": "292326252532a8ff291ca377cc7421d7e92b0bd7",
+  "feedstock_hash_ts": 1787881117,
   "feedstock_name": "cffi",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -59,7 +60,9 @@
       "build": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "patch"
+        "patch",
+        "python",
+        "cross-python_linux-riscv64"
       ],
       "host": [
         "python",
@@ -95,7 +98,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -105,7 +108,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "patch"
+        "cross-python_linux-riscv64",
+        "patch",
+        "python"
       ]
     },
     "host": {
@@ -202,7 +207,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -309,7 +314,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -381,6 +386,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "patch",
+        "python",
+        "cross-python_linux-riscv64",
         "m2-patch"
       ],
       "host": [
@@ -418,7 +425,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -491,7 +498,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -599,7 +606,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -658,12 +665,13 @@
   "pr_info": {
     "__lazy_json__": "pr_info/cffi.json"
   },
-  "raw_meta_yaml": "{% set version = \"2.1.1\" %}\n\npackage:\n  name: cffi\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/c/cffi/cffi-{{ version }}.tar.gz\n  sha256: dd31f52ea1086513bb9df30f8fcee9b8918323ae067a3d5b78bc826a000712be\n  patches:\n    - patches/0001-Link-to-dl-library.patch\n    - patches/0002-setup-linux.patch\n    - patches/0003-apple-api.patch  # [osx]\n\nbuild:\n  number: 2\n  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - patch     # [not win]\n    - m2-patch  # [win]\n  host:\n    - python\n    - pip\n    - wheel\n    - setuptools >=66.1\n    - libffi  # [not win]\n    - pycparser\n  run:\n    - python\n    - libffi  # [not win]\n    - pycparser\n\ntest:\n  imports:\n    - cffi\n    - _cffi_backend\n  requires:\n    - pip\n    - zstd\n  commands:\n    - pip check\n    - python -X faulthandler -c \"from cffi import FFI; print(FFI().dlopen('zstd'))\"\n\nabout:\n  home: https://github.com/python-cffi/cffi\n  license: MIT\n  license_file: LICENSE\n  summary: Foreign Function Interface for Python calling C code.\n\n  description: |\n    Cffi aims to allow users to call C code from Python without having to\n    learn a 3rd language. It provides a convenient and reliable way to call\n    compiled C code from Python using interface declarations written in C.\n  doc_url: https://cffi.readthedocs.io\n  dev_url: https://github.com/python-cffi/cffi\n\nextra:\n  recipe-maintainers:\n    - goanpeca\n    - ocefpaf\n    - katietz\n    - h-vetinari\n    - zklaus\n",
+  "raw_meta_yaml": "{% set version = \"2.1.1\" %}\n\npackage:\n  name: cffi\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/c/cffi/cffi-{{ version }}.tar.gz\n  sha256: dd31f52ea1086513bb9df30f8fcee9b8918323ae067a3d5b78bc826a000712be\n  patches:\n    - patches/0001-Link-to-dl-library.patch\n    - patches/0002-setup-linux.patch\n    - patches/0003-apple-api.patch  # [osx]\n\nbuild:\n  number: 2\n  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - {{ compiler('c') }}\n    - {{ stdlib(\"c\") }}\n    - patch     # [not win]\n    - m2-patch  # [win]\n  host:\n    - python\n    - pip\n    - wheel\n    - setuptools >=66.1\n    - libffi  # [not win]\n    - pycparser\n  run:\n    - python\n    - libffi  # [not win]\n    - pycparser\n\ntest:\n  imports:\n    - cffi\n    - _cffi_backend\n  requires:\n    - pip\n    - zstd *\n  commands:\n    - pip check\n    - python -X faulthandler -c \"from cffi import FFI; print(FFI().dlopen('zstd'))\"\n\nabout:\n  home: https://github.com/python-cffi/cffi\n  license: MIT\n  license_file: LICENSE\n  summary: Foreign Function Interface for Python calling C code.\n\n  description: |\n    Cffi aims to allow users to call C code from Python without having to\n    learn a 3rd language. It provides a convenient and reliable way to call\n    compiled C code from Python using interface declarations written in C.\n  doc_url: https://cffi.readthedocs.io\n  dev_url: https://github.com/python-cffi/cffi\n\nextra:\n  recipe-maintainers:\n    - goanpeca\n    - ocefpaf\n    - katietz\n    - h-vetinari\n    - zklaus\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cross-python_linux-riscv64",
       "libffi",
       "m2-patch",
       "patch",
@@ -680,8 +688,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-riscv64",
         "m2-patch",
-        "patch"
+        "patch",
+        "python"
       ]
     },
     "host": {
@@ -722,8 +732,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-riscv64",
         "m2-patch",
-        "patch"
+        "patch",
+        "python"
       ]
     },
     "host": {
@@ -749,7 +761,7 @@
       "__set__": true,
       "elements": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -823,7 +835,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
@@ -926,7 +938,7 @@
       ],
       "requires": [
         "pip",
-        "zstd"
+        "zstd *"
       ]
     }
   },
