@@ -11,6 +11,9 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "win_arm64": "default"
+    },
     "workflow_settings": {
       "pagefile_size": [
         {
@@ -19,8 +22,8 @@
       ]
     }
   },
-  "feedstock_hash": "13a807a79840ac83e5ecfe731307a2e079b5bfca",
-  "feedstock_hash_ts": 1787812659,
+  "feedstock_hash": "05bba63a4aaa6ebc9c82c70d5c70a42dbdf2d982",
+  "feedstock_hash_ts": 1787990908,
   "feedstock_name": "flang",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -83,8 +86,7 @@
         "c_compiler_stub",
         "cxx_compiler_stub",
         "cmake",
-        "ninja <1.13",
-        "numpy *"
+        "ninja <1.13"
       ],
       "host": [
         "clangdev ==23.1.0",
@@ -109,8 +111,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja",
-        "numpy"
+        "ninja"
       ]
     },
     "host": {
@@ -218,6 +219,38 @@
             "if not exist %LIBRARY_BIN%\\flang.exe exit 1"
           ]
         }
+      },
+      {
+        "name": "flang",
+        "requirements": {
+          "build": [
+            "cmake",
+            "ninja <1.13",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "clangdev ==23.1.0",
+            "compiler-rt ==23.1.0",
+            "llvmdev ==23.1.0",
+            "mlir ==23.1.0",
+            "llvm ==23.1.0",
+            "libclang-cpp ==23.1.0",
+            "zlib",
+            "zstd"
+          ],
+          "run": [
+            "clang ==23.1.0",
+            "compiler-rt ==23.1.0"
+          ]
+        },
+        "script": "install_flang.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_BIN%\\flang.exe exit 1"
+          ]
+        }
       }
     ],
     "package": {
@@ -230,8 +263,7 @@
         "c_compiler_stub",
         "cxx_compiler_stub",
         "cmake",
-        "ninja <1.13",
-        "numpy *"
+        "ninja <1.13"
       ],
       "host": [
         "clangdev ==23.1.0",
@@ -258,12 +290,13 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/flang.json"
   },
-  "raw_meta_yaml": "{% set version = \"23.1.0\" %}\n\npackage:\n  name: flang-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-{{ version.replace(\".rc\", \"-rc\") }}.tar.gz\n  sha256: d8657b2a7291e518407bf13c4b41c85ef2cded2d4354097a2f451644dfc817b0\n\nbuild:\n  number: 0\n  # intentionally only windows (main target) & linux (debuggability)\n  skip: true  # [osx]\n\nrequirements:\n  build:\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - cmake\n    # some bug with misinterpreting `...\\tools` as a tab (`\\t`)\n    - ninja <1.13\n    - mlir =={{ version }}     # [build_platform != target_platform]\n    # for showing CPU info of CI agent\n    - numpy *\n  host:\n    - clangdev =={{ version }}\n    - compiler-rt =={{ version }}\n    - lit =={{ version }}\n    - llvmdev =={{ version }}\n    - mlir =={{ version }}\n    - zlib\n\noutputs:\n  - name: flang\n    script: install_flang.sh  # [unix]\n    script: install_flang.bat  # [win]\n    requirements:\n      build:\n        - cmake\n        - ninja <1.13\n        # for strong run-exports\n        - {{ stdlib('c') }}\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n      host:\n        - clangdev =={{ version }}\n        - compiler-rt =={{ version }}\n        - llvmdev =={{ version }}\n        - mlir =={{ version }}\n        # for required run-exports\n        - llvm =={{ version }}\n        - libclang-cpp =={{ version }}\n        # ninja really wants to find z.lib on win\n        - zlib  # [win]\n        - zstd  # [win]\n      run:\n        - sysroot_{{ target_platform }} >={{ c_stdlib_version }}    # [linux]\n        - clang =={{ version }}\n        - compiler-rt =={{ version }}   # [win]\n    test:\n      commands:\n        - test -f $PREFIX/bin/flang                     # [linux]\n        - if not exist %LIBRARY_BIN%\\flang.exe exit 1   # [win]\n\nabout:\n  home: https://flang.llvm.org\n  license: Apache-2.0\n  license_file: flang/LICENSE.TXT\n  summary: Flang is a Fortran compiler targeting LLVM.\n  dev_url: https://github.com/llvm/llvm-project\n\nextra:\n  recipe-maintainers:\n    - isuruf\n    - h-vetinari\n  feedstock-name: flang\n",
+  "raw_meta_yaml": "{% set version = \"23.1.0\" %}\n\npackage:\n  name: flang-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-{{ version.replace(\".rc\", \"-rc\") }}.tar.gz\n  sha256: d8657b2a7291e518407bf13c4b41c85ef2cded2d4354097a2f451644dfc817b0\n\nbuild:\n  number: 0\n  # intentionally only windows (main target) & linux (debuggability)\n  skip: true  # [osx]\n\nrequirements:\n  build:\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - cmake\n    # some bug with misinterpreting `...\\tools` as a tab (`\\t`)\n    - ninja <1.13\n    - mlir =={{ version }}     # [build_platform != target_platform]\n  host:\n    - clangdev =={{ version }}\n    - compiler-rt =={{ version }}\n    - lit =={{ version }}\n    - llvmdev =={{ version }}\n    - mlir =={{ version }}\n    - zlib\n\noutputs:\n  - name: flang\n    script: install_flang.sh  # [unix]\n    script: install_flang.bat  # [win]\n    requirements:\n      build:\n        - cmake\n        - ninja <1.13\n        # for strong run-exports\n        - {{ stdlib('c') }}\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n      host:\n        - clangdev =={{ version }}\n        - compiler-rt =={{ version }}\n        - llvmdev =={{ version }}\n        - mlir =={{ version }}\n        # for required run-exports\n        - llvm =={{ version }}\n        - libclang-cpp =={{ version }}\n        # ninja really wants to find z.lib on win\n        - zlib  # [win]\n        - zstd  # [win]\n      run:\n        - sysroot_{{ target_platform }} >={{ c_stdlib_version }}    # [linux]\n        - clang =={{ version }}\n        - compiler-rt =={{ version }}   # [win]\n    test:\n      commands:\n        - test -f $PREFIX/bin/flang                     # [linux]\n        - if not exist %LIBRARY_BIN%\\flang.exe exit 1   # [win]\n\nabout:\n  home: https://flang.llvm.org\n  license: Apache-2.0\n  license_file: flang/LICENSE.TXT\n  summary: Flang is a Fortran compiler targeting LLVM.\n  dev_url: https://github.com/llvm/llvm-project\n\nextra:\n  recipe-maintainers:\n    - isuruf\n    - h-vetinari\n  feedstock-name: flang\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -280,7 +313,6 @@
       "llvmdev",
       "mlir",
       "ninja",
-      "numpy",
       "sysroot_linux-64",
       "zlib",
       "zstd"
@@ -294,8 +326,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja",
-        "numpy"
+        "ninja"
       ]
     },
     "host": {
@@ -342,8 +373,7 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja <1.13",
-        "numpy *"
+        "ninja <1.13"
       ]
     },
     "host": {
@@ -440,8 +470,7 @@
         "c_compiler_stub",
         "cxx_compiler_stub",
         "cmake",
-        "ninja <1.13",
-        "numpy *"
+        "ninja <1.13"
       ],
       "host": [
         "clangdev ==23.1.0",
@@ -466,8 +495,123 @@
         "c_stdlib_stub",
         "cmake",
         "cxx_compiler_stub",
-        "ninja",
-        "numpy"
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "clangdev",
+        "compiler-rt",
+        "libclang-cpp",
+        "lit",
+        "llvm",
+        "llvmdev",
+        "mlir",
+        "zlib",
+        "zstd"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "clang",
+        "compiler-rt"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/llvm/llvm-project",
+      "home": "https://flang.llvm.org",
+      "license": "Apache-2.0",
+      "license_file": "flang/LICENSE.TXT",
+      "summary": "Flang is a Fortran compiler targeting LLVM."
+    },
+    "build": {
+      "number": "0"
+    },
+    "extra": {
+      "feedstock-name": "flang",
+      "recipe-maintainers": [
+        "isuruf",
+        "h-vetinari"
+      ]
+    },
+    "outputs": [
+      {
+        "name": "flang",
+        "requirements": {
+          "build": [
+            "cmake",
+            "ninja <1.13",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub"
+          ],
+          "host": [
+            "clangdev ==23.1.0",
+            "compiler-rt ==23.1.0",
+            "llvmdev ==23.1.0",
+            "mlir ==23.1.0",
+            "llvm ==23.1.0",
+            "libclang-cpp ==23.1.0",
+            "zlib",
+            "zstd"
+          ],
+          "run": [
+            "clang ==23.1.0",
+            "compiler-rt ==23.1.0"
+          ]
+        },
+        "script": "install_flang.bat",
+        "test": {
+          "commands": [
+            "if not exist %LIBRARY_BIN%\\flang.exe exit 1"
+          ]
+        }
+      }
+    ],
+    "package": {
+      "name": "flang-split",
+      "version": "23.1.0"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "cmake",
+        "ninja <1.13"
+      ],
+      "host": [
+        "clangdev ==23.1.0",
+        "compiler-rt ==23.1.0",
+        "lit ==23.1.0",
+        "llvmdev ==23.1.0",
+        "mlir ==23.1.0",
+        "zlib"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "sha256": "d8657b2a7291e518407bf13c4b41c85ef2cded2d4354097a2f451644dfc817b0",
+      "url": "https://github.com/llvm/llvm-project/archive/refs/tags/llvmorg-23.1.0.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
       ]
     },
     "host": {
