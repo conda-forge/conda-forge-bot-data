@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '13'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '13'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nflann:\n- 1.9.2\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\neigen_abi_devel:\n- 5.0.1\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
@@ -11,35 +11,96 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ae501d84f785ad4781983a0a951ece262a2e5cf9",
-  "feedstock_hash_ts": 1776949989,
+  "feedstock_hash": "f21ddd11575e777a8ed62377e85068673c322ef8",
+  "feedstock_hash_ts": 1788019479,
   "feedstock_name": "fcl",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.\n",
+      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.",
+      "dev_url": "https://github.com/flexible-collision-library/fcl",
       "home": "https://github.com/flexible-collision-library/fcl",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "The flexible collision library (FCL) is a library for performing proximity queries."
     },
     "build": {
-      "number": "8",
-      "run_exports": [
-        "fcl"
-      ]
+      "number": "9",
+      "run_exports": {
+        "weak": [
+          "fcl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "fcl",
       "recipe-maintainers": [
         "jeongseok-meta",
-        "wolfv",
-        "traversaro"
+        "traversaro",
+        "wolfv"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      }
+    ],
     "package": {
       "name": "fcl",
       "version": "0.7.0"
@@ -53,30 +114,25 @@
         "ninja"
       ],
       "host": [
-        "flann",
-        "libccd-double",
         "eigen",
+        "eigen-abi-devel",
+        "libccd-double",
         "octomap"
       ],
       "run": [
-        "flann"
+        "eigen"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "553.patch"
+        "553.patch",
+        "620.patch",
+        "645.patch",
+        "659-capsule-test-tolerance.patch"
       ],
       "sha256": "90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc",
       "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/fcl/geometry/shape/cylinder.h",
-        "test -f $PREFIX/lib/pkgconfig/fcl.pc",
-        "test -f $PREFIX/lib/cmake/fcl/fcl-config.cmake",
-        "test -f $PREFIX/lib/libfcl${SHLIB_EXT}"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -94,7 +150,7 @@
       "__set__": true,
       "elements": [
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -102,36 +158,102 @@
     "run": {
       "__set__": true,
       "elements": [
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.\n",
+      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.",
+      "dev_url": "https://github.com/flexible-collision-library/fcl",
       "home": "https://github.com/flexible-collision-library/fcl",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "The flexible collision library (FCL) is a library for performing proximity queries."
     },
     "build": {
-      "number": "8",
-      "run_exports": [
-        "fcl"
-      ]
+      "number": "9",
+      "run_exports": {
+        "weak": [
+          "fcl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "fcl",
       "recipe-maintainers": [
         "jeongseok-meta",
-        "wolfv",
-        "traversaro"
+        "traversaro",
+        "wolfv"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      }
+    ],
     "package": {
       "name": "fcl",
       "version": "0.7.0"
@@ -145,30 +267,25 @@
         "ninja"
       ],
       "host": [
-        "flann",
-        "libccd-double",
         "eigen",
+        "eigen-abi-devel",
+        "libccd-double",
         "octomap"
       ],
       "run": [
-        "flann"
+        "eigen"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "553.patch"
+        "553.patch",
+        "620.patch",
+        "645.patch",
+        "659-capsule-test-tolerance.patch"
       ],
       "sha256": "90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc",
       "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/fcl/geometry/shape/cylinder.h",
-        "test -f $PREFIX/lib/pkgconfig/fcl.pc",
-        "test -f $PREFIX/lib/cmake/fcl/fcl-config.cmake",
-        "test -f $PREFIX/lib/libfcl${SHLIB_EXT}"
-      ]
     }
   },
   "linux_aarch64_requirements": {
@@ -186,7 +303,7 @@
       "__set__": true,
       "elements": [
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -194,36 +311,102 @@
     "run": {
       "__set__": true,
       "elements": [
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
-      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.\n",
+      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.",
+      "dev_url": "https://github.com/flexible-collision-library/fcl",
       "home": "https://github.com/flexible-collision-library/fcl",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "The flexible collision library (FCL) is a library for performing proximity queries."
     },
     "build": {
-      "number": "8",
-      "run_exports": [
-        "fcl"
-      ]
+      "number": "9",
+      "run_exports": {
+        "weak": [
+          "fcl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "fcl",
       "recipe-maintainers": [
         "jeongseok-meta",
-        "wolfv",
-        "traversaro"
+        "traversaro",
+        "wolfv"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      }
+    ],
     "package": {
       "name": "fcl",
       "version": "0.7.0"
@@ -237,30 +420,25 @@
         "ninja"
       ],
       "host": [
-        "flann",
-        "libccd-double",
         "eigen",
+        "eigen-abi-devel",
+        "libccd-double",
         "octomap"
       ],
       "run": [
-        "flann"
+        "eigen"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "553.patch"
+        "553.patch",
+        "620.patch",
+        "645.patch",
+        "659-capsule-test-tolerance.patch"
       ],
       "sha256": "90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc",
       "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/fcl/geometry/shape/cylinder.h",
-        "test -f $PREFIX/lib/pkgconfig/fcl.pc",
-        "test -f $PREFIX/lib/cmake/fcl/fcl-config.cmake",
-        "test -f $PREFIX/lib/libfcl${SHLIB_EXT}"
-      ]
     }
   },
   "linux_ppc64le_requirements": {
@@ -278,7 +456,7 @@
       "__set__": true,
       "elements": [
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -286,36 +464,367 @@
     "run": {
       "__set__": true,
       "elements": [
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   },
   "meta_yaml": {
     "about": {
-      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.\n",
+      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.",
+      "dev_url": "https://github.com/flexible-collision-library/fcl",
       "home": "https://github.com/flexible-collision-library/fcl",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "The flexible collision library (FCL) is a library for performing proximity queries."
     },
     "build": {
-      "number": "8",
-      "run_exports": [
-        "fcl"
-      ]
+      "number": "9",
+      "run_exports": {
+        "weak": [
+          "fcl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "fcl",
       "recipe-maintainers": [
         "jeongseok-meta",
-        "wolfv",
-        "traversaro"
+        "traversaro",
+        "wolfv"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      }
+    ],
     "package": {
       "name": "fcl",
       "version": "0.7.0"
@@ -329,60 +838,111 @@
         "ninja"
       ],
       "host": [
-        "flann",
-        "libccd-double",
         "eigen",
+        "eigen-abi-devel",
+        "libccd-double",
         "octomap"
       ],
       "run": [
-        "flann"
+        "eigen"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "553.patch",
+        "620.patch",
+        "645.patch",
+        "659-capsule-test-tolerance.patch",
         "enable-shared-libs.patch"
       ],
       "sha256": "90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc",
       "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/fcl/geometry/shape/cylinder.h",
-        "test -f $PREFIX/lib/pkgconfig/fcl.pc",
-        "test -f $PREFIX/lib/cmake/fcl/fcl-config.cmake",
-        "test -f $PREFIX/lib/libfcl${SHLIB_EXT}",
-        "if not exist %PREFIX%\\\\Library\\\\include\\\\fcl\\\\geometry\\\\shape\\\\cylinder.h exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\lib\\\\pkgconfig\\\\fcl.pc exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\CMake\\\\fcl-config.cmake exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\bin\\\\fcl.dll exit 1"
-      ]
     }
   },
   "name": "fcl",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.\n",
+      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.",
+      "dev_url": "https://github.com/flexible-collision-library/fcl",
       "home": "https://github.com/flexible-collision-library/fcl",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "The flexible collision library (FCL) is a library for performing proximity queries."
     },
     "build": {
-      "number": "8",
-      "run_exports": [
-        "fcl"
-      ]
+      "number": "9",
+      "run_exports": {
+        "weak": [
+          "fcl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "fcl",
       "recipe-maintainers": [
         "jeongseok-meta",
-        "wolfv",
-        "traversaro"
+        "traversaro",
+        "wolfv"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      }
+    ],
     "package": {
       "name": "fcl",
       "version": "0.7.0"
@@ -396,30 +956,25 @@
         "ninja"
       ],
       "host": [
-        "flann",
-        "libccd-double",
         "eigen",
+        "eigen-abi-devel",
+        "libccd-double",
         "octomap"
       ],
       "run": [
-        "flann"
+        "eigen"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "553.patch"
+        "553.patch",
+        "620.patch",
+        "645.patch",
+        "659-capsule-test-tolerance.patch"
       ],
       "sha256": "90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc",
       "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/fcl/geometry/shape/cylinder.h",
-        "test -f $PREFIX/lib/pkgconfig/fcl.pc",
-        "test -f $PREFIX/lib/cmake/fcl/fcl-config.cmake",
-        "test -f $PREFIX/lib/libfcl${SHLIB_EXT}"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -437,7 +992,7 @@
       "__set__": true,
       "elements": [
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -445,36 +1000,102 @@
     "run": {
       "__set__": true,
       "elements": [
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.\n",
+      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.",
+      "dev_url": "https://github.com/flexible-collision-library/fcl",
       "home": "https://github.com/flexible-collision-library/fcl",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "The flexible collision library (FCL) is a library for performing proximity queries."
     },
     "build": {
-      "number": "8",
-      "run_exports": [
-        "fcl"
-      ]
+      "number": "9",
+      "run_exports": {
+        "weak": [
+          "fcl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "fcl",
       "recipe-maintainers": [
         "jeongseok-meta",
-        "wolfv",
-        "traversaro"
+        "traversaro",
+        "wolfv"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      }
+    ],
     "package": {
       "name": "fcl",
       "version": "0.7.0"
@@ -488,30 +1109,25 @@
         "ninja"
       ],
       "host": [
-        "flann",
-        "libccd-double",
         "eigen",
+        "eigen-abi-devel",
+        "libccd-double",
         "octomap"
       ],
       "run": [
-        "flann"
+        "eigen"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "553.patch"
+        "553.patch",
+        "620.patch",
+        "645.patch",
+        "659-capsule-test-tolerance.patch"
       ],
       "sha256": "90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc",
       "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "test -f $PREFIX/include/fcl/geometry/shape/cylinder.h",
-        "test -f $PREFIX/lib/pkgconfig/fcl.pc",
-        "test -f $PREFIX/lib/cmake/fcl/fcl-config.cmake",
-        "test -f $PREFIX/lib/libfcl${SHLIB_EXT}"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -529,7 +1145,7 @@
       "__set__": true,
       "elements": [
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -537,12 +1153,18 @@
     "run": {
       "__set__": true,
       "elements": [
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   },
   "outputs_names": {
@@ -563,7 +1185,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/fcl.json"
   },
-  "raw_meta_yaml": "{% set name = \"fcl\" %}\n{% set version = \"0.7.0\" %}\n{% set sha256 = \"90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/flexible-collision-library/fcl/archive/{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n  patches:\n    - 553.patch\n    - enable-shared-libs.patch  # [win]\n\nbuild:\n  number: 8\n  run_exports:\n    - {{ pin_subpackage(name, max_pin='x.x') }}\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake\n    - ninja\n  host:\n    - flann\n    - libccd-double\n    - eigen\n    - octomap\n  run:\n    - flann\n\ntest:\n  commands:\n    - test -f $PREFIX/include/fcl/geometry/shape/cylinder.h  # [not win]\n    - test -f $PREFIX/lib/pkgconfig/fcl.pc  # [not win]\n    - test -f $PREFIX/lib/cmake/fcl/fcl-config.cmake  # [not win]\n    - test -f $PREFIX/lib/libfcl${SHLIB_EXT}  # [not win]\n    - if not exist %PREFIX%\\\\Library\\\\include\\\\fcl\\\\geometry\\\\shape\\\\cylinder.h exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\lib\\\\pkgconfig\\\\fcl.pc exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\CMake\\\\fcl-config.cmake exit 1  # [win]\n    - if not exist %PREFIX%\\\\Library\\\\bin\\\\fcl.dll exit 1  # [win]\n\nabout:\n  home: https://github.com/flexible-collision-library/fcl\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: The flexible collision library (FCL) is a library for performing proximity queries.\n  description: |\n    FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n    - Collision detection: detecting whether the two models overlap, and\n      optionally, all of the triangles that overlap.\n    - Distance computation: computing the minimum distance between a pair of\n      models, i.e., the distance between the closest pair of points.\n    - Tolerance verification: determining whether two models are closer or\n      farther than a tolerance distance.\n    - Continuous collision detection: detecting whether the two moving\n      models overlap during the movement, and optionally, the time of\n      contact.\n    - Contact information: for collision detection and continuous collision\n      detection, the contact information (including contact normals and\n      contact points) can be returned optionally.\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n    - wolfv\n    - traversaro\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: fcl\n  version: \"0.7.0\"\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/flexible-collision-library/fcl/archive/${{ version }}.tar.gz\n  sha256: 90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc\n  patches:\n    - 553.patch\n    # Backport upstream PRs 620 and 645 for Eigen 5 compatibility.\n    # Remove after a release containing commits a3fbc9f and 1257b41.\n    - 620.patch\n    - 645.patch\n    # Backport the cross-platform capsule test tolerance from upstream PR 659.\n    - 659-capsule-test-tolerance.patch\n    - if: win\n      then: enable-shared-libs.patch\n\nbuild:\n  number: 9\n  script: build\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n  host:\n    - eigen\n    - eigen-abi-devel\n    - libccd-double\n    - octomap\n  run:\n    - eigen\n  run_exports:\n    - ${{ pin_subpackage(\"fcl\", upper_bound=\"x.x\") }}\n\ntests:\n  - files:\n      recipe:\n        - tests/\n    requirements:\n      run:\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - ninja\n        - pkg-config\n    script:\n      - pkg-config --modversion fcl\n      - pkg-config --libs fcl\n      - cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release\n      - cmake --build tests/build --config Release\n      - ctest --test-dir tests/build --output-on-failure --build-config Release\n\nabout:\n  homepage: https://github.com/flexible-collision-library/fcl\n  repository: https://github.com/flexible-collision-library/fcl\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: The flexible collision library (FCL) is a library for performing proximity queries.\n  description: |\n    FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n    - Collision detection: detecting whether the two models overlap, and\n      optionally, all of the triangles that overlap.\n    - Distance computation: computing the minimum distance between a pair of\n      models, i.e., the distance between the closest pair of points.\n    - Tolerance verification: determining whether two models are closer or\n      farther than a tolerance distance.\n    - Continuous collision detection: detecting whether the two moving\n      models overlap during the movement, and optionally, the time of\n      contact.\n    - Contact information: for collision detection and continuous collision\n      detection, the contact information (including contact normals and\n      contact points) can be returned optionally.\n\nextra:\n  feedstock-name: fcl\n  recipe-maintainers:\n    - jeongseok-meta\n    - traversaro\n    - wolfv\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -572,7 +1194,7 @@
       "cmake",
       "cxx_compiler_stub",
       "eigen",
-      "flann",
+      "eigen-abi-devel",
       "libccd-double",
       "ninja",
       "octomap"
@@ -596,7 +1218,7 @@
         "c_stdlib_stub",
         "cxx_compiler_stub",
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -607,12 +1229,18 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   },
   "strong_exports": false,
@@ -631,7 +1259,7 @@
       "__set__": true,
       "elements": [
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -639,12 +1267,18 @@
     "run": {
       "__set__": true,
       "elements": [
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   },
   "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz",
@@ -654,26 +1288,86 @@
   },
   "win_64_meta_yaml": {
     "about": {
-      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.\n",
+      "description": "FCL is a library for performing three types of proximity queries on a pair of geometric models composed of triangles.\n\n- Collision detection: detecting whether the two models overlap, and\n  optionally, all of the triangles that overlap.\n- Distance computation: computing the minimum distance between a pair of\n  models, i.e., the distance between the closest pair of points.\n- Tolerance verification: determining whether two models are closer or\n  farther than a tolerance distance.\n- Continuous collision detection: detecting whether the two moving\n  models overlap during the movement, and optionally, the time of\n  contact.\n- Contact information: for collision detection and continuous collision\n  detection, the contact information (including contact normals and\n  contact points) can be returned optionally.",
+      "dev_url": "https://github.com/flexible-collision-library/fcl",
       "home": "https://github.com/flexible-collision-library/fcl",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
       "summary": "The flexible collision library (FCL) is a library for performing proximity queries."
     },
     "build": {
-      "number": "8",
-      "run_exports": [
-        "fcl"
-      ]
+      "number": "9",
+      "run_exports": {
+        "weak": [
+          "fcl"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "fcl",
       "recipe-maintainers": [
         "jeongseok-meta",
-        "wolfv",
-        "traversaro"
+        "traversaro",
+        "wolfv"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "fcl"
+          ]
+        },
+        "name": "fcl",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "eigen",
+            "eigen-abi-devel",
+            "libccd-double",
+            "octomap"
+          ],
+          "run": [
+            "eigen"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "tests/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "c_stdlib_stub",
+                "cmake",
+                "ninja",
+                "pkg-config"
+              ]
+            },
+            "script": [
+              "pkg-config --modversion fcl",
+              "pkg-config --libs fcl",
+              "cmake -S tests -B tests/build -G Ninja -DCMAKE_BUILD_TYPE=Release",
+              "cmake --build tests/build --config Release",
+              "ctest --test-dir tests/build --output-on-failure --build-config Release"
+            ]
+          }
+        ],
+        "version": "0.7.0"
+      }
+    ],
     "package": {
       "name": "fcl",
       "version": "0.7.0"
@@ -687,31 +1381,26 @@
         "ninja"
       ],
       "host": [
-        "flann",
-        "libccd-double",
         "eigen",
+        "eigen-abi-devel",
+        "libccd-double",
         "octomap"
       ],
       "run": [
-        "flann"
+        "eigen"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "553.patch",
+        "620.patch",
+        "645.patch",
+        "659-capsule-test-tolerance.patch",
         "enable-shared-libs.patch"
       ],
       "sha256": "90409e940b24045987506a6b239424a4222e2daf648c86dd146cbcb692ebdcbc",
       "url": "https://github.com/flexible-collision-library/fcl/archive/0.7.0.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "if not exist %PREFIX%\\\\Library\\\\include\\\\fcl\\\\geometry\\\\shape\\\\cylinder.h exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\lib\\\\pkgconfig\\\\fcl.pc exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\CMake\\\\fcl-config.cmake exit 1",
-        "if not exist %PREFIX%\\\\Library\\\\bin\\\\fcl.dll exit 1"
-      ]
     }
   },
   "win_64_requirements": {
@@ -729,7 +1418,7 @@
       "__set__": true,
       "elements": [
         "eigen",
-        "flann",
+        "eigen-abi-devel",
         "libccd-double",
         "octomap"
       ]
@@ -737,12 +1426,18 @@
     "run": {
       "__set__": true,
       "elements": [
-        "flann"
+        "eigen"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja",
+        "pkg-config"
+      ]
     }
   }
 }
