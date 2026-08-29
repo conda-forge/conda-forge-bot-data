@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\neigen_abi_devel:\n- 5.0.1\njsoncpp:\n- 1.9.8\nlibboost_devel:\n- '1.90'\nlibboost_python_devel:\n- '1.90'\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\ntarget_platform:\n- linux-64\nurdfdom:\n- '5.1'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\neigen_abi_devel:\n- 5.0.1\njsoncpp:\n- 1.9.8\nlibboost_devel:\n- '1.90'\nlibboost_python_devel:\n- '1.90'\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\ntarget_platform:\n- linux-64\nurdfdom:\n- '6'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_aarch64",
@@ -23,8 +23,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "382948d8489b957c0ea7bde9fd59cc5a90019213",
-  "feedstock_hash_ts": 1787840621,
+  "feedstock_hash": "d45dc6e885bad5f60c15682824d8e05c51b9ac69",
+  "feedstock_hash_ts": 1788020946,
   "feedstock_name": "placo",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -36,7 +36,7 @@
       "summary": "Rhoban Planning and Control."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "placo"
@@ -398,7 +398,7 @@
       "summary": "Rhoban Planning and Control."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "placo"
@@ -832,7 +832,7 @@
       "summary": "Rhoban Planning and Control."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "placo"
@@ -2288,7 +2288,7 @@
       "summary": "Rhoban Planning and Control."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "placo"
@@ -2716,7 +2716,7 @@
       "summary": "Rhoban Planning and Control."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "placo"
@@ -3153,7 +3153,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/placo.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\n\ncontext:\n  version: \"0.9.23\"\n  build_number: 0\n\nrecipe:\n  name: placo-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/Rhoban/placo/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: 2510decffb749a7e0c4c26175c11379bf000c59dabb3c969f7d86c83cfd086e0\n    patches:\n      - external_placo_pyi_cross_compilation.patch\n      - fix_placo_python_module_win_extension.patch\n      - fix_install_on_windows.patch\n      - fix_eigen_5_detection.patch\n      - fix_pinocchio_frame_parent_joint.patch\n\n  # In general conda-forge recipes only use tarballs. However, placo explicitly excluedes its\n  # tests from the tarball using export-ignore in .gitattributes, see \n  # https://github.com/Rhoban/placo/blob/v0.9.14/.gitattributes#L1\n  # so we need to clone the git repository to get the tests.\n  - git: https://github.com/Rhoban/placo.git\n    tag: v${{ version }}\n    target_directory: placo-tests\n\nbuild:\n  number: ${{ build_number }}\n\noutputs:\n  - package:\n      name: placo\n    build:\n      script:\n        - if: unix\n          then: build_placo.sh\n        - if: win\n          then: build_placo.bat\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - numpy\n            - setuptools\n            - doxystub\n            - libpinocchio\n            - eigen-abi-devel\n            - pinocchio-python\n            - eigenpy\n            - eiquadprog\n            - jsoncpp\n            - python\n            - meshcat-python\n            - pinocchio-python\n        - ${{ compiler('cxx') }}\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - pkg-config\n        - ninja\n        # To avoid operator overloading confusion on Windows we use clang-cl\n        - if: win\n          then:\n            - clang\n      host:\n        - python\n        - pip\n        - setuptools\n        - doxystub\n        - libpinocchio\n        - eigen-abi-devel\n        - pinocchio-python\n        - numpy\n        - eigenpy\n        - eiquadprog\n        - jsoncpp\n        - libboost-devel\n        - libboost-python-devel\n        - libcoal\n        - urdfdom\n        - if: linux\n          then: libgomp\n      run:\n        - python\n        - meshcat-python\n        - pinocchio-python\n      run_exports:\n        - ${{ pin_subpackage('placo', upper_bound='x.x.x') }}\n\n    tests:\n      - python:\n          imports:\n            - placo\n          pip_check: true\n\n  - package:\n      name: placo-tests\n    build:\n      script: ${{ 'true' if unix else 'exit /b 0' }}\n    requirements:\n      run:\n        - ${{ pin_subpackage('placo', upper_bound=\"x.x.x\") }}\n    tests:\n      - files:\n          source:\n            - placo-tests/python/tests\n        requirements:\n          run:\n            - pytest\n            - matplotlib-base\n        script:\n          - python -m unittest discover placo-tests/python/tests/ \"*_test.py\"\n\nabout:\n  homepage: https://github.com/Rhoban/placo\n  license: MIT\n  license_file:\n    - LICENSE\n  summary: Rhoban Planning and Control.\n\nextra:\n  recipe-maintainers:\n    - traversaro\n  feedstock-name: placo\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\n\ncontext:\n  version: \"0.9.23\"\n  build_number: 1\n\nrecipe:\n  name: placo-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/Rhoban/placo/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: 2510decffb749a7e0c4c26175c11379bf000c59dabb3c969f7d86c83cfd086e0\n    patches:\n      - external_placo_pyi_cross_compilation.patch\n      - fix_placo_python_module_win_extension.patch\n      - fix_install_on_windows.patch\n      - fix_eigen_5_detection.patch\n      - fix_pinocchio_frame_parent_joint.patch\n\n  # In general conda-forge recipes only use tarballs. However, placo explicitly excluedes its\n  # tests from the tarball using export-ignore in .gitattributes, see \n  # https://github.com/Rhoban/placo/blob/v0.9.14/.gitattributes#L1\n  # so we need to clone the git repository to get the tests.\n  - git: https://github.com/Rhoban/placo.git\n    tag: v${{ version }}\n    target_directory: placo-tests\n\nbuild:\n  number: ${{ build_number }}\n\noutputs:\n  - package:\n      name: placo\n    build:\n      script:\n        - if: unix\n          then: build_placo.sh\n        - if: win\n          then: build_placo.bat\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - numpy\n            - setuptools\n            - doxystub\n            - libpinocchio\n            - eigen-abi-devel\n            - pinocchio-python\n            - eigenpy\n            - eiquadprog\n            - jsoncpp\n            - python\n            - meshcat-python\n            - pinocchio-python\n        - ${{ compiler('cxx') }}\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - pkg-config\n        - ninja\n        # To avoid operator overloading confusion on Windows we use clang-cl\n        - if: win\n          then:\n            - clang\n      host:\n        - python\n        - pip\n        - setuptools\n        - doxystub\n        - libpinocchio\n        - eigen-abi-devel\n        - pinocchio-python\n        - numpy\n        - eigenpy\n        - eiquadprog\n        - jsoncpp\n        - libboost-devel\n        - libboost-python-devel\n        - libcoal\n        - urdfdom\n        - if: linux\n          then: libgomp\n      run:\n        - python\n        - meshcat-python\n        - pinocchio-python\n      run_exports:\n        - ${{ pin_subpackage('placo', upper_bound='x.x.x') }}\n\n    tests:\n      - python:\n          imports:\n            - placo\n          pip_check: true\n\n  - package:\n      name: placo-tests\n    build:\n      script: ${{ 'true' if unix else 'exit /b 0' }}\n    requirements:\n      run:\n        - ${{ pin_subpackage('placo', upper_bound=\"x.x.x\") }}\n    tests:\n      - files:\n          source:\n            - placo-tests/python/tests\n        requirements:\n          run:\n            - pytest\n            - matplotlib-base\n        script:\n          - python -m unittest discover placo-tests/python/tests/ \"*_test.py\"\n\nabout:\n  homepage: https://github.com/Rhoban/placo\n  license: MIT\n  license_file:\n    - LICENSE\n  summary: Rhoban Planning and Control.\n\nextra:\n  recipe-maintainers:\n    - traversaro\n  feedstock-name: placo\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -3347,7 +3347,7 @@
       "summary": "Rhoban Planning and Control."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "placo"
