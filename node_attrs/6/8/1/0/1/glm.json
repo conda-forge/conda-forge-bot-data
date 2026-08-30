@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncdt_name:\n- conda\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '13'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
@@ -22,8 +22,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "05a114d7643ca83c8a8d1593460d1cdb3782881f",
-  "feedstock_hash_ts": 1777046745,
+  "feedstock_hash": "3a6f291fc3ec938ac03c96277f2d3e39e35972f3",
+  "feedstock_hash_ts": 1788097499,
   "feedstock_name": "glm",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -36,7 +36,10 @@
       "summary": "OpenGL Mathematics"
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": [
+        "glm"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -45,7 +48,7 @@
     },
     "package": {
       "name": "glm",
-      "version": "1.0.1"
+      "version": "1.0.3"
     },
     "requirements": {
       "build": [
@@ -58,18 +61,29 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/macos_test_errors.patch"
+        "patches/disable_warnings_as_errors.patch"
       ],
-      "sha256": "9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c",
-      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz"
+      "sha256": "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001",
+      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
     },
     "test": {
       "commands": [
         "test -r \"${PREFIX}/include/glm\"",
-        "cmake-package-check glm --targets glm::glm"
+        "test -f \"${PREFIX}/lib/libglm.so\"",
+        "test ! -f \"${PREFIX}/lib/libglm.a\"",
+        "cmake-package-check glm --targets glm::glm glm::glm-header-only",
+        "cmake -S test -B test-build -G Ninja",
+        "cmake --build test-build",
+        "test-build/glm-test"
+      ],
+      "files": [
+        "test/CMakeLists.txt",
+        "test/main.cpp"
       ],
       "requires": [
+        "cmake",
         "cmake-package-check",
+        "ninja",
         "c_compiler_stub",
         "cxx_compiler_stub"
       ]
@@ -97,8 +111,10 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   },
@@ -112,7 +128,10 @@
       "summary": "OpenGL Mathematics"
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": [
+        "glm"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -121,7 +140,7 @@
     },
     "package": {
       "name": "glm",
-      "version": "1.0.1"
+      "version": "1.0.3"
     },
     "requirements": {
       "build": [
@@ -134,18 +153,29 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/macos_test_errors.patch"
+        "patches/disable_warnings_as_errors.patch"
       ],
-      "sha256": "9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c",
-      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz"
+      "sha256": "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001",
+      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
     },
     "test": {
       "commands": [
         "test -r \"${PREFIX}/include/glm\"",
-        "cmake-package-check glm --targets glm::glm"
+        "test -f \"${PREFIX}/lib/libglm.so\"",
+        "test ! -f \"${PREFIX}/lib/libglm.a\"",
+        "cmake-package-check glm --targets glm::glm glm::glm-header-only",
+        "cmake -S test -B test-build -G Ninja",
+        "cmake --build test-build",
+        "test-build/glm-test"
+      ],
+      "files": [
+        "test/CMakeLists.txt",
+        "test/main.cpp"
       ],
       "requires": [
+        "cmake",
         "cmake-package-check",
+        "ninja",
         "c_compiler_stub",
         "cxx_compiler_stub"
       ]
@@ -173,8 +203,10 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   },
@@ -188,7 +220,10 @@
       "summary": "OpenGL Mathematics"
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": [
+        "glm"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -197,7 +232,7 @@
     },
     "package": {
       "name": "glm",
-      "version": "1.0.1"
+      "version": "1.0.3"
     },
     "requirements": {
       "build": [
@@ -210,18 +245,29 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/macos_test_errors.patch"
+        "patches/disable_warnings_as_errors.patch"
       ],
-      "sha256": "9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c",
-      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz"
+      "sha256": "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001",
+      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
     },
     "test": {
       "commands": [
         "test -r \"${PREFIX}/include/glm\"",
-        "cmake-package-check glm --targets glm::glm"
+        "test -f \"${PREFIX}/lib/libglm.so\"",
+        "test ! -f \"${PREFIX}/lib/libglm.a\"",
+        "cmake-package-check glm --targets glm::glm glm::glm-header-only",
+        "cmake -S test -B test-build -G Ninja",
+        "cmake --build test-build",
+        "test-build/glm-test"
+      ],
+      "files": [
+        "test/CMakeLists.txt",
+        "test/main.cpp"
       ],
       "requires": [
+        "cmake",
         "cmake-package-check",
+        "ninja",
         "c_compiler_stub",
         "cxx_compiler_stub"
       ]
@@ -249,8 +295,10 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   },
@@ -264,7 +312,10 @@
       "summary": "OpenGL Mathematics"
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": [
+        "glm"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -273,7 +324,7 @@
     },
     "package": {
       "name": "glm",
-      "version": "1.0.1"
+      "version": "1.0.3"
     },
     "requirements": {
       "build": [
@@ -286,19 +337,33 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/macos_test_errors.patch"
+        "patches/disable_warnings_as_errors.patch"
       ],
-      "sha256": "9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c",
-      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz"
+      "sha256": "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001",
+      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
     },
     "test": {
       "commands": [
         "test -r \"${PREFIX}/include/glm\"",
-        "cmake-package-check glm --targets glm::glm",
-        "if not exist %LIBRARY_INC%\\glm exit 1"
+        "test -f \"${PREFIX}/lib/libglm.so\"",
+        "test ! -f \"${PREFIX}/lib/libglm.a\"",
+        "cmake-package-check glm --targets glm::glm glm::glm-header-only",
+        "cmake -S test -B test-build -G Ninja",
+        "cmake --build test-build",
+        "test-build/glm-test",
+        "test -f \"${PREFIX}/lib/libglm.dylib\"",
+        "if not exist %LIBRARY_INC%\\glm exit 1",
+        "if not exist %LIBRARY_BIN%\\glm.dll exit 1",
+        "test-build\\glm-test.exe"
+      ],
+      "files": [
+        "test/CMakeLists.txt",
+        "test/main.cpp"
       ],
       "requires": [
+        "cmake",
         "cmake-package-check",
+        "ninja",
         "c_compiler_stub",
         "cxx_compiler_stub"
       ]
@@ -315,7 +380,10 @@
       "summary": "OpenGL Mathematics"
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": [
+        "glm"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -324,7 +392,7 @@
     },
     "package": {
       "name": "glm",
-      "version": "1.0.1"
+      "version": "1.0.3"
     },
     "requirements": {
       "build": [
@@ -337,18 +405,29 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/macos_test_errors.patch"
+        "patches/disable_warnings_as_errors.patch"
       ],
-      "sha256": "9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c",
-      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz"
+      "sha256": "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001",
+      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
     },
     "test": {
       "commands": [
         "test -r \"${PREFIX}/include/glm\"",
-        "cmake-package-check glm --targets glm::glm"
+        "test -f \"${PREFIX}/lib/libglm.dylib\"",
+        "test ! -f \"${PREFIX}/lib/libglm.a\"",
+        "cmake-package-check glm --targets glm::glm glm::glm-header-only",
+        "cmake -S test -B test-build -G Ninja",
+        "cmake --build test-build",
+        "test-build/glm-test"
+      ],
+      "files": [
+        "test/CMakeLists.txt",
+        "test/main.cpp"
       ],
       "requires": [
+        "cmake",
         "cmake-package-check",
+        "ninja",
         "c_compiler_stub",
         "cxx_compiler_stub"
       ]
@@ -376,8 +455,10 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   },
@@ -391,7 +472,10 @@
       "summary": "OpenGL Mathematics"
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": [
+        "glm"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -400,7 +484,7 @@
     },
     "package": {
       "name": "glm",
-      "version": "1.0.1"
+      "version": "1.0.3"
     },
     "requirements": {
       "build": [
@@ -413,18 +497,29 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/macos_test_errors.patch"
+        "patches/disable_warnings_as_errors.patch"
       ],
-      "sha256": "9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c",
-      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz"
+      "sha256": "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001",
+      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
     },
     "test": {
       "commands": [
         "test -r \"${PREFIX}/include/glm\"",
-        "cmake-package-check glm --targets glm::glm"
+        "test -f \"${PREFIX}/lib/libglm.dylib\"",
+        "test ! -f \"${PREFIX}/lib/libglm.a\"",
+        "cmake-package-check glm --targets glm::glm glm::glm-header-only",
+        "cmake -S test -B test-build -G Ninja",
+        "cmake --build test-build",
+        "test-build/glm-test"
+      ],
+      "files": [
+        "test/CMakeLists.txt",
+        "test/main.cpp"
       ],
       "requires": [
+        "cmake",
         "cmake-package-check",
+        "ninja",
         "c_compiler_stub",
         "cxx_compiler_stub"
       ]
@@ -452,8 +547,10 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   },
@@ -475,7 +572,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/glm.json"
   },
-  "raw_meta_yaml": "{% set name = \"GLM\" %}\n{% set version = \"1.0.1\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/g-truc/glm/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c\n  \n  patches:\n     - patches/macos_test_errors.patch\n\nbuild:\n  number: 0\n  skip: true  # [win and vc<14]\n\nrequirements:\n  build:\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - cmake\n    - make  # [unix]\n\ntest:\n  commands:\n    - test -r \"${PREFIX}/include/glm\"  # [unix]\n    - if not exist %LIBRARY_INC%\\glm exit 1  # [win]\n    - cmake-package-check glm --targets glm::glm\n  requires:\n    - cmake-package-check\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n\nabout:\n  home: https://glm.g-truc.net\n  license: MIT\n  license_family: MIT\n  license_file: manual.md\n  summary: OpenGL Mathematics\n  dev_url: https://github.com/g-truc/glm\n\nextra:\n  recipe-maintainers:\n    - traversaro\n",
+  "raw_meta_yaml": "{% set name = \"GLM\" %}\n{% set version = \"1.0.3\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/g-truc/glm/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001\n\n  patches:\n    # Upstream enables warnings-as-errors in its tests, which breaks as\n    # compilers add diagnostics. Remove once this can be disabled separately.\n    - patches/disable_warnings_as_errors.patch\n\nbuild:\n  number: 0\n  skip: true  # [win and vc<14]\n  run_exports:\n    - {{ pin_subpackage(\"glm\", max_pin=\"x.x\") }}\n\nrequirements:\n  build:\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('cxx') }}\n    - cmake\n    - make  # [unix]\n\ntest:\n  files:\n    - test/CMakeLists.txt\n    - test/main.cpp\n  commands:\n    - test -r \"${PREFIX}/include/glm\"  # [unix]\n    - if not exist %LIBRARY_INC%\\glm exit 1  # [win]\n    - test -f \"${PREFIX}/lib/libglm.so\"  # [linux]\n    - test -f \"${PREFIX}/lib/libglm.dylib\"  # [osx]\n    - test ! -f \"${PREFIX}/lib/libglm.a\"  # [unix]\n    - if not exist %LIBRARY_BIN%\\glm.dll exit 1  # [win]\n    - cmake-package-check glm --targets glm::glm glm::glm-header-only\n    - cmake -S test -B test-build -G Ninja\n    - cmake --build test-build\n    - test-build/glm-test  # [unix]\n    - test-build\\glm-test.exe  # [win]\n  requires:\n    - cmake\n    - cmake-package-check\n    - ninja\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n\nabout:\n  home: https://glm.g-truc.net\n  license: MIT\n  license_family: MIT\n  license_file: manual.md\n  summary: OpenGL Mathematics\n  dev_url: https://github.com/g-truc/glm\n\nextra:\n  recipe-maintainers:\n    - traversaro\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -515,8 +612,10 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   },
@@ -543,13 +642,15 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   },
-  "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz",
-  "version": "1.0.1",
+  "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz",
+  "version": "1.0.3",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/glm.json"
   },
@@ -563,7 +664,10 @@
       "summary": "OpenGL Mathematics"
     },
     "build": {
-      "number": "0"
+      "number": "0",
+      "run_exports": [
+        "glm"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -572,7 +676,7 @@
     },
     "package": {
       "name": "glm",
-      "version": "1.0.1"
+      "version": "1.0.3"
     },
     "requirements": {
       "build": [
@@ -584,18 +688,28 @@
     "schema_version": 0,
     "source": {
       "patches": [
-        "patches/macos_test_errors.patch"
+        "patches/disable_warnings_as_errors.patch"
       ],
-      "sha256": "9f3174561fd26904b23f0db5e560971cbf9b3cbda0b280f04d5c379d03bf234c",
-      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.1.tar.gz"
+      "sha256": "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001",
+      "url": "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
     },
     "test": {
       "commands": [
         "if not exist %LIBRARY_INC%\\glm exit 1",
-        "cmake-package-check glm --targets glm::glm"
+        "if not exist %LIBRARY_BIN%\\glm.dll exit 1",
+        "cmake-package-check glm --targets glm::glm glm::glm-header-only",
+        "cmake -S test -B test-build -G Ninja",
+        "cmake --build test-build",
+        "test-build\\glm-test.exe"
+      ],
+      "files": [
+        "test/CMakeLists.txt",
+        "test/main.cpp"
       ],
       "requires": [
+        "cmake",
         "cmake-package-check",
+        "ninja",
         "c_compiler_stub",
         "cxx_compiler_stub"
       ]
@@ -622,8 +736,10 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
+        "cmake",
         "cmake-package-check",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "ninja"
       ]
     }
   }
