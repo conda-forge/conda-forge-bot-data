@@ -6,6 +6,7 @@
     "build_platform": {
       "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64",
       "osx_arm64": "osx_64"
     },
     "conda_build": {
@@ -22,8 +23,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "b3fc05f7c75e7d2a108a50537b59d60b3504d868",
-  "feedstock_hash_ts": 1787247860,
+  "feedstock_hash": "9df093043439ccab0c9959db240e6c94df173303",
+  "feedstock_hash_ts": 1788072490,
   "feedstock_name": "argon2-cffi-bindings",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,13 +39,16 @@
       "summary": "Low-level Python CFFI Bindings for Argon2"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib",
         "export CMAKE_GENERATOR=Ninja",
-        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
+        "export CMAKE_ARGS=\"${CMAKE_ARGS} -DCMAKE_CROSSCOMPILING_EMULATOR=/usr/bin/env\""
       ],
-      "script_env": null
+      "script_env": [
+        "ARGON2_CFFI_USE_SSE2=0"
+      ]
     },
     "extra": {
       "recipe-maintainers": [
@@ -60,7 +64,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "ninja",
+        "python",
+        "cross-python_linux-riscv64"
       ],
       "host": [
         "python",
@@ -97,7 +103,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "cross-python_linux-riscv64",
+        "ninja",
+        "python"
       ]
     },
     "host": {
@@ -135,7 +143,7 @@
       "summary": "Low-level Python CFFI Bindings for Argon2"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib",
         "export CMAKE_GENERATOR=Ninja",
@@ -234,7 +242,7 @@
       "summary": "Low-level Python CFFI Bindings for Argon2"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib",
         "export CMAKE_GENERATOR=Ninja",
@@ -333,11 +341,12 @@
       "summary": "Low-level Python CFFI Bindings for Argon2"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib",
         "export CMAKE_GENERATOR=Ninja",
-        "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
+        "PYTHON -m pip install . -vv --no-deps --no-build-isolation",
+        "export CMAKE_ARGS=\"${CMAKE_ARGS} -DCMAKE_CROSSCOMPILING_EMULATOR=/usr/bin/env\""
       ],
       "script_env": null
     },
@@ -355,7 +364,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "ninja",
+        "python",
+        "cross-python_linux-riscv64"
       ],
       "host": [
         "python",
@@ -398,7 +409,7 @@
       "summary": "Low-level Python CFFI Bindings for Argon2"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib",
         "export CMAKE_GENERATOR=Ninja",
@@ -495,7 +506,7 @@
       "summary": "Low-level Python CFFI Bindings for Argon2"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib",
         "export CMAKE_GENERATOR=Ninja",
@@ -600,7 +611,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/argon2-cffi-bindings.json"
   },
-  "raw_meta_yaml": "{% set name = \"argon2-cffi-bindings\" %}\n{% set version = \"26.1.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace('-', '_') }}-{{ version }}.tar.gz\n  sha256: \"63505c71542a44b68b1e38060450fb006404170da375feb31af153e7f9c6205d\"\n\nbuild:\n  number: 0\n  script_env:\n    - ARGON2_CFFI_USE_SSE2=0  # [not x86_64]\n  script:\n    - ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib  # [unix]\n    # Without this CMake falls back to \"Unix Makefiles\" and there is no make\n    # in the build env, so configuration fails before a compiler is probed.\n    - export CMAKE_GENERATOR=Ninja  # [unix]\n    # FindPython has to run the interpreter to locate headers, which CMP0190\n    # forbids while cross-compiling. Upstream's cmake_minimum_required\n    # (3.20...4.3) raises the policy max past 4.1, so the policy is NEW here\n    # and every cross target fails to find Python. conda's cross-python ships\n    # a native shim that answers for the target, so running it is safe.\n    - export CMAKE_ARGS=\"${CMAKE_ARGS} -DCMAKE_CROSSCOMPILING_EMULATOR=/usr/bin/env\"  # [build_platform != target_platform]\n    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n\n  host:\n    - python\n    - pip\n    - scikit-build-core >=1.0\n    - setuptools_scm >=8\n\n  run:\n    - python\n    - cffi >=1.0.1                           # [py < 314]\n    - cffi >=2.0.0b1                         # [py >= 314]\n\ntest:\n  imports:\n    - _argon2_cffi_bindings\n  requires:\n    - pip\n  commands:\n    - pip check\n\nabout:\n  home: https://github.com/hynek/argon2-cffi-bindings\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE\n  summary: Low-level Python CFFI Bindings for Argon2\n  description: |\n    argon2-cffi-bindings provides low-level CFFI bindings to the Argon2\n    password hashing algorithm including a vendored version of them.\n  doc_url: https://github.com/hynek/argon2-cffi-bindings\n  dev_url: https://github.com/hynek/argon2-cffi-bindings\n\nextra:\n  recipe-maintainers:\n    - stuertz\n",
+  "raw_meta_yaml": "{% set name = \"argon2-cffi-bindings\" %}\n{% set version = \"26.1.0\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace('-', '_') }}-{{ version }}.tar.gz\n  sha256: \"63505c71542a44b68b1e38060450fb006404170da375feb31af153e7f9c6205d\"\n\nbuild:\n  number: 1\n  script_env:\n    - ARGON2_CFFI_USE_SSE2=0  # [not x86_64]\n  script:\n    - ln -sf $RANLIB $BUILD_PREFIX/bin/ranlib  # [unix]\n    # Without this CMake falls back to \"Unix Makefiles\" and there is no make\n    # in the build env, so configuration fails before a compiler is probed.\n    - export CMAKE_GENERATOR=Ninja  # [unix]\n    # FindPython has to run the interpreter to locate headers, which CMP0190\n    # forbids while cross-compiling. Upstream's cmake_minimum_required\n    # (3.20...4.3) raises the policy max past 4.1, so the policy is NEW here\n    # and every cross target fails to find Python. conda's cross-python ships\n    # a native shim that answers for the target, so running it is safe.\n    - export CMAKE_ARGS=\"${CMAKE_ARGS} -DCMAKE_CROSSCOMPILING_EMULATOR=/usr/bin/env\"  # [build_platform != target_platform]\n    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n\n  host:\n    - python\n    - pip\n    - scikit-build-core >=1.0\n    - setuptools_scm >=8\n\n  run:\n    - python\n    - cffi >=1.0.1                           # [py < 314]\n    - cffi >=2.0.0b1                         # [py >= 314]\n\ntest:\n  imports:\n    - _argon2_cffi_bindings\n  requires:\n    - pip\n  commands:\n    - pip check\n\nabout:\n  home: https://github.com/hynek/argon2-cffi-bindings\n  license: MIT\n  license_family: MIT\n  license_file: LICENSE\n  summary: Low-level Python CFFI Bindings for Argon2\n  description: |\n    argon2-cffi-bindings provides low-level CFFI bindings to the Argon2\n    password hashing algorithm including a vendored version of them.\n  doc_url: https://github.com/hynek/argon2-cffi-bindings\n  dev_url: https://github.com/hynek/argon2-cffi-bindings\n\nextra:\n  recipe-maintainers:\n    - stuertz\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -608,6 +619,7 @@
       "c_stdlib_stub",
       "cffi",
       "cmake",
+      "cross-python_linux-riscv64",
       "ninja",
       "pip",
       "python",
@@ -622,7 +634,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "cross-python_linux-riscv64",
+        "ninja",
+        "python"
       ]
     },
     "host": {
@@ -660,7 +674,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cmake",
-        "ninja"
+        "cross-python_linux-riscv64",
+        "ninja",
+        "python"
       ]
     },
     "host": {
@@ -703,7 +719,7 @@
       "summary": "Low-level Python CFFI Bindings for Argon2"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
         "PYTHON -m pip install . -vv --no-deps --no-build-isolation"
       ],
