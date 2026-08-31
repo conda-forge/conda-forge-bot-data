@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibboost_devel:\n- '1.88'\nlibsqlite:\n- '3'\npcre:\n- '8'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibboost_devel:\n- '1.90'\nlibsqlite:\n- '3'\npcre:\n- '8'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_aarch64": "linux_64",
@@ -21,10 +21,11 @@
       "linux_aarch64": "default",
       "linux_ppc64le": "default",
       "osx_arm64": "default"
-    }
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "cc3d59fdf4243bc2f1ce02c09c4493b6c221bf6e",
-  "feedstock_hash_ts": 1777015014,
+  "feedstock_hash": "5ec246ae640ef4a6b2cef96313b70ef6d255d3ea",
+  "feedstock_hash_ts": 1788163168,
   "feedstock_name": "vectorscan",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,8 +39,8 @@
       "summary": "A portable fork of the high-performance regular expression matching library"
     },
     "build": {
-      "number": "2",
-      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\ncmake $CMAKE_ARGS -GNinja -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
+      "number": "0",
+      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\n# The x86_64 fat runtime renames symbols with objcopy, which does not\n# exist on macOS. 5.4.13 turned FAT_RUNTIME on by default for x86, so it\n# has to be turned back off there.\ncmake $CMAKE_ARGS -GNinja \\\n  ${{ \"-DFAT_RUNTIME=OFF\" if osx else \"\" }} \\\n  -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -65,7 +66,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -83,12 +85,12 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       }
     ],
     "package": {
       "name": "vectorscan",
-      "version": "5.4.11"
+      "version": "5.4.13"
     },
     "requirements": {
       "build": [
@@ -105,16 +107,19 @@
         "libboost-devel",
         "libsqlite",
         "pcre",
-        "libzlib"
+        "libzlib",
+        "simde"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "0001-fix-the-pcre-versio-check-error-on-clang-16.patch"
+        "0001-do-not-treat-warnings-as-errors-in-release-builds.patch",
+        "0002-do-not-require-rev-in-the-fat-runtime-build-wrapper.patch",
+        "0003-fix-cmake-use-list-APPEND-for-CMAKE_REQUIRED_INCLU.patch"
       ],
-      "sha256": "905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711",
-      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.11.tar.gz"
+      "sha256": "11bfcd2dde32d8a08d1a2eebb09294b12a3fa2be140078f8091b751fa1fabd89",
+      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.13.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -137,7 +142,8 @@
         "libboost-devel",
         "libsqlite",
         "libzlib",
-        "pcre"
+        "pcre",
+        "simde"
       ]
     },
     "run": {
@@ -160,8 +166,8 @@
       "summary": "A portable fork of the high-performance regular expression matching library"
     },
     "build": {
-      "number": "2",
-      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\ncmake $CMAKE_ARGS -GNinja -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
+      "number": "0",
+      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\n# The x86_64 fat runtime renames symbols with objcopy, which does not\n# exist on macOS. 5.4.13 turned FAT_RUNTIME on by default for x86, so it\n# has to be turned back off there.\ncmake $CMAKE_ARGS -GNinja \\\n  ${{ \"-DFAT_RUNTIME=OFF\" if osx else \"\" }} \\\n  -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -187,7 +193,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -205,12 +212,12 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       }
     ],
     "package": {
       "name": "vectorscan",
-      "version": "5.4.11"
+      "version": "5.4.13"
     },
     "requirements": {
       "build": [
@@ -227,16 +234,19 @@
         "libboost-devel",
         "libsqlite",
         "pcre",
-        "libzlib"
+        "libzlib",
+        "simde"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "0001-fix-the-pcre-versio-check-error-on-clang-16.patch"
+        "0001-do-not-treat-warnings-as-errors-in-release-builds.patch",
+        "0002-do-not-require-rev-in-the-fat-runtime-build-wrapper.patch",
+        "0003-fix-cmake-use-list-APPEND-for-CMAKE_REQUIRED_INCLU.patch"
       ],
-      "sha256": "905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711",
-      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.11.tar.gz"
+      "sha256": "11bfcd2dde32d8a08d1a2eebb09294b12a3fa2be140078f8091b751fa1fabd89",
+      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.13.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -259,7 +269,8 @@
         "libboost-devel",
         "libsqlite",
         "libzlib",
-        "pcre"
+        "pcre",
+        "simde"
       ]
     },
     "run": {
@@ -282,8 +293,8 @@
       "summary": "A portable fork of the high-performance regular expression matching library"
     },
     "build": {
-      "number": "2",
-      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\ncmake $CMAKE_ARGS -GNinja -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
+      "number": "0",
+      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\n# The x86_64 fat runtime renames symbols with objcopy, which does not\n# exist on macOS. 5.4.13 turned FAT_RUNTIME on by default for x86, so it\n# has to be turned back off there.\ncmake $CMAKE_ARGS -GNinja \\\n  ${{ \"-DFAT_RUNTIME=OFF\" if osx else \"\" }} \\\n  -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -309,7 +320,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -327,12 +339,12 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       }
     ],
     "package": {
       "name": "vectorscan",
-      "version": "5.4.11"
+      "version": "5.4.13"
     },
     "requirements": {
       "build": [
@@ -349,16 +361,19 @@
         "libboost-devel",
         "libsqlite",
         "pcre",
-        "libzlib"
+        "libzlib",
+        "simde"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "0001-fix-the-pcre-versio-check-error-on-clang-16.patch"
+        "0001-do-not-treat-warnings-as-errors-in-release-builds.patch",
+        "0002-do-not-require-rev-in-the-fat-runtime-build-wrapper.patch",
+        "0003-fix-cmake-use-list-APPEND-for-CMAKE_REQUIRED_INCLU.patch"
       ],
-      "sha256": "905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711",
-      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.11.tar.gz"
+      "sha256": "11bfcd2dde32d8a08d1a2eebb09294b12a3fa2be140078f8091b751fa1fabd89",
+      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.13.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -381,7 +396,8 @@
         "libboost-devel",
         "libsqlite",
         "libzlib",
-        "pcre"
+        "pcre",
+        "simde"
       ]
     },
     "run": {
@@ -404,8 +420,8 @@
       "summary": "A portable fork of the high-performance regular expression matching library"
     },
     "build": {
-      "number": "2",
-      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\ncmake $CMAKE_ARGS -GNinja -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
+      "number": "0",
+      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\n# The x86_64 fat runtime renames symbols with objcopy, which does not\n# exist on macOS. 5.4.13 turned FAT_RUNTIME on by default for x86, so it\n# has to be turned back off there.\ncmake $CMAKE_ARGS -GNinja \\\n  ${{ \"-DFAT_RUNTIME=OFF\" if osx else \"\" }} \\\n  -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -431,7 +447,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -449,7 +466,7 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       },
       {
         "build": null,
@@ -469,7 +486,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -487,7 +505,7 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       },
       {
         "build": null,
@@ -507,7 +525,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -525,7 +544,7 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       },
       {
         "build": null,
@@ -545,7 +564,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -563,7 +583,7 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       },
       {
         "build": null,
@@ -583,7 +603,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -601,12 +622,12 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       }
     ],
     "package": {
       "name": "vectorscan",
-      "version": "5.4.11"
+      "version": "5.4.13"
     },
     "requirements": {
       "build": [
@@ -623,16 +644,19 @@
         "libboost-devel",
         "libsqlite",
         "pcre",
-        "libzlib"
+        "libzlib",
+        "simde"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "0001-fix-the-pcre-versio-check-error-on-clang-16.patch"
+        "0001-do-not-treat-warnings-as-errors-in-release-builds.patch",
+        "0002-do-not-require-rev-in-the-fat-runtime-build-wrapper.patch",
+        "0003-fix-cmake-use-list-APPEND-for-CMAKE_REQUIRED_INCLU.patch"
       ],
-      "sha256": "905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711",
-      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.11.tar.gz"
+      "sha256": "11bfcd2dde32d8a08d1a2eebb09294b12a3fa2be140078f8091b751fa1fabd89",
+      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.13.tar.gz"
     }
   },
   "name": "vectorscan",
@@ -647,8 +671,8 @@
       "summary": "A portable fork of the high-performance regular expression matching library"
     },
     "build": {
-      "number": "2",
-      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\ncmake $CMAKE_ARGS -GNinja -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
+      "number": "0",
+      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\n# The x86_64 fat runtime renames symbols with objcopy, which does not\n# exist on macOS. 5.4.13 turned FAT_RUNTIME on by default for x86, so it\n# has to be turned back off there.\ncmake $CMAKE_ARGS -GNinja \\\n  ${{ \"-DFAT_RUNTIME=OFF\" if osx else \"\" }} \\\n  -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -674,7 +698,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -692,12 +717,12 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       }
     ],
     "package": {
       "name": "vectorscan",
-      "version": "5.4.11"
+      "version": "5.4.13"
     },
     "requirements": {
       "build": [
@@ -714,16 +739,19 @@
         "libboost-devel",
         "libsqlite",
         "pcre",
-        "libzlib"
+        "libzlib",
+        "simde"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "0001-fix-the-pcre-versio-check-error-on-clang-16.patch"
+        "0001-do-not-treat-warnings-as-errors-in-release-builds.patch",
+        "0002-do-not-require-rev-in-the-fat-runtime-build-wrapper.patch",
+        "0003-fix-cmake-use-list-APPEND-for-CMAKE_REQUIRED_INCLU.patch"
       ],
-      "sha256": "905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711",
-      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.11.tar.gz"
+      "sha256": "11bfcd2dde32d8a08d1a2eebb09294b12a3fa2be140078f8091b751fa1fabd89",
+      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.13.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -746,7 +774,8 @@
         "libboost-devel",
         "libsqlite",
         "libzlib",
-        "pcre"
+        "pcre",
+        "simde"
       ]
     },
     "run": {
@@ -769,8 +798,8 @@
       "summary": "A portable fork of the high-performance regular expression matching library"
     },
     "build": {
-      "number": "2",
-      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\ncmake $CMAKE_ARGS -GNinja -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
+      "number": "0",
+      "script": "tar xvf pcre-${{ pcre_version }}.tar.gz\nmkdir build/\ncd build/\n# The x86_64 fat runtime renames symbols with objcopy, which does not\n# exist on macOS. 5.4.13 turned FAT_RUNTIME on by default for x86, so it\n# has to be turned back off there.\ncmake $CMAKE_ARGS -GNinja \\\n  ${{ \"-DFAT_RUNTIME=OFF\" if osx else \"\" }} \\\n  -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\ncmake --build . -- -j${CPU_COUNT}\ncmake --build . --target install\n"
     },
     "extra": {
       "recipe-maintainers": [
@@ -796,7 +825,8 @@
             "libboost-devel",
             "libsqlite",
             "pcre",
-            "libzlib"
+            "libzlib",
+            "simde"
           ],
           "run": []
         },
@@ -814,12 +844,12 @@
             }
           }
         ],
-        "version": "5.4.11"
+        "version": "5.4.13"
       }
     ],
     "package": {
       "name": "vectorscan",
-      "version": "5.4.11"
+      "version": "5.4.13"
     },
     "requirements": {
       "build": [
@@ -836,16 +866,19 @@
         "libboost-devel",
         "libsqlite",
         "pcre",
-        "libzlib"
+        "libzlib",
+        "simde"
       ]
     },
     "schema_version": 1,
     "source": {
       "patches": [
-        "0001-fix-the-pcre-versio-check-error-on-clang-16.patch"
+        "0001-do-not-treat-warnings-as-errors-in-release-builds.patch",
+        "0002-do-not-require-rev-in-the-fat-runtime-build-wrapper.patch",
+        "0003-fix-cmake-use-list-APPEND-for-CMAKE_REQUIRED_INCLU.patch"
       ],
-      "sha256": "905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711",
-      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.11.tar.gz"
+      "sha256": "11bfcd2dde32d8a08d1a2eebb09294b12a3fa2be140078f8091b751fa1fabd89",
+      "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.13.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -868,7 +901,8 @@
         "libboost-devel",
         "libsqlite",
         "libzlib",
-        "pcre"
+        "pcre",
+        "simde"
       ]
     },
     "run": {
@@ -897,7 +931,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/vectorscan.json"
   },
-  "raw_meta_yaml": "context:\n  version: 5.4.11\n  pcre_version: \"8.45\"\n\npackage:\n  name: vectorscan\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/${{ version }}.tar.gz\n    sha256: 905f76ad1fa9e4ae0eb28232cac98afdb96c479666202c5a4c27871fb30a2711\n    target_directory: vectorscan\n    patches:\n      - 0001-fix-the-pcre-versio-check-error-on-clang-16.patch\n# chimera requires the pcre sources to be available during the build\n  - url: https://sourceforge.net/projects/pcre/files/pcre/${{ pcre_version }}/pcre-${{ pcre_version }}.tar.gz/download\n    sha256: 4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09\n    file_name: pcre-${{ pcre_version }}.tar.gz\n\n\nbuild:\n  number: 2\n  skip: win\n  script: |\n    tar xvf pcre-${{ pcre_version }}.tar.gz\n    mkdir build/\n    cd build/\n    cmake $CMAKE_ARGS -GNinja -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\n    cmake --build . -- -j${CPU_COUNT}\n    cmake --build . --target install\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake <4\n    - ninja\n    - pkg-config\n    - tar\n    - ragel\n  host:\n    - libboost-devel\n    - libsqlite\n    - pcre\n    - libzlib\n\n\ntests:\n  - package_contents:\n      include:\n        - hs/ch.h\n      lib:\n        - libchimera.a\n        - libhs.a\n        - libhs_runtime.a\n\nabout:\n  summary: A portable fork of the high-performance regular expression matching library\n  description: |\n    A fork of Intel's Hyperscan, modified to run on more platforms. Currently\n    ARM NEON/ASIMD and Power VSX are 100% functional. ARM SVE2 support is in\n    ongoing with access to hardware now. More platforms will follow in the\n    future. Further more, starting 5.4.12 there is now a SIMDe port, which can\n    be either used for platforms without official SIMD support, as SIMDe can\n    emulate SIMD instructions, or as an alternative backend for existing\n    architectures, for reference and comparison purposes.\n  license: BSD-3-Clause\n  license_file:\n    - vectorscan/COPYING\n    - vectorscan/LICENSE\n  homepage: https://www.vectorcamp.gr/project/vectorscan/\n  documentation: http://intel.github.io/hyperscan/dev-reference/\n\nextra:\n  recipe-maintainers:\n    - chrisburr\n",
+  "raw_meta_yaml": "context:\n  version: \"5.4.13\"\n  pcre_version: \"8.45\"\n\npackage:\n  name: vectorscan\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/${{ version }}.tar.gz\n    sha256: 11bfcd2dde32d8a08d1a2eebb09294b12a3fa2be140078f8091b751fa1fabd89\n    target_directory: vectorscan\n    patches:\n      - 0001-do-not-treat-warnings-as-errors-in-release-builds.patch\n      - 0002-do-not-require-rev-in-the-fat-runtime-build-wrapper.patch\n      - 0003-fix-cmake-use-list-APPEND-for-CMAKE_REQUIRED_INCLU.patch\n# chimera requires the pcre sources to be available during the build\n  - url: https://sourceforge.net/projects/pcre/files/pcre/${{ pcre_version }}/pcre-${{ pcre_version }}.tar.gz/download\n    sha256: 4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09\n    file_name: pcre-${{ pcre_version }}.tar.gz\n\n\nbuild:\n  number: 0\n  skip: win\n  script: |\n    tar xvf pcre-${{ pcre_version }}.tar.gz\n    mkdir build/\n    cd build/\n    # The x86_64 fat runtime renames symbols with objcopy, which does not\n    # exist on macOS. 5.4.13 turned FAT_RUNTIME on by default for x86, so it\n    # has to be turned back off there.\n    cmake $CMAKE_ARGS -GNinja \\\n      ${{ \"-DFAT_RUNTIME=OFF\" if osx else \"\" }} \\\n      -DPCRE_SOURCE=$SRC_DIR/pcre-8.45 $SRC_DIR/vectorscan\n    cmake --build . -- -j${CPU_COUNT}\n    cmake --build . --target install\n\nrequirements:\n  build:\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cmake <4\n    - ninja\n    - pkg-config\n    - tar\n    - ragel\n  host:\n    - libboost-devel\n    - libsqlite\n    - pcre\n    - libzlib\n    # Upstream vendors SIMDe as a git submodule, which is not included in the\n    # release tarball. It is required for the x86_64 fat runtime on Linux.\n    - simde\n\n\ntests:\n  - package_contents:\n      include:\n        - hs/ch.h\n      lib:\n        - libchimera.a\n        - libhs.a\n        - libhs_runtime.a\n\nabout:\n  summary: A portable fork of the high-performance regular expression matching library\n  description: |\n    A fork of Intel's Hyperscan, modified to run on more platforms. Currently\n    ARM NEON/ASIMD and Power VSX are 100% functional. ARM SVE2 support is in\n    ongoing with access to hardware now. More platforms will follow in the\n    future. Further more, starting 5.4.12 there is now a SIMDe port, which can\n    be either used for platforms without official SIMD support, as SIMDe can\n    emulate SIMD instructions, or as an alternative backend for existing\n    architectures, for reference and comparison purposes.\n  license: BSD-3-Clause\n  license_file:\n    - vectorscan/COPYING\n    - vectorscan/LICENSE\n  homepage: https://www.vectorcamp.gr/project/vectorscan/\n  documentation: http://intel.github.io/hyperscan/dev-reference/\n\nextra:\n  recipe-maintainers:\n    - chrisburr\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -912,6 +946,7 @@
       "pcre",
       "pkg-config",
       "ragel",
+      "simde",
       "tar"
     ]
   },
@@ -938,7 +973,8 @@
         "libboost-devel",
         "libsqlite",
         "libzlib",
-        "pcre"
+        "pcre",
+        "simde"
       ]
     },
     "run": {
@@ -975,7 +1011,8 @@
         "libboost-devel",
         "libsqlite",
         "libzlib",
-        "pcre"
+        "pcre",
+        "simde"
       ]
     },
     "run": {
@@ -987,8 +1024,8 @@
       "elements": []
     }
   },
-  "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.11.tar.gz",
-  "version": "5.4.11",
+  "url": "https://github.com/VectorCamp/vectorscan/archive/refs/tags/vectorscan/5.4.13.tar.gz",
+  "version": "5.4.13",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/vectorscan.json"
   }
