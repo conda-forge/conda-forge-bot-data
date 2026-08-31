@@ -6,6 +6,7 @@
     "build_platform": {
       "linux_aarch64": "linux_64",
       "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64",
       "osx_arm64": "osx_64"
     },
     "conda_build": {
@@ -18,8 +19,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "f5808b7f9f03ad742bbaf42488a44270b0ae2bf0",
-  "feedstock_hash_ts": 1788111454,
+  "feedstock_hash": "b64df46973f4dd2de695748517d7f9b84556535b",
+  "feedstock_hash_ts": 1788137415,
   "feedstock_name": "lief",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -35,7 +36,7 @@
       "summary": "A cross platform library to parse, modify and abstract ELF, PE and MachO formats."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -146,6 +147,111 @@
             "ninja"
           ]
         }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "python"
+          ],
+          "run_exports": [
+            "py-lief"
+          ]
+        },
+        "name": "py-lief",
+        "requirements": {
+          "build": [
+            "ccache",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake",
+            "ninja",
+            "python",
+            "cross-python_linux-riscv64",
+            "pydantic >=2.13.4",
+            "pydantic-core >=2.46.4",
+            "scikit-build-core >=1.0.3",
+            "setuptools >=83.0.0",
+            "tomli >=2.4.1"
+          ],
+          "host": [
+            "nlohmann_json",
+            "liblief",
+            "python",
+            "pip",
+            "pydantic >=2.13.4",
+            "pydantic-core >=2.46.4",
+            "scikit-build-core >=1.0.3",
+            "setuptools >=83.0.0",
+            "tomli >=2.4.1"
+          ],
+          "run": [
+            "liblief",
+            "python"
+          ]
+        },
+        "script": "install-py-lief.sh",
+        "test": {
+          "commands": [
+            "python -c \"import ctypes.util, lief; missing = {name for name in {s.name for s in lief.parse(lief._lief.__file__).imported_functions} - {s.name for s in lief.parse(ctypes.util.find_library('LIEF')).exported_functions} if '4LIEF' in name}; assert not missing, missing\""
+          ],
+          "imports": [
+            "lief"
+          ],
+          "requires": [
+            "cxx_compiler_stub"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "liblief"
+          ]
+        },
+        "name": "liblief",
+        "requirements": {
+          "build": [
+            "ccache",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "nlohmann_json"
+          ]
+        },
+        "script": "install-liblief.sh",
+        "test": {
+          "commands": [
+            "set -x",
+            "pushd tests",
+            "PATH=\".:${PATH}\"",
+            "findstr() { grep \"${@}\"; }",
+            "call() { true; }",
+            "pushd self",
+            "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Debug . || exit 1",
+            "ninja || exit 1",
+            "test-lief-self || exit 1",
+            "popd",
+            "pushd macho",
+            "test-lief-macho macOS-libpython2.7.a-getbuildinfo.o > output.txt || exit 1",
+            "findstr has_dynamic_symbol_command output.txt && exit 1 || call;"
+          ],
+          "files": [
+            "tests"
+          ],
+          "requires": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ]
+        }
       }
     ],
     "package": {
@@ -160,7 +266,9 @@
         "cxx_compiler_stub",
         "pkg-config",
         "cmake",
-        "ninja"
+        "ninja",
+        "python",
+        "cross-python_linux-riscv64"
       ],
       "host": [
         "nlohmann_json",
@@ -169,6 +277,13 @@
     },
     "schema_version": 0,
     "source": [
+      {
+        "patches": [
+          "patches/0001-avoid-major-minor-macro-collisions.patch"
+        ],
+        "sha256": "2cf412695ff739d82e129db441e5c2025f3bb4873a3d3a1d3dd4cf300b682abd",
+        "url": "https://github.com/lief-project/LIEF/archive/1.0.0.tar.gz"
+      },
       {
         "patches": [
           "patches/0001-avoid-major-minor-macro-collisions.patch"
@@ -186,9 +301,16 @@
         "c_stdlib_stub",
         "ccache",
         "cmake",
+        "cross-python_linux-riscv64",
         "cxx_compiler_stub",
         "ninja",
-        "pkg-config"
+        "pkg-config",
+        "pydantic",
+        "pydantic-core",
+        "python",
+        "scikit-build-core",
+        "setuptools",
+        "tomli"
       ]
     },
     "host": {
@@ -236,7 +358,7 @@
       "summary": "A cross platform library to parse, modify and abstract ELF, PE and MachO formats."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -437,7 +559,7 @@
       "summary": "A cross platform library to parse, modify and abstract ELF, PE and MachO formats."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -638,7 +760,7 @@
       "summary": "A cross platform library to parse, modify and abstract ELF, PE and MachO formats."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -720,6 +842,111 @@
           "host": [
             "nlohmann_json",
             "mbedtls 4.0.0"
+          ]
+        },
+        "script": "install-liblief.sh",
+        "test": {
+          "commands": [
+            "set -x",
+            "pushd tests",
+            "PATH=\".:${PATH}\"",
+            "findstr() { grep \"${@}\"; }",
+            "call() { true; }",
+            "pushd self",
+            "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Debug . || exit 1",
+            "ninja || exit 1",
+            "test-lief-self || exit 1",
+            "popd",
+            "pushd macho",
+            "test-lief-macho macOS-libpython2.7.a-getbuildinfo.o > output.txt || exit 1",
+            "findstr has_dynamic_symbol_command output.txt && exit 1 || call;"
+          ],
+          "files": [
+            "tests"
+          ],
+          "requires": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "cmake",
+            "ninja"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "python"
+          ],
+          "run_exports": [
+            "py-lief"
+          ]
+        },
+        "name": "py-lief",
+        "requirements": {
+          "build": [
+            "ccache",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake",
+            "ninja",
+            "python",
+            "cross-python_linux-riscv64",
+            "pydantic >=2.13.4",
+            "pydantic-core >=2.46.4",
+            "scikit-build-core >=1.0.3",
+            "setuptools >=83.0.0",
+            "tomli >=2.4.1"
+          ],
+          "host": [
+            "nlohmann_json",
+            "liblief",
+            "python",
+            "pip",
+            "pydantic >=2.13.4",
+            "pydantic-core >=2.46.4",
+            "scikit-build-core >=1.0.3",
+            "setuptools >=83.0.0",
+            "tomli >=2.4.1"
+          ],
+          "run": [
+            "liblief",
+            "python"
+          ]
+        },
+        "script": "install-py-lief.sh",
+        "test": {
+          "commands": [
+            "python -c \"import ctypes.util, lief; missing = {name for name in {s.name for s in lief.parse(lief._lief.__file__).imported_functions} - {s.name for s in lief.parse(ctypes.util.find_library('LIEF')).exported_functions} if '4LIEF' in name}; assert not missing, missing\""
+          ],
+          "imports": [
+            "lief"
+          ],
+          "requires": [
+            "cxx_compiler_stub"
+          ]
+        }
+      },
+      {
+        "build": {
+          "run_exports": [
+            "liblief"
+          ]
+        },
+        "name": "liblief",
+        "requirements": {
+          "build": [
+            "ccache",
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "pkg-config",
+            "cmake",
+            "ninja"
+          ],
+          "host": [
+            "nlohmann_json"
           ]
         },
         "script": "install-liblief.sh",
@@ -1251,7 +1478,9 @@
         "cxx_compiler_stub",
         "pkg-config",
         "cmake",
-        "ninja"
+        "ninja",
+        "python",
+        "cross-python_linux-riscv64"
       ],
       "host": [
         "nlohmann_json",
@@ -1260,6 +1489,13 @@
     },
     "schema_version": 0,
     "source": [
+      {
+        "patches": [
+          "patches/0001-avoid-major-minor-macro-collisions.patch"
+        ],
+        "sha256": "2cf412695ff739d82e129db441e5c2025f3bb4873a3d3a1d3dd4cf300b682abd",
+        "url": "https://github.com/lief-project/LIEF/archive/1.0.0.tar.gz"
+      },
       {
         "patches": [
           "patches/0001-avoid-major-minor-macro-collisions.patch"
@@ -1318,7 +1554,7 @@
       "summary": "A cross platform library to parse, modify and abstract ELF, PE and MachO formats."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1519,7 +1755,7 @@
       "summary": "A cross platform library to parse, modify and abstract ELF, PE and MachO formats."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1726,7 +1962,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/lief.json"
   },
-  "raw_meta_yaml": "{% set version = \"1.0.0\" %}\n\npackage:\n  name: lief\n  version: {{ version }}\n\nsource:\n  - url: https://github.com/lief-project/LIEF/archive/{{ version }}.tar.gz\n    sha256: 2cf412695ff739d82e129db441e5c2025f3bb4873a3d3a1d3dd4cf300b682abd\n    patches:\n      # Remove after a release containing https://github.com/lief-project/LIEF/pull/1375\n      - patches/0001-avoid-major-minor-macro-collisions.patch\n\nbuild:\n  number: 0\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - ccache\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - pkg-config            # [not win]\n    - cmake\n    - ninja\n  host:\n    - nlohmann_json\n    - mbedtls 4.0.0\n\noutputs:\n  - name: py-lief\n    script: install-py-lief.sh  # [unix]\n    script: install-py-lief.bat  # [win]\n    build:\n      run_exports:\n        - {{ pin_subpackage('py-lief', max_pin='x.x') }}\n      ignore_run_exports:\n        - python\n    requirements:\n      build:\n        - ccache\n        - {{ stdlib('c') }}\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - pkg-config            # [not win]\n        - cmake\n        - ninja\n        - python                                 # [build_platform != target_platform]\n        - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n        - pydantic >=2.13.4                      # [build_platform != target_platform]\n        - pydantic-core >=2.46.4                 # [build_platform != target_platform]\n        - scikit-build-core >=1.0.3              # [build_platform != target_platform]\n        - setuptools >=83.0.0                    # [build_platform != target_platform]\n        - tomli >=2.4.1                          # [build_platform != target_platform]\n      host:\n        - nlohmann_json\n        # Dynamically linked to libLIEF for now; see comment in patch section.\n        - {{ pin_subpackage('liblief', exact=True) }}\n        - python\n        - pip\n        # Upstream pins build dependencies exactly; we are a bit more lenient\n        # here to avoid potential solvability issues.\n        - pydantic >=2.13.4\n        - pydantic-core >=2.46.4\n        - scikit-build-core >=1.0.3\n        - setuptools >=83.0.0\n        - tomli >=2.4.1\n      run:\n        - {{ pin_subpackage('liblief', exact=True) }}\n        - python\n    test:\n      requires:\n        - {{ compiler('cxx') }}\n      imports:\n        - lief\n      commands:\n        # Test general functionality by introspecting inter-subpackage linkage.\n        - python -c \"import ctypes.util, lief; missing = {name for name in {s.name for s in lief.parse(lief._lief.__file__).imported_functions} - {s.name for s in lief.parse(ctypes.util.find_library('LIEF')).exported_functions} if '4LIEF' in name}; assert not missing, missing\"\n\n  - name: liblief\n    script: install-liblief.sh  # [unix]\n    script: install-liblief.bat  # [win]\n    build:\n      run_exports:\n        - {{ pin_subpackage('liblief', max_pin='x.x') }}\n    requirements:\n      build:\n        - ccache\n        - {{ stdlib('c') }}\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - pkg-config            # [not win]\n        - cmake\n        - ninja\n      host:\n        - nlohmann_json\n        - mbedtls 4.0.0\n    test:\n      files:\n        - tests\n      commands:\n        - set -x   # [not win]\n        - echo on  # [win]\n        - pushd tests\n        # Aid uniform tests below: Put current dir bluntly on PATH; alias \"findstr\"->\"grep\", \"call;\"->\"true\".\n        - PATH=\".:${PATH}\"            # [not win]\n        - findstr() { grep \"${@}\"; }  # [not win]\n        - call() { true; }            # [not win]\n\n        - pushd self\n        - cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Debug . || exit 1\n        - ninja || exit 1\n        # FIXME: Actual test disabled on Windows for now; LIEF::Parser::parse does not finish on Windows.\n        - test-lief-self || exit 1  # [not win]\n        - popd\n\n        - pushd macho\n        - cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Debug . || exit 1\n        - ninja || exit 1\n        # This MachO object has no DynamicSymbolCommand, testing for bug fixed in PR:\n        # https://github.com/lief-project/LIEF/pull/262\n        # FIXME: Actual test disabled on Windows for now; LIEF::MachO::Parser::parse does not finish on Windows.\n        - test-lief-macho macOS-libpython2.7.a-getbuildinfo.o > output.txt || exit 1  # [not win]\n        - findstr has_dynamic_symbol_command output.txt && exit 1 || call;\n        - popd\n\n        - popd\n      requires:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - cmake\n        - ninja\n\nabout:\n  home: https://lief.quarkslab.com/\n  license: Apache-2.0\n  license_file: LICENSE\n  license_family: Apache\n  summary: A cross platform library to parse, modify and abstract ELF, PE and MachO formats.\n  description: |\n    It turns out that many projects need to parse executable formats and they usually re-implement\n    their own parser. Moreover these parsers are usually bound to one language.\n    LIEF attempts to fill this void.\n  dev_url: https://github.com/lief-project/LIEF\n  doc_url: https://lief.quarkslab.com/doc/stable/index.html\n  doc_source_url: https://github.com/lief-project/LIEF/tree/master/doc\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n    - isuruf\n    - mbargull\n    - msarahan\n    - xhochy\n    - wolfv\n",
+  "raw_meta_yaml": "{% set version = \"1.0.0\" %}\n\npackage:\n  name: lief\n  version: {{ version }}\n\nsource:\n  - url: https://github.com/lief-project/LIEF/archive/{{ version }}.tar.gz\n    sha256: 2cf412695ff739d82e129db441e5c2025f3bb4873a3d3a1d3dd4cf300b682abd\n    patches:\n      # Remove after a release containing https://github.com/lief-project/LIEF/pull/1375\n      - patches/0001-avoid-major-minor-macro-collisions.patch\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - ccache\n    - {{ stdlib('c') }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - pkg-config            # [not win]\n    - cmake\n    - ninja\n  host:\n    - nlohmann_json\n    # LIEF 1.0.0 requires exactly MbedTLS 4.0.0, which is not available on\n    # linux-riscv64. Use LIEF's bundled copy there until a compatible package exists.\n    - mbedtls 4.0.0  # [not riscv64]\n\noutputs:\n  - name: py-lief\n    script: install-py-lief.sh  # [unix]\n    script: install-py-lief.bat  # [win]\n    build:\n      run_exports:\n        - {{ pin_subpackage('py-lief', max_pin='x.x') }}\n      ignore_run_exports:\n        - python\n    requirements:\n      build:\n        - ccache\n        - {{ stdlib('c') }}\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - pkg-config            # [not win]\n        - cmake\n        - ninja\n        - python                                 # [build_platform != target_platform]\n        - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n        - pydantic >=2.13.4                      # [build_platform != target_platform]\n        - pydantic-core >=2.46.4                 # [build_platform != target_platform]\n        - scikit-build-core >=1.0.3              # [build_platform != target_platform]\n        - setuptools >=83.0.0                    # [build_platform != target_platform]\n        - tomli >=2.4.1                          # [build_platform != target_platform]\n      host:\n        - nlohmann_json\n        # Dynamically linked to libLIEF for now; see comment in patch section.\n        - {{ pin_subpackage('liblief', exact=True) }}\n        - python\n        - pip\n        # Upstream pins build dependencies exactly; we are a bit more lenient\n        # here to avoid potential solvability issues.\n        - pydantic >=2.13.4\n        - pydantic-core >=2.46.4\n        - scikit-build-core >=1.0.3\n        - setuptools >=83.0.0\n        - tomli >=2.4.1\n      run:\n        - {{ pin_subpackage('liblief', exact=True) }}\n        - python\n    test:\n      requires:\n        - {{ compiler('cxx') }}\n      imports:\n        - lief\n      commands:\n        # Test general functionality by introspecting inter-subpackage linkage.\n        - python -c \"import ctypes.util, lief; missing = {name for name in {s.name for s in lief.parse(lief._lief.__file__).imported_functions} - {s.name for s in lief.parse(ctypes.util.find_library('LIEF')).exported_functions} if '4LIEF' in name}; assert not missing, missing\"\n\n  - name: liblief\n    script: install-liblief.sh  # [unix]\n    script: install-liblief.bat  # [win]\n    build:\n      run_exports:\n        - {{ pin_subpackage('liblief', max_pin='x.x') }}\n    requirements:\n      build:\n        - ccache\n        - {{ stdlib('c') }}\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - pkg-config            # [not win]\n        - cmake\n        - ninja\n      host:\n        - nlohmann_json\n        - mbedtls 4.0.0  # [not riscv64]\n    test:\n      files:\n        - tests\n      commands:\n        - set -x   # [not win]\n        - echo on  # [win]\n        - pushd tests\n        # Aid uniform tests below: Put current dir bluntly on PATH; alias \"findstr\"->\"grep\", \"call;\"->\"true\".\n        - PATH=\".:${PATH}\"            # [not win]\n        - findstr() { grep \"${@}\"; }  # [not win]\n        - call() { true; }            # [not win]\n\n        - pushd self\n        - cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Debug . || exit 1\n        - ninja || exit 1\n        # FIXME: Actual test disabled on Windows for now; LIEF::Parser::parse does not finish on Windows.\n        - test-lief-self || exit 1  # [not win]\n        - popd\n\n        - pushd macho\n        - cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=Debug . || exit 1\n        - ninja || exit 1\n        # This MachO object has no DynamicSymbolCommand, testing for bug fixed in PR:\n        # https://github.com/lief-project/LIEF/pull/262\n        # FIXME: Actual test disabled on Windows for now; LIEF::MachO::Parser::parse does not finish on Windows.\n        - test-lief-macho macOS-libpython2.7.a-getbuildinfo.o > output.txt || exit 1  # [not win]\n        - findstr has_dynamic_symbol_command output.txt && exit 1 || call;\n        - popd\n\n        - popd\n      requires:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - cmake\n        - ninja\n\nabout:\n  home: https://lief.quarkslab.com/\n  license: Apache-2.0\n  license_file: LICENSE\n  license_family: Apache\n  summary: A cross platform library to parse, modify and abstract ELF, PE and MachO formats.\n  description: |\n    It turns out that many projects need to parse executable formats and they usually re-implement\n    their own parser. Moreover these parsers are usually bound to one language.\n    LIEF attempts to fill this void.\n  dev_url: https://github.com/lief-project/LIEF\n  doc_url: https://lief.quarkslab.com/doc/stable/index.html\n  doc_source_url: https://github.com/lief-project/LIEF/tree/master/doc\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n    - isuruf\n    - mbargull\n    - msarahan\n    - xhochy\n    - wolfv\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1734,6 +1970,7 @@
       "c_stdlib_stub",
       "ccache",
       "cmake",
+      "cross-python_linux-riscv64",
       "cxx_compiler_stub",
       "liblief",
       "mbedtls",
@@ -1757,9 +1994,16 @@
         "c_stdlib_stub",
         "ccache",
         "cmake",
+        "cross-python_linux-riscv64",
         "cxx_compiler_stub",
         "ninja",
-        "pkg-config"
+        "pkg-config",
+        "pydantic",
+        "pydantic-core",
+        "python",
+        "scikit-build-core",
+        "setuptools",
+        "tomli"
       ]
     },
     "host": {
@@ -1809,9 +2053,16 @@
         "c_stdlib_stub",
         "ccache",
         "cmake",
+        "cross-python_linux-riscv64",
         "cxx_compiler_stub",
         "ninja",
-        "pkg-config"
+        "pkg-config",
+        "pydantic >=2.13.4",
+        "pydantic-core >=2.46.4",
+        "python",
+        "scikit-build-core >=1.0.3",
+        "setuptools >=83.0.0",
+        "tomli >=2.4.1"
       ]
     },
     "host": {
@@ -1864,7 +2115,7 @@
       "summary": "A cross platform library to parse, modify and abstract ELF, PE and MachO formats."
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
