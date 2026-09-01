@@ -11,10 +11,14 @@
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
     }
   },
-  "feedstock_hash": "973efe86ee3ed995af68e48ecdb385ee9415aadb",
-  "feedstock_hash_ts": 1788287644,
+  "feedstock_hash": "9a0bff8a4787b90ed8fcdf27cc7b5721a36ca708",
+  "feedstock_hash_ts": 1788291581,
   "feedstock_name": "opendal",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -156,6 +160,154 @@
       ]
     }
   },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "description": "Apache OpenDAL is a data access layer that allows users to easily and\nefficiently retrieve data from various storage services in a unified way.",
+      "dev_url": "https://github.com/apache/opendal",
+      "doc_url": "https://opendal.apache.org/docs/python/index.html",
+      "home": "https://opendal.apache.org/",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "Apache OpenDAL Python binding"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "sh -c 'cd bindings/python && cargo-bundle-licenses --features pyo3/extension-module,services-all${{ \",abi3\" if is_abi3 else \"\" }} --format yaml --output ../../THIRDPARTY.yml'",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+        ],
+        "env": {
+          "MATURIN_PEP517_ARGS": "--locked --features pyo3/extension-module,services-all,abi3"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "Xuanwo"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "opendal",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_linux-aarch64",
+            "maturin >=1,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python-abi3",
+            "python",
+            "pip",
+            "maturin >=1,<2"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "opendal"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "script": [
+              "python -c \"import opendal; operator = opendal.Operator('memory'); operator.write('smoke', b'ok'); assert operator.read('smoke') == b'ok'\"",
+              "python -c \"from opendal.services import Scheme; assert Scheme.Dropbox.value == 'dropbox'\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/opendal/_opendal.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          }
+        ],
+        "version": "0.47.6"
+      }
+    ],
+    "package": {
+      "name": "opendal",
+      "version": "0.47.6"
+    },
+    "requirements": {
+      "build": [
+        "python",
+        "cross-python_linux-aarch64",
+        "maturin >=1,<2",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "python-abi3",
+        "python",
+        "pip",
+        "maturin >=1,<2"
+      ],
+      "run": [
+        "python"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "297b876ab44162490d4e38041ecb712800ad14814ee35c4c3c196af4b26ffd61",
+      "url": "https://pypi.org/packages/source/o/opendal/opendal-0.47.6.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cross-python_linux-aarch64",
+        "maturin",
+        "python",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "maturin",
+        "pip",
+        "python",
+        "python-abi3"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
+        "pip"
+      ]
+    }
+  },
   "meta_yaml": {
     "about": {
       "description": "Apache OpenDAL is a data access layer that allows users to easily and\nefficiently retrieve data from various storage services in a unified way.",
@@ -241,7 +393,111 @@
         "requirements": {
           "build": [
             "python",
+            "cross-python_linux-aarch64",
+            "maturin >=1,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python-abi3",
+            "python",
+            "pip",
+            "maturin >=1,<2"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "opendal"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "script": [
+              "python -c \"import opendal; operator = opendal.Operator('memory'); operator.write('smoke', b'ok'); assert operator.read('smoke') == b'ok'\"",
+              "python -c \"from opendal.services import Scheme; assert Scheme.Dropbox.value == 'dropbox'\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/opendal/_opendal.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          }
+        ],
+        "version": "0.47.6"
+      },
+      {
+        "build": null,
+        "name": "opendal",
+        "requirements": {
+          "build": [
+            "python",
             "cross-python_osx-64",
+            "maturin >=1,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python-abi3",
+            "python",
+            "pip",
+            "maturin >=1,<2"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "opendal"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "script": [
+              "python -c \"import opendal; operator = opendal.Operator('memory'); operator.write('smoke', b'ok'); assert operator.read('smoke') == b'ok'\"",
+              "python -c \"from opendal.services import Scheme; assert Scheme.Dropbox.value == 'dropbox'\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/opendal/_opendal.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          }
+        ],
+        "version": "0.47.6"
+      },
+      {
+        "build": null,
+        "name": "opendal",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_osx-arm64",
             "maturin >=1,<2",
             "c_compiler_stub",
             "c_stdlib_stub",
@@ -351,8 +607,10 @@
         "rust_compiler_stub",
         "cargo-bundle-licenses",
         "python",
-        "cross-python_osx-64",
+        "cross-python_linux-aarch64",
         "maturin >=1,<2",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cross-python_win-64"
       ],
       "host": [
@@ -520,6 +778,154 @@
       ]
     }
   },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "description": "Apache OpenDAL is a data access layer that allows users to easily and\nefficiently retrieve data from various storage services in a unified way.",
+      "dev_url": "https://github.com/apache/opendal",
+      "doc_url": "https://opendal.apache.org/docs/python/index.html",
+      "home": "https://opendal.apache.org/",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "Apache OpenDAL Python binding"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "sh -c 'cd bindings/python && cargo-bundle-licenses --features pyo3/extension-module,services-all${{ \",abi3\" if is_abi3 else \"\" }} --format yaml --output ../../THIRDPARTY.yml'",
+          "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+        ],
+        "env": {
+          "MATURIN_PEP517_ARGS": "--locked --features pyo3/extension-module,services-all,abi3"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "Xuanwo"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "opendal",
+        "requirements": {
+          "build": [
+            "python",
+            "cross-python_osx-arm64",
+            "maturin >=1,<2",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses"
+          ],
+          "host": [
+            "python-abi3",
+            "python",
+            "pip",
+            "maturin >=1,<2"
+          ],
+          "run": [
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "opendal"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "script": [
+              "python -c \"import opendal; operator = opendal.Operator('memory'); operator.write('smoke', b'ok'); assert operator.read('smoke') == b'ok'\"",
+              "python -c \"from opendal.services import Scheme; assert Scheme.Dropbox.value == 'dropbox'\""
+            ]
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/opendal/_opendal.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          }
+        ],
+        "version": "0.47.6"
+      }
+    ],
+    "package": {
+      "name": "opendal",
+      "version": "0.47.6"
+    },
+    "requirements": {
+      "build": [
+        "python",
+        "cross-python_osx-arm64",
+        "maturin >=1,<2",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses"
+      ],
+      "host": [
+        "python-abi3",
+        "python",
+        "pip",
+        "maturin >=1,<2"
+      ],
+      "run": [
+        "python"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "297b876ab44162490d4e38041ecb712800ad14814ee35c4c3c196af4b26ffd61",
+      "url": "https://pypi.org/packages/source/o/opendal/opendal-0.47.6.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cross-python_osx-arm64",
+        "maturin",
+        "python",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "maturin",
+        "pip",
+        "python",
+        "python-abi3"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
+        "pip"
+      ]
+    }
+  },
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -529,7 +935,9 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
     "osx_64",
+    "osx_arm64",
     "win_64"
   ],
   "pr_info": {
@@ -542,7 +950,9 @@
       "c_compiler_stub",
       "c_stdlib_stub",
       "cargo-bundle-licenses",
+      "cross-python_linux-aarch64",
       "cross-python_osx-64",
+      "cross-python_osx-arm64",
       "cross-python_win-64",
       "maturin",
       "pip",
@@ -558,7 +968,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "cross-python_linux-aarch64",
         "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cross-python_win-64",
         "maturin",
         "python",
@@ -602,7 +1014,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "cross-python_linux-aarch64",
         "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cross-python_win-64",
         "maturin >=1,<2",
         "python",
