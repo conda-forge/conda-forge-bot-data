@@ -1,36 +1,44 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nopenssl:\n- '3.5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nfmt:\n- '12.1'\nopenssl:\n- '3.5'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "conda_build": {
       "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "3d21b41927e9c6a9dea24c90cf72ee7c24ee2bed",
-  "feedstock_hash_ts": 1782842669,
+  "feedstock_hash": "dda9b39d4e6ae3d9e0bdd06f342d327e50566cb2",
+  "feedstock_hash_ts": 1788317698,
   "feedstock_name": "ixwebsocket-split",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "IXWebSocket is a C++ library for WebSocket client and server development. It has\nminimal dependencies (no boost), is very simple to use and support everything you'll\nlikely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).\n",
+      "description": "IXWebSocket is a C++ library for WebSocket client and server development. It has\nminimal dependencies (no boost), is very simple to use and support everything you'll\nlikely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).",
       "dev_url": "https://github.com/machinezone/IXWebSocket",
       "doc_url": "https://machinezone.github.io/IXWebSocket",
       "home": "https://machinezone.github.io/IXWebSocket/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE.txt",
       "summary": "IXWebSocket is a C++ library for WebSocket client and server development."
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "libixwebsocket"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "ixwebsocket-split",
       "recipe-maintainers": [
         "zklaus",
         "timkpaine"
@@ -39,53 +47,23 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libixwebsocket"
           ]
         },
-        "files": [
-          "lib/libixwebsocket.so.*"
-        ],
-        "name": "libixwebsocket",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "zlib",
-            "openssl"
-          ],
-          "run": []
-        },
-        "test": {
-          "commands": [
-            "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
-          ]
-        }
-      },
-      {
-        "build": {
-          "run_exports": [
-            "libixwebsocket"
-          ]
-        },
-        "files": [
-          "lib/libixwebsocket.so",
-          "include/ixwebsocket",
-          "lib/cmake/ixwebsocket",
-          "lib/pkgconfig/ixwebsocket.pc",
-          "bin/ws"
-        ],
         "name": "ixwebsocket",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake",
+            "make"
           ],
           "host": [
+            "zlib",
+            "openssl",
             "libixwebsocket",
             "fmt",
             "spdlog >=1.17.0,<1.18.0a0"
@@ -96,15 +74,46 @@
             "spdlog >=1.17.0,<1.18.0a0"
           ]
         },
-        "test": {
-          "commands": [
-            "ws --help"
+        "tests": [
+          {
+            "script": "ws --help"
+          }
+        ],
+        "version": "12.0.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libixwebsocket"
           ]
-        }
+        },
+        "name": "libixwebsocket",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make"
+          ],
+          "host": [
+            "zlib",
+            "openssl",
+            "spdlog >=1.17.0,<1.18.0a0"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
+          }
+        ],
+        "version": "12.0.1"
       }
     ],
     "package": {
-      "name": "ixwebsocket-split",
+      "name": "ixwebsocket",
       "version": "12.0.1"
     },
     "requirements": {
@@ -118,11 +127,17 @@
       "host": [
         "zlib",
         "openssl",
+        "libixwebsocket",
+        "fmt",
         "spdlog >=1.17.0,<1.18.0a0"
       ],
-      "run": []
+      "run": [
+        "libixwebsocket",
+        "fmt",
+        "spdlog >=1.17.0,<1.18.0a0"
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "use-system-spdlog.patch"
@@ -167,19 +182,26 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "IXWebSocket is a C++ library for WebSocket client and server development. It has\nminimal dependencies (no boost), is very simple to use and support everything you'll\nlikely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).\n",
+      "description": "IXWebSocket is a C++ library for WebSocket client and server development. It has\nminimal dependencies (no boost), is very simple to use and support everything you'll\nlikely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).",
       "dev_url": "https://github.com/machinezone/IXWebSocket",
       "doc_url": "https://machinezone.github.io/IXWebSocket",
       "home": "https://machinezone.github.io/IXWebSocket/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE.txt",
       "summary": "IXWebSocket is a C++ library for WebSocket client and server development."
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "libixwebsocket"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "ixwebsocket-split",
       "recipe-maintainers": [
         "zklaus",
         "timkpaine"
@@ -188,53 +210,23 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libixwebsocket"
           ]
         },
-        "files": [
-          "lib/libixwebsocket.so.*"
-        ],
-        "name": "libixwebsocket",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "zlib",
-            "openssl"
-          ],
-          "run": []
-        },
-        "test": {
-          "commands": [
-            "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
-          ]
-        }
-      },
-      {
-        "build": {
-          "run_exports": [
-            "libixwebsocket"
-          ]
-        },
-        "files": [
-          "lib/libixwebsocket.so",
-          "include/ixwebsocket",
-          "lib/cmake/ixwebsocket",
-          "lib/pkgconfig/ixwebsocket.pc",
-          "bin/ws"
-        ],
         "name": "ixwebsocket",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake",
+            "make"
           ],
           "host": [
+            "zlib",
+            "openssl",
             "libixwebsocket",
             "fmt",
             "spdlog >=1.17.0,<1.18.0a0"
@@ -245,61 +237,62 @@
             "spdlog >=1.17.0,<1.18.0a0"
           ]
         },
-        "test": {
-          "commands": [
-            "ws --help"
-          ]
-        }
+        "tests": [
+          {
+            "script": "ws --help"
+          }
+        ],
+        "version": "12.0.1"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libixwebsocket"
           ]
         },
-        "files": [
-          "lib/libixwebsocket.*.dylib"
-        ],
         "name": "libixwebsocket",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake",
+            "make"
           ],
           "host": [
             "zlib",
-            "openssl"
+            "openssl",
+            "spdlog >=1.17.0,<1.18.0a0"
           ],
           "run": []
         },
-        "test": {
-          "commands": [
-            "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
-          ]
-        }
+        "tests": [
+          {
+            "script": "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
+          }
+        ],
+        "version": "12.0.1"
       },
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libixwebsocket"
           ]
         },
-        "files": [
-          "lib/libixwebsocket.dylib",
-          "include/ixwebsocket",
-          "lib/cmake/ixwebsocket",
-          "lib/pkgconfig/ixwebsocket.pc",
-          "bin/ws"
-        ],
         "name": "ixwebsocket",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake",
+            "make"
           ],
           "host": [
+            "zlib",
+            "openssl",
             "libixwebsocket",
             "fmt",
             "spdlog >=1.17.0,<1.18.0a0"
@@ -310,15 +303,46 @@
             "spdlog >=1.17.0,<1.18.0a0"
           ]
         },
-        "test": {
-          "commands": [
-            "ws --help"
+        "tests": [
+          {
+            "script": "ws --help"
+          }
+        ],
+        "version": "12.0.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libixwebsocket"
           ]
-        }
+        },
+        "name": "libixwebsocket",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make"
+          ],
+          "host": [
+            "zlib",
+            "openssl",
+            "spdlog >=1.17.0,<1.18.0a0"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
+          }
+        ],
+        "version": "12.0.1"
       }
     ],
     "package": {
-      "name": "ixwebsocket-split",
+      "name": "ixwebsocket",
       "version": "12.0.1"
     },
     "requirements": {
@@ -332,11 +356,17 @@
       "host": [
         "zlib",
         "openssl",
+        "libixwebsocket",
+        "fmt",
         "spdlog >=1.17.0,<1.18.0a0"
       ],
-      "run": []
+      "run": [
+        "libixwebsocket",
+        "fmt",
+        "spdlog >=1.17.0,<1.18.0a0"
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "use-system-spdlog.patch"
@@ -345,22 +375,29 @@
       "url": "https://github.com/machinezone/IXWebSocket/archive/v12.0.1.tar.gz"
     }
   },
-  "name": "ixwebsocket-split",
+  "name": "ixwebsocket",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "IXWebSocket is a C++ library for WebSocket client and server development. It has\nminimal dependencies (no boost), is very simple to use and support everything you'll\nlikely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).\n",
+      "description": "IXWebSocket is a C++ library for WebSocket client and server development. It has\nminimal dependencies (no boost), is very simple to use and support everything you'll\nlikely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).",
       "dev_url": "https://github.com/machinezone/IXWebSocket",
       "doc_url": "https://machinezone.github.io/IXWebSocket",
       "home": "https://machinezone.github.io/IXWebSocket/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE.txt",
       "summary": "IXWebSocket is a C++ library for WebSocket client and server development."
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "libixwebsocket"
+        ]
+      },
+      "script": "build"
     },
     "extra": {
+      "feedstock-name": "ixwebsocket-split",
       "recipe-maintainers": [
         "zklaus",
         "timkpaine"
@@ -369,53 +406,23 @@
     "outputs": [
       {
         "build": {
-          "run_exports": [
+          "strong": [],
+          "weak": [
             "libixwebsocket"
           ]
         },
-        "files": [
-          "lib/libixwebsocket.*.dylib"
-        ],
-        "name": "libixwebsocket",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub"
-          ],
-          "host": [
-            "zlib",
-            "openssl"
-          ],
-          "run": []
-        },
-        "test": {
-          "commands": [
-            "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
-          ]
-        }
-      },
-      {
-        "build": {
-          "run_exports": [
-            "libixwebsocket"
-          ]
-        },
-        "files": [
-          "lib/libixwebsocket.dylib",
-          "include/ixwebsocket",
-          "lib/cmake/ixwebsocket",
-          "lib/pkgconfig/ixwebsocket.pc",
-          "bin/ws"
-        ],
         "name": "ixwebsocket",
         "requirements": {
           "build": [
             "c_compiler_stub",
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "cmake",
+            "make"
           ],
           "host": [
+            "zlib",
+            "openssl",
             "libixwebsocket",
             "fmt",
             "spdlog >=1.17.0,<1.18.0a0"
@@ -426,15 +433,46 @@
             "spdlog >=1.17.0,<1.18.0a0"
           ]
         },
-        "test": {
-          "commands": [
-            "ws --help"
+        "tests": [
+          {
+            "script": "ws --help"
+          }
+        ],
+        "version": "12.0.1"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "libixwebsocket"
           ]
-        }
+        },
+        "name": "libixwebsocket",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "make"
+          ],
+          "host": [
+            "zlib",
+            "openssl",
+            "spdlog >=1.17.0,<1.18.0a0"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}"
+          }
+        ],
+        "version": "12.0.1"
       }
     ],
     "package": {
-      "name": "ixwebsocket-split",
+      "name": "ixwebsocket",
       "version": "12.0.1"
     },
     "requirements": {
@@ -448,11 +486,17 @@
       "host": [
         "zlib",
         "openssl",
+        "libixwebsocket",
+        "fmt",
         "spdlog >=1.17.0,<1.18.0a0"
       ],
-      "run": []
+      "run": [
+        "libixwebsocket",
+        "fmt",
+        "spdlog >=1.17.0,<1.18.0a0"
+      ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "use-system-spdlog.patch"
@@ -499,7 +543,6 @@
     "__set__": true,
     "elements": [
       "ixwebsocket",
-      "ixwebsocket-split",
       "libixwebsocket"
     ]
   },
@@ -511,7 +554,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/ixwebsocket-split.json"
   },
-  "raw_meta_yaml": "{% set name = \"ixwebsocket\" %}\n{% set version = \"12.0.1\" %}\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  url: https://github.com/machinezone/IXWebSocket/archive/v{{ version }}.tar.gz\n  sha256: d23bdc91dbfe2b9ae13c322d539392d7a6b8b506560f41c90e227fa0f86a2405\n  patches:\n    - use-system-spdlog.patch\n\nbuild:\n  number: 0\n  skip: true  # [win]\n\nrequirements:\n  build:\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ stdlib('c') }}\n    - cmake\n    - make\n  host:\n    - zlib\n    - openssl\n    - spdlog >=1.17.0,<1.18.0a0\n  run:\n\noutputs:\n  - name: libixwebsocket\n    build:\n      run_exports:\n        - {{ pin_subpackage('libixwebsocket', max_pin=\"x.x.x\") }}\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n      host:\n        - zlib\n        - openssl\n      run:\n    files:\n      - lib/libixwebsocket.so.*  # [linux]\n      - lib/libixwebsocket.*.dylib  # [osx]\n    test:\n      commands:\n        - test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}  # [unix]\n\n  - name: ixwebsocket\n    build:\n      run_exports:\n        - {{ pin_subpackage('libixwebsocket', max_pin=\"x.x.x\") }}\n    requirements:\n      build:\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n      host:\n        - {{ pin_subpackage('libixwebsocket', exact=True) }}\n        - fmt\n        - spdlog >=1.17.0,<1.18.0a0\n      run:\n        - {{ pin_subpackage('libixwebsocket', exact=True) }}\n        - fmt\n        - spdlog >=1.17.0,<1.18.0a0\n    files:\n      - lib/libixwebsocket.so  # [linux]\n      - lib/libixwebsocket.dylib  # [osx]\n      - include/ixwebsocket  # [unix]\n      - lib/cmake/ixwebsocket  # [unix]\n      - lib/pkgconfig/ixwebsocket.pc  # [unix]\n      - bin/ws  # [unix]\n    test:\n      commands:\n        - ws --help\n\n\nabout:\n  home: https://machinezone.github.io/IXWebSocket/\n  summary: IXWebSocket is a C++ library for WebSocket client and server development.\n  description: |\n    IXWebSocket is a C++ library for WebSocket client and server development. It has\n    minimal dependencies (no boost), is very simple to use and support everything you'll\n    likely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE.txt\n  doc_url: https://machinezone.github.io/IXWebSocket\n  dev_url: https://github.com/machinezone/IXWebSocket\n\nextra:\n  recipe-maintainers:\n    - zklaus\n    - timkpaine\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: ixwebsocket\n  version: \"12.0.1\"\n\nrecipe:\n  name: ${{ name }}-split\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/machinezone/IXWebSocket/archive/v${{ version }}.tar.gz\n  sha256: d23bdc91dbfe2b9ae13c322d539392d7a6b8b506560f41c90e227fa0f86a2405\n  patches:\n    - use-system-spdlog.patch\n\nbuild:\n  number: 1\n  skip:\n    - win\n  script: build\n\noutputs:\n  - package:\n      name: libixwebsocket\n    build:\n      files:\n        - if: linux\n          then: lib/libixwebsocket.so.*\n        - if: osx\n          then: lib/libixwebsocket.*.dylib\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - make\n      host:\n        - zlib\n        - openssl\n        - spdlog >=1.17.0,<1.18.0a0\n      run_exports:\n        - ${{ pin_subpackage(\"libixwebsocket\", upper_bound=\"x.x.x\") }}\n    tests:\n      - script: test ! -f ${PREFIX}/lib/libixwebsocket${SHLIB_EXT}\n\n  - package:\n      name: ixwebsocket\n    build:\n      files:\n        - if: linux\n          then: lib/libixwebsocket.so\n        - if: osx\n          then: lib/libixwebsocket.dylib\n        - include/ixwebsocket/\n        - lib/cmake/ixwebsocket/\n        - lib/pkgconfig/ixwebsocket.pc\n        - bin/ws\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - make\n      host:\n        - zlib\n        - openssl\n        - ${{ pin_subpackage(\"libixwebsocket\", exact=True) }}\n        - fmt\n        - spdlog >=1.17.0,<1.18.0a0\n      run:\n        - ${{ pin_subpackage(\"libixwebsocket\", exact=True) }}\n        - fmt\n        - spdlog >=1.17.0,<1.18.0a0\n      run_exports:\n        - ${{ pin_subpackage(\"libixwebsocket\", upper_bound=\"x.x.x\") }}\n    tests:\n      - script: ws --help\n\nabout:\n  homepage: https://machinezone.github.io/IXWebSocket/\n  summary: IXWebSocket is a C++ library for WebSocket client and server development.\n  description: |\n    IXWebSocket is a C++ library for WebSocket client and server development. It has\n    minimal dependencies (no boost), is very simple to use and support everything you'll\n    likely need for websocket dev (SSL, deflate compression, compiles on most platforms, etc...).\n  license: BSD-3-Clause\n  license_file: LICENSE.txt\n  documentation: https://machinezone.github.io/IXWebSocket\n  repository: https://github.com/machinezone/IXWebSocket\n\nextra:\n  feedstock-name: ixwebsocket-split\n  recipe-maintainers:\n    - zklaus\n    - timkpaine\n",
   "req": {
     "__set__": true,
     "elements": [
