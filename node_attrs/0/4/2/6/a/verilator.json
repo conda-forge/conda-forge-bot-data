@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\ngraphviz:\n- '14'\nperl:\n- 5.32.1\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
+  "ci_support_linux_64_python3.11.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nperl:\n- 5.32.1\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -13,6 +13,7 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
     "github": {
       "branch_name": "main",
@@ -23,29 +24,24 @@
       "store_build_artifacts": true
     }
   },
-  "feedstock_hash": "d184930c26232e5e7f91062c3c225dbae442cc2c",
-  "feedstock_hash_ts": 1782967176,
+  "feedstock_hash": "86b52494409b3a1de5a44b9c36229a881f22f0a3",
+  "feedstock_hash_ts": 1788311254,
   "feedstock_name": "verilator",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts\n",
+      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts",
       "dev_url": "https://github.com/verilator/verilator",
       "doc_url": "https://www.veripool.org/projects/verilator/wiki/Documentation",
       "home": "https://veripool.org/wiki/verilator",
       "license": "LGPL-3.0-only OR Artistic-2.0",
-      "license_file": [
-        "LICENSE",
-        "LICENSES/Artistic-2.0.txt"
-      ],
+      "license_family": "LGPL-3.0-only OR Artistic-2.0",
+      "license_file": "LICENSE",
       "summary": "The fastest Verilog HDL simulator"
     },
     "build": {
-      "has_prefix_files": [
-        "share/verilator/include/verilated.mk",
-        "lib/pkgconfig/verilator.pc"
-      ],
-      "number": "0"
+      "number": "1",
+      "script": "install"
     },
     "extra": {
       "recipe-maintainers": [
@@ -55,94 +51,370 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
+            "perl",
+            "python",
             "gxx_impl_linux-64",
             "flex",
-            "make",
-            "perl",
-            "python"
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "gxx_impl_linux-64",
+            "flex",
+            "make"
           ]
-        }
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "gxx_impl_linux-64",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "gxx_impl_linux-64",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       }
     ],
     "package": {
-      "name": "verilator-packages",
+      "name": "verilator",
       "version": "5.050"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "autoconf",
-        "bison",
         "distro",
-        "help2man",
-        "make",
         "perl",
         "python",
+        "git",
+        "autoconf",
+        "bison",
+        "help2man",
+        "make",
         "sed",
-        "git"
+        "ripgrep"
       ],
       "host": [
-        "flex",
-        "zlib"
+        "zlib",
+        "flex"
       ],
       "run": [
+        "perl",
+        "python",
         "gxx_impl_linux-64",
         "flex",
-        "make",
-        "perl",
-        "python"
+        "make"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "patches/0004-add-message-suggesting-verilator-debug-package.patch",
@@ -202,23 +474,18 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts\n",
+      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts",
       "dev_url": "https://github.com/verilator/verilator",
       "doc_url": "https://www.veripool.org/projects/verilator/wiki/Documentation",
       "home": "https://veripool.org/wiki/verilator",
       "license": "LGPL-3.0-only OR Artistic-2.0",
-      "license_file": [
-        "LICENSE",
-        "LICENSES/Artistic-2.0.txt"
-      ],
+      "license_family": "LGPL-3.0-only OR Artistic-2.0",
+      "license_file": "LICENSE",
       "summary": "The fastest Verilog HDL simulator"
     },
     "build": {
-      "has_prefix_files": [
-        "share/verilator/include/verilated.mk",
-        "lib/pkgconfig/verilator.pc"
-      ],
-      "number": "0"
+      "number": "1",
+      "script": "install"
     },
     "extra": {
       "recipe-maintainers": [
@@ -228,92 +495,365 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
-            "flex",
-            "make",
             "perl",
-            "python"
+            "python",
+            "flex",
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "flex",
+            "make"
           ]
-        }
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       }
     ],
     "package": {
-      "name": "verilator-packages",
+      "name": "verilator",
       "version": "5.050"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "autoconf",
-        "bison",
         "distro",
-        "help2man",
-        "make",
         "perl",
         "python",
+        "git",
+        "autoconf",
+        "bison",
+        "help2man",
+        "make",
         "sed",
-        "git"
+        "ripgrep"
       ],
       "host": [
-        "flex",
-        "zlib"
+        "zlib",
+        "flex"
       ],
       "run": [
-        "flex",
-        "make",
         "perl",
-        "python"
+        "python",
+        "flex",
+        "make"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "patches/0004-add-message-suggesting-verilator-debug-package.patch",
@@ -372,25 +912,18 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts\n",
+      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts",
       "dev_url": "https://github.com/verilator/verilator",
       "doc_url": "https://www.veripool.org/projects/verilator/wiki/Documentation",
       "home": "https://veripool.org/wiki/verilator",
       "license": "LGPL-3.0-only OR Artistic-2.0",
-      "license_file": [
-        "LICENSE",
-        "LICENSES/Artistic-2.0.txt"
-      ],
+      "license_family": "LGPL-3.0-only OR Artistic-2.0",
+      "license_file": "LICENSE",
       "summary": "The fastest Verilog HDL simulator"
     },
     "build": {
-      "has_prefix_files": [
-        "share/verilator/include/verilated.mk",
-        "lib/pkgconfig/verilator.pc",
-        "Library/share/verilator/include/verilated.mk",
-        "Library/lib/pkgconfig/verilator.pc"
-      ],
-      "number": "0"
+      "number": "1",
+      "script": "install"
     },
     "extra": {
       "recipe-maintainers": [
@@ -400,241 +933,1350 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
+            "perl",
+            "python",
             "gxx_impl_linux-64",
             "flex",
-            "make",
-            "perl",
-            "python"
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
-          ]
-        }
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
-            "flex",
-            "make",
             "perl",
-            "python"
+            "python",
+            "gxx_impl_linux-64",
+            "flex",
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
-          ]
-        }
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "flex",
-            "make",
             "perl",
-            "python"
+            "python",
+            "gxx_impl_linux-64",
+            "flex",
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/make*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
-          ]
-        }
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "flex",
-            "make",
             "perl",
-            "python"
+            "python",
+            "gxx_impl_linux-64",
+            "flex",
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/make*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
-          ]
-        }
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
-            "cmake"
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
           ],
           "host": [
             "zlib"
@@ -644,71 +2286,289 @@
             "python"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "where verilator",
-            "verilator --version"
-          ],
-          "requires": [
-            "cmake",
-            "python >=3"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
           ],
           "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "where verilator_bin_dbg",
-            "verilator_bin_dbg --version"
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": [
+            "perl",
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": [
+            "perl",
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": [
+            "perl",
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
       }
     ],
     "package": {
-      "name": "verilator-packages",
+      "name": "verilator",
       "version": "5.050"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "autoconf",
-        "bison",
         "distro",
-        "help2man",
-        "make",
         "perl",
         "python",
-        "sed",
         "git",
+        "autoconf",
+        "bison",
+        "help2man",
+        "make",
+        "sed",
+        "ripgrep",
         "cmake",
         "winflexbison"
       ],
       "host": [
-        "flex",
-        "zlib"
+        "zlib",
+        "flex"
       ],
       "run": [
+        "perl",
+        "python",
         "gxx_impl_linux-64",
         "flex",
         "make",
-        "perl",
-        "python",
         "cxx_compiler_stub",
         "c_stdlib_stub"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "patches/0004-add-message-suggesting-verilator-debug-package.patch",
@@ -718,25 +2578,21 @@
       "url": "https://github.com/verilator/verilator/archive/v5.050.tar.gz"
     }
   },
-  "name": "verilator-packages",
+  "name": "verilator",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts\n",
+      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts",
       "dev_url": "https://github.com/verilator/verilator",
       "doc_url": "https://www.veripool.org/projects/verilator/wiki/Documentation",
       "home": "https://veripool.org/wiki/verilator",
       "license": "LGPL-3.0-only OR Artistic-2.0",
-      "license_file": [
-        "LICENSE",
-        "LICENSES/Artistic-2.0.txt"
-      ],
+      "license_family": "LGPL-3.0-only OR Artistic-2.0",
+      "license_file": "LICENSE",
       "summary": "The fastest Verilog HDL simulator"
     },
     "build": {
-      "has_prefix_files": [
-        "lib/pkgconfig/verilator.pc"
-      ],
-      "number": "0"
+      "number": "1",
+      "script": "install"
     },
     "extra": {
       "recipe-maintainers": [
@@ -746,96 +2602,375 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
+            "perl",
+            "python",
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "flex",
-            "make",
-            "perl",
-            "python"
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/make*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
           ]
-        }
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       }
     ],
     "package": {
-      "name": "verilator-packages",
+      "name": "verilator",
       "version": "5.050"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "autoconf",
-        "bison",
         "distro",
-        "help2man",
-        "make",
         "perl",
         "python",
+        "git",
+        "autoconf",
+        "bison",
+        "help2man",
+        "make",
         "sed",
-        "git"
+        "ripgrep"
       ],
       "host": [
-        "flex",
-        "zlib"
+        "zlib",
+        "flex"
       ],
       "run": [
+        "perl",
+        "python",
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "flex",
-        "make",
-        "perl",
-        "python"
+        "make"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "patches/0004-add-message-suggesting-verilator-debug-package.patch",
@@ -896,22 +3031,18 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts\n",
+      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts",
       "dev_url": "https://github.com/verilator/verilator",
       "doc_url": "https://www.veripool.org/projects/verilator/wiki/Documentation",
       "home": "https://veripool.org/wiki/verilator",
       "license": "LGPL-3.0-only OR Artistic-2.0",
-      "license_file": [
-        "LICENSE",
-        "LICENSES/Artistic-2.0.txt"
-      ],
+      "license_family": "LGPL-3.0-only OR Artistic-2.0",
+      "license_file": "LICENSE",
       "summary": "The fastest Verilog HDL simulator"
     },
     "build": {
-      "has_prefix_files": [
-        "lib/pkgconfig/verilator.pc"
-      ],
-      "number": "0"
+      "number": "1",
+      "script": "install"
     },
     "extra": {
       "recipe-maintainers": [
@@ -921,96 +3052,375 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
             "make",
-            "ripgrep",
-            "perl"
+            "sed",
+            "ripgrep"
           ],
           "host": [
             "zlib",
             "flex"
           ],
           "run": [
+            "perl",
+            "python",
             "cxx_compiler_stub",
             "c_stdlib_stub",
             "flex",
-            "make",
-            "perl",
-            "python"
+            "make"
           ]
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "pkg-config --print-provides \"$PKG_NAME\"",
-            "verilator --version",
-            "cp -r \"$PREFIX\"/share/verilator/examples .",
-            "for d in examples/make*; do echo $d; make -C $d; done"
-          ],
-          "requires": [
-            "pkgconfig",
-            "cmake",
-            "make",
-            "python >=3",
-            "graphviz",
-            "c_compiler_stub",
-            "cxx_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
           ],
           "run": []
         },
-        "script": "install.sh",
-        "test": {
-          "commands": [
-            "verilator_bin_dbg --version"
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
           ]
-        }
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed",
+            "ripgrep"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": [
+            "perl",
+            "python",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "flex",
+            "make"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3",
+                "pkgconfig",
+                "make",
+                "graphviz",
+                "c_compiler_stub",
+                "cxx_compiler_stub"
+              ]
+            },
+            "script": [
+              "pkg-config --print-provides verilator",
+              "verilator --version",
+              "cp -r \"$PREFIX\"/share/verilator/examples .",
+              "for d in examples/make*; do echo $d; make -C $d; done"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "autoconf",
+            "bison",
+            "help2man",
+            "make",
+            "sed"
+          ],
+          "host": [
+            "zlib",
+            "flex"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "verilator_bin_dbg --version"
+          }
+        ],
+        "version": "5.050"
       }
     ],
     "package": {
-      "name": "verilator-packages",
+      "name": "verilator",
       "version": "5.050"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "autoconf",
-        "bison",
         "distro",
-        "help2man",
-        "make",
         "perl",
         "python",
+        "git",
+        "autoconf",
+        "bison",
+        "help2man",
+        "make",
         "sed",
-        "git"
+        "ripgrep"
       ],
       "host": [
-        "flex",
-        "zlib"
+        "zlib",
+        "flex"
       ],
       "run": [
+        "perl",
+        "python",
         "cxx_compiler_stub",
         "c_stdlib_stub",
         "flex",
-        "make",
-        "perl",
-        "python"
+        "make"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "patches/0004-add-message-suggesting-verilator-debug-package.patch",
@@ -1073,8 +3483,7 @@
     "__set__": true,
     "elements": [
       "verilator",
-      "verilator-debug",
-      "verilator-packages"
+      "verilator-debug"
     ]
   },
   "parsing_error": false,
@@ -1088,7 +3497,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/verilator.json"
   },
-  "raw_meta_yaml": "{% set name = \"verilator\" %}\n{% set version = \"5.050\" %}\n{% set sha256 = \"ec6723f30c1798b1fbbbed97364f09c431fb4875577c314f37240e99b60a4a04\" %}\n\npackage:\n  name: verilator-packages\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/{{ name }}/{{ name }}/archive/v{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n  patches:\n    - patches/0004-add-message-suggesting-verilator-debug-package.patch\n    - patches/0005-cross-compile-cxx14-detection.patch\n\nbuild:\n  number: 0\n  has_prefix_files:\n    - share/verilator/include/verilated.mk  # [not osx and not win]\n    - Library/share/verilator/include/verilated.mk  # [win]\n    - lib/pkgconfig/verilator.pc  # [not win]\n    - Library/lib/pkgconfig/verilator.pc  # [win]\n\nrequirements:\n  build:\n    - {{ compiler('cxx') }}\n    - {{ stdlib(\"c\") }}\n    - autoconf  # [not win]\n    - bison  # [not win]\n    - cmake  # [win]\n    - distro\n    - help2man  # [not win]\n    - make  # [not win]\n    - perl\n    - python\n    - sed  # [not win]\n    - git # for patching\n    - winflexbison  # [win]\n  host:\n    - flex  # [not win] need to link against it for target\n    - zlib\n  run:\n    - {{ compiler('cxx') }}  # [osx]\n    - {{ stdlib(\"c\") }}    # [osx]\n    # The 4.034 branch was using this search and replace but it will break for osx-arm64\n    #- {{ compiler('cxx') | replace('gxx_linux','gxx_impl_linux') | replace('_osx-64', '') }}\n    # there must be a way to derive this from compiler('cxx') but this should work\n    - gxx_impl_linux-64  # [linux64]\n    - {{ pin_compatible('flex') }}  # [not win]\n    - make  # [not win]\n    - perl\n    - python\n\noutputs:\n  - name: verilator\n    script: install.sh  # [not win]\n    script: install.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n        - cmake  # [win]\n        - make  # [not win]\n        - ripgrep  # [not win]\n        - perl  # [not win] avoid BSD sed weirdness\n      host:\n        - zlib\n        - flex  # [not win] need to link against it for target\n      run:\n        - {{ compiler('cxx') }}  # [osx]\n        - {{ stdlib(\"c\") }}    # [osx]\n        # there must be a way to derive this from compiler('cxx') but this should work\n        - gxx_impl_linux-64  # [linux64]\n        - {{ pin_compatible('flex') }}  # [not win]\n        - make  # [not win]\n        - perl\n        - python\n    test:\n      requires:\n        - pkgconfig  # [not win]\n        - cmake\n        - make  # [not win]\n        - python >=3\n        - graphviz  # [not win]\n        # only need C compiler because cmake bails if it doesn't have one.\n        # at least with the CMakeLists.txt in the examples\n        - {{ compiler('c') }}  # [not win]\n        # re-install the default compiler package with activation scripts\n        # because it is the easiest way to get cmake to work in the sanity checks\n        # for cmake.  However, normal makefile based tests do not need this and\n        # will work fine because verilated.mk builds in the path to the c++ compiler\n        - {{ compiler('cxx') }}  # [not win]\n      commands:\n        - where verilator  # [win]\n        - pkg-config --print-provides \"$PKG_NAME\"  # [not win]\n        - verilator --version\n        - cp -r \"$PREFIX\"/share/verilator/examples .  # [not win]\n        - for d in examples/*; do echo $d; make -C $d; done  # [not osx and not win]\n        - for d in examples/make*; do echo $d; make -C $d; done  # [osx]\n  - name: verilator-debug\n    script: install.sh  # [not win]\n    script: install.bat  # [win]\n    requirements:\n      build:\n        - {{ compiler('cxx') }}\n        - {{ stdlib(\"c\") }}\n      run:\n          # depending on the verilator package here breaks testing the package because conda-build\n          # can't install the verilator pakckage yet?  wtf?\n          #- {{ pin_subpackage('verilator', exact=True) }}\n    test:\n      commands:\n        - where verilator_bin_dbg  # [win]\n        - verilator_bin_dbg --version\n\nabout:\n  home: https://veripool.org/wiki/verilator\n  license: LGPL-3.0-only OR Artistic-2.0\n  license_file:\n    - LICENSE\n    - LICENSES/Artistic-2.0.txt\n  summary: The fastest Verilog HDL simulator\n\n  description: |\n    Welcome to Verilator, the fastest Verilog HDL simulator.\n      • Accepts synthesizable Verilog or SystemVerilog\n      • Performs lint code-quality checks\n      • Compiles into multithreaded C++, or SystemC\n      • Creates XML to front-end your own tools\n    Fast\n      • Outperforms many commercial simulators\n      • Single- and multi-threaded output models\n    Widely Used\n      • Wide industry and academic deployment\n      • Out-of-the-box support from Arm, and RISC-V vendor IP\n    Community Driven & Openly Licensed\n      • Guided by the CHIPS Alliance and Linux Foundation\n      • Open, and free as in both speech and beer\n      • More simulation for your verification budget\n    Commercial Support Available\n      • Commercial support contracts\n      • Design support contracts\n      • Enhancement contracts\n  doc_url: https://www.veripool.org/projects/verilator/wiki/Documentation\n  dev_url: https://github.com/verilator/verilator\n\nextra:\n  recipe-maintainers:\n    - timkpaine\n    - timsnyder\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: verilator\n  version: \"5.050\"\n  sha256: ec6723f30c1798b1fbbbed97364f09c431fb4875577c314f37240e99b60a4a04\n\nrecipe:\n  name: verilator-packages\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/${{ name }}/${{ name }}/archive/v${{ version }}.tar.gz\n  sha256: ${{ sha256 }}\n  patches:\n    - patches/0004-add-message-suggesting-verilator-debug-package.patch\n    - patches/0005-cross-compile-cxx14-detection.patch\n\nbuild:\n  number: 1\n\noutputs:\n  - staging:\n      name: verilator-build\n    build:\n      script:\n        file: build\n        env:\n          CONDA_BUILD_CROSS_COMPILATION: ${{ \"1\" if build_platform != target_platform else \"0\" }}\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - distro\n        - perl\n        - python\n        - git  # for patching\n        - if: not win\n          then:\n            - autoconf\n            - bison\n            - help2man\n            - make\n            - sed\n        - if: win\n          then:\n            - cmake\n            - winflexbison\n      host:\n        - zlib\n        - if: not win\n          then: flex  # need to link against it for target\n\n  - package:\n      name: verilator\n    inherit: verilator-build\n    build:\n      script: install\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n        - if: win\n          then: cmake\n        - if: not win\n          then:\n            - make\n            - ripgrep\n            - perl  # avoid BSD sed weirdness\n      host:\n        - zlib\n        - if: not win\n          then: flex  # need to link against it for target\n      run:\n        - perl\n        - python\n        - if: osx\n          then:\n            - ${{ compiler('cxx') }}\n            - ${{ stdlib(\"c\") }}\n        # there must be a way to derive this from compiler('cxx') but this should work\n        - if: linux and x86_64\n          then: gxx_impl_linux-64\n        - if: not win\n          then:\n            - ${{ pin_compatible('flex') }}\n            - make\n    tests:\n      - requirements:\n          run:\n            - cmake\n            - python >=3\n            - if: not win\n              then:\n                - pkgconfig\n                - make\n                - graphviz\n                # only need C compiler because cmake bails if it doesn't have one.\n                # at least with the CMakeLists.txt in the examples\n                - ${{ compiler('c') }}\n                # re-install the default compiler package with activation scripts\n                # because it is the easiest way to get cmake to work in the sanity checks\n                # for cmake.  However, normal makefile based tests do not need this and\n                # will work fine because verilated.mk builds in the path to the c++ compiler\n                - ${{ compiler('cxx') }}\n        script:\n          - if: win\n            then: where verilator\n          - if: not win\n            then: pkg-config --print-provides verilator\n          - verilator --version\n          - if: not win\n            then: cp -r \"$PREFIX\"/share/verilator/examples .\n          - if: linux\n            then: for d in examples/*; do echo $d; make -C $d; done\n          - if: osx\n            then: for d in examples/make*; do echo $d; make -C $d; done\n\n  - package:\n      name: verilator-debug\n    inherit: verilator-build\n    build:\n      script: install\n    requirements:\n      build:\n        - ${{ compiler('cxx') }}\n        - ${{ stdlib(\"c\") }}\n      run:\n        # depending on the verilator package here breaks testing the package because\n        # the solver can't install the verilator package yet\n        # - ${{ pin_subpackage('verilator', exact=True) }}\n    tests:\n      - script:\n          - if: win\n            then: where verilator_bin_dbg\n          - verilator_bin_dbg --version\n\nabout:\n  license: LGPL-3.0-only OR Artistic-2.0\n  license_file:\n    - LICENSE\n    - LICENSES/Artistic-2.0.txt\n  summary: The fastest Verilog HDL simulator\n  description: |\n    Welcome to Verilator, the fastest Verilog HDL simulator.\n      • Accepts synthesizable Verilog or SystemVerilog\n      • Performs lint code-quality checks\n      • Compiles into multithreaded C++, or SystemC\n      • Creates XML to front-end your own tools\n    Fast\n      • Outperforms many commercial simulators\n      • Single- and multi-threaded output models\n    Widely Used\n      • Wide industry and academic deployment\n      • Out-of-the-box support from Arm, and RISC-V vendor IP\n    Community Driven & Openly Licensed\n      • Guided by the CHIPS Alliance and Linux Foundation\n      • Open, and free as in both speech and beer\n      • More simulation for your verification budget\n    Commercial Support Available\n      • Commercial support contracts\n      • Design support contracts\n      • Enhancement contracts\n  homepage: https://veripool.org/wiki/verilator\n  documentation: https://www.veripool.org/projects/verilator/wiki/Documentation\n  repository: https://github.com/verilator/verilator\n\nextra:\n  recipe-maintainers:\n    - timkpaine\n    - timsnyder\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1229,23 +3638,18 @@
   },
   "win_64_meta_yaml": {
     "about": {
-      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts\n",
+      "description": "Welcome to Verilator, the fastest Verilog HDL simulator.\n  • Accepts synthesizable Verilog or SystemVerilog\n  • Performs lint code-quality checks\n  • Compiles into multithreaded C++, or SystemC\n  • Creates XML to front-end your own tools\nFast\n  • Outperforms many commercial simulators\n  • Single- and multi-threaded output models\nWidely Used\n  • Wide industry and academic deployment\n  • Out-of-the-box support from Arm, and RISC-V vendor IP\nCommunity Driven & Openly Licensed\n  • Guided by the CHIPS Alliance and Linux Foundation\n  • Open, and free as in both speech and beer\n  • More simulation for your verification budget\nCommercial Support Available\n  • Commercial support contracts\n  • Design support contracts\n  • Enhancement contracts",
       "dev_url": "https://github.com/verilator/verilator",
       "doc_url": "https://www.veripool.org/projects/verilator/wiki/Documentation",
       "home": "https://veripool.org/wiki/verilator",
       "license": "LGPL-3.0-only OR Artistic-2.0",
-      "license_file": [
-        "LICENSE",
-        "LICENSES/Artistic-2.0.txt"
-      ],
+      "license_family": "LGPL-3.0-only OR Artistic-2.0",
+      "license_file": "LICENSE",
       "summary": "The fastest Verilog HDL simulator"
     },
     "build": {
-      "has_prefix_files": [
-        "Library/share/verilator/include/verilated.mk",
-        "Library/lib/pkgconfig/verilator.pc"
-      ],
-      "number": "0"
+      "number": "1",
+      "script": "install"
     },
     "extra": {
       "recipe-maintainers": [
@@ -1255,12 +3659,18 @@
     },
     "outputs": [
       {
+        "build": null,
         "name": "verilator",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
             "c_stdlib_stub",
-            "cmake"
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
           ],
           "host": [
             "zlib"
@@ -1270,49 +3680,266 @@
             "python"
           ]
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "where verilator",
-            "verilator --version"
-          ],
-          "requires": [
-            "cmake",
-            "python >=3"
-          ]
-        }
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
       },
       {
+        "build": null,
         "name": "verilator-debug",
         "requirements": {
           "build": [
             "cxx_compiler_stub",
-            "c_stdlib_stub"
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
           ],
           "run": []
         },
-        "script": "install.bat",
-        "test": {
-          "commands": [
-            "where verilator_bin_dbg",
-            "verilator_bin_dbg --version"
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": [
+            "perl",
+            "python"
           ]
-        }
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": [
+            "perl",
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": [
+            "perl",
+            "python"
+          ]
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "cmake",
+                "python >=3"
+              ]
+            },
+            "script": [
+              "where verilator",
+              "verilator --version"
+            ]
+          }
+        ],
+        "version": "5.050"
+      },
+      {
+        "build": null,
+        "name": "verilator-debug",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "distro",
+            "perl",
+            "python",
+            "git",
+            "cmake",
+            "winflexbison"
+          ],
+          "host": [
+            "zlib"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "where verilator_bin_dbg",
+              "verilator_bin_dbg --version"
+            ]
+          }
+        ],
+        "version": "5.050"
       }
     ],
     "package": {
-      "name": "verilator-packages",
+      "name": "verilator",
       "version": "5.050"
     },
     "requirements": {
       "build": [
         "cxx_compiler_stub",
         "c_stdlib_stub",
-        "cmake",
         "distro",
         "perl",
         "python",
         "git",
+        "cmake",
         "winflexbison"
       ],
       "host": [
@@ -1323,7 +3950,7 @@
         "python"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "patches/0004-add-message-suggesting-verilator-debug-package.patch",
