@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_cuda_compiler_version12.9python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\npytorch:\n- '2.12'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
+  "ci_support_linux_64_c_compiler_version14c_stdlib_version2.17cuda_compiler_version12.9cxx_compiler_version14python3.11.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\npytorch:\n- '2.12'\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
   "conda-forge.yml": {
     "conda_build": {
       "pkg_format": "2"
@@ -11,6 +11,9 @@
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
+    "provider": {
+      "linux_aarch64": "default"
+    },
     "workflow_settings": {
       "free_disk_space": [
         {
@@ -19,8 +22,8 @@
       ]
     }
   },
-  "feedstock_hash": "ae083d676793b9688c5aaaf886c660c13b7b3ea5",
-  "feedstock_hash_ts": 1781682447,
+  "feedstock_hash": "cdf3c975e9e52695bbe2c8d442ae8c1e04413ce7",
+  "feedstock_hash_ts": 1788315431,
   "feedstock_name": "nvidia-apex",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -34,14 +37,12 @@
       "summary": "a Pytorch extension with NVIDIA-maintained utilities to streamline mixed precision and distributed training."
     },
     "build": {
-      "number": "6",
+      "number": "7",
       "script": [
+        "export TORCH_CUDA_ARCH_LIST=\"${CF_TORCH_CUDA_ARCH_LIST}\"",
         "python -m pip install . -vv --config-settings \"--build-option=--cpp_ext\" --config-settings \"--build-option=--cuda_ext\""
       ],
-      "script_env": [
-        "TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX"
-      ],
-      "string": "cuda129py314h1234567_6"
+      "string": "cuda130py314h1234567_7"
     },
     "extra": {
       "recipe-maintainers": [
@@ -91,6 +92,9 @@
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "patches/0001-honor-TORCH_CUDA_ARCH_LIST-in-fused_weight_gradient_mlp.patch"
+      ],
       "sha256": "29f02e07327ab65fcff587a4097fb9d24fe73b0a0369c81126672fe36e4bd82e",
       "url": "https://github.com/NVIDIA/apex/archive/refs/tags/25.04.tar.gz"
     },
@@ -146,7 +150,7 @@
       "elements": []
     }
   },
-  "meta_yaml": {
+  "linux_aarch64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/NVIDIA/apex",
       "doc_url": "https://nvidia.github.io/apex/",
@@ -157,14 +161,12 @@
       "summary": "a Pytorch extension with NVIDIA-maintained utilities to streamline mixed precision and distributed training."
     },
     "build": {
-      "number": "6",
+      "number": "7",
       "script": [
+        "export TORCH_CUDA_ARCH_LIST=\"${CF_TORCH_CUDA_ARCH_LIST}\"",
         "python -m pip install . -vv --config-settings \"--build-option=--cpp_ext\" --config-settings \"--build-option=--cuda_ext\""
       ],
-      "script_env": [
-        "TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX"
-      ],
-      "string": "cuda129py314h1234567_6"
+      "string": "cuda130py314h1234567_7"
     },
     "extra": {
       "recipe-maintainers": [
@@ -214,6 +216,133 @@
     },
     "schema_version": 0,
     "source": {
+      "patches": [
+        "patches/0001-honor-TORCH_CUDA_ARCH_LIST-in-fused_weight_gradient_mlp.patch"
+      ],
+      "sha256": "29f02e07327ab65fcff587a4097fb9d24fe73b0a0369c81126672fe36e4bd82e",
+      "url": "https://github.com/NVIDIA/apex/archive/refs/tags/25.04.tar.gz"
+    },
+    "test": {
+      "imports": [
+        "apex",
+        "apex.amp",
+        "apex.parallel",
+        "apex.optimizers",
+        "apex.normalization.fused_layer_norm"
+      ]
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cuda-profiler-api",
+        "cuda_compiler_stub",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libcublas-dev",
+        "libcusolver-dev",
+        "libcusparse-dev",
+        "packaging",
+        "pip",
+        "python",
+        "pytorch",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "cxxfilt",
+        "numpy",
+        "packaging",
+        "pytest",
+        "python",
+        "pyyaml",
+        "tqdm"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/NVIDIA/apex",
+      "doc_url": "https://nvidia.github.io/apex/",
+      "home": "https://nvidia.github.io/apex/",
+      "license": "BSD-3-Clause",
+      "license_family": "BSD",
+      "license_file": "LICENSE",
+      "summary": "a Pytorch extension with NVIDIA-maintained utilities to streamline mixed precision and distributed training."
+    },
+    "build": {
+      "number": "7",
+      "script": [
+        "export TORCH_CUDA_ARCH_LIST=\"${CF_TORCH_CUDA_ARCH_LIST}\"",
+        "python -m pip install . -vv --config-settings \"--build-option=--cpp_ext\" --config-settings \"--build-option=--cuda_ext\""
+      ],
+      "string": "cuda130py314h1234567_7"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "h-vetinari",
+        "oblute",
+        "benhuff",
+        "jakirkham",
+        "rluria14"
+      ]
+    },
+    "package": {
+      "name": "nvidia-apex",
+      "version": "25.04"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "cuda_compiler_stub",
+        "cuda-profiler-api",
+        "ninja"
+      ],
+      "host": [
+        "python",
+        "pip",
+        "setuptools",
+        "packaging",
+        "pytorch",
+        "pytorch * cuda*",
+        "libcublas-dev",
+        "libcusolver-dev",
+        "libcusparse-dev"
+      ],
+      "run": [
+        "python",
+        "cxxfilt",
+        "tqdm",
+        "numpy",
+        "pyyaml",
+        "pytest",
+        "packaging"
+      ],
+      "run_constrained": [
+        "pytorch * cuda*"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "patches": [
+        "patches/0001-honor-TORCH_CUDA_ARCH_LIST-in-fused_weight_gradient_mlp.patch"
+      ],
       "sha256": "29f02e07327ab65fcff587a4097fb9d24fe73b0a0369c81126672fe36e4bd82e",
       "url": "https://github.com/NVIDIA/apex/archive/refs/tags/25.04.tar.gz"
     },
@@ -236,12 +365,13 @@
   },
   "parsing_error": false,
   "platforms": [
-    "linux_64"
+    "linux_64",
+    "linux_aarch64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/nvidia-apex.json"
   },
-  "raw_meta_yaml": "{% set version = \"25.04\" %}\n\npackage:\n  name: nvidia-apex\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/NVIDIA/apex/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 29f02e07327ab65fcff587a4097fb9d24fe73b0a0369c81126672fe36e4bd82e\n\nbuild:\n  number: 6\n  skip: true  # [win or osx or cuda_compiler_version == \"None\"]\n  string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n  script_env:\n    - TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX  # [cuda_compiler_version != \"None\"]\n  script:\n    - python -m pip install . -vv --config-settings \"--build-option=--cpp_ext\" --config-settings \"--build-option=--cuda_ext\"\n\nrequirements:\n  build:\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('cuda') }}\n    - cuda-profiler-api\n    # From the repo: We recommend installing Ninja to make compilation faster.\n    - ninja\n    - libcublas-dev                                  # [build_platform != target_platform]\n    - libcusolver-dev                                # [build_platform != target_platform]\n    - libcusparse-dev                                # [build_platform != target_platform]\n  host:\n    - python\n    - pip\n    - setuptools\n    - packaging\n    - pytorch\n    - pytorch * cuda*\n    - libcublas-dev\n    - libcusolver-dev\n    - libcusparse-dev\n  run:\n    - python\n    - cxxfilt\n    - tqdm\n    - numpy\n    - pyyaml\n    - pytest\n    - packaging\n  run_constrained:\n    - pytorch * cuda*\n\ntest:\n  imports:\n    - apex\n    - apex.amp\n    - apex.parallel\n    - apex.optimizers\n    - apex.normalization.fused_layer_norm\n\nabout:\n  home: \"https://nvidia.github.io/apex/\"\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: \"a Pytorch extension with NVIDIA-maintained utilities to streamline mixed precision and distributed training.\"\n  doc_url: \"https://nvidia.github.io/apex/\"\n  dev_url: \"https://github.com/NVIDIA/apex\"\n\nextra:\n  recipe-maintainers:\n    - h-vetinari\n    - oblute\n    - benhuff\n    - jakirkham\n    - rluria14\n",
+  "raw_meta_yaml": "{% set version = \"25.04\" %}\n\npackage:\n  name: nvidia-apex\n  version: \"{{ version }}\"\n\nsource:\n  url: https://github.com/NVIDIA/apex/archive/refs/tags/{{ version }}.tar.gz\n  sha256: 29f02e07327ab65fcff587a4097fb9d24fe73b0a0369c81126672fe36e4bd82e\n  patches:\n    - patches/0001-honor-TORCH_CUDA_ARCH_LIST-in-fused_weight_gradient_mlp.patch\n\nbuild:\n  number: 7\n  skip: true  # [win or osx or cuda_compiler_version == \"None\"]\n  string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}\n  script:\n    - export TORCH_CUDA_ARCH_LIST=\"${CF_TORCH_CUDA_ARCH_LIST}\"\n    - python -m pip install . -vv --config-settings \"--build-option=--cpp_ext\" --config-settings \"--build-option=--cuda_ext\"\n\nrequirements:\n  build:\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('c') }}\n    - {{ compiler('cxx') }}\n    - {{ compiler('cuda') }}\n    - cuda-profiler-api\n    # From the repo: We recommend installing Ninja to make compilation faster.\n    - ninja\n    - libcublas-dev                                  # [build_platform != target_platform]\n    - libcusolver-dev                                # [build_platform != target_platform]\n    - libcusparse-dev                                # [build_platform != target_platform]\n  host:\n    - python\n    - pip\n    - setuptools\n    - packaging\n    - pytorch\n    - pytorch * cuda*\n    - libcublas-dev\n    - libcusolver-dev\n    - libcusparse-dev\n  run:\n    - python\n    - cxxfilt\n    - tqdm\n    - numpy\n    - pyyaml\n    - pytest\n    - packaging\n  run_constrained:\n    - pytorch * cuda*\n\ntest:\n  imports:\n    - apex\n    - apex.amp\n    - apex.parallel\n    - apex.optimizers\n    - apex.normalization.fused_layer_norm\n\nabout:\n  home: \"https://nvidia.github.io/apex/\"\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: \"a Pytorch extension with NVIDIA-maintained utilities to streamline mixed precision and distributed training.\"\n  doc_url: \"https://nvidia.github.io/apex/\"\n  dev_url: \"https://github.com/NVIDIA/apex\"\n\nextra:\n  recipe-maintainers:\n    - h-vetinari\n    - oblute\n    - benhuff\n    - jakirkham\n    - rluria14\n",
   "req": {
     "__set__": true,
     "elements": [
