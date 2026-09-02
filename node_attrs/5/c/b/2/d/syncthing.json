@@ -1,70 +1,310 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "channel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ngo_compiler:\n- go-nocgo\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
     },
+    "build_platform": {
+      "linux_ppc64le": "linux_64"
+    },
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "1a9f78bb0c13e50de74e5b6af51bae9b0e0d9b59",
-  "feedstock_hash_ts": 1785946207,
+  "feedstock_hash": "f6c9815cfd69a49e88d46cca58b5c89a40cd73f8",
+  "feedstock_hash_ts": 1788370693,
   "feedstock_name": "syncthing",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/syncthing/syncthing",
       "home": "https://github.com/syncthing/syncthing",
       "license": "MPL-2.0",
+      "license_family": "MPL-2.0",
       "license_file": "LICENSE",
       "summary": "Open Source Continuous File Synchronization"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "go run build.go -version v2.1.3 -no-upgrade install",
-        "mkdir -p $PREFIX/bin",
-        "mv bin/* $PREFIX/bin"
+        "go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp",
+        "go run build.go -version v${{ version }} -no-upgrade build",
+        "install -D -m0755 -t \"$PREFIX/bin\" syncthing"
       ]
     },
     "extra": {
       "recipe-maintainers": [
-        "tao-j"
+        "tao-j",
+        "XhstormR"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      }
+    ],
     "package": {
       "name": "syncthing",
       "version": "2.1.3"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub"
+        "go-licenses",
+        "go-cgo_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "f34bc1b3219e02ac1eca0b1446f582af8fe13f789da5f8c679ba9cac0396bf81",
-      "url": "https://github.com/syncthing/syncthing/releases/download/v2.1.3/syncthing-source-v2.1.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "which syncthing",
-        "syncthing --help"
-      ]
+      "sha256": "177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117",
+      "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz"
     }
   },
   "linux_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "go_compiler_stub"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "go-cgo_compiler_stub",
+        "go-licenses"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/syncthing/syncthing",
+      "home": "https://github.com/syncthing/syncthing",
+      "license": "MPL-2.0",
+      "license_family": "MPL-2.0",
+      "license_file": "LICENSE",
+      "summary": "Open Source Continuous File Synchronization"
+    },
+    "build": {
+      "number": "1",
+      "script": [
+        "go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp",
+        "go run build.go -version v${{ version }} -no-upgrade build",
+        "install -D -m0755 -t \"$PREFIX/bin\" syncthing"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "tao-j",
+        "XhstormR"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      }
+    ],
+    "package": {
+      "name": "syncthing",
+      "version": "2.1.3"
+    },
+    "requirements": {
+      "build": [
+        "go-licenses",
+        "go-cgo_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117",
+      "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "go-cgo_compiler_stub",
+        "go-licenses"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "linux_ppc64le_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/syncthing/syncthing",
+      "home": "https://github.com/syncthing/syncthing",
+      "license": "MPL-2.0",
+      "license_family": "MPL-2.0",
+      "license_file": "LICENSE",
+      "summary": "Open Source Continuous File Synchronization"
+    },
+    "build": {
+      "number": "1",
+      "script": [
+        "go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp",
+        "go run build.go -version v${{ version }} -no-upgrade build",
+        "install -D -m0755 -t \"$PREFIX/bin\" syncthing"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "tao-j",
+        "XhstormR"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      }
+    ],
+    "package": {
+      "name": "syncthing",
+      "version": "2.1.3"
+    },
+    "requirements": {
+      "build": [
+        "go-licenses",
+        "go-cgo_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117",
+      "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz"
+    }
+  },
+  "linux_ppc64le_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "go-cgo_compiler_stub",
+        "go-licenses"
       ]
     },
     "host": {
@@ -82,95 +322,425 @@
   },
   "meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/syncthing/syncthing",
       "home": "https://github.com/syncthing/syncthing",
       "license": "MPL-2.0",
+      "license_family": "MPL-2.0",
       "license_file": "LICENSE",
       "summary": "Open Source Continuous File Synchronization"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "go run build.go -version v2.1.3 -no-upgrade install",
-        "mkdir -p $PREFIX/bin",
-        "mv bin/* $PREFIX/bin",
-        "mkdir %LIBRARY_BIN%",
-        "move bin\\* %LIBRARY_BIN%\\"
+        "go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp",
+        "go run build.go -version v${{ version }} -no-upgrade build",
+        "install -D -m0755 -t \"$PREFIX/bin\" syncthing",
+        "move syncthing.exe %LIBRARY_BIN%\\"
       ]
     },
     "extra": {
       "recipe-maintainers": [
-        "tao-j"
+        "tao-j",
+        "XhstormR"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      },
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      },
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      },
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "uutils-coreutils"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      },
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "uutils-coreutils"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      },
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "m2w64_c_compiler_stub",
+            "m2w64_c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      }
+    ],
     "package": {
       "name": "syncthing",
       "version": "2.1.3"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub"
+        "go-licenses",
+        "go-cgo_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "uutils-coreutils",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "f34bc1b3219e02ac1eca0b1446f582af8fe13f789da5f8c679ba9cac0396bf81",
-      "url": "https://github.com/syncthing/syncthing/releases/download/v2.1.3/syncthing-source-v2.1.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "which syncthing",
-        "syncthing --help",
-        "where syncthing"
-      ]
+      "sha256": "177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117",
+      "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz"
     }
   },
   "name": "syncthing",
   "osx_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/syncthing/syncthing",
       "home": "https://github.com/syncthing/syncthing",
       "license": "MPL-2.0",
+      "license_family": "MPL-2.0",
       "license_file": "LICENSE",
       "summary": "Open Source Continuous File Synchronization"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "go run build.go -version v2.1.3 -no-upgrade install",
-        "mkdir -p $PREFIX/bin",
-        "mv bin/* $PREFIX/bin"
+        "go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp",
+        "go run build.go -version v${{ version }} -no-upgrade build",
+        "install -D -m0755 -t \"$PREFIX/bin\" syncthing"
       ]
     },
     "extra": {
       "recipe-maintainers": [
-        "tao-j"
+        "tao-j",
+        "XhstormR"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "uutils-coreutils"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      }
+    ],
     "package": {
       "name": "syncthing",
       "version": "2.1.3"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub"
+        "go-licenses",
+        "go-cgo_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "uutils-coreutils"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "f34bc1b3219e02ac1eca0b1446f582af8fe13f789da5f8c679ba9cac0396bf81",
-      "url": "https://github.com/syncthing/syncthing/releases/download/v2.1.3/syncthing-source-v2.1.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "which syncthing",
-        "syncthing --help"
-      ]
+      "sha256": "177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117",
+      "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz"
     }
   },
   "osx_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "go_compiler_stub"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "go-cgo_compiler_stub",
+        "go-licenses",
+        "uutils-coreutils"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/syncthing/syncthing",
+      "home": "https://github.com/syncthing/syncthing",
+      "license": "MPL-2.0",
+      "license_family": "MPL-2.0",
+      "license_file": "LICENSE",
+      "summary": "Open Source Continuous File Synchronization"
+    },
+    "build": {
+      "number": "1",
+      "script": [
+        "go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp",
+        "go run build.go -version v${{ version }} -no-upgrade build",
+        "install -D -m0755 -t \"$PREFIX/bin\" syncthing"
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "tao-j",
+        "XhstormR"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "uutils-coreutils"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      }
+    ],
+    "package": {
+      "name": "syncthing",
+      "version": "2.1.3"
+    },
+    "requirements": {
+      "build": [
+        "go-licenses",
+        "go-cgo_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "uutils-coreutils"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117",
+      "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "go-cgo_compiler_stub",
+        "go-licenses",
+        "uutils-coreutils"
       ]
     },
     "host": {
@@ -195,33 +765,54 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
+    "linux_ppc64le",
     "osx_64",
+    "osx_arm64",
     "win_64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/syncthing.json"
   },
-  "raw_meta_yaml": "{% set name = \"syncthing\" %}\n{% set version = \"2.1.3\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/{{ name }}/{{ name }}/releases/download/v{{ version }}/{{ name }}-source-v{{ version }}.tar.gz\n  sha256: f34bc1b3219e02ac1eca0b1446f582af8fe13f789da5f8c679ba9cac0396bf81\n\nbuild:\n  number: 0\n  script:\n    - go run build.go -version v{{ version }} -no-upgrade install\n    - mkdir -p $PREFIX/bin  # [not win]\n    - mv bin/* $PREFIX/bin  # [not win]\n    - mkdir %LIBRARY_BIN%        # [win]\n    - move bin\\* %LIBRARY_BIN%\\  # [win]\n\nrequirements:\n  build:\n    - {{ compiler('go') }}\n\ntest:\n  commands:\n    - which syncthing  # [not win]\n    - where syncthing  # [win]\n    - syncthing --help\n\nabout:\n  home: https://github.com/syncthing/syncthing\n  license: MPL-2.0\n  summary: Open Source Continuous File Synchronization\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - tao-j\n",
+  "raw_meta_yaml": "context:\n  version: \"2.1.3\"\n\npackage:\n  name: syncthing\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/syncthing/syncthing/archive/v${{ version }}.tar.gz\n  sha256: 177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117\n\nbuild:\n  number: 1\n  script:\n    - go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp\n    - go run build.go -version v${{ version }} -no-upgrade build\n    - if: unix\n      then: install -D -m0755 -t \"$PREFIX/bin\" syncthing\n      else: move syncthing.exe %LIBRARY_BIN%\\\n\nrequirements:\n  build:\n    - go-licenses\n    - ${{ compiler(\"go-cgo\") }}\n    - if: unix\n      then:\n        - ${{ compiler(\"c\") }}\n        - ${{ stdlib(\"c\") }}\n      else:\n        - ${{ compiler(\"m2w64_c\") }}\n        - ${{ stdlib(\"m2w64_c\") }}\n    - if: osx\n      then:\n        - uutils-coreutils\n\ntests:\n  - script:\n      - syncthing --version\n      - syncthing --help\n  - package_contents:\n      strict: true\n      bin:\n        - syncthing\n\nabout:\n  homepage: https://github.com/syncthing/syncthing\n  repository: https://github.com/syncthing/syncthing\n  summary: Open Source Continuous File Synchronization\n  license: MPL-2.0\n  license_file:\n    - LICENSE\n    - library_licenses/\n\nextra:\n  recipe-maintainers:\n    - tao-j\n    - XhstormR\n",
   "req": {
     "__set__": true,
     "elements": [
-      "go_compiler_stub"
+      "c_compiler_stub",
+      "c_stdlib_stub",
+      "go-cgo_compiler_stub",
+      "go-licenses",
+      "m2w64_c_compiler_stub",
+      "m2w64_c_stdlib_stub",
+      "uutils-coreutils"
     ]
   },
   "requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "go_compiler_stub"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "go-cgo_compiler_stub",
+        "go-licenses",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub",
+        "uutils-coreutils"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub"
+      ]
     },
     "run": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub"
+      ]
     },
     "test": {
       "__set__": true,
@@ -233,7 +824,13 @@
     "build": {
       "__set__": true,
       "elements": [
-        "go_compiler_stub"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "go-cgo_compiler_stub",
+        "go-licenses",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub",
+        "uutils-coreutils"
       ]
     },
     "host": {
@@ -249,57 +846,93 @@
       "elements": []
     }
   },
-  "url": "https://github.com/syncthing/syncthing/releases/download/v2.1.3/syncthing-source-v2.1.3.tar.gz",
+  "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz",
   "version": "2.1.3",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/syncthing.json"
   },
   "win_64_meta_yaml": {
     "about": {
+      "dev_url": "https://github.com/syncthing/syncthing",
       "home": "https://github.com/syncthing/syncthing",
       "license": "MPL-2.0",
+      "license_family": "MPL-2.0",
       "license_file": "LICENSE",
       "summary": "Open Source Continuous File Synchronization"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": [
-        "go run build.go -version v2.1.3 -no-upgrade install",
-        "mkdir %LIBRARY_BIN%",
-        "move bin\\* %LIBRARY_BIN%\\"
+        "go-licenses save ./cmd/syncthing --save_path library_licenses --ignore github.com/syncthing/ --ignore github.com/jackpal/go-nat-pmp",
+        "go run build.go -version v${{ version }} -no-upgrade build",
+        "move syncthing.exe %LIBRARY_BIN%\\"
       ]
     },
     "extra": {
       "recipe-maintainers": [
-        "tao-j"
+        "tao-j",
+        "XhstormR"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "syncthing",
+        "requirements": {
+          "build": [
+            "go-licenses",
+            "go-cgo_compiler_stub",
+            "m2w64_c_compiler_stub",
+            "m2w64_c_stdlib_stub"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "syncthing --version",
+              "syncthing --help"
+            ]
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "syncthing"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "2.1.3"
+      }
+    ],
     "package": {
       "name": "syncthing",
       "version": "2.1.3"
     },
     "requirements": {
       "build": [
-        "go_compiler_stub"
+        "go-licenses",
+        "go-cgo_compiler_stub",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
-      "sha256": "f34bc1b3219e02ac1eca0b1446f582af8fe13f789da5f8c679ba9cac0396bf81",
-      "url": "https://github.com/syncthing/syncthing/releases/download/v2.1.3/syncthing-source-v2.1.3.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "where syncthing",
-        "syncthing --help"
-      ]
+      "sha256": "177792c697f61fc25f02d8fc8923dfc57ebb35753bd92c8d32a73d553446d117",
+      "url": "https://github.com/syncthing/syncthing/archive/v2.1.3.tar.gz"
     }
   },
   "win_64_requirements": {
     "build": {
       "__set__": true,
       "elements": [
-        "go_compiler_stub"
+        "go-cgo_compiler_stub",
+        "go-licenses",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub"
       ]
     },
     "host": {
