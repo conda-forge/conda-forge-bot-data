@@ -1,10 +1,11 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncairo:\n- '1'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nexpat:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzlib:\n- '1'\n",
+  "ci_support_linux_64_python3.11.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\ncairo:\n- '1'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nexpat:\n- '2'\nfreetype:\n- '2'\nglib:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\ntarget_platform:\n- linux-64\nzlib:\n- '1'\n",
   "conda-forge.yml": {
     "build_platform": {
-      "osx_arm64": "osx_64"
+      "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -15,14 +16,13 @@
       "tooling_branch_name": "main"
     },
     "provider": {
-      "linux_aarch64": "azure",
-      "linux_ppc64le": "azure",
-      "win": "azure"
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "1d39175c4d6320809c0e6331511e8349dd42b298",
-  "feedstock_hash_ts": 1786388411,
+  "feedstock_hash": "9a735a659f542f627ac539d4296f53d772fcf162",
+  "feedstock_hash_ts": 1788361808,
   "feedstock_name": "pycairo",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,7 +38,7 @@
       "ignore_run_exports": [
         "libglib"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -55,7 +55,9 @@
         "meson >=0.62",
         "pkg-config",
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "python",
+        "cross-python_linux-riscv64"
       ],
       "host": [
         "cairo",
@@ -100,8 +102,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-riscv64",
         "meson",
-        "pkg-config"
+        "pkg-config",
+        "python"
       ]
     },
     "host": {
@@ -145,7 +149,7 @@
       "ignore_run_exports": [
         "libglib"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -252,7 +256,7 @@
       "ignore_run_exports": [
         "libglib"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -359,7 +363,7 @@
       "ignore_run_exports": [
         "libglib"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -376,7 +380,9 @@
         "meson >=0.62",
         "pkg-config",
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "python",
+        "cross-python_linux-riscv64"
       ],
       "host": [
         "cairo",
@@ -431,7 +437,7 @@
       "ignore_run_exports": [
         "libglib"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -538,7 +544,7 @@
       "ignore_run_exports": [
         "libglib"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
@@ -650,13 +656,14 @@
   "pr_info": {
     "__lazy_json__": "pr_info/pycairo.json"
   },
-  "raw_meta_yaml": "{% set name = \"pycairo\" %}\n{% set version = \"1.29.1\" %}\n{% set sha256 = \"4fbd26b4af24c9787d84cf5448e34eb8dca064b732479aaecd03109520eebd5f\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/pygobject/pycairo/releases/download/v{{ version }}/{{ name }}-{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n  patches:\n    - typing-test-workaround.patch\n\nbuild:\n  number: 0\n  detect_binary_files_with_prefix: true\n  ignore_run_exports:\n    - libglib\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - meson >=0.62\n    - pkg-config\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n  host:\n    - cairo\n    - expat  # for pkg-config files\n    - flake8  # for testing during the build\n    - freetype  # for pkg-config files\n    - glib\n    - pytest  # for testing during the build\n    - python\n    - setuptools\n    - xorg-xorgproto  # for pkg-config files\n    - zlib  # for pkg-config files\n  run:\n    - python\n\ntest:\n  imports:\n    - cairo\n  requires:\n    - pkg-config\n  commands:\n    # verify the pkgconfig files get installed\n    - test -f $PREFIX/lib/pkgconfig/py3cairo.pc  # [unix]\n    - if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\py3cairo.pc exit 1  # [win]\n\n    # verify that the header can be located through pkg-config\n    - test -f `pkg-config --variable=includedir --dont-define-prefix py3cairo`/pycairo/py3cairo.h  # [unix]\n    - for /f \"usebackq tokens=*\" %%a in (`pkg-config --variable=includedir --dont-define-prefix py3cairo`) do if not exist \"%%a/pycairo/py3cairo.h\" exit 1  # [win]\n\nabout:\n  home: http://cairographics.org/pycairo/\n  license: LGPL-2.1-only OR MPL-1.1\n  license_file: COPYING\n  summary: Python bindings for the Cairo graphics library.\n  dev_url: https://github.com/pygobject/pycairo/\n\nextra:\n  recipe-maintainers:\n    - pkgw\n    - ryanvolz\n",
+  "raw_meta_yaml": "{% set name = \"pycairo\" %}\n{% set version = \"1.29.1\" %}\n{% set sha256 = \"4fbd26b4af24c9787d84cf5448e34eb8dca064b732479aaecd03109520eebd5f\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  url: https://github.com/pygobject/pycairo/releases/download/v{{ version }}/{{ name }}-{{ version }}.tar.gz\n  sha256: {{ sha256 }}\n  patches:\n    - typing-test-workaround.patch\n\nbuild:\n  number: 1\n  detect_binary_files_with_prefix: true\n  ignore_run_exports:\n    - libglib\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - meson >=0.62\n    - pkg-config\n    - {{ compiler(\"c\") }}\n    - {{ stdlib(\"c\") }}\n  host:\n    - cairo\n    - expat  # for pkg-config files\n    - flake8  # for testing during the build\n    - freetype  # for pkg-config files\n    - glib\n    - pytest  # for testing during the build\n    - python\n    - setuptools\n    - xorg-xorgproto  # for pkg-config files\n    - zlib  # for pkg-config files\n  run:\n    - python\n\ntest:\n  imports:\n    - cairo\n  requires:\n    - pkg-config\n  commands:\n    # verify the pkgconfig files get installed\n    - test -f $PREFIX/lib/pkgconfig/py3cairo.pc  # [unix]\n    - if not exist %LIBRARY_LIB%\\\\pkgconfig\\\\py3cairo.pc exit 1  # [win]\n\n    # verify that the header can be located through pkg-config\n    - test -f `pkg-config --variable=includedir --dont-define-prefix py3cairo`/pycairo/py3cairo.h  # [unix]\n    - for /f \"usebackq tokens=*\" %%a in (`pkg-config --variable=includedir --dont-define-prefix py3cairo`) do if not exist \"%%a/pycairo/py3cairo.h\" exit 1  # [win]\n\nabout:\n  home: http://cairographics.org/pycairo/\n  license: LGPL-2.1-only OR MPL-1.1\n  license_file: COPYING\n  summary: Python bindings for the Cairo graphics library.\n  dev_url: https://github.com/pygobject/pycairo/\n\nextra:\n  recipe-maintainers:\n    - pkgw\n    - ryanvolz\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
       "cairo",
+      "cross-python_linux-riscv64",
       "expat",
       "flake8",
       "freetype",
@@ -676,8 +683,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-riscv64",
         "meson",
-        "pkg-config"
+        "pkg-config",
+        "python"
       ]
     },
     "host": {
@@ -719,8 +728,10 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python_linux-riscv64",
         "meson >=0.62",
-        "pkg-config"
+        "pkg-config",
+        "python"
       ]
     },
     "host": {
@@ -769,7 +780,7 @@
       "ignore_run_exports": [
         "libglib"
       ],
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
