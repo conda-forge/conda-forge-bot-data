@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_build_modecppc_stdlib_version2.17cuda_compiler_version12.9.yaml": "build_mode:\n- cpp\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
+  "ci_support_linux_64_build_modecppc_compiler_version14c_stdlib_version2.17cuda_compiler_version12.9cxx_compiler_version14.yaml": "build_mode:\n- cpp\nc_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
@@ -26,8 +26,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ddd8af7c342c8f2baa868ccc66cdd7305a0764bd",
-  "feedstock_hash_ts": 1786389521,
+  "feedstock_hash": "85d2f0e88942cd58f55d58d0267bde6df75a5318",
+  "feedstock_hash_ts": 1788455123,
   "feedstock_name": "drjit-cpp",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -41,7 +41,7 @@
       "summary": "Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "drjit-cpp"
@@ -53,6 +53,7 @@
       }
     },
     "extra": {
+      "feedstock-name": "drjit-cpp",
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
@@ -247,79 +248,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "cuda-cudart",
-            "libgcc",
-            "libstdcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cuda_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja"
-          ],
-          "host": [
-            "cuda-version ==12.9",
-            "cuda-toolkit",
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -368,7 +297,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -391,7 +323,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -440,7 +372,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -463,7 +398,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -512,7 +447,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -532,75 +470,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "libgcc",
-            "libstdcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja"
-          ],
-          "host": [
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -648,7 +518,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -668,7 +541,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -716,7 +589,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -736,7 +612,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -784,7 +660,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -807,79 +686,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "cuda-cudart",
-            "libgcc",
-            "libstdcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cuda_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja"
-          ],
-          "host": [
-            "cuda-version ==13.0",
-            "cuda-toolkit",
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -928,7 +735,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -951,7 +761,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -1000,7 +810,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -1026,7 +839,7 @@
         "llvmdev 21.*",
         "cuda-version ==13.0",
         "hatch-fancy-pypi-readme",
-        "nanobind >=2.6.0",
+        "nanobind ==2.14.0",
         "pip",
         "python",
         "scikit-build-core",
@@ -1038,7 +851,7 @@
         "python",
         "libgcc",
         "libstdcxx",
-        "python_abi * *_cp310",
+        "python_abi * *_cp311",
         "typing_extensions"
       ]
     },
@@ -1118,7 +931,7 @@
       "summary": "Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "drjit-cpp"
@@ -1130,6 +943,7 @@
       }
     },
     "extra": {
+      "feedstock-name": "drjit-cpp",
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
@@ -1252,7 +1066,7 @@
       "summary": "Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "drjit-cpp"
@@ -1264,6 +1078,7 @@
       }
     },
     "extra": {
+      "feedstock-name": "drjit-cpp",
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
@@ -1386,7 +1201,7 @@
       "summary": "Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "drjit-cpp"
@@ -1398,6 +1213,7 @@
       }
     },
     "extra": {
+      "feedstock-name": "drjit-cpp",
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
@@ -1592,79 +1408,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "cuda-cudart",
-            "libgcc",
-            "libstdcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cuda_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja"
-          ],
-          "host": [
-            "cuda-version ==12.9",
-            "cuda-toolkit",
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -1713,7 +1457,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -1736,7 +1483,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -1785,7 +1532,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -1808,7 +1558,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -1857,7 +1607,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -1877,75 +1630,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "libgcc",
-            "libstdcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja"
-          ],
-          "host": [
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -1993,7 +1678,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2013,7 +1701,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2061,7 +1749,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2081,7 +1772,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2129,7 +1820,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2152,79 +1846,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "cuda-cudart",
-            "libgcc",
-            "libstdcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "cuda_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja"
-          ],
-          "host": [
-            "cuda-version ==13.0",
-            "cuda-toolkit",
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2273,7 +1895,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2296,7 +1921,7 @@
             "cuda-toolkit",
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2345,7 +1970,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2521,76 +2149,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "libcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja",
-            "cross-python_osx-64",
-            "python"
-          ],
-          "host": [
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2637,7 +2196,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2659,7 +2221,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2706,7 +2268,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2728,7 +2293,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2775,7 +2340,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2851,76 +2419,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "libcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja",
-            "cross-python_osx-arm64",
-            "python"
-          ],
-          "host": [
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -2967,7 +2466,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -2989,7 +2491,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -3036,7 +2538,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -3058,7 +2563,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -3105,7 +2610,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -3211,7 +2719,7 @@
       "summary": "Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "drjit-cpp"
@@ -3223,6 +2731,7 @@
       }
     },
     "extra": {
+      "feedstock-name": "drjit-cpp",
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
@@ -3299,76 +2808,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "libcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja",
-            "cross-python_osx-64",
-            "python"
-          ],
-          "host": [
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -3415,7 +2855,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -3437,7 +2880,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -3484,7 +2927,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -3506,7 +2952,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -3553,7 +2999,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -3577,7 +3026,7 @@
       "host": [
         "llvmdev 21.*",
         "hatch-fancy-pypi-readme",
-        "nanobind >=2.6.0",
+        "nanobind ==2.14.0",
         "pip",
         "python",
         "scikit-build-core",
@@ -3587,7 +3036,7 @@
         "libllvm21",
         "python",
         "libcxx",
-        "python_abi * *_cp310",
+        "python_abi * *_cp311",
         "typing_extensions"
       ]
     },
@@ -3663,7 +3112,7 @@
       "summary": "Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "drjit-cpp"
@@ -3675,6 +3124,7 @@
       }
     },
     "extra": {
+      "feedstock-name": "drjit-cpp",
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
@@ -3751,76 +3201,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
-            "pip",
-            "python",
-            "scikit-build-core",
-            "typing_extensions"
-          ],
-          "run": [
-            "python",
-            "libcxx",
-            "libllvm21",
-            "python_abi * *_cp310",
-            "typing_extensions"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "drjit"
-              ]
-            }
-          },
-          {
-            "package_contents": {
-              "site_packages": [
-                "drjit/__init__.pyi",
-                "drjit/py.typed",
-                "drjit/llvm/__init__.pyi",
-                "drjit/auto/__init__.pyi"
-              ]
-            }
-          },
-          {
-            "requirements": {
-              "run": [
-                "pip",
-                "python"
-              ]
-            },
-            "script": "pip check"
-          },
-          {
-            "requirements": {
-              "run": [
-                "python"
-              ]
-            },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
-          }
-        ],
-        "version": "1.5.0"
-      },
-      {
-        "build": null,
-        "name": "drjit",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "c_stdlib_stub",
-            "cmake",
-            "make",
-            "ninja",
-            "cross-python_osx-arm64",
-            "python"
-          ],
-          "host": [
-            "llvmdev 21.*",
-            "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -3867,7 +3248,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -3889,7 +3273,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -3936,7 +3320,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -3958,7 +3345,7 @@
           "host": [
             "llvmdev 21.*",
             "hatch-fancy-pypi-readme",
-            "nanobind >=2.6.0",
+            "nanobind ==2.14.0",
             "pip",
             "python",
             "scikit-build-core",
@@ -4005,7 +3392,10 @@
                 "python"
               ]
             },
-            "script": "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            "script": [
+              "python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"",
+              "python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\""
+            ]
           }
         ],
         "version": "1.5.0"
@@ -4029,7 +3419,7 @@
       "host": [
         "llvmdev 21.*",
         "hatch-fancy-pypi-readme",
-        "nanobind >=2.6.0",
+        "nanobind ==2.14.0",
         "pip",
         "python",
         "scikit-build-core",
@@ -4039,7 +3429,7 @@
         "libllvm21",
         "python",
         "libcxx",
-        "python_abi * *_cp310",
+        "python_abi * *_cp311",
         "typing_extensions"
       ]
     },
@@ -4123,7 +3513,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/drjit-cpp.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: drjit-cpp\n  version: \"1.5.0\"\n  build_number: 0\n  llvm_version: \"21\"\n\nrecipe:\n  name: ${{ name|lower }}-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/mitsuba-renderer/drjit/archive/v${{ version }}.tar.gz\n    sha256: 83f29297ecb541bc6725ef2b453eaae98f44f12555e451e7396e925d12105d00\n    patches:\n      - patches/drjit/0001-Install-drjit-core-headers.patch\n      - patches/drjit/0002-Fix-install-destination-paths.patch\n      - patches/drjit/0003-Make-directory-before-creating-files.patch\n      - patches/drjit/0004-Fix-scatter-for-raw-pointer-target.patch\n  - url: https://github.com/mitsuba-renderer/drjit-core/archive/3b96411288b9938889045308654ba37d4ef24b71.zip\n    sha256: 66070434bec75c0be64b365acc73dde73fd53819403f7472a652536e3f25c784\n    target_directory: ext/drjit-core\n    patches:\n      - patches/drjit-core/set-coff-object-layer-flags-on-windows.patch\n  - url: https://github.com/mitsuba-renderer/nanothread/archive/a2097209e10852962c485ee46d84d28e7a63a1a1.zip\n    sha256: 5bd988bc713e516083f6e2e1c8414d5b8087c32ab5aa99a78c662acb327494b1\n    target_directory: ext/drjit-core/ext/nanothread\n  - url: https://github.com/mitsuba-renderer/cmake-defaults/archive/d65442956cd78772ba26ba25dc552de22566b717.zip\n    sha256: 76fc76bc458bf51bd1f7d29f9088b224d93e8fbc8edf4d10767bf962fee48356\n    target_directory: ext/drjit-core/ext/nanothread/ext/cmake-defaults\n  - url: https://github.com/Tessil/robin-map/archive/f70fd39a960385ef0a963aef00b750e4740228c0.zip\n    sha256: eba811574adf28446422a4847053960eb86b06730f4e32db3d6da5d5332f38b9\n    target_directory: ext/drjit-core/ext/robin_map\n  - url: https://github.com/wjakob/nanobind/archive/86e5626728fc282637a6c338597120913dded1bb.zip\n    sha256: 92059b60d06cb7d18245ee58767fb9f899a966eb14bac9bcc5abf6e4674a03a7\n    target_directory: ext/nanobind\n  - url: https://github.com/Tessil/robin-map/archive/4ec1bf19c6a96125ea22062f38c2cf5b958e448e.zip\n    sha256: 78c97483a8993866074f06b25fd288cdb7b8ebd6c61c2f0c43b0e324fd56ce10\n    target_directory: ext/nanobind/ext/robin_map\n\nbuild:\n  number: ${{ build_number }}\n  skip:\n    - cuda_compiler_version != \"None\" and (ppc64le or aarch64)\n    - cuda_compiler_version != \"None\" and win\n\noutputs:\n  - package:\n      name: drjit-cpp\n    build:\n      string: ${{ \"cuda\" ~ (cuda_compiler_version | replace(\".\", \"\")) ~ \"_llvm\" ~ llvm_version ~ \"_\" ~ build_number if cuda_compiler_version != \"None\" else (\"cpu_nollvm_\" ~ build_number if target_platform == \"linux-aarch64\" or target_platform == \"linux-ppc64le\" else \"cpu_llvm\" ~ llvm_version ~ \"_\" ~ build_number) }}\n      skip:\n        - build_mode == \"python\"\n      script:\n        file: ${{ \"bld_cpp.bat\" if win else \"build_cpp.sh\" }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - if: unix\n          then: ninja\n      host:\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - cuda-version ==${{ cuda_compiler_version }}\n            - cuda-toolkit\n        - if: not (ppc64le or aarch64)\n          then: llvmdev ${{ llvm_version }}.*\n      run:\n        - if: cuda_compiler_version != \"None\"\n          then: cuda-cudart\n        # Dr.Jit's Windows LLVM backend loads LLVM-C.dll at runtime.\n        - if: win\n          then: libllvm-c${{ llvm_version }}\n        - if: not (win or ppc64le or aarch64)\n          then: libllvm${{ llvm_version }}\n      run_exports:\n        - ${{ pin_subpackage(\"drjit-cpp\", upper_bound=\"x.x\") }}\n    tests:\n      - files:\n          recipe:\n            - run_test_cpp.bat\n            - run_test_cpp.sh\n            - tests/\n        requirements:\n          run:\n            - ${{ compiler(\"c\") }}\n            - ${{ compiler(\"cxx\") }}\n            - ${{ stdlib(\"c\") }}\n            - cmake\n            - if: unix\n              then: ninja\n            # Simulate a downstream project that brings its own LLVM dev package.\n            - if: linux and x86_64 and cuda_compiler_version == \"None\"\n              then: llvmdev 20.*\n        script:\n          - if: unix\n            then:\n              - test -f \"${PREFIX}/include/drjit-core/macros.h\"\n              - test -f \"${PREFIX}/include/drjit/fwd.h\"\n              - test -f \"${PREFIX}/share/cmake/drjit/drjitConfig.cmake\"\n              - bash run_test_cpp.sh\n          - if: win\n            then:\n              - if not exist \"%PREFIX%\\\\Library\\\\include\\\\drjit-core\\\\macros.h\" exit 1\n              - if not exist \"%PREFIX%\\\\Library\\\\include\\\\drjit\\\\fwd.h\" exit 1\n              - if not exist \"%PREFIX%\\\\Library\\\\share\\\\cmake\\\\drjit\\\\drjitConfig.cmake\" exit 1\n              - call run_test_cpp.bat\n      - downstream: momentum\n\n  - package:\n      name: drjit\n    build:\n      skip:\n        - build_mode == \"cpp\"\n        - linux and not x86_64\n        - win\n        - match(python, \"<3.10\")\n        - match(python, \">=3.13\") and cuda_compiler_version == \"13.0\"\n        - match(python, \">=3.14\")\n      script:\n        file: ${{ \"bld_py.bat\" if win else \"build_py.sh\" }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - make\n        - if: unix\n          then: ninja\n        - if: build_platform != target_platform\n          then:\n            - cross-python_${{ target_platform }}\n            - python\n      host:\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - cuda-version ==${{ cuda_compiler_version }}\n            - cuda-toolkit\n        - llvmdev ${{ llvm_version }}.*\n        - hatch-fancy-pypi-readme\n        - nanobind >=2.6.0\n        - pip\n        - python\n        - scikit-build-core\n        - typing_extensions\n      run:\n        - ${{ pin_compatible(\"python\") }}\n        - if: cuda_compiler_version != \"None\"\n          then: cuda-cudart\n        - if: osx\n          then: libcxx\n        - if: linux\n          then:\n            - libgcc\n            - libstdcxx\n        - libllvm${{ llvm_version }}\n        - python\n        - python_abi * *_cp${{ python | version_to_buildstring }}\n        - typing_extensions\n    tests:\n      - python:\n          imports:\n            - drjit\n      - package_contents:\n          site_packages:\n            - drjit/__init__.pyi\n            - drjit/py.typed\n            - drjit/llvm/__init__.pyi\n            - drjit/auto/__init__.pyi\n      - requirements:\n          run:\n            - pip\n            - python\n        script:\n          - pip check\n      - requirements:\n          run:\n            - python\n        script:\n          - python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\"\n\nabout:\n  homepage: https://github.com/mitsuba-renderer/drjit\n  repository: https://github.com/mitsuba-renderer/drjit\n  summary: Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering\n  description: |\n    Dr.Jit is a just-in-time (JIT) compiler for ordinary and differentiable computation. It was\n    originally created as the numerical foundation of Mitsuba 3, a differentiable Monte Carlo\n    renderer. However, Dr.Jit is a general-purpose tool that can also help with various other\n    types of embarrassingly parallel computation.\n  license: BSD-3-Clause\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - jeongseok-meta\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: drjit-cpp\n  version: \"1.5.0\"\n  build_number: 1\n  llvm_version: \"21\"\n  accelerator_flavor: ${{ \"cuda\" if cuda_compiler_version != \"None\" else \"cpu\" }}\n  accelerator_build_prefix: ${{ accelerator_flavor ~ (cuda_compiler_version | replace(\".\", \"\")) if accelerator_flavor == \"cuda\" else accelerator_flavor }}\n\nrecipe:\n  name: ${{ name|lower }}-split\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/mitsuba-renderer/drjit/archive/v${{ version }}.tar.gz\n    sha256: 83f29297ecb541bc6725ef2b453eaae98f44f12555e451e7396e925d12105d00\n    patches:\n      - patches/drjit/0001-Install-drjit-core-headers.patch\n      - patches/drjit/0002-Fix-install-destination-paths.patch\n      - patches/drjit/0003-Make-directory-before-creating-files.patch\n      - patches/drjit/0004-Fix-scatter-for-raw-pointer-target.patch\n  - url: https://github.com/mitsuba-renderer/drjit-core/archive/3b96411288b9938889045308654ba37d4ef24b71.zip\n    sha256: 66070434bec75c0be64b365acc73dde73fd53819403f7472a652536e3f25c784\n    target_directory: ext/drjit-core\n    patches:\n      - patches/drjit-core/set-coff-object-layer-flags-on-windows.patch\n  - url: https://github.com/mitsuba-renderer/nanothread/archive/a2097209e10852962c485ee46d84d28e7a63a1a1.zip\n    sha256: 5bd988bc713e516083f6e2e1c8414d5b8087c32ab5aa99a78c662acb327494b1\n    target_directory: ext/drjit-core/ext/nanothread\n  - url: https://github.com/mitsuba-renderer/cmake-defaults/archive/d65442956cd78772ba26ba25dc552de22566b717.zip\n    sha256: 76fc76bc458bf51bd1f7d29f9088b224d93e8fbc8edf4d10767bf962fee48356\n    target_directory: ext/drjit-core/ext/nanothread/ext/cmake-defaults\n  - url: https://github.com/Tessil/robin-map/archive/f70fd39a960385ef0a963aef00b750e4740228c0.zip\n    sha256: eba811574adf28446422a4847053960eb86b06730f4e32db3d6da5d5332f38b9\n    target_directory: ext/drjit-core/ext/robin_map\n  - url: https://github.com/wjakob/nanobind/archive/86e5626728fc282637a6c338597120913dded1bb.zip\n    sha256: 92059b60d06cb7d18245ee58767fb9f899a966eb14bac9bcc5abf6e4674a03a7\n    target_directory: ext/nanobind\n  - url: https://github.com/Tessil/robin-map/archive/4ec1bf19c6a96125ea22062f38c2cf5b958e448e.zip\n    sha256: 78c97483a8993866074f06b25fd288cdb7b8ebd6c61c2f0c43b0e324fd56ce10\n    target_directory: ext/nanobind/ext/robin_map\n\nbuild:\n  number: ${{ build_number }}\n  skip:\n    - cuda_compiler_version != \"None\" and (ppc64le or aarch64)\n    - cuda_compiler_version != \"None\" and win\n\noutputs:\n  - package:\n      name: drjit-cpp\n    build:\n      string: ${{ \"cuda\" ~ (cuda_compiler_version | replace(\".\", \"\")) ~ \"_llvm\" ~ llvm_version ~ \"_\" ~ build_number if cuda_compiler_version != \"None\" else (\"cpu_nollvm_\" ~ build_number if target_platform == \"linux-aarch64\" or target_platform == \"linux-ppc64le\" else \"cpu_llvm\" ~ llvm_version ~ \"_\" ~ build_number) }}\n      skip:\n        - build_mode == \"python\"\n      script:\n        file: ${{ \"bld_cpp.bat\" if win else \"build_cpp.sh\" }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - if: unix\n          then: ninja\n      host:\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - cuda-version ==${{ cuda_compiler_version }}\n            - cuda-toolkit\n        - if: not (ppc64le or aarch64)\n          then: llvmdev ${{ llvm_version }}.*\n      run:\n        - if: cuda_compiler_version != \"None\"\n          then: cuda-cudart\n        # Dr.Jit's Windows LLVM backend loads LLVM-C.dll at runtime.\n        - if: win\n          then: libllvm-c${{ llvm_version }}\n        - if: not (win or ppc64le or aarch64)\n          then: libllvm${{ llvm_version }}\n      run_exports:\n        - ${{ pin_subpackage(\"drjit-cpp\", upper_bound=\"x.x\") }}\n    tests:\n      - files:\n          recipe:\n            - run_test_cpp.bat\n            - run_test_cpp.sh\n            - tests/\n        requirements:\n          run:\n            - ${{ compiler(\"c\") }}\n            - ${{ compiler(\"cxx\") }}\n            - ${{ stdlib(\"c\") }}\n            - cmake\n            - if: unix\n              then: ninja\n            # Simulate a downstream project that brings its own LLVM dev package.\n            - if: linux and x86_64 and cuda_compiler_version == \"None\"\n              then: llvmdev 20.*\n        script:\n          - if: unix\n            then:\n              - test -f \"${PREFIX}/include/drjit-core/macros.h\"\n              - test -f \"${PREFIX}/include/drjit/fwd.h\"\n              - test -f \"${PREFIX}/share/cmake/drjit/drjitConfig.cmake\"\n              - bash run_test_cpp.sh\n          - if: win\n            then:\n              - if not exist \"%PREFIX%\\\\Library\\\\include\\\\drjit-core\\\\macros.h\" exit 1\n              - if not exist \"%PREFIX%\\\\Library\\\\include\\\\drjit\\\\fwd.h\" exit 1\n              - if not exist \"%PREFIX%\\\\Library\\\\share\\\\cmake\\\\drjit\\\\drjitConfig.cmake\" exit 1\n              - call run_test_cpp.bat\n      - downstream: momentum\n\n  - package:\n      name: drjit\n    build:\n      string: ${{ accelerator_build_prefix ~ \"_py\" ~ (python | version_to_buildstring) ~ \"h\" ~ hash ~ \"_\" ~ build_number }}\n      variant:\n        # Prefer the broadly compatible CPU build unless a CUDA flavor is requested.\n        down_prioritize_variant: ${{ 1 if accelerator_flavor == \"cuda\" else 0 }}\n      skip:\n        - build_mode == \"cpp\"\n        - linux and not x86_64\n        - win\n        - match(python, \"<3.10\")\n        - match(python, \">=3.13\") and cuda_compiler_version == \"13.0\"\n        - match(python, \">=3.14\")\n      script:\n        file: ${{ \"bld_py.bat\" if win else \"build_py.sh\" }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - ${{ compiler(\"cuda\") }}\n        - ${{ stdlib(\"c\") }}\n        - cmake\n        - make\n        - if: unix\n          then: ninja\n        - if: build_platform != target_platform\n          then:\n            - cross-python_${{ target_platform }}\n            - python\n      host:\n        - if: cuda_compiler_version != \"None\"\n          then:\n            - cuda-version ==${{ cuda_compiler_version }}\n            - cuda-toolkit\n        - llvmdev ${{ llvm_version }}.*\n        - hatch-fancy-pypi-readme\n        # Match Dr.Jit 1.5.0's exact PEP 517 build requirement.\n        - nanobind ==2.14.0\n        - pip\n        - python\n        - scikit-build-core\n        - typing_extensions\n      run:\n        - ${{ pin_compatible(\"python\") }}\n        - if: cuda_compiler_version != \"None\"\n          then: cuda-cudart\n        - if: osx\n          then: libcxx\n        - if: linux\n          then:\n            - libgcc\n            - libstdcxx\n        - libllvm${{ llvm_version }}\n        - python\n        - python_abi * *_cp${{ python | version_to_buildstring }}\n        - typing_extensions\n    tests:\n      - python:\n          imports:\n            - drjit\n      - package_contents:\n          site_packages:\n            - drjit/__init__.pyi\n            - drjit/py.typed\n            - drjit/llvm/__init__.pyi\n            - drjit/auto/__init__.pyi\n      - requirements:\n          run:\n            - pip\n            - python\n        script:\n          - pip check\n      - requirements:\n          run:\n            - python\n        script:\n          - if: cuda_compiler_version != \"None\"\n            then: python -c \"import drjit as dr, drjit.cuda; assert hasattr(dr.cuda, 'Float')\"\n          - if: cuda_compiler_version == \"None\"\n            then: python -c \"import drjit as dr; assert not hasattr(dr, 'cuda')\"\n          - python -c \"import drjit as dr, drjit.llvm as llvm; x = llvm.Float([1, 2, 3]); y = x + 1; dr.eval(y); assert dr.all(y == [2, 3, 4])\"\n\nabout:\n  homepage: https://github.com/mitsuba-renderer/drjit\n  repository: https://github.com/mitsuba-renderer/drjit\n  summary: Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering\n  description: |\n    Dr.Jit is a just-in-time (JIT) compiler for ordinary and differentiable computation. It was\n    originally created as the numerical foundation of Mitsuba 3, a differentiable Monte Carlo\n    renderer. However, Dr.Jit is a general-purpose tool that can also help with various other\n    types of embarrassingly parallel computation.\n  license: BSD-3-Clause\n  license_file: LICENSE\n\nextra:\n  feedstock-name: drjit-cpp\n  recipe-maintainers:\n    - jeongseok-meta\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -4249,7 +3639,7 @@
         "cuda-version ==13.0",
         "hatch-fancy-pypi-readme",
         "llvmdev 21.*",
-        "nanobind >=2.6.0",
+        "nanobind ==2.14.0",
         "pip",
         "python",
         "scikit-build-core",
@@ -4266,7 +3656,6 @@
         "libllvm21",
         "libstdcxx",
         "python",
-        "python_abi * *_cp310",
         "python_abi * *_cp311",
         "python_abi * *_cp312",
         "python_abi * *_cp313",
@@ -4303,7 +3692,7 @@
       "summary": "Dr.Jit — A Just-In-Time-Compiler for Differentiable Rendering"
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "run_exports": {
         "weak": [
           "drjit-cpp"
@@ -4315,6 +3704,7 @@
       }
     },
     "extra": {
+      "feedstock-name": "drjit-cpp",
       "recipe-maintainers": [
         "jeongseok-meta"
       ]
