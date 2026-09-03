@@ -24,8 +24,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "d4f0643be99da270e680181eab5d6267cc903bba",
-  "feedstock_hash_ts": 1788468241,
+  "feedstock_hash": "c2e44f97c243193c72b5cc412b43a0687295895f",
+  "feedstock_hash_ts": 1788474411,
   "feedstock_name": "go-activation",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -459,6 +459,45 @@
               "env": {
                 "build_platform": "linux-64",
                 "cross_target_platform": "linux-aarch64"
+              },
+              "file": "run_test.sh",
+              "interpreter": "bash"
+            }
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo_win-arm64",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go 1.27.1.*",
+            "_go_select ==2.3.0 cgo"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "etc/conda/env_vars.d/go-cgo_win-arm64.json",
+                "etc/conda/test-files/**/*"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello_world.go"
+              ]
+            },
+            "script": {
+              "env": {
+                "build_platform": "linux-64",
+                "cross_target_platform": "win-arm64"
               },
               "file": "run_test.sh",
               "interpreter": "bash"
@@ -2756,6 +2795,45 @@
       },
       {
         "build": null,
+        "name": "go-cgo_win-arm64",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go 1.27.1.*",
+            "_go_select ==2.3.0 cgo"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "etc/conda/env_vars.d/go-cgo_win-arm64.json",
+                "etc/conda/test-files/**/*"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello_world.go"
+              ]
+            },
+            "script": {
+              "env": {
+                "build_platform": "linux-64",
+                "cross_target_platform": "win-arm64"
+              },
+              "file": "run_test.sh",
+              "interpreter": "bash"
+            }
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo_win-arm64",
         "requirements": {
           "build": [],
@@ -4800,6 +4878,45 @@
               "env": {
                 "build_platform": "linux-64",
                 "cross_target_platform": "win-64"
+              },
+              "file": "run_test.bat",
+              "interpreter": "cmd"
+            }
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo_win-arm64",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go 1.27.1.*",
+            "_go_select ==2.3.0 cgo"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "etc/conda/env_vars.d/go-cgo_win-arm64.json",
+                "etc/conda/test-files/**/*"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello_world.go"
+              ]
+            },
+            "script": {
+              "env": {
+                "build_platform": "linux-64",
+                "cross_target_platform": "win-arm64"
               },
               "file": "run_test.bat",
               "interpreter": "cmd"
@@ -5348,6 +5465,7 @@
       "go-cgo_osx-64",
       "go-cgo_osx-arm64",
       "go-cgo_win-64",
+      "go-cgo_win-arm64",
       "go-nocgo_linux-64",
       "go-nocgo_linux-aarch64",
       "go-nocgo_linux-ppc64le",
@@ -5370,7 +5488,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/go-activation.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.27.1\"\n\npackage:\n  name: go-${{ go_variant_str }}_${{ cross_target_platform }}\n  version: ${{ version }}\n\nsource:\n  # Add a source we don't need so that the bot issues PRs here automatically.\n  url: https://dl.google.com/go/go${{ version }}.src.tar.gz\n  sha256: 4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1\n\nbuild:\n  number: 1\n  skip:\n    - go_variant_str == \"cgo\" and cross_target_platform == \"win-arm64\"\n  script:\n    file: build\n    # Everything that depends on the variant is computed here and written into\n    # the etc/conda/env_vars.d JSON file by the build script.\n    env:\n      GOOS: ${{ GOOS }}\n      GOARCH: ${{ GOARCH }}\n      CGO_ENABLED: ${{ \"1\" if go_variant_str == \"cgo\" else \"0\" }}\n      # Go cannot internally link PIE for linux/riscv64, so -buildmode=pie there\n      # requires external (cgo) linking, which is unavailable with CGO_ENABLED=0.\n      # Every other nocgo target supports internal PIE linking and keeps it.\n      GOFLAGS: ${{ \"-modcacherw -trimpath\" if go_variant_str == \"nocgo\" and GOARCH == \"riscv64\" else \"-modcacherw -buildmode=pie -trimpath\" }}\n\nrequirements:\n  run:\n    - go ${{ version }}.*\n    - _go_select ==${{ go_variant_ver }} ${{ go_variant_str }}\n  run_exports:\n    strong:\n      - if: cross_target_platform == \"linux-64\" and go_variant_str == \"cgo\"\n        then: __glibc >=2.17\n    strong_constraints:\n      - if: cross_target_platform == \"osx-64\"\n        then: __osx >=10.12\n\ntests:\n  - package_contents:\n      files:\n        - etc/conda/env_vars.d/go-${{ go_variant_str }}_${{ cross_target_platform }}.json\n        - etc/conda/test-files/**/*\n      strict: true\n  - script:\n      file: ${{ \"run_test.sh\" if unix else \"run_test.bat\" }}\n      env:\n        build_platform: ${{ build_platform }}\n        cross_target_platform: ${{ cross_target_platform }}\n    files:\n      recipe:\n        - hello_world.go\n    requirements:\n      run:\n        # linux/riscv64 has no internal PIE linking, so -buildmode=pie falls back to\n        # external linking and needs a real cross compiler to provide $CC. This is\n        # named explicitly rather than via compiler('c'), which would resolve against\n        # target_platform (the build platform) instead of cross_target_platform.\n        - if: go_variant_str == \"cgo\" and cross_target_platform == \"linux-riscv64\"\n          then: gcc_linux-riscv64\n\nabout:\n  homepage: https://golang.org\n  license: BSD-3-Clause\n  license_file: LICENSE.txt\n  summary: The Go (${{ go_variant_str }}) compiler activation for conda-build.\n  description: |\n    This package enables the CONDA_GO_COMPILER environment variable.\n    This variable is used by conda-forge's patched GoLang compiler to\n    set conda-aware GOBIN and GOPATH default values. These default\n    values are ignored if GOBIN and GOPATH environment variables\n    are set independently by the user.\n\n    Futhermore, this package set the correct GOARCH and GOOS\n    environment variables to enable cross-compilation.\n  documentation: https://golang.org/doc\n  repository: https://go.googlesource.com/go\n\nextra:\n  feedstock-name: go-activation\n  recipe-maintainers:\n    - conda-forge/go\n",
+  "raw_meta_yaml": "context:\n  version: \"1.27.1\"\n\npackage:\n  name: go-${{ go_variant_str }}_${{ cross_target_platform }}\n  version: ${{ version }}\n\nsource:\n  # Add a source we don't need so that the bot issues PRs here automatically.\n  url: https://dl.google.com/go/go${{ version }}.src.tar.gz\n  sha256: 4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1\n\nbuild:\n  number: 1\n  script:\n    file: build\n    # Everything that depends on the variant is computed here and written into\n    # the etc/conda/env_vars.d JSON file by the build script.\n    env:\n      GOOS: ${{ GOOS }}\n      GOARCH: ${{ GOARCH }}\n      CGO_ENABLED: ${{ \"1\" if go_variant_str == \"cgo\" else \"0\" }}\n      # Go cannot internally link PIE for linux/riscv64, so -buildmode=pie there\n      # requires external (cgo) linking, which is unavailable with CGO_ENABLED=0.\n      # Every other nocgo target supports internal PIE linking and keeps it.\n      GOFLAGS: ${{ \"-modcacherw -trimpath\" if go_variant_str == \"nocgo\" and GOARCH == \"riscv64\" else \"-modcacherw -buildmode=pie -trimpath\" }}\n\nrequirements:\n  run:\n    - go ${{ version }}.*\n    - _go_select ==${{ go_variant_ver }} ${{ go_variant_str }}\n  run_exports:\n    strong:\n      - if: cross_target_platform == \"linux-64\" and go_variant_str == \"cgo\"\n        then: __glibc >=2.17\n    strong_constraints:\n      - if: cross_target_platform == \"osx-64\"\n        then: __osx >=10.12\n\ntests:\n  - package_contents:\n      files:\n        - etc/conda/env_vars.d/go-${{ go_variant_str }}_${{ cross_target_platform }}.json\n        - etc/conda/test-files/**/*\n      strict: true\n  - script:\n      file: ${{ \"run_test.sh\" if unix else \"run_test.bat\" }}\n      env:\n        build_platform: ${{ build_platform }}\n        cross_target_platform: ${{ cross_target_platform }}\n    files:\n      recipe:\n        - hello_world.go\n    requirements:\n      run:\n        # linux/riscv64 has no internal PIE linking, so -buildmode=pie falls back to\n        # external linking and needs a real cross compiler to provide $CC. This is\n        # named explicitly rather than via compiler('c'), which would resolve against\n        # target_platform (the build platform) instead of cross_target_platform.\n        - if: go_variant_str == \"cgo\" and cross_target_platform == \"linux-riscv64\"\n          then: gcc_linux-riscv64\n\nabout:\n  homepage: https://golang.org\n  license: BSD-3-Clause\n  license_file: LICENSE.txt\n  summary: The Go (${{ go_variant_str }}) compiler activation for conda-build.\n  description: |\n    This package enables the CONDA_GO_COMPILER environment variable.\n    This variable is used by conda-forge's patched GoLang compiler to\n    set conda-aware GOBIN and GOPATH default values. These default\n    values are ignored if GOBIN and GOPATH environment variables\n    are set independently by the user.\n\n    Futhermore, this package set the correct GOARCH and GOOS\n    environment variables to enable cross-compilation.\n  documentation: https://golang.org/doc\n  repository: https://go.googlesource.com/go\n\nextra:\n  feedstock-name: go-activation\n  recipe-maintainers:\n    - conda-forge/go\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -5535,6 +5653,45 @@
               "env": {
                 "build_platform": "linux-64",
                 "cross_target_platform": "win-64"
+              },
+              "file": "run_test.bat",
+              "interpreter": "cmd"
+            }
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo_win-arm64",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go 1.27.1.*",
+            "_go_select ==2.3.0 cgo"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "files": [
+                "etc/conda/env_vars.d/go-cgo_win-arm64.json",
+                "etc/conda/test-files/**/*"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "hello_world.go"
+              ]
+            },
+            "script": {
+              "env": {
+                "build_platform": "linux-64",
+                "cross_target_platform": "win-arm64"
               },
               "file": "run_test.bat",
               "interpreter": "cmd"
