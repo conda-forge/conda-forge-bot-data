@@ -25,7 +25,9 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
@@ -36,23 +38,31 @@
     },
     "test": "native"
   },
-  "feedstock_hash": "b7655e97abba5fb99397dcf04cf40672b11dcee9",
-  "feedstock_hash_ts": 1788366422,
+  "feedstock_hash": "ca73fdbf0a1f414f19221607baecd27cd600423f",
+  "feedstock_hash_ts": 1788443621,
   "feedstock_name": "go",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.\n",
+      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.",
       "dev_url": "https://github.com/golang/",
       "doc_url": "https://go.dev/doc",
       "home": "https://go.dev/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "go/LICENSE",
-      "summary": "The Go Programming Language (cgo)"
+      "summary": "The Go Programming Language"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "strong": [
+          "__glibc >=2.17"
+        ]
+      },
+      "script": {
+        "file": "cgo/build"
+      }
     },
     "extra": {
       "feedstock-name": "go",
@@ -68,93 +78,57 @@
     },
     "outputs": [
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "$RPATH/libc.so.6"
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
           ]
         },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": null
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__glibc >=2.17"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__glibc >=2.17"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -164,80 +138,86 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
             "c_compiler_stub"
           ]
-        }
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       }
     ],
     "package": {
-      "name": "go-cgo-split",
+      "name": "go",
       "version": "1.27.1"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445",
-        "url": "https://go.dev/dl/go1.27.1.linux-amd64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445",
-        "url": "https://go.dev/dl/go1.27.1.linux-amd64.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub"
+      ],
+      "run": [
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
+        "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
+        "patches/0003-Inherit-CGO_-environment-variables.patch",
+        "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
+        "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
+        "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
+        "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
+        "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
+        "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
+      ],
+      "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+      "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
+    }
   },
   "linux_64_requirements": {
     "build": {
@@ -270,17 +250,25 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.\n",
+      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.",
       "dev_url": "https://github.com/golang/",
       "doc_url": "https://go.dev/doc",
       "home": "https://go.dev/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "go/LICENSE",
-      "summary": "The Go Programming Language (cgo)"
+      "summary": "The Go Programming Language"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "strong": [
+          "__glibc >=2.17"
+        ]
+      },
+      "script": {
+        "file": "cgo/build"
+      }
     },
     "extra": {
       "feedstock-name": "go",
@@ -296,93 +284,57 @@
     },
     "outputs": [
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "$RPATH/libc.so.6"
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
           ]
         },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": null
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__glibc >=2.17"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__glibc >=2.17"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -392,80 +344,86 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
             "c_compiler_stub"
           ]
-        }
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       }
     ],
     "package": {
-      "name": "go-cgo-split",
+      "name": "go",
       "version": "1.27.1"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec",
-        "url": "https://go.dev/dl/go1.27.1.linux-arm64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec",
-        "url": "https://go.dev/dl/go1.27.1.linux-arm64.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub"
+      ],
+      "run": [
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
+        "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
+        "patches/0003-Inherit-CGO_-environment-variables.patch",
+        "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
+        "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
+        "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
+        "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
+        "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
+        "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
+      ],
+      "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+      "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
+    }
   },
   "linux_aarch64_requirements": {
     "build": {
@@ -498,17 +456,25 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
-      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.\n",
+      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.",
       "dev_url": "https://github.com/golang/",
       "doc_url": "https://go.dev/doc",
       "home": "https://go.dev/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "go/LICENSE",
-      "summary": "The Go Programming Language (cgo)"
+      "summary": "The Go Programming Language"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "strong": [
+          "__glibc >=2.17"
+        ]
+      },
+      "script": {
+        "file": "cgo/build"
+      }
     },
     "extra": {
       "feedstock-name": "go",
@@ -524,93 +490,57 @@
     },
     "outputs": [
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "$RPATH/libc.so.6"
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
           ]
         },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": null
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__glibc >=2.17"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__glibc >=2.17"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -620,76 +550,86 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
             "c_compiler_stub"
           ]
-        }
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       }
     ],
     "package": {
-      "name": "go-cgo-split",
+      "name": "go",
       "version": "1.27.1"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub"
+      ],
+      "run": [
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
+        "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
+        "patches/0003-Inherit-CGO_-environment-variables.patch",
+        "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
+        "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
+        "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
+        "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
+        "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
+        "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
+      ],
+      "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+      "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
+    }
   },
   "linux_ppc64le_requirements": {
     "build": {
@@ -722,17 +662,25 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.\n",
+      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.",
       "dev_url": "https://github.com/golang/",
       "doc_url": "https://go.dev/doc",
       "home": "https://go.dev/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "go/LICENSE",
-      "summary": "The Go Programming Language (cgo)"
+      "summary": "The Go Programming Language"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "strong": [
+          "__osx >=12"
+        ]
+      },
+      "script": {
+        "file": "cgo/build"
+      }
     },
     "extra": {
       "feedstock-name": "go",
@@ -748,93 +696,57 @@
     },
     "outputs": [
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "$RPATH/libc.so.6"
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
           ]
         },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": null
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__glibc >=2.17"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__glibc >=2.17"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -844,118 +756,105 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
-            "c_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
       },
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "$RPATH/libc.so.6"
-          ]
-        },
-        "name": "go-nocgo",
-        "requirements": {
-          "run": [
-            "go"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": null
-        },
+        "build": null,
         "name": "go-cgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go",
             "c_compiler_stub"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__glibc >=2.17"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-nocgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__glibc >=2.17"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -965,118 +864,105 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
-            "c_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
       },
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "$RPATH/libc.so.6"
-          ]
-        },
-        "name": "go-nocgo",
-        "requirements": {
-          "run": [
-            "go"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": null
-        },
+        "build": null,
         "name": "go-cgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go",
             "c_compiler_stub"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__glibc >=2.17"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-nocgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__glibc >=2.17"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -1086,122 +972,105 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
-            "c_compiler_stub"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
       },
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
-          ]
-        },
-        "name": "go-nocgo",
-        "requirements": {
-          "run": [
-            "go"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": [
-            "binutils"
-          ]
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
-          ]
-        },
+        "build": null,
         "name": "go-cgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go",
             "c_compiler_stub"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__osx >=12"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-nocgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__osx >=12"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -1211,123 +1080,105 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "binutils"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
       },
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
-          ]
-        },
-        "name": "go-nocgo",
-        "requirements": {
-          "run": [
-            "go"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": [
-            "binutils"
-          ]
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
-          ]
-        },
+        "build": null,
         "name": "go-cgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go",
             "c_compiler_stub"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__osx >=12"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-nocgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go"
+          ]
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__osx >=12"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -1337,126 +1188,101 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "binutils"
-          ]
-        }
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
       },
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "force_ignore_keys": [
-            "c_compiler",
-            "cxx_compiler",
-            "fortran_compiler"
-          ],
-          "missing_dso_whitelist": [
-            "$SYSROOT\\System32\\winmm.dll"
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
+            "c_compiler_stub"
           ]
         },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
+          ]
+        },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "${{ go_variant_str }}\\test.bat",
+              "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       },
       {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.bat",
-        "test": {
-          "commands": [
-            "nocgo/test.bat",
-            "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "force_ignore_keys": [
-            "c_compiler",
-            "cxx_compiler",
-            "fortran_compiler"
-          ],
-          "missing_dso_whitelist": [
-            "$SYSROOT\\System32\\winmm.dll"
-          ]
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "m2w64_c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
+        "build": null,
         "name": "go",
         "requirements": {
           "build": [
@@ -1465,300 +1291,113 @@
             "m2w64_cxx_compiler_stub",
             "m2w64_fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "m2w64_c_compiler_stub",
-            "m2w64_cxx_compiler_stub",
-            "m2w64_fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.bat",
-        "test": {
-          "commands": [
-            "cgo/test.bat",
-            "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "m2w64_c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "${{ go_variant_str }}\\test.bat",
+              "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
             "m2w64_c_compiler_stub"
           ]
-        }
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       }
     ],
     "package": {
-      "name": "go-cgo-split",
+      "name": "go",
       "version": "1.27.1"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445",
-        "url": "https://go.dev/dl/go1.27.1.linux-amd64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445",
-        "url": "https://go.dev/dl/go1.27.1.linux-amd64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec",
-        "url": "https://go.dev/dl/go1.27.1.linux-arm64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec",
-        "url": "https://go.dev/dl/go1.27.1.linux-arm64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "8f8f52c6649542cf027bbc9b9c68d1ec042f9f34808a40413f0b8b3f66f3caa4",
-        "url": "https://go.dev/dl/go1.27.1.darwin-amd64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "8f8f52c6649542cf027bbc9b9c68d1ec042f9f34808a40413f0b8b3f66f3caa4",
-        "url": "https://go.dev/dl/go1.27.1.darwin-amd64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
-        "url": "https://go.dev/dl/go1.27.1.darwin-arm64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
-        "url": "https://go.dev/dl/go1.27.1.darwin-arm64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d",
-        "url": "https://go.dev/dl/go1.27.1.windows-amd64.zip"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d",
-        "url": "https://go.dev/dl/go1.27.1.windows-amd64.zip"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub",
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub",
+        "m2w64_cxx_compiler_stub",
+        "m2w64_fortran_compiler_stub"
+      ],
+      "run": [
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
+        "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
+        "patches/0003-Inherit-CGO_-environment-variables.patch",
+        "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
+        "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
+        "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
+        "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
+        "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
+        "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
+      ],
+      "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+      "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
+    }
   },
-  "name": "go-cgo-split",
+  "name": "go",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.\n",
+      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.",
       "dev_url": "https://github.com/golang/",
       "doc_url": "https://go.dev/doc",
       "home": "https://go.dev/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "go/LICENSE",
-      "summary": "The Go Programming Language (cgo)"
+      "summary": "The Go Programming Language"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "strong": [
+          "__osx >=12"
+        ]
+      },
+      "script": {
+        "file": "cgo/build"
+      }
     },
     "extra": {
       "feedstock-name": "go",
@@ -1774,97 +1413,57 @@
     },
     "outputs": [
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
           ]
         },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": [
-            "binutils"
-          ]
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
-          ]
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__osx >=12"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__osx >=12"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -1874,81 +1473,86 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "binutils"
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
+            "c_compiler_stub"
           ]
-        }
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       }
     ],
     "package": {
-      "name": "go-cgo-split",
+      "name": "go",
       "version": "1.27.1"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "8f8f52c6649542cf027bbc9b9c68d1ec042f9f34808a40413f0b8b3f66f3caa4",
-        "url": "https://go.dev/dl/go1.27.1.darwin-amd64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "8f8f52c6649542cf027bbc9b9c68d1ec042f9f34808a40413f0b8b3f66f3caa4",
-        "url": "https://go.dev/dl/go1.27.1.darwin-amd64.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub"
+      ],
+      "run": [
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
+        "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
+        "patches/0003-Inherit-CGO_-environment-variables.patch",
+        "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
+        "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
+        "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
+        "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
+        "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
+        "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
+      ],
+      "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+      "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
+    }
   },
   "osx_64_requirements": {
     "build": {
@@ -1975,24 +1579,31 @@
     "test": {
       "__set__": true,
       "elements": [
-        "binutils",
         "c_compiler_stub"
       ]
     }
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.\n",
+      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.",
       "dev_url": "https://github.com/golang/",
       "doc_url": "https://go.dev/doc",
       "home": "https://go.dev/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "go/LICENSE",
-      "summary": "The Go Programming Language (cgo)"
+      "summary": "The Go Programming Language"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "run_exports": {
+        "strong": [
+          "__osx >=12"
+        ]
+      },
+      "script": {
+        "file": "cgo/build"
+      }
     },
     "extra": {
       "feedstock-name": "go",
@@ -2008,97 +1619,57 @@
     },
     "outputs": [
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
           ]
         },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x nocgo/test.sh",
-            "./nocgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": [
-            "binutils"
-          ]
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "missing_dso_whitelist": [
-            "/usr/lib/libSystem.B.dylib"
-          ]
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "run_exports": {
-            "strong": [
-              "__osx >=12"
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
             ]
           }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": {
+          "strong": [
+            "__osx >=12"
+          ],
+          "weak": []
         },
         "name": "go",
         "requirements": {
@@ -2108,81 +1679,86 @@
             "cxx_compiler_stub",
             "fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "c_compiler_stub",
-            "cxx_compiler_stub",
-            "fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.sh",
-        "test": {
-          "commands": [
-            "chmod +x cgo/test.sh",
-            "./cgo/test.sh",
-            "test \"$GOTOOLCHAIN\" = \"local\""
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
-            "c_compiler_stub",
-            "binutils"
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "./${{ go_variant_str }}/test.sh",
+              "test \"$GOTOOLCHAIN\" = \"local\""
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
+            "c_compiler_stub"
           ]
-        }
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       }
     ],
     "package": {
-      "name": "go-cgo-split",
+      "name": "go",
       "version": "1.27.1"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
-        "url": "https://go.dev/dl/go1.27.1.darwin-arm64.tar.gz"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12",
-        "url": "https://go.dev/dl/go1.27.1.darwin-arm64.tar.gz"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "fortran_compiler_stub"
+      ],
+      "run": [
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
+        "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
+        "patches/0003-Inherit-CGO_-environment-variables.patch",
+        "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
+        "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
+        "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
+        "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
+        "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
+        "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
+      ],
+      "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+      "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
+    }
   },
   "osx_arm64_requirements": {
     "build": {
@@ -2209,7 +1785,6 @@
     "test": {
       "__set__": true,
       "elements": [
-        "binutils",
         "c_compiler_stub"
       ]
     }
@@ -2234,7 +1809,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/go.json"
   },
-  "raw_meta_yaml": "{% set name = \"go\" %}\n{% set version = \"1.27.1\" %}\n\npackage:\n  name: {{ name }}-{{ go_variant_str }}-split\n  version: {{ version }}\n\nsource:\n  - folder: go\n    url: https://dl.google.com/{{ name }}/go{{ version }}.src.tar.gz\n    sha256: 4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1\n    patches:\n      # Please see patches/README.md for more details\n      - patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch\n      - patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch\n      - patches/0003-Inherit-CGO_-environment-variables.patch\n      - patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch\n      - patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch\n      - patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch\n      - patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch\n      - patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch\n      - patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch\n\n  # Update this with a release from https://go.dev/dl/\n  - folder: go-bootstrap\n    url: https://go.dev/dl/go{{ version }}.linux-amd64.tar.gz  # [build_platform == \"linux-64\"]\n    sha256: 63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445  # [build_platform == \"linux-64\"]\n\n    url: https://go.dev/dl/go{{ version }}.linux-arm64.tar.gz  # [build_platform == \"linux-aarch64\"]\n    sha256: 3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec  # [build_platform == \"linux-aarch64\"]\n\n    url: https://go.dev/dl/go{{ version }}.windows-amd64.zip  # [build_platform == \"win-64\"]\n    sha256: a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d  # [build_platform == \"win-64\"]\n\n    url: https://go.dev/dl/go{{ version }}.darwin-amd64.tar.gz  # [build_platform == \"osx-64\"]\n    sha256: 8f8f52c6649542cf027bbc9b9c68d1ec042f9f34808a40413f0b8b3f66f3caa4  # [build_platform == \"osx-64\"]\n\n    url: https://go.dev/dl/go{{ version }}.darwin-arm64.tar.gz  # [build_platform == \"osx-arm64\"]\n    sha256: ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12  # [build_platform == \"osx-arm64\"]\n\nbuild:\n  number: 1\n\noutputs:\n  - name: go-{{ go_variant_str }}\n    build:\n      binary_relocation: false\n      detect_binary_files_with_prefix: false\n      force_ignore_keys:   # [win]\n        - c_compiler        # [win]\n        - cxx_compiler      # [win]\n        - fortran_compiler  # [win]\n      # test data links to these DSOs\n      missing_dso_whitelist:\n        - $RPATH/libc.so.6             # [linux and not cgo]\n        - /usr/lib/libSystem.B.dylib   # [osx]\n        - $SYSROOT\\System32\\winmm.dll  # [win]\n    requirements:\n      run:\n        - {{ pin_subpackage(name, exact=true) }}\n        - {{ compiler('c') }}        # [unix and cgo]\n        - {{ compiler('m2w64_c') }}  # [win and cgo]\n    test:\n      commands:\n        - go help\n\n  - name: go\n    script: {{ go_variant_str }}/build.sh  # [unix]\n    script: {{ go_variant_str }}/build.bat  # [win]\n    build:\n      binary_relocation: false\n      detect_binary_files_with_prefix: false\n      run_exports:   # [unix and cgo]\n        strong:   # [unix and cgo]\n          - __glibc >={{ c_stdlib_version }}  # [linux and cgo]\n          - __osx >=12                        # [osx and cgo]\n    requirements:\n      build:\n        - {{ compiler('c') }}        # [unix and cgo]\n        - {{ stdlib(\"c\") }}          # [unix and cgo]\n        - {{ compiler('cxx') }}      # [unix and cgo]\n        - {{ compiler('fortran') }}  # [unix and cgo]\n\n        - {{ compiler('m2w64_c') }}        # [win and cgo]\n        - {{ stdlib(\"m2w64_c\") }}          # [win and cgo]\n        - {{ compiler('m2w64_cxx') }}      # [win and cgo]\n        - {{ compiler('m2w64_fortran') }}  # [win and cgo]\n      run:\n        - _go_select =={{ go_variant_ver }}={{ go_variant_str }}\n      run_constrained:\n        # TODO: Move to run section once conda/conda#9845 is fixed\n\n        - {{ pin_compatible(compiler('c')) }}        # [unix and cgo]\n        - {{ pin_compatible(compiler('cxx')) }}      # [unix and cgo]\n        - {{ pin_compatible(compiler('fortran')) }}  # [unix and cgo]\n\n        - {{ pin_compatible(compiler('m2w64_c')) }}        # [win and cgo]\n        - {{ pin_compatible(compiler('m2w64_cxx')) }}      # [win and cgo]\n        - {{ pin_compatible(compiler('m2w64_fortran')) }}  # [win and cgo]\n    test:\n      requires:\n        - {{ compiler('c') }}        # [unix and cgo]\n        - {{ compiler('m2w64_c') }}  # [win and cgo]\n        - binutils                   # [osx]\n      files:\n        - {{ go_variant_str }}\n      commands:\n        - chmod +x {{ go_variant_str }}/test.sh      # [unix]\n        - ./{{ go_variant_str }}/test.sh             # [unix]\n        - {{ go_variant_str }}/test.bat              # [win]\n        - test \"$GOTOOLCHAIN\" = \"local\"              # [unix]\n        - if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1  # [win]\n    about:\n      home: https://go.dev/\n      license: BSD-3-Clause\n      license_family: BSD\n      license_file: go/LICENSE\n      summary: The Go Programming Language\n\nabout:\n  home: https://go.dev/\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: go/LICENSE\n  summary: The Go Programming Language ({{ go_variant_str }})\n  description: |\n    Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\n    make it easy to write programs that get the most out of multicore and\n    networked machines, while its novel type system enables flexible and\n    modular program construction. Go compiles quickly to machine code yet has\n    the convenience of garbage collection and the power of run-time reflection.\n    It's a fast, statically typed, compiled language that feels like a\n    dynamically typed, interpreted language.\n  doc_url: https://go.dev/doc\n  dev_url: https://github.com/golang/\n\nextra:\n  feedstock-name: go\n  recipe-maintainers:\n    - pavelzw\n    - nehaljwani\n    - scopatz\n    - sodre\n    - stuarteberg\n    - xhochy\n    - hmaarrfk\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.27.1\"\n\nrecipe:\n  name: go-${{ go_variant_str }}-split\n  version: ${{ version }}\n\nsource:\n  - url: https://dl.google.com/go/go${{ version }}.src.tar.gz\n    sha256: 4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1\n    target_directory: go\n    patches:\n      # Please see patches/README.md for more details\n      - patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch\n      - patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch\n      - patches/0003-Inherit-CGO_-environment-variables.patch\n      - patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch\n      - patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch\n      - patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch\n      - patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch\n      - patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch\n      - patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch\n\n  # Update this with a release from https://go.dev/dl/\n  - if: build_platform == \"linux-64\"\n    then:\n      url: https://go.dev/dl/go${{ version }}.linux-amd64.tar.gz\n      sha256: 63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445\n      target_directory: go-bootstrap\n  - if: build_platform == \"linux-aarch64\"\n    then:\n      url: https://go.dev/dl/go${{ version }}.linux-arm64.tar.gz\n      sha256: 3450b45a3f9ee8568792736a5c5e70a1f2e9b36c35a8f74958c03e51d7d92bec\n      target_directory: go-bootstrap\n  - if: build_platform == \"win-64\"\n    then:\n      url: https://go.dev/dl/go${{ version }}.windows-amd64.zip\n      sha256: a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d\n      target_directory: go-bootstrap\n  - if: build_platform == \"osx-64\"\n    then:\n      url: https://go.dev/dl/go${{ version }}.darwin-amd64.tar.gz\n      sha256: 8f8f52c6649542cf027bbc9b9c68d1ec042f9f34808a40413f0b8b3f66f3caa4\n      target_directory: go-bootstrap\n  - if: build_platform == \"osx-arm64\"\n    then:\n      url: https://go.dev/dl/go${{ version }}.darwin-arm64.tar.gz\n      sha256: ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12\n      target_directory: go-bootstrap\n\nbuild:\n  number: 2\n\noutputs:\n  - package:\n      name: go\n    build:\n      script:\n        file: ${{ go_variant_str }}/build\n      dynamic_linking:\n        binary_relocation: false\n      prefix_detection:\n        ignore_binary_files: true\n    requirements:\n      build:\n        - if: unix and cgo\n          then:\n            - ${{ compiler('c') }}\n            - ${{ stdlib(\"c\") }}\n            - ${{ compiler('cxx') }}\n            - ${{ compiler('fortran') }}\n        - if: win and cgo\n          then:\n            - ${{ compiler('m2w64_c') }}\n            - ${{ stdlib(\"m2w64_c\") }}\n            - ${{ compiler('m2w64_cxx') }}\n            - ${{ compiler('m2w64_fortran') }}\n      run:\n        - _go_select ==${{ go_variant_ver }} ${{ go_variant_str }}\n      run_constraints:\n        # https://github.com/prefix-dev/rattler-build/issues/2792\n        - if: unix and cgo\n          then:\n            - ${{ compiler('c') }}\n            - ${{ compiler('cxx') }}\n            - ${{ compiler('fortran') }}\n        - if: win and cgo\n          then:\n            - ${{ compiler('m2w64_c') }}\n            - ${{ compiler('m2w64_cxx') }}\n            - ${{ compiler('m2w64_fortran') }}\n      run_exports:\n        strong:\n          - if: linux and cgo\n            then: __glibc >=${{ c_stdlib_version }}\n          - if: osx and cgo\n            then: __osx >=12\n    tests:\n      - files:\n          recipe:\n            - ${{ go_variant_str }}/\n        requirements:\n          run:\n            - if: unix and cgo\n              then: ${{ compiler('c') }}\n            - if: win and cgo\n              then: ${{ compiler('m2w64_c') }}\n        script:\n          # telemetry counter files are written asynchronously into $HOME, which\n          # races with the test directory cleanup\n          - go telemetry off\n          - if: unix\n            then:\n              - ./${{ go_variant_str }}/test.sh\n              - test \"$GOTOOLCHAIN\" = \"local\"\n          - if: win\n            then:\n              - ${{ go_variant_str }}\\test.bat\n              - if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1\n    about:\n      homepage: https://go.dev/\n      license: BSD-3-Clause\n      license_file: go/LICENSE\n      summary: The Go Programming Language\n\n  - package:\n      name: go-${{ go_variant_str }}\n    build:\n      dynamic_linking:\n        binary_relocation: false\n        # test data links to these DSOs\n        missing_dso_allowlist:\n          - if: linux and not cgo\n            then: $RPATH/libc.so.6\n          - if: osx\n            then: /usr/lib/libSystem.B.dylib\n          - if: win\n            then: $SYSROOT\\System32\\winmm.dll\n      prefix_detection:\n        ignore_binary_files: true\n    requirements:\n      run:\n        - ${{ pin_subpackage('go', exact=True) }}\n        - if: unix and cgo\n          then: ${{ compiler('c') }}\n        - if: win and cgo\n          then: ${{ compiler('m2w64_c') }}\n    tests:\n      - script:\n          # telemetry counter files are written asynchronously into $HOME, which\n          # races with the test directory cleanup\n          - go telemetry off\n          - go help\n\nabout:\n  homepage: https://go.dev/\n  license: BSD-3-Clause\n  license_file: go/LICENSE\n  summary: The Go Programming Language (${{ go_variant_str }})\n  description: |\n    Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\n    make it easy to write programs that get the most out of multicore and\n    networked machines, while its novel type system enables flexible and\n    modular program construction. Go compiles quickly to machine code yet has\n    the convenience of garbage collection and the power of run-time reflection.\n    It's a fast, statically typed, compiled language that feels like a\n    dynamically typed, interpreted language.\n  documentation: https://go.dev/doc\n  repository: https://github.com/golang/\n\nextra:\n  feedstock-name: go\n  recipe-maintainers:\n    - pavelzw\n    - nehaljwani\n    - scopatz\n    - sodre\n    - stuarteberg\n    - xhochy\n    - hmaarrfk\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -2289,7 +1864,6 @@
     "test": {
       "__set__": true,
       "elements": [
-        "binutils",
         "c_compiler_stub",
         "m2w64_c_compiler_stub"
       ]
@@ -2318,8 +1892,8 @@
     "run": {
       "__set__": true,
       "elements": [
-        "_go_select ==2.2.0=nocgo",
-        "_go_select ==2.3.0=cgo",
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo",
         "c_compiler_stub",
         "go",
         "m2w64_c_compiler_stub"
@@ -2328,7 +1902,6 @@
     "test": {
       "__set__": true,
       "elements": [
-        "binutils",
         "c_compiler_stub",
         "m2w64_c_compiler_stub"
       ]
@@ -2341,17 +1914,20 @@
   },
   "win_64_meta_yaml": {
     "about": {
-      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.\n",
+      "description": "Go is expressive, concise, clean, and efficient. Its concurrency mechanisms\nmake it easy to write programs that get the most out of multicore and\nnetworked machines, while its novel type system enables flexible and\nmodular program construction. Go compiles quickly to machine code yet has\nthe convenience of garbage collection and the power of run-time reflection.\nIt's a fast, statically typed, compiled language that feels like a\ndynamically typed, interpreted language.",
       "dev_url": "https://github.com/golang/",
       "doc_url": "https://go.dev/doc",
       "home": "https://go.dev/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "go/LICENSE",
-      "summary": "The Go Programming Language (cgo)"
+      "summary": "The Go Programming Language"
     },
     "build": {
-      "number": "1"
+      "number": "2",
+      "script": {
+        "file": "cgo/build"
+      }
     },
     "extra": {
       "feedstock-name": "go",
@@ -2367,100 +1943,53 @@
     },
     "outputs": [
       {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "force_ignore_keys": [
-            "c_compiler",
-            "cxx_compiler",
-            "fortran_compiler"
-          ],
-          "missing_dso_whitelist": [
-            "$SYSROOT\\System32\\winmm.dll"
+        "build": null,
+        "name": "go",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "_go_select ==2.2.0 nocgo"
           ]
         },
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "nocgo/"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "${{ go_variant_str }}\\test.bat",
+              "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
         "name": "go-nocgo",
         "requirements": {
+          "build": [],
+          "host": [],
           "run": [
             "go"
           ]
         },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       },
       {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
-        "name": "go",
-        "requirements": {
-          "build": [],
-          "run": [
-            "_go_select ==2.2.0=nocgo"
-          ],
-          "run_constrained": null
-        },
-        "script": "nocgo/build.bat",
-        "test": {
-          "commands": [
-            "nocgo/test.bat",
-            "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
-          ],
-          "files": [
-            "nocgo"
-          ],
-          "requires": null
-        }
-      },
-      {
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false,
-          "force_ignore_keys": [
-            "c_compiler",
-            "cxx_compiler",
-            "fortran_compiler"
-          ],
-          "missing_dso_whitelist": [
-            "$SYSROOT\\System32\\winmm.dll"
-          ]
-        },
-        "name": "go-cgo",
-        "requirements": {
-          "run": [
-            "go",
-            "m2w64_c_compiler_stub"
-          ]
-        },
-        "test": {
-          "commands": [
-            "go help"
-          ]
-        }
-      },
-      {
-        "about": {
-          "home": "https://go.dev/",
-          "license": "BSD-3-Clause",
-          "license_family": "BSD",
-          "license_file": "go/LICENSE",
-          "summary": "The Go Programming Language"
-        },
-        "build": {
-          "binary_relocation": false,
-          "detect_binary_files_with_prefix": false
-        },
+        "build": null,
         "name": "go",
         "requirements": {
           "build": [
@@ -2469,79 +1998,86 @@
             "m2w64_cxx_compiler_stub",
             "m2w64_fortran_compiler_stub"
           ],
+          "host": [],
           "run": [
-            "_go_select ==2.3.0=cgo"
-          ],
-          "run_constrained": [
-            "m2w64_c_compiler_stub",
-            "m2w64_cxx_compiler_stub",
-            "m2w64_fortran_compiler_stub"
+            "_go_select ==2.3.0 cgo"
           ]
         },
-        "script": "cgo/build.bat",
-        "test": {
-          "commands": [
-            "cgo/test.bat",
-            "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
-          ],
-          "files": [
-            "cgo"
-          ],
-          "requires": [
+        "tests": [
+          {
+            "files": {
+              "recipe": [
+                "cgo/"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "m2w64_c_compiler_stub"
+              ]
+            },
+            "script": [
+              "go telemetry off",
+              "${{ go_variant_str }}\\test.bat",
+              "if not \"%GOTOOLCHAIN%\"==\"local\" exit /b 1"
+            ]
+          }
+        ],
+        "version": "1.27.1"
+      },
+      {
+        "build": null,
+        "name": "go-cgo",
+        "requirements": {
+          "build": [],
+          "host": [],
+          "run": [
+            "go",
             "m2w64_c_compiler_stub"
           ]
-        }
+        },
+        "tests": [
+          {
+            "script": [
+              "go telemetry off",
+              "go help"
+            ]
+          }
+        ],
+        "version": "1.27.1"
       }
     ],
     "package": {
-      "name": "go-cgo-split",
+      "name": "go",
       "version": "1.27.1"
     },
-    "schema_version": 0,
-    "source": [
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d",
-        "url": "https://go.dev/dl/go1.27.1.windows-amd64.zip"
-      },
-      {
-        "folder": "go",
-        "patches": [
-          "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
-          "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
-          "patches/0003-Inherit-CGO_-environment-variables.patch",
-          "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
-          "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
-          "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
-          "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
-          "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
-          "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
-        ],
-        "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
-        "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
-      },
-      {
-        "folder": "go-bootstrap",
-        "sha256": "a3911b5e0e1b1053f25ed0675f4c1c6aad1e2bfcf253df2b9be4caabd2edd95d",
-        "url": "https://go.dev/dl/go1.27.1.windows-amd64.zip"
-      }
-    ]
+    "requirements": {
+      "build": [
+        "m2w64_c_compiler_stub",
+        "m2w64_c_stdlib_stub",
+        "m2w64_cxx_compiler_stub",
+        "m2w64_fortran_compiler_stub"
+      ],
+      "run": [
+        "_go_select ==2.2.0 nocgo",
+        "_go_select ==2.3.0 cgo"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-Fix-cgo_fortran-test-setup-for-conda.patch",
+        "patches/0002-Add-CC-C-CPP-LD-FLAGS-to-script_test-extraEnvKeys.patch",
+        "patches/0003-Inherit-CGO_-environment-variables.patch",
+        "patches/0004-Add-conda-aware-default-values-for-GOPATH-and-GOBIN.patch",
+        "patches/0005-cmd-link-internal-ld-disable-testWindowsBuildmodeCSh.patch",
+        "patches/0006-Revert-cmd-link-enable-internal-linker-in-more-cases.patch",
+        "patches/0007-Mark-ftree-as-a-safe-compiler-flag.patch",
+        "patches/0008-Mark-merge-constants-as-a-safe-compiler-flag.patch",
+        "patches/0009-Mark-conda-s-linker-flags-as-safe-for-internal-link.patch"
+      ],
+      "sha256": "4e408abae126d916b6164627193f2c54f0e3ca1312d693b86db45f862ab238b1",
+      "url": "https://dl.google.com/go/go1.27.1.src.tar.gz"
+    }
   },
   "win_64_requirements": {
     "build": {
