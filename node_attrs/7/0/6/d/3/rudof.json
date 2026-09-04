@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nis_abi3:\n- true\n- false\nis_python_min:\n- true\n- false\nopenssl:\n- '3.5'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\n- 3.14.* *_cp314t\npython_min:\n- '3.10'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - python\n  - is_python_min\n  - is_abi3\n",
+  "ci_support_linux_64_only_clifalse.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nis_abi3:\n- true\n- true\n- true\n- true\n- false\nis_python_min:\n- true\n- false\n- false\n- false\n- false\nonly_cli:\n- false\nopenssl:\n- '3.5'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\n- 3.12.* *_cpython\n- 3.13.* *_cp313\n- 3.14.* *_cp314\n- 3.14.* *_cp314t\npython_min:\n- '3.11'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n- - python\n  - is_python_min\n  - is_abi3\n",
   "conda-forge.yml": {
     "bot": {
       "inspection": "hint-grayskull"
@@ -25,18 +25,19 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "28d6b9467c5ba66091d256dc4c3933057fa47778",
-  "feedstock_hash_ts": 1787837286,
+  "feedstock_hash": "2a89592ff14035e3c45d8335be204daacad4be50",
+  "feedstock_hash_ts": 1788540703,
   "feedstock_name": "rudof",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/rudof-project/rudof/tree/master/bindings/python",
-      "home": "https://pypi.org/project/pyrudof",
+      "description": "rudof is a command-line tool to inspect and validate RDF data using ShEx or SHACL, and to allow conversion between different RDF data modeling languages like ShEx, SHACL, DCTAP, etc.",
+      "dev_url": "https://github.com/rudof-project/rudof/tree/master/rudof_cli",
+      "home": "https://crates.io/crates/rudof_cli",
       "license": "Apache-2.0 OR MIT",
       "license_family": "Apache-2.0 OR MIT",
       "license_file": "LICENSE-APACHE",
-      "summary": "Python bindings for Rudof, RDF data shapes implementation in Rust"
+      "summary": "RDF data shapes implementation in Rust"
     },
     "build": {
       "number": "0",
@@ -46,7 +47,9 @@
           "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
           "cd bindings/python",
           "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
-          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "cd rudof_cli",
+          "cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\""
         ],
         "env": {
           "CARGO": "cargo-auditable-wrapper",
@@ -70,6 +73,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -112,39 +116,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -152,6 +128,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -177,7 +154,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -195,28 +172,58 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       }
     ],
     "package": {
-      "name": "pyrudof",
-      "version": "0.3.14"
+      "name": "rudof",
+      "version": "0.3.16"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -236,8 +243,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "1ebc495aa45d08f78998759c3003412b90bcfacdf53c590c1d22b9e9fd6efbfd",
-      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.14.tar.gz"
+      "sha256": "7f0bcb7ddb8f10fbc4951e41d8d3be4f8dc49703b15264e69dbe245763830e9f",
+      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.16.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -248,6 +255,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cxx_compiler_stub",
         "make",
         "pkg-config",
         "rust_compiler_stub"
@@ -281,12 +289,13 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/rudof-project/rudof/tree/master/bindings/python",
-      "home": "https://pypi.org/project/pyrudof",
+      "description": "rudof is a command-line tool to inspect and validate RDF data using ShEx or SHACL, and to allow conversion between different RDF data modeling languages like ShEx, SHACL, DCTAP, etc.",
+      "dev_url": "https://github.com/rudof-project/rudof/tree/master/rudof_cli",
+      "home": "https://crates.io/crates/rudof_cli",
       "license": "Apache-2.0 OR MIT",
       "license_family": "Apache-2.0 OR MIT",
       "license_file": "LICENSE-APACHE",
-      "summary": "Python bindings for Rudof, RDF data shapes implementation in Rust"
+      "summary": "RDF data shapes implementation in Rust"
     },
     "build": {
       "number": "0",
@@ -296,7 +305,9 @@
           "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
           "cd bindings/python",
           "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
-          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "cd rudof_cli",
+          "cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\""
         ],
         "env": {
           "CARGO": "cargo-auditable-wrapper",
@@ -320,6 +331,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -362,39 +374,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -402,6 +386,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -427,7 +412,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -445,28 +430,58 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       }
     ],
     "package": {
-      "name": "pyrudof",
-      "version": "0.3.14"
+      "name": "rudof",
+      "version": "0.3.16"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -486,8 +501,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "1ebc495aa45d08f78998759c3003412b90bcfacdf53c590c1d22b9e9fd6efbfd",
-      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.14.tar.gz"
+      "sha256": "7f0bcb7ddb8f10fbc4951e41d8d3be4f8dc49703b15264e69dbe245763830e9f",
+      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.16.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -498,6 +513,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cxx_compiler_stub",
         "make",
         "pkg-config",
         "rust_compiler_stub"
@@ -531,12 +547,13 @@
   },
   "meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/rudof-project/rudof/tree/master/bindings/python",
-      "home": "https://pypi.org/project/pyrudof",
+      "description": "rudof is a command-line tool to inspect and validate RDF data using ShEx or SHACL, and to allow conversion between different RDF data modeling languages like ShEx, SHACL, DCTAP, etc.",
+      "dev_url": "https://github.com/rudof-project/rudof/tree/master/rudof_cli",
+      "home": "https://crates.io/crates/rudof_cli",
       "license": "Apache-2.0 OR MIT",
       "license_family": "Apache-2.0 OR MIT",
       "license_file": "LICENSE-APACHE",
-      "summary": "Python bindings for Rudof, RDF data shapes implementation in Rust"
+      "summary": "RDF data shapes implementation in Rust"
     },
     "build": {
       "number": "0",
@@ -547,8 +564,12 @@
           "cd bindings/python",
           "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
           "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "cd rudof_cli",
+          "cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\"",
+          "${{ mangle_win_libopenssl }}",
           "set CARGO_HOME=c:\\.cg",
-          "copy \"%RECIPE_DIR%\\cargo-auditable-wrapper.bat\" \"%BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\""
+          "copy \"%RECIPE_DIR%\\cargo-auditable-wrapper.bat\" \"%BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\"",
+          "${{ unmangle_win_libopenssl }}"
         ],
         "env": {
           "CARGO": "cargo-auditable-wrapper.bat",
@@ -572,6 +593,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -614,39 +636,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -654,6 +648,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -679,7 +674,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -697,19 +692,48 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -717,6 +741,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -759,39 +784,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -799,6 +796,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -824,7 +822,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -842,19 +840,48 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -862,6 +889,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -904,39 +932,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -944,6 +944,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -969,7 +970,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -987,19 +988,48 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -1007,6 +1037,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1049,39 +1080,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -1089,6 +1092,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1114,7 +1118,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -1132,19 +1136,48 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -1152,6 +1185,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1195,40 +1229,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config",
-            "perl"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -1236,6 +1241,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1262,7 +1268,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -1280,28 +1286,59 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config",
+            "perl"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       }
     ],
     "package": {
-      "name": "pyrudof",
-      "version": "0.3.14"
+      "name": "rudof",
+      "version": "0.3.16"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -1322,19 +1359,20 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "1ebc495aa45d08f78998759c3003412b90bcfacdf53c590c1d22b9e9fd6efbfd",
-      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.14.tar.gz"
+      "sha256": "7f0bcb7ddb8f10fbc4951e41d8d3be4f8dc49703b15264e69dbe245763830e9f",
+      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.16.tar.gz"
     }
   },
-  "name": "pyrudof",
+  "name": "rudof",
   "osx_64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/rudof-project/rudof/tree/master/bindings/python",
-      "home": "https://pypi.org/project/pyrudof",
+      "description": "rudof is a command-line tool to inspect and validate RDF data using ShEx or SHACL, and to allow conversion between different RDF data modeling languages like ShEx, SHACL, DCTAP, etc.",
+      "dev_url": "https://github.com/rudof-project/rudof/tree/master/rudof_cli",
+      "home": "https://crates.io/crates/rudof_cli",
       "license": "Apache-2.0 OR MIT",
       "license_family": "Apache-2.0 OR MIT",
       "license_file": "LICENSE-APACHE",
-      "summary": "Python bindings for Rudof, RDF data shapes implementation in Rust"
+      "summary": "RDF data shapes implementation in Rust"
     },
     "build": {
       "number": "0",
@@ -1344,7 +1382,9 @@
           "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
           "cd bindings/python",
           "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
-          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "cd rudof_cli",
+          "cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\""
         ],
         "env": {
           "CARGO": "cargo-auditable-wrapper",
@@ -1368,6 +1408,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1410,39 +1451,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -1450,6 +1463,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1475,7 +1489,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -1493,28 +1507,58 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       }
     ],
     "package": {
-      "name": "pyrudof",
-      "version": "0.3.14"
+      "name": "rudof",
+      "version": "0.3.16"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -1534,8 +1578,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "1ebc495aa45d08f78998759c3003412b90bcfacdf53c590c1d22b9e9fd6efbfd",
-      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.14.tar.gz"
+      "sha256": "7f0bcb7ddb8f10fbc4951e41d8d3be4f8dc49703b15264e69dbe245763830e9f",
+      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.16.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -1546,6 +1590,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cxx_compiler_stub",
         "make",
         "pkg-config",
         "rust_compiler_stub"
@@ -1579,12 +1624,13 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/rudof-project/rudof/tree/master/bindings/python",
-      "home": "https://pypi.org/project/pyrudof",
+      "description": "rudof is a command-line tool to inspect and validate RDF data using ShEx or SHACL, and to allow conversion between different RDF data modeling languages like ShEx, SHACL, DCTAP, etc.",
+      "dev_url": "https://github.com/rudof-project/rudof/tree/master/rudof_cli",
+      "home": "https://crates.io/crates/rudof_cli",
       "license": "Apache-2.0 OR MIT",
       "license_family": "Apache-2.0 OR MIT",
       "license_file": "LICENSE-APACHE",
-      "summary": "Python bindings for Rudof, RDF data shapes implementation in Rust"
+      "summary": "RDF data shapes implementation in Rust"
     },
     "build": {
       "number": "0",
@@ -1594,7 +1640,9 @@
           "chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"",
           "cd bindings/python",
           "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
-          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "cd rudof_cli",
+          "cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\""
         ],
         "env": {
           "CARGO": "cargo-auditable-wrapper",
@@ -1618,6 +1666,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1660,39 +1709,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -1700,6 +1721,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -1725,7 +1747,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -1743,28 +1765,58 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       }
     ],
     "package": {
-      "name": "pyrudof",
-      "version": "0.3.14"
+      "name": "rudof",
+      "version": "0.3.16"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -1784,8 +1836,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "1ebc495aa45d08f78998759c3003412b90bcfacdf53c590c1d22b9e9fd6efbfd",
-      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.14.tar.gz"
+      "sha256": "7f0bcb7ddb8f10fbc4951e41d8d3be4f8dc49703b15264e69dbe245763830e9f",
+      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.16.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -1796,6 +1848,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cxx_compiler_stub",
         "make",
         "pkg-config",
         "rust_compiler_stub"
@@ -1845,7 +1898,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/rudof.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"0.3.14\"\n  maturin_min: \"1\"\n  maturin_max: \"2\"\n  python_check_max: \"3.14\"\n  # posix-ish stuff\n  grep_version: ${{ \"grep -iE\" if unix else \"findstr /r /c /i\" }} \"${{ version | replace('.', '\\\\.') }}\"\n  # abi3audit\n  abi3_ext: ${{ \"pyd\" if win else \"abi3.so\" }}\n  unix_sp_dir: $(python -c \"print(__import__('site').getsitepackages()[-1])\")/pyrudof\n  win_sp_dir: Lib\\site-packages\\pyrudof\n\nrecipe:\n  name: rudof-split\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/rudof-project/rudof/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 1ebc495aa45d08f78998759c3003412b90bcfacdf53c590c1d22b9e9fd6efbfd\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: rudof\n    build:\n      skip: not is_python_min\n      script:\n        env:\n          CARGO_PROFILE_RELEASE_LTO: fat\n          CARGO_PROFILE_RELEASE_STRIP: symbols\n          OPENSSL_DIR: ${{ '$PREFIX' if unix else '%LIBRARY_PREFIX%' }}\n        content:\n          - cd rudof_cli\n          - cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\"\n          - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"rust\") }}\n        - ${{ stdlib(\"c\") }}\n        # fails with:\n        #   thread 'main' (12097) panicked at cargo-auditable/src/collect_audit_data.rs:96:9:\n        #   cargo metadata failure: error: cannot update the lock file $SRC_DIR/Cargo.lock because --locked was passed to prevent this\n        #   help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.\n        # - cargo-auditable\n        - cargo-bundle-licenses\n        - make\n        - pkg-config\n        - if: win\n          then:\n            - perl\n      host:\n        - openssl\n    tests:\n      - script:\n          - rudof --help\n          - rudof --version\n          - rudof --version | ${{ grep_version }}\n    about:\n      homepage: https://crates.io/crates/rudof_cli\n      repository: https://github.com/rudof-project/rudof/tree/master/rudof_cli\n      description: >\n        rudof is a command-line tool to inspect and validate RDF data using ShEx\n        or SHACL, and to allow conversion between different RDF data modeling\n        languages like ShEx, SHACL, DCTAP, etc.\n      license_file:\n        - LICENSE-APACHE\n        - LICENSE-MIT\n        - rudof_cli/THIRDPARTY.yml\n\n  - package:\n      name: pyrudof\n    build:\n      skip: is_abi3 and not is_python_min\n      python:\n        version_independent: ${{ is_abi3 }}\n      script:\n        env:\n          CARGO: cargo-auditable-wrapper${{ \".bat\" if win }}\n          CARGO_PROFILE_RELEASE_LTO: fat\n          CARGO_PROFILE_RELEASE_STRIP: symbols\n          OPENSSL_DIR: ${{ '$PREFIX' if unix else '%LIBRARY_PREFIX%' }}\n          PYO3_PYTHON: ${{ '$PYTHON' if unix else '%PYTHON%' }}\n        content:\n          - if: win\n            then:\n              - set CARGO_HOME=c:\\.cg\n              - copy \"%RECIPE_DIR%\\cargo-auditable-wrapper.bat\" \"%BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\"\n            else:\n              - cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n              - chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n          - cd bindings/python\n          - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check\n          - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"rust\") }}\n        - ${{ stdlib(\"c\") }}\n        - cargo-auditable\n        - cargo-bundle-licenses\n        - make\n        - pkg-config\n        - if: win\n          then:\n            - perl\n      host:\n        - maturin >=${{ maturin_min }},<${{ maturin_max }}\n        - openssl\n        - pip\n        - python\n        - if: is_abi3\n          then:\n            - python-abi3\n      run:\n        - python\n    tests:\n      - if: is_abi3\n        then:\n          python:\n            imports: pyrudof\n            pip_check: true\n            python_version:\n              - ${{ python_min }}.*\n              - ${{ python_check_max }}.*\n        else:\n          python:\n            imports: pyrudof\n            pip_check: true\n      - requirements:\n          run:\n            - pytest\n            - if: is_abi3\n              then:\n                - abi3audit\n                - python !=${{ python_min }}.*\n        files:\n          source:\n            - examples/\n            - bindings/python/examples/\n            - bindings/python/tests/\n            - rudof_lib/src/default_config.toml\n        script:\n          - python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}\n          - cd bindings/python\n          - pytest -vv --tb=long --color=yes\n          - if: is_abi3\n            then:\n              - cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"\n              - abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}\n    about:\n      homepage: https://pypi.org/project/pyrudof\n      repository: https://github.com/rudof-project/rudof/tree/master/bindings/python\n      summary: Python bindings for Rudof, RDF data shapes implementation in Rust\n      license_file:\n        - LICENSE-APACHE\n        - LICENSE-MIT\n        - bindings/python/THIRDPARTY.yml\n\nabout:\n  license: Apache-2.0 OR MIT\n  license_file:\n    - LICENSE-APACHE\n    - LICENSE-MIT\n  summary: RDF data shapes implementation in Rust\n  homepage: https://github.com/rudof-project/rudof\n  repository: https://github.com/rudof-project/rudof\n\nextra:\n  feedstock-name: rudof\n  recipe-maintainers:\n    - bollwyvl\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"0.3.16\"\n  maturin_min: \"1\"\n  maturin_max: \"2\"\n  python_check_max: \"3.14\"\n  # mangle (lib)(ssl|crypto).lib for ladybugdb to avoid:\n  #  LINK : fatal error LNK1181: cannot open input file 'ssl.lib'\n  mangle_win_libopenssl: |-\n    copy \"%LIBRARY_LIB%\\libssl.lib\" \"%LIBRARY_LIB%\\ssl.lib\" && copy \"%LIBRARY_LIB%\\libcrypto.lib\" \"%LIBRARY_LIB%\\crypto.lib\"\n  unmangle_win_libopenssl: |-\n    del \"%LIBRARY_LIB%\\ssl.lib\" \"%LIBRARY_LIB%\\crypto.lib\"\n  # posix-ish stuff\n  grep_version: ${{ \"grep -iE\" if unix else \"findstr /r /c /i\" }} \"${{ version | replace('.', '\\\\.') }}\"\n  # abi3audit\n  abi3_ext: ${{ \"pyd\" if win else \"abi3.so\" }}\n  unix_sp_dir: $(python -c \"print(__import__('site').getsitepackages()[-1])\")/pyrudof\n  win_sp_dir: Lib\\site-packages\\pyrudof\n  pytest_k: |-\n    not pg_db_load_and_query\n\nrecipe:\n  name: rudof-split\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/rudof-project/rudof/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 7f0bcb7ddb8f10fbc4951e41d8d3be4f8dc49703b15264e69dbe245763830e9f\n\nbuild:\n  number: 0\n\noutputs:\n  - package:\n      name: rudof\n    build:\n      skip: not only_cli\n      script:\n        env:\n          CARGO_PROFILE_RELEASE_LTO: fat\n          CARGO_PROFILE_RELEASE_STRIP: symbols\n          OPENSSL_DIR: ${{ '$PREFIX' if unix else '%LIBRARY_PREFIX%' }}\n        content:\n          - if: win\n            then: ${{ mangle_win_libopenssl }}\n          - cd rudof_cli\n          - cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\"\n          - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n          - if: win\n            then: ${{ unmangle_win_libopenssl }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ compiler(\"rust\") }}\n        - ${{ stdlib(\"c\") }}\n        # fails with:\n        #   thread 'main' (12097) panicked at cargo-auditable/src/collect_audit_data.rs:96:9:\n        #   cargo metadata failure: error: cannot update the lock file $SRC_DIR/Cargo.lock because --locked was passed to prevent this\n        #   help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.\n        # - cargo-auditable\n        - cargo-bundle-licenses\n        - make\n        - pkg-config\n        - if: win\n          then:\n            - perl\n      host:\n        - openssl\n    tests:\n      - script:\n          - rudof --help\n          - rudof --version\n          - rudof --version | ${{ grep_version }}\n    about:\n      homepage: https://crates.io/crates/rudof_cli\n      repository: https://github.com/rudof-project/rudof/tree/master/rudof_cli\n      description: >\n        rudof is a command-line tool to inspect and validate RDF data using ShEx\n        or SHACL, and to allow conversion between different RDF data modeling\n        languages like ShEx, SHACL, DCTAP, etc.\n      license_file:\n        - LICENSE-APACHE\n        - LICENSE-MIT\n        - rudof_cli/THIRDPARTY.yml\n\n  - package:\n      name: pyrudof\n    build:\n      skip: only_cli or (is_abi3 and not is_python_min)\n      python:\n        version_independent: ${{ is_abi3 }}\n      script:\n        env:\n          CARGO: cargo-auditable-wrapper${{ \".bat\" if win }}\n          CARGO_PROFILE_RELEASE_LTO: fat\n          CARGO_PROFILE_RELEASE_STRIP: symbols\n          OPENSSL_DIR: ${{ '$PREFIX' if unix else '%LIBRARY_PREFIX%' }}\n          PYO3_PYTHON: ${{ '$PYTHON' if unix else '%PYTHON%' }}\n        content:\n          - if: win\n            then: ${{ mangle_win_libopenssl }}\n          - if: win\n            then:\n              - set CARGO_HOME=c:\\.cg\n              - copy \"%RECIPE_DIR%\\cargo-auditable-wrapper.bat\" \"%BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\"\n            else:\n              - cp \"${RECIPE_DIR}/cargo-auditable-wrapper.sh\" \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n              - chmod 755 \"${BUILD_PREFIX}/bin/cargo-auditable-wrapper\"\n          - cd bindings/python\n          - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check\n          - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n          - if: win\n            then: ${{ unmangle_win_libopenssl }}\n    requirements:\n      build:\n        - ${{ compiler(\"c\") }}\n        - ${{ compiler(\"cxx\") }}\n        - ${{ compiler(\"rust\") }}\n        - ${{ stdlib(\"c\") }}\n        - cargo-auditable\n        - cargo-bundle-licenses\n        - make\n        - pkg-config\n        - if: win\n          then:\n            - perl\n      host:\n        - maturin >=${{ maturin_min }},<${{ maturin_max }}\n        - openssl\n        - pip\n        - python\n        - if: is_abi3\n          then:\n            - python-abi3\n      run:\n        - python\n    tests:\n      - if: is_abi3\n        then:\n          python:\n            imports: pyrudof\n            pip_check: true\n            python_version:\n              - ${{ python_min }}.*\n              - ${{ python_check_max }}.*\n        else:\n          python:\n            imports: pyrudof\n            pip_check: true\n      - requirements:\n          run:\n            - pytest\n            - if: is_abi3\n              then:\n                - abi3audit\n                - python !=${{ python_min }}.*\n        files:\n          source:\n            - examples/\n            - bindings/python/examples/\n            - bindings/python/tests/\n            - rudof_lib/src/default_config.toml\n        script:\n          - python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}\n          - cd bindings/python\n          - pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"\n          - if: is_abi3\n            then:\n              - cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"\n              - abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}\n    about:\n      homepage: https://pypi.org/project/pyrudof\n      repository: https://github.com/rudof-project/rudof/tree/master/bindings/python\n      summary: Python bindings for Rudof, RDF data shapes implementation in Rust\n      license_file:\n        - LICENSE-APACHE\n        - LICENSE-MIT\n        - bindings/python/THIRDPARTY.yml\n\nabout:\n  license: Apache-2.0 OR MIT\n  license_file:\n    - LICENSE-APACHE\n    - LICENSE-MIT\n  summary: RDF data shapes implementation in Rust\n  homepage: https://github.com/rudof-project/rudof\n  repository: https://github.com/rudof-project/rudof\n\nextra:\n  feedstock-name: rudof\n  recipe-maintainers:\n    - bollwyvl\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1853,6 +1906,7 @@
       "c_stdlib_stub",
       "cargo-auditable",
       "cargo-bundle-licenses",
+      "cxx_compiler_stub",
       "make",
       "maturin",
       "openssl",
@@ -1872,6 +1926,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cxx_compiler_stub",
         "make",
         "perl",
         "pkg-config",
@@ -1883,6 +1938,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cxx_compiler_stub",
         "maturin",
         "openssl",
         "pip",
@@ -1895,6 +1951,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cxx_compiler_stub",
         "python"
       ]
     },
@@ -1917,6 +1974,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cxx_compiler_stub",
         "make",
         "perl",
         "pkg-config",
@@ -1945,33 +2003,38 @@
         "abi3audit",
         "pip",
         "pytest",
-        "python !=3.10.*"
+        "python !=3.11.*"
       ]
     }
   },
-  "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.14.tar.gz",
-  "version": "0.3.14",
+  "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.16.tar.gz",
+  "version": "0.3.16",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/rudof.json"
   },
   "win_64_meta_yaml": {
     "about": {
-      "dev_url": "https://github.com/rudof-project/rudof/tree/master/bindings/python",
-      "home": "https://pypi.org/project/pyrudof",
+      "description": "rudof is a command-line tool to inspect and validate RDF data using ShEx or SHACL, and to allow conversion between different RDF data modeling languages like ShEx, SHACL, DCTAP, etc.",
+      "dev_url": "https://github.com/rudof-project/rudof/tree/master/rudof_cli",
+      "home": "https://crates.io/crates/rudof_cli",
       "license": "Apache-2.0 OR MIT",
       "license_family": "Apache-2.0 OR MIT",
       "license_file": "LICENSE-APACHE",
-      "summary": "Python bindings for Rudof, RDF data shapes implementation in Rust"
+      "summary": "RDF data shapes implementation in Rust"
     },
     "build": {
       "number": "0",
       "script": {
         "content": [
+          "${{ mangle_win_libopenssl }}",
           "set CARGO_HOME=c:\\.cg",
           "copy \"%RECIPE_DIR%\\cargo-auditable-wrapper.bat\" \"%BUILD_PREFIX%\\Library\\bin\\cargo-auditable-wrapper.bat\"",
           "cd bindings/python",
           "${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check",
-          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml"
+          "cargo-bundle-licenses --format yaml --output THIRDPARTY.yml",
+          "${{ unmangle_win_libopenssl }}",
+          "cd rudof_cli",
+          "cargo install --no-track --locked --path=. --profile=release \"--root=${{ PREFIX }}\""
         ],
         "env": {
           "CARGO": "cargo-auditable-wrapper.bat",
@@ -1995,6 +2058,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -2038,40 +2102,11 @@
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes"
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\""
             ]
           }
         ],
-        "version": "0.3.14"
-      },
-      {
-        "build": null,
-        "name": "rudof",
-        "requirements": {
-          "build": [
-            "c_compiler_stub",
-            "rust_compiler_stub",
-            "c_stdlib_stub",
-            "cargo-bundle-licenses",
-            "make",
-            "pkg-config",
-            "perl"
-          ],
-          "host": [
-            "openssl"
-          ],
-          "run": []
-        },
-        "tests": [
-          {
-            "script": [
-              "rudof --help",
-              "rudof --version",
-              "rudof --version | ${{ grep_version }}"
-            ]
-          }
-        ],
-        "version": "0.3.14"
+        "version": "0.3.16"
       },
       {
         "build": null,
@@ -2079,6 +2114,7 @@
         "requirements": {
           "build": [
             "c_compiler_stub",
+            "cxx_compiler_stub",
             "rust_compiler_stub",
             "c_stdlib_stub",
             "cargo-auditable",
@@ -2105,7 +2141,7 @@
                 "pyrudof"
               ],
               "python_version": [
-                "3.10.*",
+                "3.11.*",
                 "3.14.*"
               ]
             }
@@ -2123,28 +2159,59 @@
               "run": [
                 "pytest",
                 "abi3audit",
-                "python !=3.10.*"
+                "python !=3.11.*"
               ]
             },
             "script": [
               "python -c \"print(__import__('pyrudof').__version__)\" | ${{ grep_version }}",
               "cd bindings/python",
-              "pytest -vv --tb=long --color=yes",
+              "pytest -vv --tb=long --color=yes -k \"${{ pytest_k }}\"",
               "cd \"${{ \"%PREFIX%\\\\\" ~ win_sp_dir if win else unix_sp_dir }}\"",
               "abi3audit -s -v --assume-minimum-abi3 ${{ python_min }} pyrudof.${{ abi3_ext }}"
             ]
           }
         ],
-        "version": "0.3.14"
+        "version": "0.3.16"
+      },
+      {
+        "build": null,
+        "name": "rudof",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "make",
+            "pkg-config",
+            "perl"
+          ],
+          "host": [
+            "openssl"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": [
+              "rudof --help",
+              "rudof --version",
+              "rudof --version | ${{ grep_version }}"
+            ]
+          }
+        ],
+        "version": "0.3.16"
       }
     ],
     "package": {
-      "name": "pyrudof",
-      "version": "0.3.14"
+      "name": "rudof",
+      "version": "0.3.16"
     },
     "requirements": {
       "build": [
         "c_compiler_stub",
+        "cxx_compiler_stub",
         "rust_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -2165,8 +2232,8 @@
     },
     "schema_version": 1,
     "source": {
-      "sha256": "1ebc495aa45d08f78998759c3003412b90bcfacdf53c590c1d22b9e9fd6efbfd",
-      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.14.tar.gz"
+      "sha256": "7f0bcb7ddb8f10fbc4951e41d8d3be4f8dc49703b15264e69dbe245763830e9f",
+      "url": "https://github.com/rudof-project/rudof/archive/refs/tags/0.3.16.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -2177,6 +2244,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "cxx_compiler_stub",
         "make",
         "perl",
         "pkg-config",
