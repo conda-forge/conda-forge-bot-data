@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "bzip2:\n- '1'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
+  "ci_support_linux_64_channel_sourcesconda-forgeconda-forgelabelpython_rcpython3.15.____cp315.yaml": "bzip2:\n- '1'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge,conda-forge/label/python_rc\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.15.* *_cp315\ntarget_platform:\n- linux-64\nzip_keys:\n- - python\n  - channel_sources\nzlib:\n- '1'\nzstd:\n- '1.5'\n",
   "conda-forge.yml": {
     "build_platform": {
       "linux_ppc64le": "linux_64"
@@ -22,8 +22,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "72c7da87b6821e645b399b996234e326293ef581",
-  "feedstock_hash_ts": 1788185699,
+  "feedstock_hash": "4a390dd29790312d5e11da2eeaf47252cdb110e1",
+  "feedstock_hash_ts": 1788535642,
   "feedstock_name": "hepmc3",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -37,7 +37,7 @@
       "summary": "HepMC3 is a new rewrite of HepMC event record."
     },
     "build": {
-      "number": "5",
+      "number": "6",
       "run_exports": {
         "weak": [
           "hepmc3"
@@ -421,7 +421,7 @@
       "summary": "HepMC3 is a new rewrite of HepMC event record."
     },
     "build": {
-      "number": "5",
+      "number": "6",
       "run_exports": {
         "weak": [
           "hepmc3"
@@ -805,7 +805,7 @@
       "summary": "HepMC3 is a new rewrite of HepMC event record."
     },
     "build": {
-      "number": "5",
+      "number": "6",
       "run_exports": {
         "weak": [
           "hepmc3"
@@ -1189,7 +1189,7 @@
       "summary": "HepMC3 is a new rewrite of HepMC event record."
     },
     "build": {
-      "number": "5",
+      "number": "6",
       "run_exports": {
         "weak": [
           "hepmc3"
@@ -2702,7 +2702,7 @@
       "summary": "HepMC3 is a new rewrite of HepMC event record."
     },
     "build": {
-      "number": "5",
+      "number": "6",
       "run_exports": {
         "weak": [
           "hepmc3"
@@ -3086,7 +3086,7 @@
       "summary": "HepMC3 is a new rewrite of HepMC event record."
     },
     "build": {
-      "number": "5",
+      "number": "6",
       "run_exports": {
         "weak": [
           "hepmc3"
@@ -3476,7 +3476,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/hepmc3.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: 3.3.1\n\npackage:\n  name: \"hepmc3\"\n  version: ${{ version }}\n\nsource:\n  url: https://hepmc.web.cern.ch/hepmc/releases/HepMC3-${{ version }}.tar.gz\n  sha256: 08240160b0f28dc3293aa4d61ce65e2d67cd597acf6faca439f2e46625f7e793\n  target_directory: source\n  patches:\n    - 0001-Fix-cmake4-find_file.patch\n\nbuild:\n  number: 5\n  skip: win\n  dynamic_linking:\n    overdepending_behavior: ignore  # Ignore until python <=3.12 is dropped\n    overlinking_behavior: error\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - make\n  host:\n    - python\n    - zlib\n    - bzip2\n    - zstd\n  run:\n    - python\n  run_exports:\n    - ${{ pin_subpackage('hepmc3', upper_bound='x.x') }}\n  ignore_run_exports:\n    from_package:  # cmake looks for these but doesn't use them\n      - zlib\n      - bzip2\n      - zstd\n\ntests:\n  - files:\n      source:\n        - source/test\n    requirements:\n      run:\n        - cxx-compiler\n    script:\n      - HepMC3-config --help\n      - HepMC3-config --prefix\n      - HepMC3-config --includedir\n      - HepMC3-config --libdir\n      - HepMC3-config --interfacesdir\n      - HepMC3-config --cflags\n      - HepMC3-config --cxxflags\n      - HepMC3-config --ldflags\n\n      - HepMC3-config --search\n      - HepMC3-config --features\n      - HepMC3-config --version\n\n      - cd source/test\n      # The v2+ versions of conda-forge compiler metapackages install minimally\n      # activated compilers where the compiler toolchain works by explicit name\n      # but environmental variables like CXX are no longer set.\n      # c.f. https://github.com/conda-forge/conda-forge.github.io/issues/2595\n      - |-\n        if [[ -z \"${CXX:-}\" ]]; then\n            if [[ \"$(uname)\" == \"Darwin\" ]]; then\n                CXX=\"clang++\"\n            else\n                CXX=\"g++\"\n            fi\n        fi\n      - \"${CXX} -std=c++11 testMass.cc -o testMass $(HepMC3-config --cxxflags --ldflags) -Wl,-rpath,\\\"$(HepMC3-config --libdir)\\\"\"\n      - ./testMass\n\nabout:\n  license: GPL-3.0-or-later\n  license_file: source/COPYING\n  summary: HepMC3 is a new rewrite of HepMC event record.\n  description: |\n    HepMC3 is a new rewrite of HepMC event record. It uses shared pointers\n    for in-memory navigation and the POD concept for the persistency.\n  homepage: https://hepmc.web.cern.ch/hepmc/\n  repository: https://gitlab.cern.ch/hepmc/HepMC3\n\nextra:\n  recipe-maintainers:\n    - henryiii\n    - chrisburr\n    - gartung\n    - matthewfeickert\n    - kratsg\n    - lgray\n    - meiyasan\n    - scarlehoff\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: 3.3.1\n\npackage:\n  name: \"hepmc3\"\n  version: ${{ version }}\n\nsource:\n  url: https://hepmc.web.cern.ch/hepmc/releases/HepMC3-${{ version }}.tar.gz\n  sha256: 08240160b0f28dc3293aa4d61ce65e2d67cd597acf6faca439f2e46625f7e793\n  target_directory: source\n  patches:\n    - 0001-Fix-cmake4-find_file.patch\n\nbuild:\n  number: 6\n  skip: win\n  dynamic_linking:\n    overdepending_behavior: ignore  # Ignore until python <=3.12 is dropped\n    overlinking_behavior: error\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - make\n  host:\n    - python\n    - zlib\n    - bzip2\n    - zstd\n  run:\n    - python\n  run_exports:\n    - ${{ pin_subpackage('hepmc3', upper_bound='x.x') }}\n  ignore_run_exports:\n    from_package:  # cmake looks for these but doesn't use them\n      - zlib\n      - bzip2\n      - zstd\n\ntests:\n  - files:\n      source:\n        - source/test\n    requirements:\n      run:\n        - cxx-compiler\n    script:\n      - HepMC3-config --help\n      - HepMC3-config --prefix\n      - HepMC3-config --includedir\n      - HepMC3-config --libdir\n      - HepMC3-config --interfacesdir\n      - HepMC3-config --cflags\n      - HepMC3-config --cxxflags\n      - HepMC3-config --ldflags\n\n      - HepMC3-config --search\n      - HepMC3-config --features\n      - HepMC3-config --version\n\n      - cd source/test\n      # The v2+ versions of conda-forge compiler metapackages install minimally\n      # activated compilers where the compiler toolchain works by explicit name\n      # but environmental variables like CXX are no longer set.\n      # c.f. https://github.com/conda-forge/conda-forge.github.io/issues/2595\n      - |-\n        if [[ -z \"${CXX:-}\" ]]; then\n            if [[ \"$(uname)\" == \"Darwin\" ]]; then\n                CXX=\"clang++\"\n            else\n                CXX=\"g++\"\n            fi\n        fi\n      - \"${CXX} -std=c++11 testMass.cc -o testMass $(HepMC3-config --cxxflags --ldflags) -Wl,-rpath,\\\"$(HepMC3-config --libdir)\\\"\"\n      - ./testMass\n\nabout:\n  license: GPL-3.0-or-later\n  license_file: source/COPYING\n  summary: HepMC3 is a new rewrite of HepMC event record.\n  description: |\n    HepMC3 is a new rewrite of HepMC event record. It uses shared pointers\n    for in-memory navigation and the POD concept for the persistency.\n  homepage: https://hepmc.web.cern.ch/hepmc/\n  repository: https://gitlab.cern.ch/hepmc/HepMC3\n\nextra:\n  recipe-maintainers:\n    - henryiii\n    - chrisburr\n    - gartung\n    - matthewfeickert\n    - kratsg\n    - lgray\n    - meiyasan\n    - scarlehoff\n",
   "req": {
     "__set__": true,
     "elements": [
