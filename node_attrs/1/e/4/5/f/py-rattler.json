@@ -28,8 +28,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "14267ca6bf1b9516463f4028f510b67ea15a75d0",
-  "feedstock_hash_ts": 1787913134,
+  "feedstock_hash": "fa3c40ce4f934d3043001d2d510c373745d3534d",
+  "feedstock_hash_ts": 1788520664,
   "feedstock_name": "py-rattler",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -43,8 +43,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -59,6 +66,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -94,6 +102,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -160,6 +169,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -195,6 +205,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -263,6 +274,7 @@
     },
     "requirements": {
       "build": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -290,6 +302,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -333,8 +346,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -352,6 +372,7 @@
             "python",
             "cross-python_linux-aarch64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -390,6 +411,7 @@
             "python",
             "cross-python_linux-aarch64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -440,6 +462,7 @@
         "python",
         "cross-python_linux-aarch64",
         "maturin >=1.2.2,<2",
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -467,6 +490,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -512,8 +536,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -531,6 +562,7 @@
             "python",
             "cross-python_linux-ppc64le",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -581,6 +613,7 @@
         "python",
         "cross-python_linux-ppc64le",
         "maturin >=1.2.2,<2",
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -608,6 +641,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -653,8 +687,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -669,6 +710,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -704,6 +746,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -770,6 +813,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -805,6 +849,7 @@
         "name": "py-rattler",
         "requirements": {
           "build": [
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -874,6 +919,7 @@
             "python",
             "cross-python_linux-aarch64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -912,6 +958,7 @@
             "python",
             "cross-python_linux-aarch64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -960,6 +1007,7 @@
             "python",
             "cross-python_linux-ppc64le",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1008,6 +1056,7 @@
             "python",
             "cross-python_osx-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1046,6 +1095,7 @@
             "python",
             "cross-python_osx-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1094,6 +1144,7 @@
             "python",
             "cross-python_osx-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1132,6 +1183,7 @@
             "python",
             "cross-python_osx-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1180,6 +1232,7 @@
             "python",
             "cross-python_win-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1217,6 +1270,7 @@
             "python",
             "cross-python_win-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1251,7 +1305,7 @@
                 "abi3audit"
               ]
             },
-            "script": "abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+            "script": "abi3audit %SP_DIR%/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "0.25.0"
@@ -1264,6 +1318,7 @@
             "python",
             "cross-python_win-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1303,6 +1358,7 @@
             "python",
             "cross-python_win-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1339,7 +1395,7 @@
                 "abi3audit"
               ]
             },
-            "script": "abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+            "script": "abi3audit %SP_DIR%/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "0.25.0"
@@ -1351,6 +1407,7 @@
     },
     "requirements": {
       "build": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -1396,8 +1453,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -1415,6 +1479,7 @@
             "python",
             "cross-python_osx-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1453,6 +1518,7 @@
             "python",
             "cross-python_osx-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1503,6 +1569,7 @@
         "python",
         "cross-python_osx-64",
         "maturin >=1.2.2,<2",
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -1530,6 +1597,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -1575,8 +1643,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -1594,6 +1669,7 @@
             "python",
             "cross-python_osx-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1632,6 +1708,7 @@
             "python",
             "cross-python_osx-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1682,6 +1759,7 @@
         "python",
         "cross-python_osx-arm64",
         "maturin >=1.2.2,<2",
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -1709,6 +1787,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -1763,10 +1842,11 @@
   "pr_info": {
     "__lazy_json__": "pr_info/py-rattler.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.25.0\"\n\nrecipe:\n  name: py-rattler\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/p/py-rattler/py_rattler-${{ version }}.tar.gz\n  sha256: 62d282870d08404898cec16da39f6085964117d19ee2f6d4a15f3ae19bd07860\n\nbuild:\n  number: 3\n\noutputs:\n  - package:\n      name: py-rattler\n    build:\n      skip:\n        - is_abi3 and not is_python_min\n        - not is_abi3 and target_platform == \"linux-ppc64le\"\n      script: build_base\n      python:\n        version_independent: ${{ is_abi3 }}\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - maturin >=1.2.2,<2\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('rust') }}\n        - cargo-bundle-licenses\n        - cargo-auditable\n        - if: target_platform == \"win-arm64\"\n          then:\n            - cmake\n            - ninja\n      host:\n        - python\n        - if: is_abi3\n          then: python-abi3\n        - maturin >=1.2.2,<2\n        - pip\n        - if: unix\n          then:\n            - openssl\n      run:\n        - python\n    tests:\n      - python:\n          imports:\n            - rattler\n          python_version:\n            - if: is_abi3\n              then: ${{ python_min }}.*\n            - \"*\"\n      - if: is_abi3\n        then:\n          script:\n            - if: win\n              then: abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n              else: abi3audit $SP_DIR/rattler/rattler.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n          requirements:\n            run:\n              - abi3audit\n\n  - package:\n      name: py_rattler\n    build:\n      noarch: generic\n      skip: not (target_platform == \"linux-64\" and is_abi3 and is_python_min)\n    requirements:\n      run:\n        - ${{ pin_subpackage('py-rattler', upper_bound=\"x.x.x\") }}\n    tests:\n      - python:\n          imports:\n            - rattler\n    about:\n      license_file: []\n\nabout:\n  homepage: https://github.com/conda/rattler\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - py-rattler/THIRDPARTY.yml\n  summary: A blazing fast library to work with the conda ecosystem\n  description: |\n    Rattler is a library that provides common functionality used within the conda\n    ecosystem. The goal of the library is to enable programs and other libraries to\n    easily interact with the conda ecosystem without being dependent on Python. Its\n    primary use case is as a library that you can use to provide conda related\n    workflows in your own tools.\n  repository: https://github.com/conda/rattler\n\nextra:\n  feedstock-name: py-rattler\n  recipe-maintainers:\n    - baszalmstra\n    - pavelzw\n",
+  "raw_meta_yaml": "context:\n  version: \"0.25.0\"\n\nrecipe:\n  name: py-rattler\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/p/py-rattler/py_rattler-${{ version }}.tar.gz\n  sha256: 62d282870d08404898cec16da39f6085964117d19ee2f6d4a15f3ae19bd07860\n\nbuild:\n  number: 4\n\noutputs:\n  - package:\n      name: py-rattler\n    build:\n      skip:\n        - is_abi3 and not is_python_min\n        - not is_abi3 and target_platform == \"linux-ppc64le\"\n      script:\n        interpreter: brush\n        env:\n          CARGO_PROFILE_RELEASE_STRIP: symbols\n          CARGO_PROFILE_RELEASE_LTO: fat\n        content: |\n          # Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\n          if [[ \"$target_platform\" == win-* ]]; then\n            echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n            export CARGO=\"cargo-auditable-wrapper.bat\"\n          else\n            mkdir -p \"$BUILD_PREFIX/bin\"\n            printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n            chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n            export CARGO=\"cargo-auditable-wrapper\"\n          fi\n\n          # Use native-tls on conda-forge\n          export MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\n          if [[ \"$target_platform\" == win-* ]]; then\n            export PYO3_PYTHON=\"$PYTHON\"\n            export CMAKE_GENERATOR=\"NMake Makefiles\"\n            export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\n          else\n            export OPENSSL_DIR=\"$PREFIX\"\n          fi\n\n          if [[ \"$target_platform\" == \"win-arm64\" ]]; then\n            # Keep CMake's object paths below Windows' limit.\n            export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n            export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n            # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n            export AWS_LC_SYS_CMAKE_BUILDER=1\n            export CC_aarch64_pc_windows_msvc=clang-cl.exe\n            export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n            export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n            export CMAKE_GENERATOR=Ninja\n          fi\n\n          # rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n          # (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n          # crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n          # that platform, which handles these relocations. gcc honors the last\n          # -fuse-ld, so this overrides rustc's bundled rust-lld default.\n          if [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n            export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\n          fi\n\n          # Run the maturin build via pip which works for direct and\n          # cross-compiled builds.\n          \"$PYTHON\" -m pip install . -vv\n\n          cd py-rattler\n          cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n      python:\n        version_independent: ${{ is_abi3 }}\n    requirements:\n      build:\n        - if: build_platform != target_platform\n          then:\n            - python\n            - cross-python_${{ target_platform }}\n            - maturin >=1.2.2,<2\n        - brush\n        - ${{ compiler('c') }}\n        - ${{ stdlib(\"c\") }}\n        - ${{ compiler('rust') }}\n        - cargo-bundle-licenses\n        - cargo-auditable\n        - if: target_platform == \"win-arm64\"\n          then:\n            - cmake\n            - ninja\n      host:\n        - python\n        - if: is_abi3\n          then: python-abi3\n        - maturin >=1.2.2,<2\n        - pip\n        - if: unix\n          then:\n            - openssl\n      run:\n        - python\n    tests:\n      - python:\n          imports:\n            - rattler\n          python_version:\n            - if: is_abi3\n              then: ${{ python_min }}.*\n            - \"*\"\n      - if: is_abi3\n        then:\n          script:\n            - if: win\n              then: abi3audit %SP_DIR%/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n              else: abi3audit $SP_DIR/rattler/rattler.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n          requirements:\n            run:\n              - abi3audit\n\n  - package:\n      name: py_rattler\n    build:\n      noarch: generic\n      skip: not (target_platform == \"linux-64\" and is_abi3 and is_python_min)\n    requirements:\n      run:\n        - ${{ pin_subpackage('py-rattler', upper_bound=\"x.x.x\") }}\n    tests:\n      - python:\n          imports:\n            - rattler\n    about:\n      license_file: []\n\nabout:\n  homepage: https://github.com/conda/rattler\n  license: BSD-3-Clause\n  license_file:\n    - LICENSE\n    - py-rattler/THIRDPARTY.yml\n  summary: A blazing fast library to work with the conda ecosystem\n  description: |\n    Rattler is a library that provides common functionality used within the conda\n    ecosystem. The goal of the library is to enable programs and other libraries to\n    easily interact with the conda ecosystem without being dependent on Python. Its\n    primary use case is as a library that you can use to provide conda related\n    workflows in your own tools.\n  repository: https://github.com/conda/rattler\n\nextra:\n  feedstock-name: py-rattler\n  recipe-maintainers:\n    - baszalmstra\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
+      "brush",
       "c_compiler_stub",
       "c_stdlib_stub",
       "cargo-auditable",
@@ -1792,6 +1872,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -1845,6 +1926,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -1903,8 +1985,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -1922,6 +2011,7 @@
             "python",
             "cross-python_win-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1959,6 +2049,7 @@
             "python",
             "cross-python_win-64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -1993,7 +2084,7 @@
                 "abi3audit"
               ]
             },
-            "script": "abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+            "script": "abi3audit %SP_DIR%/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "0.25.0"
@@ -2008,6 +2099,7 @@
         "python",
         "cross-python_win-64",
         "maturin >=1.2.2,<2",
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -2034,6 +2126,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
@@ -2078,8 +2171,15 @@
       "summary": "A blazing fast library to work with the conda ecosystem"
     },
     "build": {
-      "number": "3",
-      "script": "build_base"
+      "number": "4",
+      "script": {
+        "content": "# Remove this wrapper once https://github.com/conda-forge/rust-activation-feedstock/pull/79 is merged\nif [[ \"$target_platform\" == win-* ]]; then\n  echo 'cargo auditable %*' > \"$BUILD_PREFIX/Library/bin/cargo-auditable-wrapper.bat\"\n  export CARGO=\"cargo-auditable-wrapper.bat\"\nelse\n  mkdir -p \"$BUILD_PREFIX/bin\"\n  printf '#!/usr/bin/env sh\\nexec cargo auditable \"$@\"\\n' > \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  chmod +x \"$BUILD_PREFIX/bin/cargo-auditable-wrapper\"\n  export CARGO=\"cargo-auditable-wrapper\"\nfi\n\n# Use native-tls on conda-forge\nexport MATURIN_PEP517_ARGS=\"--no-default-features --features=native-tls\"\n\nif [[ \"$target_platform\" == win-* ]]; then\n  export PYO3_PYTHON=\"$PYTHON\"\n  export CMAKE_GENERATOR=\"NMake Makefiles\"\n  export MATURIN_PEP517_ARGS=\"$MATURIN_PEP517_ARGS --jobs 1\"\nelse\n  export OPENSSL_DIR=\"$PREFIX\"\nfi\n\nif [[ \"$target_platform\" == \"win-arm64\" ]]; then\n  # Keep CMake's object paths below Windows' limit.\n  export CARGO_TARGET_DIR=\"$TMP/py-rattler-cargo-target\"\n  export CARGO_HOME=\"$TMP/py-rattler-cargo-home\"\n\n  # Use CMake for aws-lc-sys and clang-cl for its ARM64 assembly.\n  export AWS_LC_SYS_CMAKE_BUILDER=1\n  export CC_aarch64_pc_windows_msvc=clang-cl.exe\n  export CXX_aarch64_pc_windows_msvc=clang-cl.exe\n  export ASM_aarch64_pc_windows_msvc=clang-cl.exe\n  export CMAKE_GENERATOR=Ninja\nfi\n\n# rust-lld (LLD) cannot handle some of the relocations GCC emits for ppc64le\n# (e.g. inline-PLT R_PPC64_PLTSEQ/PLTCALL), which breaks linking of C-based\n# crates such as aws-lc-sys and libdbus-sys. Fall back to the GNU bfd linker on\n# that platform, which handles these relocations. gcc honors the last\n# -fuse-ld, so this overrides rustc's bundled rust-lld default.\nif [[ \"$target_platform\" == \"linux-ppc64le\" ]]; then\n  export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\nfi\n\n# Run the maturin build via pip which works for direct and\n# cross-compiled builds.\n\"$PYTHON\" -m pip install . -vv\n\ncd py-rattler\ncargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n",
+        "env": {
+          "CARGO_PROFILE_RELEASE_LTO": "fat",
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        },
+        "interpreter": "brush"
+      }
     },
     "extra": {
       "feedstock-name": "py-rattler",
@@ -2097,6 +2197,7 @@
             "python",
             "cross-python_win-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -2136,6 +2237,7 @@
             "python",
             "cross-python_win-arm64",
             "maturin >=1.2.2,<2",
+            "brush",
             "c_compiler_stub",
             "c_stdlib_stub",
             "rust_compiler_stub",
@@ -2172,7 +2274,7 @@
                 "abi3audit"
               ]
             },
-            "script": "abi3audit %PREFIX%/Lib/site-packages/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+            "script": "abi3audit %SP_DIR%/rattler/rattler.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
           }
         ],
         "version": "0.25.0"
@@ -2187,6 +2289,7 @@
         "python",
         "cross-python_win-arm64",
         "maturin >=1.2.2,<2",
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "rust_compiler_stub",
@@ -2215,6 +2318,7 @@
     "build": {
       "__set__": true,
       "elements": [
+        "brush",
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-auditable",
