@@ -1,10 +1,14 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npython_min:\n- '3.11'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
   "conda-forge.yml": {
     "bot": {
       "automerge": true
+    },
+    "build_platform": {
+      "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64"
     },
     "conda_build": {
       "error_overlinking": true
@@ -18,17 +22,19 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "osx_arm64": "default"
+      "osx_arm64": "default",
+      "win_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "bb9a0a2a5d0a449facbfc563e4f558ede68ef1ce",
-  "feedstock_hash_ts": 1788398025,
+  "feedstock_hash": "843b5de2ee55577f943ac615edf3d65f6fc3e1a8",
+  "feedstock_hash_ts": 1788616483,
   "feedstock_name": "ty",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
       "home": "https://github.com/astral-sh/ty",
       "license": "MIT",
       "license_family": "MIT",
@@ -36,15 +42,18 @@
       "summary": "An extremely fast Python type checker and language server, written in Rust."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "mkdir -p \"${PREFIX}/etc/pixi/ty\"",
           "touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"",
-          "maturin build --release",
-          "${{ PYTHON }} -m pip install --find-links=ruff/target/wheels ty",
-          "cd ruff",
-          "cargo-bundle-licenses --format yaml --output ../THIRDPARTY.yml"
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/ty generate-shell-completion zsh > $PREFIX/share/zsh/site-functions/_ty",
+          "$PREFIX/bin/ty generate-shell-completion bash > $PREFIX/share/bash-completion/completions/ty",
+          "$PREFIX/bin/ty generate-shell-completion fish > $PREFIX/share/fish/vendor_completions.d/ty.fish"
         ]
       }
     },
@@ -59,36 +68,75 @@
         "name": "ty",
         "requirements": {
           "build": [
-            "cargo-bundle-licenses",
             "rust_compiler_stub",
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
             "make"
           ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
-            "python": {
-              "imports": [
+            "package_contents": {
+              "bin": [
                 "ty"
               ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
             }
           },
           {
-            "script": "ty --help"
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
           }
         ],
         "version": "0.0.78"
@@ -100,26 +148,18 @@
     },
     "requirements": {
       "build": [
-        "cargo-bundle-licenses",
         "rust_compiler_stub",
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable",
         "make"
-      ],
-      "host": [
-        "python 3.11.*",
-        "python-abi3",
-        "maturin >=1.0,<2",
-        "pip"
-      ],
-      "run": [
-        "python"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "770b45854f85fa11595208f08c0f28df80943164d10a2832d86be6ac29f135b2",
-      "url": "https://pypi.org/packages/source/t/ty/ty-0.0.78.tar.gz"
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -128,6 +168,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
         "make",
         "rust_compiler_stub"
@@ -135,29 +176,21 @@
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "maturin",
-        "pip",
-        "python",
-        "python-abi3"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "python"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pip"
-      ]
+      "elements": []
     }
   },
   "linux_aarch64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
       "home": "https://github.com/astral-sh/ty",
       "license": "MIT",
       "license_family": "MIT",
@@ -165,15 +198,20 @@
       "summary": "An extremely fast Python type checker and language server, written in Rust."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "mkdir -p \"${PREFIX}/etc/pixi/ty\"",
           "touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"",
-          "maturin build --release",
-          "${{ PYTHON }} -m pip install --find-links=ruff/target/wheels ty",
-          "cd ruff",
-          "cargo-bundle-licenses --format yaml --output ../THIRDPARTY.yml"
+          "export TARGET_CFLAGS=\"${CFLAGS}\"",
+          "unset CFLAGS",
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/ty generate-shell-completion zsh > $PREFIX/share/zsh/site-functions/_ty",
+          "$PREFIX/bin/ty generate-shell-completion bash > $PREFIX/share/bash-completion/completions/ty",
+          "$PREFIX/bin/ty generate-shell-completion fish > $PREFIX/share/fish/vendor_completions.d/ty.fish"
         ],
         "env": {
           "JEMALLOC_SYS_WITH_LG_PAGE": "16"
@@ -191,39 +229,36 @@
         "name": "ty",
         "requirements": {
           "build": [
-            "cargo-bundle-licenses",
             "rust_compiler_stub",
             "c_compiler_stub",
             "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2"
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
           ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
-            "python": {
-              "imports": [
+            "package_contents": {
+              "bin": [
                 "ty"
               ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
             }
           },
           {
-            "script": "ty --help"
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
           }
         ],
         "version": "0.0.78"
@@ -235,29 +270,18 @@
     },
     "requirements": {
       "build": [
-        "cargo-bundle-licenses",
         "rust_compiler_stub",
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make",
-        "python 3.11.*",
-        "cross-python_linux-aarch64",
-        "maturin >=1.0,<2"
-      ],
-      "host": [
-        "python 3.11.*",
-        "python-abi3",
-        "maturin >=1.0,<2",
-        "pip"
-      ],
-      "run": [
-        "python"
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "make"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "770b45854f85fa11595208f08c0f28df80943164d10a2832d86be6ac29f135b2",
-      "url": "https://pypi.org/packages/source/t/ty/ty-0.0.78.tar.gz"
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -266,39 +290,29 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
-        "cross-python_linux-aarch64",
         "make",
-        "maturin",
-        "python",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "maturin",
-        "pip",
-        "python",
-        "python-abi3"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "python"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pip"
-      ]
+      "elements": []
     }
   },
-  "meta_yaml": {
+  "linux_ppc64le_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
       "home": "https://github.com/astral-sh/ty",
       "license": "MIT",
       "license_family": "MIT",
@@ -306,17 +320,21 @@
       "summary": "An extremely fast Python type checker and language server, written in Rust."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "mkdir -p \"${PREFIX}/etc/pixi/ty\"",
           "touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"",
-          "maturin build --release",
-          "${{ PYTHON }} -m pip install --find-links=ruff/target/wheels ty",
-          "cd ruff",
-          "cargo-bundle-licenses --format yaml --output ../THIRDPARTY.yml",
-          "if not exist \"%PREFIX%\\\\etc\\\\pixi\" mkdir \"%PREFIX%\\\\etc\\\\pixi\\\\ty\"",
-          "type nul > \"%PREFIX%\\\\etc\\\\pixi\\\\ty\\\\global-ignore-conda-prefix\""
+          "export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"",
+          "export TARGET_CFLAGS=\"${CFLAGS}\"",
+          "unset CFLAGS",
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/ty generate-shell-completion zsh > $PREFIX/share/zsh/site-functions/_ty",
+          "$PREFIX/bin/ty generate-shell-completion bash > $PREFIX/share/bash-completion/completions/ty",
+          "$PREFIX/bin/ty generate-shell-completion fish > $PREFIX/share/fish/vendor_completions.d/ty.fish"
         ],
         "env": {
           "JEMALLOC_SYS_WITH_LG_PAGE": "16"
@@ -334,204 +352,36 @@
         "name": "ty",
         "requirements": {
           "build": [
-            "cargo-bundle-licenses",
             "rust_compiler_stub",
             "c_compiler_stub",
             "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
             "make"
           ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
-            "python": {
-              "imports": [
+            "package_contents": {
+              "bin": [
                 "ty"
               ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
             }
           },
           {
-            "script": "ty --help"
-          }
-        ],
-        "version": "0.0.78"
-      },
-      {
-        "build": null,
-        "name": "ty",
-        "requirements": {
-          "build": [
-            "cargo-bundle-licenses",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_linux-aarch64",
-            "maturin >=1.0,<2"
-          ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "ty"
-              ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
-            }
-          },
-          {
-            "script": "ty --help"
-          }
-        ],
-        "version": "0.0.78"
-      },
-      {
-        "build": null,
-        "name": "ty",
-        "requirements": {
-          "build": [
-            "cargo-bundle-licenses",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2"
-          ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "ty"
-              ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
-            }
-          },
-          {
-            "script": "ty --help"
-          }
-        ],
-        "version": "0.0.78"
-      },
-      {
-        "build": null,
-        "name": "ty",
-        "requirements": {
-          "build": [
-            "cargo-bundle-licenses",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2"
-          ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "ty"
-              ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
-            }
-          },
-          {
-            "script": "ty --help"
-          }
-        ],
-        "version": "0.0.78"
-      },
-      {
-        "build": null,
-        "name": "ty",
-        "requirements": {
-          "build": [
-            "cargo-bundle-licenses",
-            "rust_compiler_stub",
-            "c_compiler_stub",
-            "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_win-64",
-            "maturin >=1.0,<2"
-          ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
-        },
-        "tests": [
-          {
-            "python": {
-              "imports": [
-                "ty"
-              ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
-            }
-          },
-          {
-            "script": "ty --help"
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
           }
         ],
         "version": "0.0.78"
@@ -543,38 +393,49 @@
     },
     "requirements": {
       "build": [
-        "cargo-bundle-licenses",
         "rust_compiler_stub",
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make",
-        "python 3.11.*",
-        "cross-python_linux-aarch64",
-        "maturin >=1.0,<2",
-        "cross-python_osx-64",
-        "cross-python_osx-arm64",
-        "cross-python_win-64"
-      ],
-      "host": [
-        "python 3.11.*",
-        "python-abi3",
-        "maturin >=1.0,<2",
-        "pip"
-      ],
-      "run": [
-        "python"
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "make"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "770b45854f85fa11595208f08c0f28df80943164d10a2832d86be6ac29f135b2",
-      "url": "https://pypi.org/packages/source/t/ty/ty-0.0.78.tar.gz"
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
     }
   },
-  "name": "ty",
-  "osx_64_meta_yaml": {
+  "linux_ppc64le_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "make",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "meta_yaml": {
     "about": {
       "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
       "home": "https://github.com/astral-sh/ty",
       "license": "MIT",
       "license_family": "MIT",
@@ -582,15 +443,387 @@
       "summary": "An extremely fast Python type checker and language server, written in Rust."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "mkdir -p \"${PREFIX}/etc/pixi/ty\"",
           "touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"",
-          "maturin build --release",
-          "${{ PYTHON }} -m pip install --find-links=ruff/target/wheels ty",
-          "cd ruff",
-          "cargo-bundle-licenses --format yaml --output ../THIRDPARTY.yml"
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/ty generate-shell-completion zsh > $PREFIX/share/zsh/site-functions/_ty",
+          "$PREFIX/bin/ty generate-shell-completion bash > $PREFIX/share/bash-completion/completions/ty",
+          "$PREFIX/bin/ty generate-shell-completion fish > $PREFIX/share/fish/vendor_completions.d/ty.fish",
+          "export TARGET_CFLAGS=\"${CFLAGS}\"",
+          "unset CFLAGS",
+          "export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"",
+          "if not exist \"%PREFIX%\\\\etc\\\\pixi\" mkdir \"%PREFIX%\\\\etc\\\\pixi\\\\ty\"",
+          "type nul > \"%PREFIX%\\\\etc\\\\pixi\\\\ty\\\\global-ignore-conda-prefix\"",
+          "cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path ."
+        ],
+        "env": {
+          "JEMALLOC_SYS_WITH_LG_PAGE": "16"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      },
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      }
+    ],
+    "package": {
+      "name": "ty",
+      "version": "0.0.78"
+    },
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "make"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
+    }
+  },
+  "name": "ty",
+  "osx_64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
+      "home": "https://github.com/astral-sh/ty",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "An extremely fast Python type checker and language server, written in Rust."
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "mkdir -p \"${PREFIX}/etc/pixi/ty\"",
+          "touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"",
+          "export TARGET_CFLAGS=\"${CFLAGS}\"",
+          "unset CFLAGS",
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/ty generate-shell-completion zsh > $PREFIX/share/zsh/site-functions/_ty",
+          "$PREFIX/bin/ty generate-shell-completion bash > $PREFIX/share/bash-completion/completions/ty",
+          "$PREFIX/bin/ty generate-shell-completion fish > $PREFIX/share/fish/vendor_completions.d/ty.fish"
         ]
       }
     },
@@ -605,39 +838,36 @@
         "name": "ty",
         "requirements": {
           "build": [
-            "cargo-bundle-licenses",
             "rust_compiler_stub",
             "c_compiler_stub",
             "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_osx-64",
-            "maturin >=1.0,<2"
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
           ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
-            "python": {
-              "imports": [
+            "package_contents": {
+              "bin": [
                 "ty"
               ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
             }
           },
           {
-            "script": "ty --help"
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
           }
         ],
         "version": "0.0.78"
@@ -649,29 +879,18 @@
     },
     "requirements": {
       "build": [
-        "cargo-bundle-licenses",
         "rust_compiler_stub",
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make",
-        "python 3.11.*",
-        "cross-python_osx-64",
-        "maturin >=1.0,<2"
-      ],
-      "host": [
-        "python 3.11.*",
-        "python-abi3",
-        "maturin >=1.0,<2",
-        "pip"
-      ],
-      "run": [
-        "python"
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "make"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "770b45854f85fa11595208f08c0f28df80943164d10a2832d86be6ac29f135b2",
-      "url": "https://pypi.org/packages/source/t/ty/ty-0.0.78.tar.gz"
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -680,39 +899,29 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
-        "cross-python_osx-64",
         "make",
-        "maturin",
-        "python",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "maturin",
-        "pip",
-        "python",
-        "python-abi3"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "python"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pip"
-      ]
+      "elements": []
     }
   },
   "osx_arm64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
       "home": "https://github.com/astral-sh/ty",
       "license": "MIT",
       "license_family": "MIT",
@@ -720,15 +929,20 @@
       "summary": "An extremely fast Python type checker and language server, written in Rust."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "mkdir -p \"${PREFIX}/etc/pixi/ty\"",
           "touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"",
-          "maturin build --release",
-          "${{ PYTHON }} -m pip install --find-links=ruff/target/wheels ty",
-          "cd ruff",
-          "cargo-bundle-licenses --format yaml --output ../THIRDPARTY.yml"
+          "export TARGET_CFLAGS=\"${CFLAGS}\"",
+          "unset CFLAGS",
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml",
+          "mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d",
+          "$PREFIX/bin/ty generate-shell-completion zsh > $PREFIX/share/zsh/site-functions/_ty",
+          "$PREFIX/bin/ty generate-shell-completion bash > $PREFIX/share/bash-completion/completions/ty",
+          "$PREFIX/bin/ty generate-shell-completion fish > $PREFIX/share/fish/vendor_completions.d/ty.fish"
         ]
       }
     },
@@ -743,39 +957,36 @@
         "name": "ty",
         "requirements": {
           "build": [
-            "cargo-bundle-licenses",
             "rust_compiler_stub",
             "c_compiler_stub",
             "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_osx-arm64",
-            "maturin >=1.0,<2"
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "make"
           ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
-            "python": {
-              "imports": [
+            "package_contents": {
+              "bin": [
                 "ty"
               ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix",
+                "share/zsh/site-functions/_ty",
+                "share/bash-completion/completions/ty",
+                "share/fish/vendor_completions.d/ty.fish"
+              ],
+              "strict": true
             }
           },
           {
-            "script": "ty --help"
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
           }
         ],
         "version": "0.0.78"
@@ -787,29 +998,18 @@
     },
     "requirements": {
       "build": [
-        "cargo-bundle-licenses",
         "rust_compiler_stub",
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make",
-        "python 3.11.*",
-        "cross-python_osx-arm64",
-        "maturin >=1.0,<2"
-      ],
-      "host": [
-        "python 3.11.*",
-        "python-abi3",
-        "maturin >=1.0,<2",
-        "pip"
-      ],
-      "run": [
-        "python"
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "make"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "770b45854f85fa11595208f08c0f28df80943164d10a2832d86be6ac29f135b2",
-      "url": "https://pypi.org/packages/source/t/ty/ty-0.0.78.tar.gz"
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -818,34 +1018,23 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
-        "cross-python_osx-arm64",
         "make",
-        "maturin",
-        "python",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "maturin",
-        "pip",
-        "python",
-        "python-abi3"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "python"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pip"
-      ]
+      "elements": []
     }
   },
   "outputs_names": {
@@ -858,29 +1047,24 @@
   "platforms": [
     "linux_64",
     "linux_aarch64",
+    "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/ty.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\n\nschema_version: 1\n\ncontext:\n  name: ty\n  version: \"0.0.78\"\n\npackage:\n  name: \"${{ name|lower }}\"\n  version: \"${{ version }}\"\n\nsource:\n  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz\n  sha256: 770b45854f85fa11595208f08c0f28df80943164d10a2832d86be6ac29f135b2\n\nbuild:\n  number: 0\n  script:\n    env:\n      JEMALLOC_SYS_WITH_LG_PAGE: ${{ '16' if (aarch64 or ppc64le) else '' }}\n    content:\n      # Tell `pixi global` to not set CONDA_PREFIX during activation\n      # https://pixi.sh/dev/global_tools/introduction/#opt-out-of-conda_prefix\n      - if: win\n        then:\n          - if not exist \"%PREFIX%\\\\etc\\\\pixi\" mkdir \"%PREFIX%\\\\etc\\\\pixi\\\\ty\"\n          - type nul > \"%PREFIX%\\\\etc\\\\pixi\\\\ty\\\\global-ignore-conda-prefix\"\n        else:\n          - mkdir -p \"${PREFIX}/etc/pixi/ty\"\n          - touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"\n      - maturin build --release\n      - ${{ PYTHON }} -m pip install --find-links=ruff/target/wheels ty\n      - cd ruff\n      - cargo-bundle-licenses --format yaml --output ../THIRDPARTY.yml\n\n  python:\n    version_independent: true\n\nrequirements:\n  build:\n    - cargo-bundle-licenses\n    - ${{ compiler('rust') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - make\n    - if: build_platform != target_platform\n      then:\n        - python ${{ python_min }}.*\n        - cross-python_${{ target_platform }}\n        - maturin >=1.0,<2\n  host:\n    - python ${{ python_min }}.*\n    - python-abi3\n    - maturin >=1.0,<2\n    - pip\n  run:\n    - python\n\ntests:\n  - python:\n      imports:\n        - ty\n      python_version:\n        - ${{ python_min }}.*\n        - \"*\"\n  - script:\n      - ty --help\n\nabout:\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  summary: An extremely fast Python type checker and language server, written in Rust.\n  homepage: https://github.com/astral-sh/ty\n  repository: https://github.com/astral-sh/ty\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\nschema_version: 1\n\ncontext:\n  version: \"0.0.78\"\n\npackage:\n  name: ty\n  version: ${{ version }}\n\nsource:\n  # this also contains the ruff source code in contrast to https://github.com/astral-sh/ty/archive/refs/tags/${{ version }}.tar.gz\n  url: https://github.com/astral-sh/ty/releases/download/${{ version }}/source.tar.gz\n  sha256: 9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334\n\nbuild:\n  number: 1\n  script:\n    env:\n      JEMALLOC_SYS_WITH_LG_PAGE: ${{ '16' if (aarch64 or ppc64le) else '' }}\n    content:\n      # Tell `pixi global` to not set CONDA_PREFIX during activation\n      # https://pixi.sh/dev/global_tools/introduction/#opt-out-of-conda_prefix\n      - if: win\n        then:\n          - if not exist \"%PREFIX%\\\\etc\\\\pixi\" mkdir \"%PREFIX%\\\\etc\\\\pixi\\\\ty\"\n          - type nul > \"%PREFIX%\\\\etc\\\\pixi\\\\ty\\\\global-ignore-conda-prefix\"\n        else:\n          - mkdir -p \"${PREFIX}/etc/pixi/ty\"\n          - touch \"${PREFIX}/etc/pixi/ty/global-ignore-conda-prefix\"\n      # rust-lld cannot handle some ppc64le relocations emitted by the jemalloc\n      # C sources, so fall back to the bfd linker there\n      - if: target_platform == \"linux-ppc64le\"\n        then: export CARGO_BUILD_RUSTFLAGS=\"${CARGO_BUILD_RUSTFLAGS:-} -C link-arg=-fuse-ld=bfd\"\n      # `zip` (with the `zstd` feature) is a build dependency of `ty_vendored`, so cargo\n      # compiles the `zstd-sys` C sources for the build platform too. cc-rs accumulates\n      # the flags of `CFLAGS` into both compiles, which makes the build platform compiler\n      # choke on the target's `-mcpu=power8` / `-mabi=lp64d`. Pass them via `TARGET_CFLAGS`\n      # instead, which cc-rs only applies to the target compile.\n      - if: build_platform != target_platform\n        then:\n          - export TARGET_CFLAGS=\"${CFLAGS}\"\n          - unset CFLAGS\n      - cd ruff/crates/ty\n      - if: unix\n        then:\n          - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path .\n        else:\n          - cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path .\n      - cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml\n      - if: unix\n        then:\n          - mkdir -p $PREFIX/share/zsh/site-functions $PREFIX/share/bash-completion/completions $PREFIX/share/fish/vendor_completions.d\n          - $PREFIX/bin/ty generate-shell-completion zsh > $PREFIX/share/zsh/site-functions/_ty\n          - $PREFIX/bin/ty generate-shell-completion bash > $PREFIX/share/bash-completion/completions/ty\n          - $PREFIX/bin/ty generate-shell-completion fish > $PREFIX/share/fish/vendor_completions.d/ty.fish\n\nrequirements:\n  build:\n    - ${{ compiler('rust') }}\n    - ${{ compiler('c') }}\n    - ${{ stdlib('c') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    # only needed to build the vendored jemalloc, which is not used on Windows\n    - if: unix\n      then: make\n\ntests:\n  - package_contents:\n      bin:\n        - ty\n      files:\n        - etc/pixi/ty/global-ignore-conda-prefix\n        - if: unix\n          then:\n            - share/zsh/site-functions/_ty\n            - share/bash-completion/completions/ty\n            - share/fish/vendor_completions.d/ty.fish\n      strict: true\n  - script:\n      - ty --help\n      - ty --version\n\nabout:\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  summary: An extremely fast Python type checker and language server, written in Rust.\n  homepage: https://github.com/astral-sh/ty\n  documentation: https://docs.astral.sh/ty\n  repository: https://github.com/astral-sh/ty\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
+      "cargo-auditable",
       "cargo-bundle-licenses",
-      "cross-python_linux-aarch64",
-      "cross-python_osx-64",
-      "cross-python_osx-arm64",
-      "cross-python_win-64",
       "make",
-      "maturin",
-      "pip",
-      "python",
-      "python-abi3",
       "rust_compiler_stub"
     ]
   },
@@ -890,14 +1074,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
-        "cross-python_linux-aarch64",
-        "cross-python_osx-64",
-        "cross-python_osx-arm64",
-        "cross-python_win-64",
         "make",
-        "maturin",
-        "python",
         "rust_compiler_stub"
       ]
     },
@@ -905,28 +1084,19 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
-        "cross-python",
-        "maturin",
-        "pip",
-        "python",
-        "python-abi3"
+        "c_stdlib_stub"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub",
-        "cross-python",
-        "python"
+        "c_stdlib_stub"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pip"
-      ]
+      "elements": []
     }
   },
   "strong_exports": false,
@@ -936,40 +1106,26 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
-        "cross-python_linux-aarch64",
-        "cross-python_osx-64",
-        "cross-python_osx-arm64",
-        "cross-python_win-64",
         "make",
-        "maturin >=1.0,<2",
-        "python 3.11.*",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "maturin >=1.0,<2",
-        "pip",
-        "python 3.11.*",
-        "python-abi3"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "python"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pip"
-      ]
+      "elements": []
     }
   },
-  "url": "https://pypi.org/packages/source/t/ty/ty-0.0.78.tar.gz",
+  "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz",
   "version": "0.0.78",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/ty.json"
@@ -977,6 +1133,7 @@
   "win_64_meta_yaml": {
     "about": {
       "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
       "home": "https://github.com/astral-sh/ty",
       "license": "MIT",
       "license_family": "MIT",
@@ -984,15 +1141,16 @@
       "summary": "An extremely fast Python type checker and language server, written in Rust."
     },
     "build": {
-      "number": "0",
+      "number": "1",
       "script": {
         "content": [
           "if not exist \"%PREFIX%\\\\etc\\\\pixi\" mkdir \"%PREFIX%\\\\etc\\\\pixi\\\\ty\"",
           "type nul > \"%PREFIX%\\\\etc\\\\pixi\\\\ty\\\\global-ignore-conda-prefix\"",
-          "maturin build --release",
-          "${{ PYTHON }} -m pip install --find-links=ruff/target/wheels ty",
-          "cd ruff",
-          "cargo-bundle-licenses --format yaml --output ../THIRDPARTY.yml"
+          "export TARGET_CFLAGS=\"${CFLAGS}\"",
+          "unset CFLAGS",
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml"
         ]
       }
     },
@@ -1007,39 +1165,32 @@
         "name": "ty",
         "requirements": {
           "build": [
-            "cargo-bundle-licenses",
             "rust_compiler_stub",
             "c_compiler_stub",
             "c_stdlib_stub",
-            "make",
-            "python 3.11.*",
-            "cross-python_win-64",
-            "maturin >=1.0,<2"
+            "cargo-bundle-licenses",
+            "cargo-auditable"
           ],
-          "host": [
-            "python 3.11.*",
-            "python-abi3",
-            "maturin >=1.0,<2",
-            "pip"
-          ],
-          "run": [
-            "python"
-          ]
+          "host": [],
+          "run": []
         },
         "tests": [
           {
-            "python": {
-              "imports": [
+            "package_contents": {
+              "bin": [
                 "ty"
               ],
-              "python_version": [
-                "3.11.*",
-                "*"
-              ]
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix"
+              ],
+              "strict": true
             }
           },
           {
-            "script": "ty --help"
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
           }
         ],
         "version": "0.0.78"
@@ -1051,29 +1202,17 @@
     },
     "requirements": {
       "build": [
-        "cargo-bundle-licenses",
         "rust_compiler_stub",
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make",
-        "python 3.11.*",
-        "cross-python_win-64",
-        "maturin >=1.0,<2"
-      ],
-      "host": [
-        "python 3.11.*",
-        "python-abi3",
-        "maturin >=1.0,<2",
-        "pip"
-      ],
-      "run": [
-        "python"
+        "cargo-bundle-licenses",
+        "cargo-auditable"
       ]
     },
     "schema_version": 1,
     "source": {
-      "sha256": "770b45854f85fa11595208f08c0f28df80943164d10a2832d86be6ac29f135b2",
-      "url": "https://pypi.org/packages/source/t/ty/ty-0.0.78.tar.gz"
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -1082,34 +1221,131 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cargo-auditable",
         "cargo-bundle-licenses",
-        "cross-python_win-64",
-        "make",
-        "maturin",
-        "python",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": [
-        "maturin",
-        "pip",
-        "python",
-        "python-abi3"
-      ]
+      "elements": []
     },
     "run": {
       "__set__": true,
-      "elements": [
-        "python"
-      ]
+      "elements": []
     },
     "test": {
       "__set__": true,
-      "elements": [
-        "pip"
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "dev_url": "https://github.com/astral-sh/ty",
+      "doc_url": "https://docs.astral.sh/ty",
+      "home": "https://github.com/astral-sh/ty",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "An extremely fast Python type checker and language server, written in Rust."
+    },
+    "build": {
+      "number": "1",
+      "script": {
+        "content": [
+          "if not exist \"%PREFIX%\\\\etc\\\\pixi\" mkdir \"%PREFIX%\\\\etc\\\\pixi\\\\ty\"",
+          "type nul > \"%PREFIX%\\\\etc\\\\pixi\\\\ty\\\\global-ignore-conda-prefix\"",
+          "export TARGET_CFLAGS=\"${CFLAGS}\"",
+          "unset CFLAGS",
+          "cd ruff/crates/ty",
+          "cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path .",
+          "cargo-bundle-licenses --format yaml --output ../../../THIRDPARTY.yml"
+        ]
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "pavelzw"
       ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "ty",
+        "requirements": {
+          "build": [
+            "rust_compiler_stub",
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "ty"
+              ],
+              "files": [
+                "etc/pixi/ty/global-ignore-conda-prefix"
+              ],
+              "strict": true
+            }
+          },
+          {
+            "script": [
+              "ty --help",
+              "ty --version"
+            ]
+          }
+        ],
+        "version": "0.0.78"
+      }
+    ],
+    "package": {
+      "name": "ty",
+      "version": "0.0.78"
+    },
+    "requirements": {
+      "build": [
+        "rust_compiler_stub",
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "9f5ca730e8be664ba5a9038c22cf15179d6cdc65160b7c7c5f4f763a30827334",
+      "url": "https://github.com/astral-sh/ty/releases/download/0.0.78/source.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
     }
   }
 }
