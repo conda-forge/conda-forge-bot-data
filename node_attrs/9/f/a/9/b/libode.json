@@ -20,8 +20,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ad474432003670a5788ea89ab4e09d91a498e16e",
-  "feedstock_hash_ts": 1788691891,
+  "feedstock_hash": "26fe2a0688e5eacce7ee57741ee98ba3bc0d866d",
+  "feedstock_hash_ts": 1788699327,
   "feedstock_name": "libode",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -45,7 +45,7 @@
         "/lib*/libpthread.*",
         "/lib*/libc.*"
       ],
-      "number": "1",
+      "number": "2",
       "run_exports": [
         "libode"
       ]
@@ -443,7 +443,7 @@
         "/lib*/libpthread.*",
         "/lib*/libc.*"
       ],
-      "number": "1",
+      "number": "2",
       "run_exports": [
         "libode"
       ]
@@ -841,7 +841,7 @@
         "/lib*/libpthread.*",
         "/lib*/libc.*"
       ],
-      "number": "1",
+      "number": "2",
       "run_exports": [
         "libode"
       ]
@@ -1239,7 +1239,7 @@
         "/lib*/libpthread.*",
         "/lib*/libc.*"
       ],
-      "number": "1",
+      "number": "2",
       "run_exports": [
         "libode"
       ]
@@ -3034,7 +3034,7 @@
       "missing_dso_whitelist": [
         "lib/libode*"
       ],
-      "number": "1",
+      "number": "2",
       "run_exports": [
         "libode"
       ]
@@ -3424,7 +3424,7 @@
       "missing_dso_whitelist": [
         "lib/libode*"
       ],
-      "number": "1",
+      "number": "2",
       "run_exports": [
         "libode"
       ]
@@ -3819,7 +3819,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libode.json"
   },
-  "raw_meta_yaml": "# defining package and version\n{% set name = \"libode\" %}\n{% set version = \"0.16.6\" %}\n{% set soversion = \"0.16.6\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://bitbucket.org/odedevs/ode/downloads/ode-{{ version }}.tar.gz\n  sha256: c91a28c6ff2650284784a79c726a380d6afec87ecf7a35c32a6be0c5b74513e8\n  patches:\n    - add-rt-to-dotpc.patch          # [linux]\n    - modify-dotpc-win.patch         # [win]\n    - fix-pkg-config-setup-py.patch  # [win]\n    - distutils-to-setuptools.patch\n    - fix-cython-3.patch\n    - fix-cython-3-1.patch\n\nbuild:\n  number: 1\n  run_exports:\n    # No ABI docs or ABI Laboratory history, better be conservative\n    - {{ pin_subpackage(name, max_pin='x.x.x') }}\n\n  # add libode to the whitelist; it can apparently not be found yet when\n  # pyode is built\n  missing_dso_whitelist:\n    - lib/libode*\n    - $RPATH/librt.*                      # [linux]\n    - $RPATH/libpthread.*                 # [linux]\n    - $RPATH/libc.*                       # [linux]\n    - $RPATH/libpython.*                  # [linux]\n    - /lib*/librt.*                       # [linux]\n    - /lib*/libpthread.*                  # [linux]\n    - /lib*/libc.*                        # [linux]\n  \nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - gnuconfig  # [unix]\n    - {{ compiler('cxx') }}          # stage 1, library\n    - cmake\n    - {{ compiler('c') }}            # stage 2, generate bindings\n    - {{ stdlib('c') }}\n    - pkg-config\n    - m2-patch                       # [win]\n    - make                           # [unix]\n  host:\n    - libccd-double\n    - python\n    - pip\n    - cython\n    - setuptools\n\noutputs:\n  - name: {{ name }}\n    build:\n      run_exports:\n        # No ABI docs or ABI Laboratory history, better be conservative\n        - {{ pin_subpackage(name, max_pin='x.x.x') }}\n    requirements:\n      run:\n        - pthread-stubs                                              # [unix]\n    files:\n      - lib/libode*                                                  # [unix]\n      - lib/pkgconfig/ode.pc                                         # [unix]\n      - lib/cmake/ode-{{ soversion }}                                # [unix]\n      - bin/ode-config                                               # [unix]\n      - include/ode                                                  # [unix]\n      - Library/lib/ode_double.lib                                   # [win]\n      - Library/bin/ode_double.dll                                   # [win]\n      - Library/lib/pkgconfig/ode.pc                                 # [win]\n      - Library/lib/cmake/ode-{{ soversion }}                        # [win]\n      - Library/include/ode                                          # [win]\n\n    test:\n      commands:\n        - test -f $PREFIX/lib/libode${SHLIB_EXT}                     # [unix]\n        - test -f $PREFIX/lib/libode${SHLIB_EXT}.{{ soversion }}     # [linux]\n        - test -f $PREFIX/lib/libode.{{ soversion }}${SHLIB_EXT}     # [osx]\n        - test -f $PREFIX/include/ode/ode.h                          # [unix]\n        - test -f $PREFIX/lib/pkgconfig/ode.pc                       # [unix]\n        - test -f $PREFIX/lib/cmake/ode-{{ soversion }}/ode-config.cmake  # [unix]\n        - if not exist %PREFIX%\\Library\\lib\\ode_double.lib exit 1    # [win]\n        - if not exist %PREFIX%\\Library\\bin\\ode_double.dll exit 1    # [win]\n        - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\ode.pc exit 1   # [win]\n        - if not exist %PREFIX%\\\\Library\\\\lib\\\\cmake\\\\ode-{{ soversion }}\\\\ode-config.cmake exit 1  # [win]\n        - if not exist %PREFIX%\\\\Library\\\\include\\\\ode\\\\ode.h exit 1  # [win]\n        - cmake-package-check ODE\n      requires:\n        - cmake-package-check\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n\n  - name: pyode\n    build:\n      run_exports:\n        # No ABI docs or ABI Laboratory history, better be conservative\n        - {{ pin_subpackage(name, max_pin='x.x.x') }}\n    requirements:\n      run:\n        - libode\n    files:\n      - lib/python{{ PY_VER }}/site-packages/ode.*                   # [unix]\n      - lib/python{{ PY_VER }}/site-packages/Open_Dynamics_Engine*egg-info  # [unix]\n      - Lib/site-packages/ode.*.pyd                                  # [win and py<315]\n      - Lib/site-packages/open_dynamics_engine-*.dist-info/**        # [win and py<315]\n      # Python 3.15 adopts a Unix-like Windows layout:\n      # https://github.com/conda-forge/python-feedstock/pull/908\n      - lib/python/site-packages/ode.*.pyd                            # [win and py>=315]\n      - lib/python/site-packages/open_dynamics_engine-*.dist-info/**  # [win and py>=315]\n    test:\n      imports:\n        - ode\n\nabout:\n  home: https://www.ode.org/\n  license: LGPL-2.1-or-later OR BSD-4-Clause\n  summary: Open Dynamics Engine, dynamics simulation\n  license_file:\n    - LICENSE.TXT\n    - LICENSE-BSD.TXT\n\nextra:\n  recipe-maintainers:\n    - repagh\n    - traversaro\n",
+  "raw_meta_yaml": "# defining package and version\n{% set name = \"libode\" %}\n{% set version = \"0.16.6\" %}\n{% set soversion = \"0.16.6\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://bitbucket.org/odedevs/ode/downloads/ode-{{ version }}.tar.gz\n  sha256: c91a28c6ff2650284784a79c726a380d6afec87ecf7a35c32a6be0c5b74513e8\n  patches:\n    - add-rt-to-dotpc.patch          # [linux]\n    - modify-dotpc-win.patch         # [win]\n    - fix-pkg-config-setup-py.patch  # [win]\n    - distutils-to-setuptools.patch\n    - fix-cython-3.patch\n    - fix-cython-3-1.patch\n\nbuild:\n  number: 2\n  run_exports:\n    # No ABI docs or ABI Laboratory history, better be conservative\n    - {{ pin_subpackage(name, max_pin='x.x.x') }}\n\n  # add libode to the whitelist; it can apparently not be found yet when\n  # pyode is built\n  missing_dso_whitelist:\n    - lib/libode*\n    - $RPATH/librt.*                      # [linux]\n    - $RPATH/libpthread.*                 # [linux]\n    - $RPATH/libc.*                       # [linux]\n    - $RPATH/libpython.*                  # [linux]\n    - /lib*/librt.*                       # [linux]\n    - /lib*/libpthread.*                  # [linux]\n    - /lib*/libc.*                        # [linux]\n  \nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - gnuconfig  # [unix]\n    - {{ compiler('cxx') }}          # stage 1, library\n    - cmake\n    - {{ compiler('c') }}            # stage 2, generate bindings\n    - {{ stdlib('c') }}\n    - pkg-config\n    - m2-patch                       # [win]\n    - make                           # [unix]\n  host:\n    - libccd-double\n    - python\n    - pip\n    - cython\n    - setuptools\n\noutputs:\n  - name: {{ name }}\n    build:\n      run_exports:\n        # No ABI docs or ABI Laboratory history, better be conservative\n        - {{ pin_subpackage(name, max_pin='x.x.x') }}\n    requirements:\n      run:\n        - pthread-stubs                                              # [unix]\n    files:\n      - lib/libode*                                                  # [unix]\n      - lib/pkgconfig/ode.pc                                         # [unix]\n      - lib/cmake/ode-{{ soversion }}                                # [unix]\n      - bin/ode-config                                               # [unix]\n      - include/ode                                                  # [unix]\n      - Library/lib/ode_double.lib                                   # [win]\n      - Library/bin/ode_double.dll                                   # [win]\n      - Library/lib/pkgconfig/ode.pc                                 # [win]\n      - Library/lib/cmake/ode-{{ soversion }}                        # [win]\n      - Library/include/ode                                          # [win]\n\n    test:\n      commands:\n        - test -f $PREFIX/lib/libode${SHLIB_EXT}                     # [unix]\n        - test -f $PREFIX/lib/libode${SHLIB_EXT}.{{ soversion }}     # [linux]\n        - test -f $PREFIX/lib/libode.{{ soversion }}${SHLIB_EXT}     # [osx]\n        - test -f $PREFIX/include/ode/ode.h                          # [unix]\n        - test -f $PREFIX/lib/pkgconfig/ode.pc                       # [unix]\n        - test -f $PREFIX/lib/cmake/ode-{{ soversion }}/ode-config.cmake  # [unix]\n        - if not exist %PREFIX%\\Library\\lib\\ode_double.lib exit 1    # [win]\n        - if not exist %PREFIX%\\Library\\bin\\ode_double.dll exit 1    # [win]\n        - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\ode.pc exit 1   # [win]\n        - if not exist %PREFIX%\\\\Library\\\\lib\\\\cmake\\\\ode-{{ soversion }}\\\\ode-config.cmake exit 1  # [win]\n        - if not exist %PREFIX%\\\\Library\\\\include\\\\ode\\\\ode.h exit 1  # [win]\n        - cmake-package-check ODE\n      requires:\n        - cmake-package-check\n        - {{ compiler('c') }}\n        - {{ compiler('cxx') }}\n        - {{ stdlib('c') }}\n\n  - name: pyode\n    build:\n      run_exports:\n        # No ABI docs or ABI Laboratory history, better be conservative\n        - {{ pin_subpackage(name, max_pin='x.x.x') }}\n    requirements:\n      run:\n        - libode\n    files:\n      - lib/python{{ PY_VER }}/site-packages/ode.*                   # [unix]\n      - lib/python{{ PY_VER }}/site-packages/Open_Dynamics_Engine*egg-info  # [unix]\n      - Lib/site-packages/ode.*.pyd                                  # [win and py<315]\n      - Lib/site-packages/open_dynamics_engine-*.dist-info/**        # [win and py<315]\n      # Python 3.15 adopts a Unix-like Windows layout:\n      # https://github.com/conda-forge/python-feedstock/pull/908\n      - lib/python/site-packages/ode.*.pyd                            # [win and py>=315]\n      - lib/python/site-packages/open_dynamics_engine-*.dist-info/**  # [win and py>=315]\n    test:\n      imports:\n        - ode\n\nabout:\n  home: https://www.ode.org/\n  license: LGPL-2.1-or-later OR BSD-4-Clause\n  summary: Open Dynamics Engine, dynamics simulation\n  license_file:\n    - LICENSE.TXT\n    - LICENSE-BSD.TXT\n\nextra:\n  recipe-maintainers:\n    - repagh\n    - traversaro\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -3948,7 +3948,7 @@
       "missing_dso_whitelist": [
         "lib/libode*"
       ],
-      "number": "1",
+      "number": "2",
       "run_exports": [
         "libode"
       ]
