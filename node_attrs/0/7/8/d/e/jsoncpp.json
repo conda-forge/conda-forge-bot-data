@@ -2,6 +2,7 @@
   "archived": false,
   "branch": "main",
   "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\n",
+  "ci_support_migrations": {},
   "conda-forge.yml": {
     "build_platform": {
       "linux_ppc64le": "linux_64",
@@ -21,12 +22,13 @@
       "linux_aarch64": "default",
       "linux_ppc64le": "default",
       "osx_arm64": "default",
-      "win": "default"
+      "win": "default",
+      "win_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "9c2155da3df03b06ca8865270f795df8f3a6bab7",
-  "feedstock_hash_ts": 1787250589,
+  "feedstock_hash": "102dd7d87fd57adc6aaad96daddbe375f8209508",
+  "feedstock_hash_ts": 1789213554,
   "feedstock_name": "jsoncpp",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -38,7 +40,7 @@
       "summary": "A C++ library for interacting with JSON."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "jsoncpp"
@@ -174,7 +176,7 @@
       "summary": "A C++ library for interacting with JSON."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "jsoncpp"
@@ -277,7 +279,7 @@
       "summary": "A C++ library for interacting with JSON."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "jsoncpp"
@@ -380,7 +382,7 @@
       "summary": "A C++ library for interacting with JSON."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "jsoncpp"
@@ -626,6 +628,58 @@
           }
         ],
         "version": "1.9.8"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "jsoncpp"
+          ]
+        },
+        "name": "jsoncpp",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "json/json.h"
+              ],
+              "lib": [
+                "jsoncpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "consumer"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "cmake"
+              ]
+            },
+            "script": [
+              "cmake -S consumer -B consumer-build -G \"NMake Makefiles\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=\"%LIBRARY_PREFIX%\"",
+              "cmake --build consumer-build",
+              "consumer-build\\jsoncpp_consumer.exe",
+              "dumpbin /headers consumer-build\\jsoncpp_consumer.exe | findstr /I /C:\"AA64 machine (ARM64)\"",
+              "dumpbin /headers \"%LIBRARY_BIN%\\jsoncpp.dll\" | findstr /I /C:\"AA64 machine (ARM64)\""
+            ]
+          }
+        ],
+        "version": "1.9.8"
       }
     ],
     "package": {
@@ -657,7 +711,7 @@
       "summary": "A C++ library for interacting with JSON."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "jsoncpp"
@@ -760,7 +814,7 @@
       "summary": "A C++ library for interacting with JSON."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "jsoncpp"
@@ -867,12 +921,13 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/jsoncpp.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.9.8\"\n\npackage:\n  name: jsoncpp\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/open-source-parsers/jsoncpp/archive/${{ version }}.tar.gz\n  sha256: 51828cf3574281d2b79ec2a1c56a9e4c20cc1103711321ea96384cffb8d2d904\n\nbuild:\n  number: 1\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - if: unix\n      then: pkg-config\n  run_exports:\n    - ${{ pin_subpackage('jsoncpp', upper_bound='x.x.x') }}\n\ntests:\n  - package_contents:\n      include:\n        - json/json.h\n      lib:\n        - jsoncpp\n\nabout:\n  homepage: https://github.com/open-source-parsers/jsoncpp\n  license: LicenseRef-Public-Domain OR MIT\n  license_file: LICENSE\n  summary: A C++ library for interacting with JSON.\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - jschueller\n    - stuarteberg\n    - marcelotrevisani\n    - matthiasdiener\n",
+  "raw_meta_yaml": "context:\n  version: \"1.9.8\"\n\npackage:\n  name: jsoncpp\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/open-source-parsers/jsoncpp/archive/${{ version }}.tar.gz\n  sha256: 51828cf3574281d2b79ec2a1c56a9e4c20cc1103711321ea96384cffb8d2d904\n\nbuild:\n  number: 2\n\nrequirements:\n  build:\n    - ${{ compiler(\"cxx\") }}\n    - ${{ stdlib(\"c\") }}\n    - cmake\n    - ninja\n    - if: unix\n      then: pkg-config\n  run_exports:\n    - ${{ pin_subpackage('jsoncpp', upper_bound='x.x.x') }}\n\ntests:\n  - package_contents:\n      include:\n        - json/json.h\n      lib:\n        - jsoncpp\n\n  - if: win and arm64\n    then:\n      requirements:\n        run:\n          - ${{ compiler('cxx') }}\n          - cmake\n      files:\n        recipe:\n          - consumer\n      script:\n        - cmake -S consumer -B consumer-build -G \"NMake Makefiles\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=\"%LIBRARY_PREFIX%\"\n        - cmake --build consumer-build\n        - consumer-build\\jsoncpp_consumer.exe\n        - dumpbin /headers consumer-build\\jsoncpp_consumer.exe | findstr /I /C:\"AA64 machine (ARM64)\"\n        - dumpbin /headers \"%LIBRARY_BIN%\\jsoncpp.dll\" | findstr /I /C:\"AA64 machine (ARM64)\"\n\nabout:\n  homepage: https://github.com/open-source-parsers/jsoncpp\n  license: LicenseRef-Public-Domain OR MIT\n  license_file: LICENSE\n  summary: A C++ library for interacting with JSON.\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - jschueller\n    - stuarteberg\n    - marcelotrevisani\n    - matthiasdiener\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -910,7 +965,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cmake",
+        "cxx_compiler_stub"
+      ]
     }
   },
   "strong_exports": false,
@@ -935,7 +993,10 @@
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cmake",
+        "cxx_compiler_stub"
+      ]
     }
   },
   "url": "https://github.com/open-source-parsers/jsoncpp/archive/1.9.8.tar.gz",
@@ -952,7 +1013,7 @@
       "summary": "A C++ library for interacting with JSON."
     },
     "build": {
-      "number": "1",
+      "number": "2",
       "run_exports": {
         "weak": [
           "jsoncpp"
@@ -1041,6 +1102,129 @@
     "test": {
       "__set__": true,
       "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/open-source-parsers/jsoncpp",
+      "license": "LicenseRef-Public-Domain OR MIT",
+      "license_family": "LicenseRef-Public-Domain OR MIT",
+      "license_file": "LICENSE",
+      "summary": "A C++ library for interacting with JSON."
+    },
+    "build": {
+      "number": "2",
+      "run_exports": {
+        "weak": [
+          "jsoncpp"
+        ]
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "jakirkham",
+        "jschueller",
+        "stuarteberg",
+        "marcelotrevisani",
+        "matthiasdiener"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "jsoncpp"
+          ]
+        },
+        "name": "jsoncpp",
+        "requirements": {
+          "build": [
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cmake",
+            "ninja"
+          ],
+          "host": [],
+          "run": []
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "include": [
+                "json/json.h"
+              ],
+              "lib": [
+                "jsoncpp"
+              ]
+            }
+          },
+          {
+            "files": {
+              "recipe": [
+                "consumer"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx_compiler_stub",
+                "cmake"
+              ]
+            },
+            "script": [
+              "cmake -S consumer -B consumer-build -G \"NMake Makefiles\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=\"%LIBRARY_PREFIX%\"",
+              "cmake --build consumer-build",
+              "consumer-build\\jsoncpp_consumer.exe",
+              "dumpbin /headers consumer-build\\jsoncpp_consumer.exe | findstr /I /C:\"AA64 machine (ARM64)\"",
+              "dumpbin /headers \"%LIBRARY_BIN%\\jsoncpp.dll\" | findstr /I /C:\"AA64 machine (ARM64)\""
+            ]
+          }
+        ],
+        "version": "1.9.8"
+      }
+    ],
+    "package": {
+      "name": "jsoncpp",
+      "version": "1.9.8"
+    },
+    "requirements": {
+      "build": [
+        "cxx_compiler_stub",
+        "c_stdlib_stub",
+        "cmake",
+        "ninja"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "51828cf3574281d2b79ec2a1c56a9e4c20cc1103711321ea96384cffb8d2d904",
+      "url": "https://github.com/open-source-parsers/jsoncpp/archive/1.9.8.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cmake",
+        "cxx_compiler_stub",
+        "ninja"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": []
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "cmake",
+        "cxx_compiler_stub"
+      ]
     }
   }
 }
