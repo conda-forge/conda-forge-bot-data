@@ -9,13 +9,19 @@
     },
     "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "29b3ab7edcb4fefd04146c8246705008100d1044",
-  "feedstock_hash_ts": 1789222020,
+  "feedstock_hash": "8ace06cbd44d3f048cc17bd4dc4f272e4ad3e664",
+  "feedstock_hash_ts": 1789241364,
   "feedstock_name": "geopolars",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -185,6 +191,182 @@
       ]
     }
   },
+  "linux_aarch64_meta_yaml": {
+    "about": {
+      "description": "GeoPolars extends the Polars DataFrame library for use with geospatial\ndata. It uses GeoArrow as the internal memory model, is written in Rust\nwith bindings to Python, and is multithreading capable.\n\nAt this point GeoPolars is a prototype and should not be considered\nproduction-ready.",
+      "dev_url": "https://github.com/pola-rs/geopolars",
+      "doc_url": "https://docs.rs/geopolars",
+      "home": "https://github.com/pola-rs/geopolars",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Geospatial extensions for Polars"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "env": {
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PROTOC_NO_VENDOR": "1"
+        },
+        "file": "build"
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "geopolars",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "libprotobuf",
+            "python",
+            "cross-python_linux-aarch64",
+            "maturin >=1.0,<2"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "pip",
+            "maturin >=1.0,<2"
+          ],
+          "run": [
+            "python",
+            "polars >=0.14.19",
+            "pyarrow >=4.0",
+            "numpy >=1.16.0"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "geopolars",
+                "geopolars.datasets"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "geopolars/__init__.py",
+                "geopolars/datasets/naturalearth_lowres.arrow",
+                "geopolars/geopolars.abi3.so"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/geopolars/geopolars.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_geopolars.py"
+              ]
+            },
+            "script": [
+              "python -c \"import geopolars; assert geopolars.__version__ == '${{ upstream_version }}'\"",
+              "python test_geopolars.py"
+            ]
+          }
+        ],
+        "version": "0.1.0a4"
+      }
+    ],
+    "package": {
+      "name": "geopolars",
+      "version": "0.1.0a4"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses",
+        "libprotobuf",
+        "python",
+        "cross-python_linux-aarch64",
+        "maturin >=1.0,<2"
+      ],
+      "host": [
+        "python",
+        "python-abi3",
+        "pip",
+        "maturin >=1.0,<2"
+      ],
+      "run": [
+        "python",
+        "polars >=0.14.19",
+        "pyarrow >=4.0",
+        "numpy >=1.16.0"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-build-with-maturin-1.x.patch"
+      ],
+      "sha256": "00881b27baa449fae7e13bf4d42067d5de5f57872773a152f381a03ef1116425",
+      "url": "https://github.com/pola-rs/geopolars/archive/refs/tags/v0.1.0-alpha.4.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cross-python_linux-aarch64",
+        "libprotobuf",
+        "maturin",
+        "python",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "maturin",
+        "pip",
+        "python",
+        "python-abi3"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "numpy",
+        "polars",
+        "pyarrow",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
+        "pip"
+      ]
+    }
+  },
   "meta_yaml": {
     "about": {
       "description": "GeoPolars extends the Polars DataFrame library for use with geospatial\ndata. It uses GeoArrow as the internal memory model, is written in Rust\nwith bindings to Python, and is multithreading capable.\n\nAt this point GeoPolars is a prototype and should not be considered\nproduction-ready.",
@@ -291,7 +473,149 @@
             "cargo-bundle-licenses",
             "libprotobuf",
             "python",
+            "cross-python_linux-aarch64",
+            "maturin >=1.0,<2"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "pip",
+            "maturin >=1.0,<2"
+          ],
+          "run": [
+            "python",
+            "polars >=0.14.19",
+            "pyarrow >=4.0",
+            "numpy >=1.16.0"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "geopolars",
+                "geopolars.datasets"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "geopolars/__init__.py",
+                "geopolars/datasets/naturalearth_lowres.arrow",
+                "geopolars/geopolars.abi3.so"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/geopolars/geopolars.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_geopolars.py"
+              ]
+            },
+            "script": [
+              "python -c \"import geopolars; assert geopolars.__version__ == '${{ upstream_version }}'\"",
+              "python test_geopolars.py"
+            ]
+          }
+        ],
+        "version": "0.1.0a4"
+      },
+      {
+        "build": null,
+        "name": "geopolars",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "libprotobuf",
+            "python",
             "cross-python_osx-64",
+            "maturin >=1.0,<2"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "pip",
+            "maturin >=1.0,<2"
+          ],
+          "run": [
+            "python",
+            "polars >=0.14.19",
+            "pyarrow >=4.0",
+            "numpy >=1.16.0"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "geopolars",
+                "geopolars.datasets"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "geopolars/__init__.py",
+                "geopolars/datasets/naturalearth_lowres.arrow",
+                "geopolars/geopolars.abi3.so"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/geopolars/geopolars.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_geopolars.py"
+              ]
+            },
+            "script": [
+              "python -c \"import geopolars; assert geopolars.__version__ == '${{ upstream_version }}'\"",
+              "python test_geopolars.py"
+            ]
+          }
+        ],
+        "version": "0.1.0a4"
+      },
+      {
+        "build": null,
+        "name": "geopolars",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "libprotobuf",
+            "python",
+            "cross-python_osx-arm64",
             "maturin >=1.0,<2"
           ],
           "host": [
@@ -435,8 +759,10 @@
         "cargo-bundle-licenses",
         "libprotobuf",
         "python",
-        "cross-python_osx-64",
+        "cross-python_linux-aarch64",
         "maturin >=1.0,<2",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cross-python_win-64"
       ],
       "host": [
@@ -638,6 +964,182 @@
       ]
     }
   },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "description": "GeoPolars extends the Polars DataFrame library for use with geospatial\ndata. It uses GeoArrow as the internal memory model, is written in Rust\nwith bindings to Python, and is multithreading capable.\n\nAt this point GeoPolars is a prototype and should not be considered\nproduction-ready.",
+      "dev_url": "https://github.com/pola-rs/geopolars",
+      "doc_url": "https://docs.rs/geopolars",
+      "home": "https://github.com/pola-rs/geopolars",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "LICENSE",
+      "summary": "Geospatial extensions for Polars"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "env": {
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols",
+          "PROTOC_NO_VENDOR": "1"
+        },
+        "file": "build"
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "geopolars",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "libprotobuf",
+            "python",
+            "cross-python_osx-arm64",
+            "maturin >=1.0,<2"
+          ],
+          "host": [
+            "python",
+            "python-abi3",
+            "pip",
+            "maturin >=1.0,<2"
+          ],
+          "run": [
+            "python",
+            "polars >=0.14.19",
+            "pyarrow >=4.0",
+            "numpy >=1.16.0"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "geopolars",
+                "geopolars.datasets"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "package_contents": {
+              "site_packages": [
+                "geopolars/__init__.py",
+                "geopolars/datasets/naturalearth_lowres.arrow",
+                "geopolars/geopolars.abi3.so"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit"
+              ]
+            },
+            "script": "abi3audit $SP_DIR/geopolars/geopolars.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+          },
+          {
+            "files": {
+              "recipe": [
+                "test_geopolars.py"
+              ]
+            },
+            "script": [
+              "python -c \"import geopolars; assert geopolars.__version__ == '${{ upstream_version }}'\"",
+              "python test_geopolars.py"
+            ]
+          }
+        ],
+        "version": "0.1.0a4"
+      }
+    ],
+    "package": {
+      "name": "geopolars",
+      "version": "0.1.0a4"
+    },
+    "requirements": {
+      "build": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses",
+        "libprotobuf",
+        "python",
+        "cross-python_osx-arm64",
+        "maturin >=1.0,<2"
+      ],
+      "host": [
+        "python",
+        "python-abi3",
+        "pip",
+        "maturin >=1.0,<2"
+      ],
+      "run": [
+        "python",
+        "polars >=0.14.19",
+        "pyarrow >=4.0",
+        "numpy >=1.16.0"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "patches/0001-build-with-maturin-1.x.patch"
+      ],
+      "sha256": "00881b27baa449fae7e13bf4d42067d5de5f57872773a152f381a03ef1116425",
+      "url": "https://github.com/pola-rs/geopolars/archive/refs/tags/v0.1.0-alpha.4.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-bundle-licenses",
+        "cross-python_osx-arm64",
+        "libprotobuf",
+        "maturin",
+        "python",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "maturin",
+        "pip",
+        "python",
+        "python-abi3"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "numpy",
+        "polars",
+        "pyarrow",
+        "python"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "abi3audit",
+        "pip"
+      ]
+    }
+  },
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -647,7 +1149,9 @@
   "parsing_error": false,
   "platforms": [
     "linux_64",
+    "linux_aarch64",
     "osx_64",
+    "osx_arm64",
     "win_64"
   ],
   "pr_info": {
@@ -660,7 +1164,9 @@
       "c_compiler_stub",
       "c_stdlib_stub",
       "cargo-bundle-licenses",
+      "cross-python_linux-aarch64",
       "cross-python_osx-64",
+      "cross-python_osx-arm64",
       "cross-python_win-64",
       "libprotobuf",
       "maturin",
@@ -680,7 +1186,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "cross-python_linux-aarch64",
         "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cross-python_win-64",
         "libprotobuf",
         "maturin",
@@ -728,7 +1236,9 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
+        "cross-python_linux-aarch64",
         "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cross-python_win-64",
         "libprotobuf",
         "maturin >=1.0,<2",
