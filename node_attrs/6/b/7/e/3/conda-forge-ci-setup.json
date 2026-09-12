@@ -1,12 +1,11 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_cuda_compiler_version12.9python3.10.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
+  "ci_support_linux_64_cuda_compiler_version12.9python3.11.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
+  "ci_support_migrations": {},
   "conda-forge.yml": {
     "build_platform": {
-      "linux_aarch64": "linux_64",
-      "linux_ppc64le": "linux_64",
-      "osx_arm64": "osx_64"
+      "linux_ppc64le": "linux_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -18,7 +17,8 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "linux_ppc64le": "default"
+      "osx_arm64": "default",
+      "win_arm64": "default"
     },
     "remote_ci_setup": [
       "conda-forge-ci-setup=4"
@@ -28,8 +28,8 @@
       "free_disk_space": "quick"
     }
   },
-  "feedstock_hash": "21dbc177d730ca00b0b5f7b9fec339734a1f0e8d",
-  "feedstock_hash_ts": 1787161483,
+  "feedstock_hash": "0f4aa3474cf88861e48b3491883ab4bc850a4ecf",
+  "feedstock_hash_ts": 1789197014,
   "feedstock_name": "conda-forge-ci-setup",
   "linux_64_meta_yaml": {
     "about": {
@@ -902,7 +902,8 @@
     "linux_ppc64le",
     "osx_64",
     "osx_arm64",
-    "win_64"
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/conda-forge-ci-setup.json"
@@ -1167,6 +1168,146 @@
         "cuda_compiler_stub",
         "cxx_compiler_stub"
       ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "anaconda-client",
+        "click",
+        "conda",
+        "conda-build",
+        "conda-env",
+        "conda-forge-metadata",
+        "conda-libmamba-solver",
+        "conda-package-handling",
+        "jinja2",
+        "joblib",
+        "libarchive",
+        "m2-git",
+        "mamba",
+        "pip",
+        "python",
+        "pyyaml",
+        "rattler-build-conda-compat",
+        "requests",
+        "ruamel.yaml",
+        "shyaml"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "home": "https://github.com/conda-forge/conda-forge-ci-setup-feedstock",
+      "license": "BSD-3-Clause",
+      "license_file": "LICENSE.txt",
+      "summary": "A package installed by conda-forge each time a build is run on CI. This package has side-effects to your conda config."
+    },
+    "build": {
+      "entry_points": [
+        "ff_ci_pr_build = conda_forge_ci_setup.ff_ci_pr_build:main",
+        "upload_or_check_non_existence = conda_forge_ci_setup.upload_or_check_non_existence:main",
+        "setup_conda_rc = conda_forge_ci_setup.build_utils:setup_conda_rc",
+        "upload_package = conda_forge_ci_setup.build_utils:upload_package",
+        "mangle_compiler = conda_forge_ci_setup.build_utils:mangle_compiler",
+        "make_build_number = conda_forge_ci_setup.build_utils:make_build_number",
+        "mangle_homebrew = conda_forge_ci_setup.mangle_homebrew:main",
+        "validate_recipe_outputs = conda_forge_ci_setup.feedstock_outputs:main",
+        "inspect_artifacts = conda_forge_ci_setup.inspect_artifacts:main"
+      ],
+      "ignore_run_exports_from": null,
+      "number": "100",
+      "script": [
+        "echo \"CPU Count = %CPU_COUNT%\"",
+        "COPY \"%RECIPE_DIR%\\\\..\\\\LICENSE.txt\" \"%RECIPE_DIR%\\\\LICENSE.txt\"",
+        "if not exist \"%LIBRARY_BIN%\" mkdir \"%LIBRARY_BIN%\"",
+        "COPY \"%RECIPE_DIR%\\\\run_conda_forge_build_setup_win.bat\" \"%SCRIPTS%\\\\run_conda_forge_build_setup.bat\"",
+        "COPY \"%RECIPE_DIR%\\\\SetPageFileSize.ps1\" \"%SCRIPTS%\\\\SetPageFileSize.ps1\"",
+        "COPY \"%RECIPE_DIR%\\\\install_cuda.bat\" \"%SCRIPTS%\\\\install_cuda.bat\"",
+        "cd \"%RECIPE_DIR%\"",
+        "PYTHON -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv",
+        "echo \"${RECIPE_DIR}\""
+      ]
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "conda-forge/core"
+      ]
+    },
+    "package": {
+      "name": "conda-forge-ci-setup",
+      "version": "4.27.1"
+    },
+    "requirements": {
+      "build": [],
+      "host": [
+        "python",
+        "pip",
+        "setuptools"
+      ],
+      "run": [
+        "python",
+        "conda >=23.9",
+        "conda-libmamba-solver >=23.9",
+        "conda-build >=3.27",
+        "mamba >=1.5.2",
+        "conda-env",
+        "click",
+        "jinja2",
+        "anaconda-client >=1.11.2",
+        "shyaml",
+        "requests",
+        "ruamel.yaml >=0.15",
+        "pip",
+        "pyyaml",
+        "m2-git",
+        "libarchive",
+        "joblib >=0.12",
+        "conda-forge-metadata >=0.9.2",
+        "conda-package-handling >=2.3.0",
+        "rattler-build-conda-compat >=0.0.2,<2.0.0a0"
+      ],
+      "run_constrained": [
+        "boa >=0.8,<1.0"
+      ]
+    },
+    "schema_version": 0,
+    "source": {
+      "path": "."
+    },
+    "test": {
+      "commands": [
+        "if not exist \"%PREFIX%\\\\Scripts\\\\run_conda_forge_build_setup.bat\" exit 1",
+        "ff_ci_pr_build --help",
+        "upload_or_check_non_existence --help",
+        "setup_conda_rc --help",
+        "upload_package --help",
+        "make_build_number --help",
+        "mangle_homebrew --help",
+        "validate_recipe_outputs --help",
+        "inspect_artifacts --help"
+      ],
+      "downstreams": [
+        "ngmix"
+      ],
+      "files": null
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": []
     },
     "host": {
       "__set__": true,
