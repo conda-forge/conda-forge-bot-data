@@ -1,32 +1,33 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nncurses:\n- '6'\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nncurses:\n- '6'\ntarget_platform:\n- linux-64\n",
   "ci_support_migrations": {},
   "conda-forge.yml": {
     "build_platform": {
-      "osx_arm64": "osx_64"
+      "linux_ppc64le": "linux_64",
+      "linux_riscv64": "linux_64"
     },
-    "conda_build": {
-      "error_overlinking": true
-    },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
     },
     "provider": {
-      "linux_aarch64": "default"
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "c423cc5b515677f81816bdd636161af184e0da24",
-  "feedstock_hash_ts": 1777047004,
+  "feedstock_hash": "677aa99c90d06c693a04440d9226f7f1a4d80b01",
+  "feedstock_hash_ts": 1789307776,
   "feedstock_name": "goaccess",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.\n",
+      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.",
       "dev_url": "https://github.com/allinurl/goaccess",
       "home": "https://goaccess.io/",
       "license": "MIT",
@@ -35,13 +36,81 @@
       "summary": "Real-time web log analyzer and interactive viewer"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      },
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      }
+    ],
     "package": {
       "name": "goaccess",
       "version": "1.10.2"
@@ -57,25 +126,13 @@
         "ncurses"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Patch-libncursesw-naming-on-darwin.patch"
       ],
       "sha256": "b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e",
       "url": "https://tar.goaccess.io/goaccess-1.10.2.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "goaccess --version",
-        "goaccess --storage",
-        "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
-        "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
-        "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
-      ],
-      "requires": [
-        "jq"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -107,7 +164,7 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.\n",
+      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.",
       "dev_url": "https://github.com/allinurl/goaccess",
       "home": "https://goaccess.io/",
       "license": "MIT",
@@ -116,13 +173,50 @@
       "summary": "Real-time web log analyzer and interactive viewer"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      }
+    ],
     "package": {
       "name": "goaccess",
       "version": "1.10.2"
@@ -131,32 +225,22 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "libmaxminddb",
+        "ncurses"
       ],
       "host": [
         "libmaxminddb",
         "ncurses"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Patch-libncursesw-naming-on-darwin.patch"
       ],
       "sha256": "b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e",
       "url": "https://tar.goaccess.io/goaccess-1.10.2.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "goaccess --version",
-        "goaccess --storage",
-        "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
-        "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
-        "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
-      ],
-      "requires": [
-        "jq"
-      ]
     }
   },
   "linux_aarch64_requirements": {
@@ -165,7 +249,119 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "libmaxminddb",
+        "make",
+        "ncurses"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "libmaxminddb",
+        "ncurses"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "jq"
+      ]
+    }
+  },
+  "linux_ppc64le_meta_yaml": {
+    "about": {
+      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.",
+      "dev_url": "https://github.com/allinurl/goaccess",
+      "home": "https://goaccess.io/",
+      "license": "MIT",
+      "license_family": "MIT",
+      "license_file": "COPYING",
+      "summary": "Real-time web log analyzer and interactive viewer"
+    },
+    "build": {
+      "number": "1"
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "dbast"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      }
+    ],
+    "package": {
+      "name": "goaccess",
+      "version": "1.10.2"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "make",
+        "libmaxminddb",
+        "ncurses"
+      ],
+      "host": [
+        "libmaxminddb",
+        "ncurses"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "0001-Patch-libncursesw-naming-on-darwin.patch"
+      ],
+      "sha256": "b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e",
+      "url": "https://tar.goaccess.io/goaccess-1.10.2.tar.gz"
+    }
+  },
+  "linux_ppc64le_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "libmaxminddb",
+        "make",
+        "ncurses"
       ]
     },
     "host": {
@@ -188,7 +384,7 @@
   },
   "meta_yaml": {
     "about": {
-      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.\n",
+      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.",
       "dev_url": "https://github.com/allinurl/goaccess",
       "home": "https://goaccess.io/",
       "license": "MIT",
@@ -197,13 +393,221 @@
       "summary": "Real-time web log analyzer and interactive viewer"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      },
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      },
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      },
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      },
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      },
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      }
+    ],
     "package": {
       "name": "goaccess",
       "version": "1.10.2"
@@ -212,38 +616,28 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "libmaxminddb",
+        "ncurses"
       ],
       "host": [
         "libmaxminddb",
         "ncurses"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Patch-libncursesw-naming-on-darwin.patch"
       ],
       "sha256": "b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e",
       "url": "https://tar.goaccess.io/goaccess-1.10.2.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "goaccess --version",
-        "goaccess --storage",
-        "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
-        "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
-        "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
-      ],
-      "requires": [
-        "jq"
-      ]
     }
   },
   "name": "goaccess",
   "osx_64_meta_yaml": {
     "about": {
-      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.\n",
+      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.",
       "dev_url": "https://github.com/allinurl/goaccess",
       "home": "https://goaccess.io/",
       "license": "MIT",
@@ -252,13 +646,50 @@
       "summary": "Real-time web log analyzer and interactive viewer"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      }
+    ],
     "package": {
       "name": "goaccess",
       "version": "1.10.2"
@@ -267,32 +698,22 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "libmaxminddb",
+        "ncurses"
       ],
       "host": [
         "libmaxminddb",
         "ncurses"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Patch-libncursesw-naming-on-darwin.patch"
       ],
       "sha256": "b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e",
       "url": "https://tar.goaccess.io/goaccess-1.10.2.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "goaccess --version",
-        "goaccess --storage",
-        "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
-        "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
-        "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
-      ],
-      "requires": [
-        "jq"
-      ]
     }
   },
   "osx_64_requirements": {
@@ -301,7 +722,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "libmaxminddb",
+        "make",
+        "ncurses"
       ]
     },
     "host": {
@@ -324,7 +747,7 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.\n",
+      "description": "GoAccess is a real-time web log analyzer and interactive viewer that\nruns in a terminal in *nix systems or through your browser.",
       "dev_url": "https://github.com/allinurl/goaccess",
       "home": "https://goaccess.io/",
       "license": "MIT",
@@ -333,13 +756,50 @@
       "summary": "Real-time web log analyzer and interactive viewer"
     },
     "build": {
-      "number": "0"
+      "number": "1"
     },
     "extra": {
       "recipe-maintainers": [
         "dbast"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "goaccess",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "make",
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "host": [
+            "libmaxminddb",
+            "ncurses"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "requirements": {
+              "run": [
+                "jq"
+              ]
+            },
+            "script": [
+              "goaccess --version",
+              "goaccess --storage",
+              "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
+              "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
+              "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
+            ]
+          }
+        ],
+        "version": "1.10.2"
+      }
+    ],
     "package": {
       "name": "goaccess",
       "version": "1.10.2"
@@ -348,32 +808,22 @@
       "build": [
         "c_stdlib_stub",
         "c_compiler_stub",
-        "make"
+        "make",
+        "libmaxminddb",
+        "ncurses"
       ],
       "host": [
         "libmaxminddb",
         "ncurses"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
         "0001-Patch-libncursesw-naming-on-darwin.patch"
       ],
       "sha256": "b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e",
       "url": "https://tar.goaccess.io/goaccess-1.10.2.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "goaccess --version",
-        "goaccess --storage",
-        "echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log",
-        "LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json",
-        "[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1"
-      ],
-      "requires": [
-        "jq"
-      ]
     }
   },
   "osx_arm64_requirements": {
@@ -382,7 +832,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "libmaxminddb",
+        "make",
+        "ncurses"
       ]
     },
     "host": {
@@ -413,13 +865,14 @@
   "platforms": [
     "linux_64",
     "linux_aarch64",
+    "linux_ppc64le",
     "osx_64",
     "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/goaccess.json"
   },
-  "raw_meta_yaml": "{% set name = \"goaccess\" %}\n{% set version = \"1.10.2\" %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://tar.goaccess.io/goaccess-{{ version }}.tar.gz\n  sha256: b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e\n  patches:\n    - 0001-Patch-libncursesw-naming-on-darwin.patch\n\nbuild:\n  skip: true  # [win]\n  number: 0\n\nrequirements:\n  build:\n    - {{ stdlib(\"c\") }}\n    - {{ compiler('c') }}\n    - make\n    - libmaxminddb          # [build_platform != target_platform]\n    - ncurses               # [build_platform != target_platform]\n  host:\n    - libmaxminddb\n    - ncurses\n\ntest:\n  requires:\n    - jq\n  commands:\n    - goaccess --version\n    - goaccess --storage\n    - echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log\n    - LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json\n    - \"[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1\"\n\nabout:\n  home: https://goaccess.io/\n  summary: 'Real-time web log analyzer and interactive viewer'\n  description: |\n    GoAccess is a real-time web log analyzer and interactive viewer that\n    runs in a terminal in *nix systems or through your browser.\n  license: MIT\n  license_family: MIT\n  license_file: COPYING\n  dev_url: https://github.com/allinurl/goaccess\n\nextra:\n  recipe-maintainers:\n    - dbast\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  name: goaccess\n  version: \"1.10.2\"\n\npackage:\n  name: ${{ name }}\n  version: ${{ version }}\n\nsource:\n  url: https://tar.goaccess.io/goaccess-${{ version }}.tar.gz\n  sha256: b9b7484a413279863c7d92dc7dd4c19dcb55c0a2d138735efc18570bcc4eaa0e\n  patches:\n    - 0001-Patch-libncursesw-naming-on-darwin.patch\n\nbuild:\n  skip: win\n  number: 1\n  dynamic_linking:\n    overlinking_behavior: error\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler('c') }}\n    - make\n    - if: build_platform != target_platform\n      then:\n        - libmaxminddb\n        - ncurses\n  host:\n    - libmaxminddb\n    - ncurses\n\ntests:\n  - requirements:\n      run:\n        - jq\n    script:\n      - goaccess --version\n      - goaccess --storage\n      - echo '127.0.0.1 - - [04/May/2015:15:48:17 +0200] \"GET / HTTP/1.1\" 200 612 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36\"' > access.log\n      - LC_TIME=\"en_US.UTF-8\" goaccess access.log --time-format=%T --date-format=%d/%b/%Y --log-format='%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"' -o output.json\n      - \"[ $(jq -r '.browsers.data[0].data' output.json) = 'Chrome' ] || exit 1\"\n\nabout:\n  homepage: https://goaccess.io/\n  summary: 'Real-time web log analyzer and interactive viewer'\n  description: |\n    GoAccess is a real-time web log analyzer and interactive viewer that\n    runs in a terminal in *nix systems or through your browser.\n  license: MIT\n  license_file: COPYING\n  repository: https://github.com/allinurl/goaccess\n\nextra:\n  recipe-maintainers:\n    - dbast\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -436,7 +889,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "libmaxminddb",
+        "make",
+        "ncurses"
       ]
     },
     "host": {
@@ -469,7 +924,9 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "libmaxminddb",
+        "make",
+        "ncurses"
       ]
     },
     "host": {
