@@ -26,8 +26,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "a4a00a5e0ee04cf4aa9a858889b3bed1be214588",
-  "feedstock_hash_ts": 1789253720,
+  "feedstock_hash": "2c44ddd3e0ed86089cc83059554c26952d21efc5",
+  "feedstock_hash_ts": 1789263925,
   "feedstock_name": "air",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -49,10 +49,10 @@
           "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=../../THIRDPARTY.yml",
           "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
-          "let bin = $prefix | path join bin/air",
-          "^$bin generate-shell-completion bash | save ($prefix | path join share/bash-completion/completions/air)",
-          "^$bin generate-shell-completion fish | save ($prefix | path join share/fish/vendor_completions.d/air.fish)",
-          "^$bin generate-shell-completion zsh  | save ($prefix | path join share/zsh/site-functions/_air)"
+          "let bin = ($prefix)/bin/air",
+          "^$bin generate-shell-completion bash | save ($prefix)/share/bash-completion/completions/air",
+          "^$bin generate-shell-completion fish | save ($prefix)/share/fish/vendor_completions.d/air.fish",
+          "^$bin generate-shell-completion zsh  | save ($prefix)/share/zsh/site-functions/_air"
         ],
         "env": {
           "CARGO_PROFILE_RELEASE_LTO": "fat",
@@ -392,10 +392,10 @@
           "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
           "cargo-bundle-licenses --format=yaml --output=../../THIRDPARTY.yml",
           "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
-          "let bin = $prefix | path join bin/air",
-          "^$bin generate-shell-completion bash | save ($prefix | path join share/bash-completion/completions/air)",
-          "^$bin generate-shell-completion fish | save ($prefix | path join share/fish/vendor_completions.d/air.fish)",
-          "^$bin generate-shell-completion zsh  | save ($prefix | path join share/zsh/site-functions/_air)",
+          "let bin = ($prefix)/bin/air",
+          "^$bin generate-shell-completion bash | save ($prefix)/share/bash-completion/completions/air",
+          "^$bin generate-shell-completion fish | save ($prefix)/share/fish/vendor_completions.d/air.fish",
+          "^$bin generate-shell-completion zsh  | save ($prefix)/share/zsh/site-functions/_air",
           "$env.CARGO_HOME = 'C:\\.cargo'"
         ],
         "env": {
@@ -910,7 +910,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/air.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.11.0\"\n\npackage:\n  name: air\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/posit-dev/air/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 07ce82c3200296afca23efdbc9aae1943c4d0b6dfd5aa3fa47353dd709dff648\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    interpreter: nu\n    content:\n      - let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX\n      # work around Windows MAX_PATH (260 char) limitation with cargo/libgit2, cf. https://github.com/libgit2/libgit2/blob/main/docs/win32-longpaths.md\n      - if: win\n        then: $env.CARGO_HOME = 'C:\\.cargo'\n      # build main app and generate license data\n      - cd crates/air\n      - cargo auditable install --path=. --root=($prefix) --no-track --locked --bins\n      - cargo-bundle-licenses --format=yaml --output=../../THIRDPARTY.yml\n      # generate shell completions\n      - if: build_platform == host_platform\n        then:\n          - mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions\n          - let bin = $prefix | path join bin/air\n          - ^$bin generate-shell-completion bash | save ($prefix | path join share/bash-completion/completions/air)\n          - ^$bin generate-shell-completion fish | save ($prefix | path join share/fish/vendor_completions.d/air.fish)\n          - ^$bin generate-shell-completion zsh  | save ($prefix | path join share/zsh/site-functions/_air)\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - nushell\n\ntests:\n  - script:\n      - air --help\n      - air --version\n  - package_contents:\n      bin:\n        - air\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/air\n            - share/fish/vendor_completions.d/air.fish\n            - share/zsh/site-functions/_air\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/air\n            - Library/share/fish/vendor_completions.d/air.fish\n            - Library/share/zsh/site-functions/_air\n      strict: true\n\nabout:\n  summary: An R formatter and language server\n  description: |\n    Air is an R formatter and language server, written in Rust.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://posit-dev.github.io/air/\n  repository: https://github.com/posit-dev/air\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"0.11.0\"\n\npackage:\n  name: air\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/posit-dev/air/archive/refs/tags/${{ version }}.tar.gz\n  sha256: 07ce82c3200296afca23efdbc9aae1943c4d0b6dfd5aa3fa47353dd709dff648\n\nbuild:\n  number: 0\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    interpreter: nu\n    content:\n      - let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX\n      # work around Windows MAX_PATH (260 char) limitation with cargo/libgit2, cf. https://github.com/libgit2/libgit2/blob/main/docs/win32-longpaths.md\n      - if: win\n        then: $env.CARGO_HOME = 'C:\\.cargo'\n      # build main app and generate license data\n      - cd crates/air\n      - cargo auditable install --path=. --root=($prefix) --no-track --locked --bins\n      - cargo-bundle-licenses --format=yaml --output=../../THIRDPARTY.yml\n      # generate shell completions\n      - if: build_platform == host_platform\n        then:\n          - mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions\n          - let bin = ($prefix)/bin/air\n          - ^$bin generate-shell-completion bash | save ($prefix)/share/bash-completion/completions/air\n          - ^$bin generate-shell-completion fish | save ($prefix)/share/fish/vendor_completions.d/air.fish\n          - ^$bin generate-shell-completion zsh  | save ($prefix)/share/zsh/site-functions/_air\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - nushell\n\ntests:\n  - script:\n      - air --help\n      - air --version\n  - package_contents:\n      bin:\n        - air\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/air\n            - share/fish/vendor_completions.d/air.fish\n            - share/zsh/site-functions/_air\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/air\n            - Library/share/fish/vendor_completions.d/air.fish\n            - Library/share/zsh/site-functions/_air\n      strict: true\n\nabout:\n  summary: An R formatter and language server\n  description: |\n    Air is an R formatter and language server, written in Rust.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://posit-dev.github.io/air/\n  repository: https://github.com/posit-dev/air\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
