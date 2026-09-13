@@ -28,8 +28,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "0a68e2b5f1e3d8d76bea1e2cd21455bf2e7192e3",
-  "feedstock_hash_ts": 1786874272,
+  "feedstock_hash": "e8adcb179e1e692b4370eee604da6d373ecc96fa",
+  "feedstock_hash_ts": 1789305505,
   "feedstock_name": "beads",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -45,18 +45,24 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "DEFAULT_BRANCH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads\" | jq -r '.default_branch')\"",
-        "COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}\" | jq -r '.sha')\"",
-        "SHORT_COMMIT_HASH=\"$(echo \"${COMMIT_HASH}\" | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/bd -v -ldflags=\"-s -w -X main.Branch=${DEFAULT_BRANCH} -X main.Build=${SHORT_COMMIT_HASH} -X main.Commit=${COMMIT_HASH} -X main.Version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/bd completion bash > \"$PREFIX\"/share/bash-completion/completions/bd",
-        "\"$PREFIX\"/bin/bd completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/bd.fish",
-        "\"$PREFIX\"/bin/bd completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_bd",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2",
+          "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
+          "let bin = ($prefix)/bin/bd",
+          "^$bin completion bash | save ($prefix)/share/bash-completion/completions/bd",
+          "^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/bd.fish",
+          "^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_bd"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -73,7 +79,8 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "go-cgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -119,7 +126,8 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "go-cgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -135,7 +143,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "go-cgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "host": {
@@ -164,14 +173,19 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "DEFAULT_BRANCH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads\" | jq -r '.default_branch')\"",
-        "COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}\" | jq -r '.sha')\"",
-        "SHORT_COMMIT_HASH=\"$(echo \"${COMMIT_HASH}\" | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/bd -v -ldflags=\"-s -w -X main.Branch=${DEFAULT_BRANCH} -X main.Build=${SHORT_COMMIT_HASH} -X main.Commit=${COMMIT_HASH} -X main.Version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -188,7 +202,8 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "go-cgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -229,7 +244,8 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "go-cgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -245,7 +261,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "go-cgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "host": {
@@ -274,14 +291,19 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "DEFAULT_BRANCH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads\" | jq -r '.default_branch')\"",
-        "COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}\" | jq -r '.sha')\"",
-        "SHORT_COMMIT_HASH=\"$(echo \"${COMMIT_HASH}\" | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/bd -v -ldflags=\"-s -w -X main.Branch=${DEFAULT_BRANCH} -X main.Build=${SHORT_COMMIT_HASH} -X main.Commit=${COMMIT_HASH} -X main.Version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -298,7 +320,8 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "go-cgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -339,7 +362,8 @@
         "c_stdlib_stub",
         "c_compiler_stub",
         "go-cgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -355,7 +379,8 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "go-cgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "host": {
@@ -384,23 +409,24 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "DEFAULT_BRANCH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads\" | jq -r '.default_branch')\"",
-        "COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}\" | jq -r '.sha')\"",
-        "SHORT_COMMIT_HASH=\"$(echo \"${COMMIT_HASH}\" | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/bd -v -ldflags=\"-s -w -X main.Branch=${DEFAULT_BRANCH} -X main.Build=${SHORT_COMMIT_HASH} -X main.Commit=${COMMIT_HASH} -X main.Version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-        "\"$PREFIX\"/bin/bd completion bash > \"$PREFIX\"/share/bash-completion/completions/bd",
-        "\"$PREFIX\"/bin/bd completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/bd.fish",
-        "\"$PREFIX\"/bin/bd completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_bd",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2",
-        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads').default_branch)\"`) do set DEFAULT_BRANCH=%%T",
-        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}').sha)\"`) do set COMMIT_HASH=%%T",
-        "set \"SHORT_COMMIT_HASH=%COMMIT_HASH:~0,7%\"",
-        "go build -o=\"%LIBRARY_BIN%\"\\bd.exe -v -ldflags=\"-s -w -X main.Branch=%DEFAULT_BRANCH% -X main.Build=%SHORT_COMMIT_HASH% -X main.Commit=%COMMIT_HASH% -X main.version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "xcopy \"library_licenses_2\\*\" \"library_licenses\\\" /E /I /Y & if errorlevel 1 exit /b %ERRORLEVEL% & rmdir /S /Q \"library_licenses_2\""
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2",
+          "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
+          "let bin = ($prefix)/bin/bd",
+          "^$bin completion bash | save ($prefix)/share/bash-completion/completions/bd",
+          "^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/bd.fish",
+          "^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_bd"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -417,7 +443,8 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "go-cgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -461,7 +488,8 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "go-cgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -500,7 +528,8 @@
             "c_stdlib_stub",
             "c_compiler_stub",
             "go-cgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -537,7 +566,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -574,7 +604,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -611,7 +642,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -648,7 +680,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -690,6 +723,7 @@
         "c_compiler_stub",
         "go-cgo_compiler_stub",
         "go-licenses",
+        "nushell",
         "go-nocgo_compiler_stub"
       ]
     },
@@ -713,14 +747,19 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "DEFAULT_BRANCH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads\" | jq -r '.default_branch')\"",
-        "COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}\" | jq -r '.sha')\"",
-        "SHORT_COMMIT_HASH=\"$(echo \"${COMMIT_HASH}\" | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/bd -v -ldflags=\"-s -w -X main.Branch=${DEFAULT_BRANCH} -X main.Build=${SHORT_COMMIT_HASH} -X main.Commit=${COMMIT_HASH} -X main.Version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -735,7 +774,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -774,7 +814,8 @@
     "requirements": {
       "build": [
         "go-nocgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -788,7 +829,8 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go-nocgo_compiler_stub"
+        "go-nocgo_compiler_stub",
+        "nushell"
       ]
     },
     "host": {
@@ -817,14 +859,19 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "DEFAULT_BRANCH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads\" | jq -r '.default_branch')\"",
-        "COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}\" | jq -r '.sha')\"",
-        "SHORT_COMMIT_HASH=\"$(echo \"${COMMIT_HASH}\" | cut -c 1-7)\"",
-        "go build -o=\"$PREFIX\"/bin/bd -v -ldflags=\"-s -w -X main.Branch=${DEFAULT_BRANCH} -X main.Build=${SHORT_COMMIT_HASH} -X main.Commit=${COMMIT_HASH} -X main.Version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2"
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -839,7 +886,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -878,7 +926,8 @@
     "requirements": {
       "build": [
         "go-nocgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -892,7 +941,8 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go-nocgo_compiler_stub"
+        "go-nocgo_compiler_stub",
+        "nushell"
       ]
     },
     "host": {
@@ -927,7 +977,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/beads.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.2.2\"\n\npackage:\n  name: beads\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/gastownhall/beads/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: 892b8b641d1f9eb3fa9f0cddf704f3f41aea0da872e546fe623ddec30b2ea9cf\n  # the following dependencies miss standard license file layout, so we have to manually add their license files\n  # (`github.com/dolthub/eventkit` has no license)\n  - url: https://raw.githubusercontent.com/apache/arrow-go/main/LICENSE.txt\n    sha256: ff2fe52b8dfd2574c6ea7f0c407948c857f62672c2a3a9a17083ee10af8067ef\n    target_directory: library_licenses_2/github.com/apache/arrow-go\n  - url: https://raw.githubusercontent.com/apache/thrift/master/LICENSE\n    sha256: 89aa7b27868669299bd8a6c53b72ec4beadce42dad6c8336797cc26e1e8df98d\n    target_directory: library_licenses_2/github.com/apache/thrift\n  - url: https://raw.githubusercontent.com/kch42/buzhash/master/LICENSE\n    sha256: e36eb71189a6d30b09337cbf5fb5155f7286bc0e728d5fbad163723abc6b170c\n    target_directory: library_licenses_2/github.com/kch42/buzhash\n  - url: https://raw.githubusercontent.com/mattn/go-localereader/master/LICENSE\n    sha256: dceede03550621e65ec7b79fcba87cf6dbb9d31132a8ae71a8fe8ceec0af7da3\n    target_directory: library_licenses_2/github.com/mattn/go-localereader\n\nbuild:\n  number: 0\n  script:\n    # upstream refs: https://github.com/gastownhall/beads/blob/main/docs/INSTALLING.md & https://github.com/gastownhall/beads/blob/main/.goreleaser.yml\n    - go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader\n    - if: unix\n      then:\n        - DEFAULT_BRANCH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads\" | jq -r '.default_branch')\"\n        - COMMIT_HASH=\"$(curl -s \"https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}\" | jq -r '.sha')\"\n        - SHORT_COMMIT_HASH=\"$(echo \"${COMMIT_HASH}\" | cut -c 1-7)\"\n        - go build -o=\"$PREFIX\"/bin/bd -v -ldflags=\"-s -w -X main.Branch=${DEFAULT_BRANCH} -X main.Build=${SHORT_COMMIT_HASH} -X main.Commit=${COMMIT_HASH} -X main.Version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd\n        # generate shell completions\n        - if: build_platform == host_platform\n          then:\n            - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n            - '\"$PREFIX\"/bin/bd completion bash > \"$PREFIX\"/share/bash-completion/completions/bd'\n            - '\"$PREFIX\"/bin/bd completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/bd.fish'\n            - '\"$PREFIX\"/bin/bd completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_bd'\n        # merge library license files\n        - cp -a library_licenses_2/. library_licenses/ && rm -rf library_licenses_2\n    - if: win\n      then:\n        - for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads').default_branch)\"`) do set DEFAULT_BRANCH=%%T\n        - for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}').sha)\"`) do set COMMIT_HASH=%%T\n        - set \"SHORT_COMMIT_HASH=%COMMIT_HASH:~0,7%\"\n        - go build -o=\"%LIBRARY_BIN%\"\\bd.exe -v -ldflags=\"-s -w -X main.Branch=%DEFAULT_BRANCH% -X main.Build=%SHORT_COMMIT_HASH% -X main.Commit=%COMMIT_HASH% -X main.version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd\n        # generate shell completions\n        - if: build_platform == host_platform\n          then:\n            - mkdir \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\n            - mkdir \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\n            - mkdir \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\n            - '\"%LIBRARY_BIN%\"\\bd.exe completion bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\bd'\n            - '\"%LIBRARY_BIN%\"\\bd.exe completion fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\bd.fish'\n            - '\"%LIBRARY_BIN%\"\\bd.exe completion zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_bd'\n        # merge library license files\n        - xcopy \"library_licenses_2\\*\" \"library_licenses\\\" /E /I /Y & if errorlevel 1 exit /b %ERRORLEVEL% & rmdir /S /Q \"library_licenses_2\"\n\nrequirements:\n  build:\n    # Build fails on both Windows and macOS with default build providers (Azure). On macOS, CGO-enabled code links the Security/CoreFoundation symbol\n    # `_SecTrustCopyCertificateChain` which apparently isn't available. The error on Windows is unclear (truncated from logs). Disabling CGO implies not\n    # embedding the default Dolt backend, which means the resulting Windows and macOS binaries require a running `dolt sql-server`.\n    - if: linux\n      then:\n        - ${{ stdlib('c') }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('go-cgo') }}\n      else:\n        - ${{ compiler('go-nocgo') }}\n    - go-licenses\n\ntests:\n  - script:\n      env:\n        BEADS_DOLT_AUTO_START: \"0\"\n        BD_DISABLE_EVENT_FLUSH: \"1\"\n        BD_DISABLE_METRICS: \"1\"\n        BD_NO_DAEMON: \"1\"\n      content:\n        - bd --help\n        - bd --version\n  - package_contents:\n      bin:\n        - bd\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/bd\n            - share/fish/vendor_completions.d/bd.fish\n            - share/zsh/site-functions/_bd\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/bd\n            - Library/share/fish/vendor_completions.d/bd.fish\n            - Library/share/zsh/site-functions/_bd\n      strict: true\n\nabout:\n  summary: A developer-centric issue tracker that lives in your Git repo\n  description: |\n    Beads (bd) is a fast, local-first CLI issue tracker designed for software\n    teams and AI agents. It stores issues alongside your code in a Dolt\n    (MySQL-compatible) database, supports hierarchical issues, dependencies,\n    molecules (multi-step workflows), integrations with GitHub/GitLab/Jira/Linear,\n    and MCP server support for AI agents.\n  license: MIT\n  license_file:\n    - LICENSE\n    - library_licenses/\n  homepage: https://github.com/gastownhall/beads\n  documentation: https://github.com/gastownhall/beads/tree/main/docs\n  repository: https://github.com/gastownhall/beads\n\nextra:\n  recipe-maintainers:\n    - maphew\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"1.2.2\"\n\npackage:\n  name: beads\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/gastownhall/beads/archive/refs/tags/v${{ version }}.tar.gz\n    sha256: 892b8b641d1f9eb3fa9f0cddf704f3f41aea0da872e546fe623ddec30b2ea9cf\n  # the following dependencies miss standard license file layout, so we have to manually add their license files\n  # (`github.com/dolthub/eventkit` has no license)\n  - url: https://raw.githubusercontent.com/apache/arrow-go/main/LICENSE.txt\n    sha256: ff2fe52b8dfd2574c6ea7f0c407948c857f62672c2a3a9a17083ee10af8067ef\n    target_directory: library_licenses_2/github.com/apache/arrow-go\n  - url: https://raw.githubusercontent.com/apache/thrift/master/LICENSE\n    sha256: c866aafb79e8d5885eabb9d44a0105c8fcca35d26c5088025b131a908458a8af\n    target_directory: library_licenses_2/github.com/apache/thrift\n  - url: https://raw.githubusercontent.com/kch42/buzhash/master/LICENSE\n    sha256: e36eb71189a6d30b09337cbf5fb5155f7286bc0e728d5fbad163723abc6b170c\n    target_directory: library_licenses_2/github.com/kch42/buzhash\n  - url: https://raw.githubusercontent.com/mattn/go-localereader/master/LICENSE\n    sha256: dceede03550621e65ec7b79fcba87cf6dbb9d31132a8ae71a8fe8ceec0af7da3\n    target_directory: library_licenses_2/github.com/mattn/go-localereader\n\nbuild:\n  number: 0\n  script:\n    interpreter: nu\n    content:\n      - let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX\n      # build main app and generate license data\n      # upstream refs: https://github.com/gastownhall/beads/blob/main/docs/INSTALLING.md & https://github.com/gastownhall/beads/blob/main/.goreleaser.yml\n      - let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch\n      - let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha\n      - let short_commit_hash = ($commit_hash | str substring 0..6)\n      - go build\n        -o=($prefix)/bin/\n        -v\n        -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}'\n        -tags=gms_pure_go\n        -trimpath\n        ./cmd/bd\n      - go-licenses save ./cmd/bd\n        --save_path=library_licenses\n        --ignore=github.com/apache/arrow/go/arrow\n        --ignore=github.com/apache/thrift/lib/go/thrift\n        --ignore=github.com/dolthub/eventkit\n        --ignore=github.com/dolthub/eventkit/transport/ga4\n        --ignore=github.com/kch42/buzhash\n        --ignore=github.com/mattn/go-localereader\n      # merge library license files\n      - cp --recursive library_licenses_2/* library_licenses/\n      - rm --recursive library_licenses_2\n      # generate shell completions\n      - if: build_platform == host_platform\n        then:\n          - mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions\n          - let bin = ($prefix)/bin/bd\n          - ^$bin completion bash | save ($prefix)/share/bash-completion/completions/bd\n          - ^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/bd.fish\n          - ^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_bd\n\nrequirements:\n  build:\n    # Build fails on both Windows and macOS with CGO enabled. On macOS, CGO-enabled code links the Security/CoreFoundation symbol\n    # `_SecTrustCopyCertificateChain` which apparently isn't available. The error on Windows is unclear (truncated from logs). Disabling CGO implies not\n    # embedding the default Dolt backend, which means the resulting Windows and macOS binaries require a running `dolt sql-server`.\n    - if: linux\n      then:\n        - ${{ stdlib('c') }}\n        - ${{ compiler('c') }}\n        - ${{ compiler('go-cgo') }}\n      else:\n        - ${{ compiler('go-nocgo') }}\n    - go-licenses\n    - nushell\n\ntests:\n  - script:\n      env:\n        BEADS_DOLT_AUTO_START: \"0\"\n        BD_DISABLE_EVENT_FLUSH: \"1\"\n        BD_DISABLE_METRICS: \"1\"\n        BD_NO_DAEMON: \"1\"\n      content:\n        - bd --help\n        - bd --version\n  - package_contents:\n      bin:\n        - bd\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/bd\n            - share/fish/vendor_completions.d/bd.fish\n            - share/zsh/site-functions/_bd\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/bd\n            - Library/share/fish/vendor_completions.d/bd.fish\n            - Library/share/zsh/site-functions/_bd\n      strict: true\n\nabout:\n  summary: A developer-centric issue tracker that lives in your Git repo\n  description: |\n    Beads (bd) is a fast, local-first CLI issue tracker designed for software\n    teams and AI agents. It stores issues alongside your code in a Dolt\n    (MySQL-compatible) database, supports hierarchical issues, dependencies,\n    molecules (multi-step workflows), integrations with GitHub/GitLab/Jira/Linear,\n    and MCP server support for AI agents.\n  license: MIT\n  license_file:\n    - LICENSE\n    - library_licenses/\n  homepage: https://github.com/gastownhall/beads\n  documentation: https://github.com/gastownhall/beads/tree/main/docs\n  repository: https://github.com/gastownhall/beads\n\nextra:\n  recipe-maintainers:\n    - maphew\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -935,7 +985,8 @@
       "c_stdlib_stub",
       "go-cgo_compiler_stub",
       "go-licenses",
-      "go-nocgo_compiler_stub"
+      "go-nocgo_compiler_stub",
+      "nushell"
     ]
   },
   "requirements": {
@@ -946,7 +997,8 @@
         "c_stdlib_stub",
         "go-cgo_compiler_stub",
         "go-licenses",
-        "go-nocgo_compiler_stub"
+        "go-nocgo_compiler_stub",
+        "nushell"
       ]
     },
     "host": {
@@ -977,7 +1029,8 @@
         "c_stdlib_stub",
         "go-cgo_compiler_stub",
         "go-licenses",
-        "go-nocgo_compiler_stub"
+        "go-nocgo_compiler_stub",
+        "nushell"
       ]
     },
     "host": {
@@ -1011,14 +1064,19 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads').default_branch)\"`) do set DEFAULT_BRANCH=%%T",
-        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}').sha)\"`) do set COMMIT_HASH=%%T",
-        "set \"SHORT_COMMIT_HASH=%COMMIT_HASH:~0,7%\"",
-        "go build -o=\"%LIBRARY_BIN%\"\\bd.exe -v -ldflags=\"-s -w -X main.Branch=%DEFAULT_BRANCH% -X main.Build=%SHORT_COMMIT_HASH% -X main.Commit=%COMMIT_HASH% -X main.version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "xcopy \"library_licenses_2\\*\" \"library_licenses\\\" /E /I /Y & if errorlevel 1 exit /b %ERRORLEVEL% & rmdir /S /Q \"library_licenses_2\""
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -1033,7 +1091,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -1072,7 +1131,8 @@
     "requirements": {
       "build": [
         "go-nocgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -1086,7 +1146,8 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go-nocgo_compiler_stub"
+        "go-nocgo_compiler_stub",
+        "nushell"
       ]
     },
     "host": {
@@ -1115,14 +1176,19 @@
     },
     "build": {
       "number": "0",
-      "script": [
-        "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
-        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads').default_branch)\"`) do set DEFAULT_BRANCH=%%T",
-        "for /f \"usebackq delims=\" %%T in (`powershell -Command \"((Invoke-RestMethod 'https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}').sha)\"`) do set COMMIT_HASH=%%T",
-        "set \"SHORT_COMMIT_HASH=%COMMIT_HASH:~0,7%\"",
-        "go build -o=\"%LIBRARY_BIN%\"\\bd.exe -v -ldflags=\"-s -w -X main.Branch=%DEFAULT_BRANCH% -X main.Build=%SHORT_COMMIT_HASH% -X main.Commit=%COMMIT_HASH% -X main.version=${{ version }}\" -tags=gms_pure_go -trimpath ./cmd/bd",
-        "xcopy \"library_licenses_2\\*\" \"library_licenses\\\" /E /I /Y & if errorlevel 1 exit /b %ERRORLEVEL% & rmdir /S /Q \"library_licenses_2\""
-      ]
+      "script": {
+        "content": [
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "let default_branch = (http get https://api.github.com/repos/gastownhall/beads).default_branch",
+          "let commit_hash = (http get https://api.github.com/repos/gastownhall/beads/commits/v${{ version }}).sha",
+          "let short_commit_hash = ($commit_hash | str substring 0..6)",
+          "go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X main.Branch=($default_branch) -X main.Build=($short_commit_hash) -X main.Commit=($commit_hash) -X main.Version=${{ version }}' -tags=gms_pure_go -trimpath ./cmd/bd",
+          "go-licenses save ./cmd/bd --save_path=library_licenses --ignore=github.com/apache/arrow/go/arrow --ignore=github.com/apache/thrift/lib/go/thrift --ignore=github.com/dolthub/eventkit --ignore=github.com/dolthub/eventkit/transport/ga4 --ignore=github.com/kch42/buzhash --ignore=github.com/mattn/go-localereader",
+          "cp --recursive library_licenses_2/* library_licenses/",
+          "rm --recursive library_licenses_2"
+        ],
+        "interpreter": "nu"
+      }
     },
     "extra": {
       "recipe-maintainers": [
@@ -1137,7 +1203,8 @@
         "requirements": {
           "build": [
             "go-nocgo_compiler_stub",
-            "go-licenses"
+            "go-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -1176,7 +1243,8 @@
     "requirements": {
       "build": [
         "go-nocgo_compiler_stub",
-        "go-licenses"
+        "go-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -1190,7 +1258,8 @@
       "__set__": true,
       "elements": [
         "go-licenses",
-        "go-nocgo_compiler_stub"
+        "go-nocgo_compiler_stub",
+        "nushell"
       ]
     },
     "host": {
