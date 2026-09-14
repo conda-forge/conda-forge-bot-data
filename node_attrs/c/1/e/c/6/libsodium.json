@@ -6,8 +6,7 @@
   "conda-forge.yml": {
     "build_platform": {
       "linux_ppc64le": "linux_64",
-      "linux_riscv64": "linux_64",
-      "win_arm64": "win_64"
+      "linux_riscv64": "linux_64"
     },
     "conda_build": {
       "pkg_format": "2"
@@ -20,12 +19,22 @@
     },
     "provider": {
       "linux_aarch64": "default",
-      "osx_arm64": "default"
+      "osx_arm64": "default",
+      "win_arm64": "default"
     },
-    "test": "native_and_emulated"
+    "test": "native_and_emulated",
+    "workflow_settings": {
+      "store_build_artifacts": [
+        {
+          "platform": "win_arm64",
+          "provider": "github_actions",
+          "value": true
+        }
+      ]
+    }
   },
-  "feedstock_hash": "1c7fe39510f9e7134a451b13d3ddba2569f88eb2",
-  "feedstock_hash_ts": 1787225680,
+  "feedstock_hash": "f68ee1d8bf3c8e005b657c5a8bde292f32b3a759",
+  "feedstock_hash_ts": 1789425245,
   "feedstock_name": "libsodium",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -40,7 +49,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
@@ -233,7 +242,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
@@ -367,7 +376,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
@@ -501,7 +510,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
@@ -1017,7 +1026,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
@@ -1151,7 +1160,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
@@ -1292,7 +1301,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libsodium.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.0.22\"\n\npackage:\n  name: libsodium\n  version: ${{ version }}\n\nsource:\n  url: https://download.libsodium.org/libsodium/releases/libsodium-${{ version }}.tar.gz\n  sha256: adbdd8f16149e81ac6078a03aca6fc03b592b89ef7b5ed83841c086191be3349\n  # patches:\n    # to regen stable branch patch list, see stable-patches/README.md\n\n\nbuild:\n  number: 2\n  script: build\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ stdlib(\"c\") }}\n    - if: unix\n      then:\n        - libtool\n        - make\n  run_exports:\n    - ${{ pin_subpackage(\"libsodium\", upper_bound=\"x.x.x\") }}\n\ntests:\n  - package_contents:\n      lib:\n        - if: unix\n          then: sodium\n        - if: win\n          then: libsodium\n      include:\n        - sodium.h\n        - sodium/version.h\n      files:\n        not_exists:\n          - if: unix\n            then:\n              - lib/libsodium.a\n          - if: win\n            then:\n              - Library/lib/libsodium_static.lib\n  - script:\n      - if: unix\n        then:\n          - cmake -S test -B test/build $CMAKE_ARGS\n        else:\n          - cmake -G Ninja -S test -B test/build %CMAKE_ARGS%\n      - cmake --build test/build\n      - ctest --test-dir test/build --output-on-failure\n    files:\n      recipe:\n        - test/\n    requirements:\n      run:\n        - cmake\n        - ${{ compiler(\"c\") }}\n        - ${{ stdlib(\"c\") }}\n        - if: unix\n          then:\n            - make\n          else:\n            - ninja\n\nabout:\n  license: ISC\n  license_file: LICENSE\n  summary: A modern and easy-to-use crypto library\n  description: |\n    Sodium is a new, easy-to-use software library for encryption, decryption,\n    signatures, password hashing and more. It is a portable, cross-compilable,\n    installable, packageable fork of NaCl, with a compatible API, and an\n    extended API to improve usability even further. Its goal is to provide all\n    of the core operations needed to build higher-level cryptographic tools.\n  homepage: https://libsodium.org\n  repository: https://github.com/jedisct1/libsodium\n  documentation: https://download.libsodium.org/doc\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - minrk\n    - luhenry\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"1.0.22\"\n\npackage:\n  name: libsodium\n  version: ${{ version }}\n\nsource:\n  url: https://download.libsodium.org/libsodium/releases/libsodium-${{ version }}.tar.gz\n  sha256: adbdd8f16149e81ac6078a03aca6fc03b592b89ef7b5ed83841c086191be3349\n  # patches:\n    # to regen stable branch patch list, see stable-patches/README.md\n\n\nbuild:\n  number: 3\n  script: build\n\nrequirements:\n  build:\n    - ${{ compiler(\"c\") }}\n    - ${{ stdlib(\"c\") }}\n    - if: unix\n      then:\n        - libtool\n        - make\n  run_exports:\n    - ${{ pin_subpackage(\"libsodium\", upper_bound=\"x.x.x\") }}\n\ntests:\n  - package_contents:\n      lib:\n        - if: unix\n          then: sodium\n        - if: win\n          then: libsodium\n      include:\n        - sodium.h\n        - sodium/version.h\n      files:\n        not_exists:\n          - if: unix\n            then:\n              - lib/libsodium.a\n          - if: win\n            then:\n              - Library/lib/libsodium_static.lib\n  - script:\n      - if: unix\n        then:\n          - cmake -S test -B test/build $CMAKE_ARGS\n        else:\n          - cmake -G Ninja -S test -B test/build %CMAKE_ARGS%\n      - cmake --build test/build\n      - ctest --test-dir test/build --output-on-failure\n    files:\n      recipe:\n        - test/\n    requirements:\n      run:\n        - cmake\n        - ${{ compiler(\"c\") }}\n        - ${{ stdlib(\"c\") }}\n        - if: unix\n          then:\n            - make\n          else:\n            - ninja\n\nabout:\n  license: ISC\n  license_file: LICENSE\n  summary: A modern and easy-to-use crypto library\n  description: |\n    Sodium is a new, easy-to-use software library for encryption, decryption,\n    signatures, password hashing and more. It is a portable, cross-compilable,\n    installable, packageable fork of NaCl, with a compatible API, and an\n    extended API to improve usability even further. Its goal is to provide all\n    of the core operations needed to build higher-level cryptographic tools.\n  homepage: https://libsodium.org\n  repository: https://github.com/jedisct1/libsodium\n  documentation: https://download.libsodium.org/doc\n\nextra:\n  recipe-maintainers:\n    - jakirkham\n    - minrk\n    - luhenry\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1385,7 +1394,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
@@ -1513,7 +1522,7 @@
       "summary": "A modern and easy-to-use crypto library"
     },
     "build": {
-      "number": "2",
+      "number": "3",
       "run_exports": {
         "weak": [
           "libsodium"
