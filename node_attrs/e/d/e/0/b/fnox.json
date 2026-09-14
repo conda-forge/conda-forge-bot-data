@@ -27,8 +27,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "75e6b5fa0350713f0f12136be446fae73d444375",
-  "feedstock_hash_ts": 1789059513,
+  "feedstock_hash": "77daf4efe3cf0b9b47cd6dd1f7edd8e94f03b72c",
+  "feedstock_hash_ts": 1789344198,
   "feedstock_name": "fnox",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -45,13 +45,15 @@
       "number": "1",
       "script": {
         "content": [
-          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox",
-          "\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish",
-          "\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join lib",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml",
+          "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
+          "let bin = ($prefix)/bin/fnox",
+          "^$bin completion bash | save ($prefix)/share/bash-completion/completions/fnox",
+          "^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/fnox.fish",
+          "^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_fnox"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "0",
@@ -59,7 +61,8 @@
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "OPENSSL_NO_VENDOR": "1",
           "PKG_CONFIG_ALLOW_CROSS": "1"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -84,6 +87,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -134,6 +138,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config"
       ],
@@ -162,6 +167,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
@@ -197,9 +203,10 @@
       "number": "1",
       "script": {
         "content": [
-          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join lib",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "0",
@@ -207,7 +214,8 @@
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "OPENSSL_NO_VENDOR": "1",
           "PKG_CONFIG_ALLOW_CROSS": "1"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -232,6 +240,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -277,6 +286,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config"
       ],
@@ -305,6 +315,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
@@ -340,16 +351,19 @@
       "number": "1",
       "script": {
         "content": [
-          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox",
-          "\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish",
-          "\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml",
-          "powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"",
-          "set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"",
-          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join lib",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml",
+          "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
+          "let bin = ($prefix)/bin/fnox",
+          "^$bin completion bash | save ($prefix)/share/bash-completion/completions/fnox",
+          "^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/fnox.fish",
+          "^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_fnox",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join Library lib",
+          "let bin_dir = ($env.BUILD_PREFIX)/Library/bin | str replace --all '\\' '/'",
+          "let source_dll = glob ($bin_dir)/libclang-*.dll | first",
+          "cp $source_dll ($bin_dir)/libclang.dll"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
@@ -357,7 +371,8 @@
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "OPENSSL_NO_VENDOR": "1",
           "PKG_CONFIG_ALLOW_CROSS": "1"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -382,6 +397,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -430,6 +446,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -473,6 +490,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -513,6 +531,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -553,6 +572,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -593,6 +613,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -635,6 +656,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config"
       ],
@@ -664,9 +686,10 @@
       "number": "1",
       "script": {
         "content": [
-          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join lib",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "0",
@@ -674,7 +697,8 @@
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "OPENSSL_NO_VENDOR": "1",
           "PKG_CONFIG_ALLOW_CROSS": "1"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -699,6 +723,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -741,6 +766,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config"
       ]
@@ -765,6 +791,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
@@ -797,9 +824,10 @@
       "number": "1",
       "script": {
         "content": [
-          "export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib",
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join lib",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "0",
@@ -807,7 +835,8 @@
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "OPENSSL_NO_VENDOR": "1",
           "PKG_CONFIG_ALLOW_CROSS": "1"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -832,6 +861,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -874,6 +904,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config"
       ]
@@ -898,6 +929,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
@@ -934,7 +966,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/fnox.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.35.1\"\n\npackage:\n  name: fnox\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/jdx/fnox/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: fcb87bc1b1b6bd7b1ce54d9c37f2278e39cc36abf3c2fa98fd5fd0b2081ab122\n\nbuild:\n  number: 1\n  script:\n    env:\n      AWS_LC_SYS_CMAKE_BUILDER: ${{ \"1\" if win else \"0\" }} # force CMake builder for `aws-lc-sys` native C/C++ code on Windows\n      CARGO_PROFILE_RELEASE_LTO: ${{ \"fat\" if build_platform == host_platform else \"thin\" }} # avoid linker crashes with `fat` LTO when cross-compiling (e.g. with Apple's `ld64`) \n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      OPENSSL_NO_VENDOR: \"1\" # force linking to host's (conda-forge's) OpenSSL libs (for Linux)\n      PKG_CONFIG_ALLOW_CROSS: \"1\" # ignore `pkg-config` crate's host-target mismatch safeguard to fix cross compilation\n    content:\n      # NOTE: we have to set LIBCLANG_PATH for bindgen to find libclang (used by aws-lc-rs)\n      # cf. https://github.com/conda-forge/clangdev-feedstock/issues/373 & https://github.com/rust-lang/rust-bindgen/issues/918\n      - if: unix\n        then:\n          - export LIBCLANG_PATH=\"$BUILD_PREFIX\"/lib\n          - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins\n          # generate shell completions\n          - if: build_platform == host_platform\n            then:\n              - mkdir -p \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n              - '\"$PREFIX\"/bin/fnox completion bash > \"$PREFIX\"/share/bash-completion/completions/fnox'\n              - '\"$PREFIX\"/bin/fnox completion fish > \"$PREFIX\"/share/fish/vendor_completions.d/fnox.fish'\n              - '\"$PREFIX\"/bin/fnox completion zsh  > \"$PREFIX\"/share/zsh/site-functions/_fnox'\n      - if: win\n        then:\n          # bindgen expects libclang.dll; conda-forge only provides versioned DLLs on Windows\n          - powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"\n          - set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"\n          - cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins\n          # generate shell completions\n          - if: build_platform == host_platform\n            then:\n              - if not exist \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions mkdir \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\n              - if not exist \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d   mkdir \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\n              - if not exist \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions          mkdir \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\n              - '\"%LIBRARY_BIN%\"\\fnox.exe completion bash > \"%LIBRARY_PREFIX%\"\\share\\bash-completion\\completions\\fnox'\n              - '\"%LIBRARY_BIN%\"\\fnox.exe completion fish > \"%LIBRARY_PREFIX%\"\\share\\fish\\vendor_completions.d\\fnox.fish'\n              - '\"%LIBRARY_BIN%\"\\fnox.exe completion zsh  > \"%LIBRARY_PREFIX%\"\\share\\zsh\\site-functions\\_fnox'\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - clang\n    - cmake\n    - libclang\n    - make\n    - ninja\n    - perl\n    - pkg-config\n  host:\n    - if: linux\n      then:\n        - libudev\n        - openssl\n\ntests:\n  - script:\n      - fnox --help\n      - fnox --version\n  - package_contents:\n      bin:\n        - fnox\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/fnox\n            - share/fish/vendor_completions.d/fnox.fish\n            - share/zsh/site-functions/_fnox\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/fnox\n            - Library/share/fish/vendor_completions.d/fnox.fish\n            - Library/share/zsh/site-functions/_fnox\n      strict: true\n\nabout:\n  summary: Fort Knox for your secrets — flexible secret management with encryption and cloud providers\n  description: |\n    fnox is a flexible secret management tool that supports storing secrets with\n    encryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n    (AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n    1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\n    interface to work with secrets across development, CI, and production,\n    and supports shell integration to auto-load secrets on directory change.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://fnox.jdx.dev\n  repository: https://github.com/jdx/fnox\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"1.35.1\"\n\npackage:\n  name: fnox\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/jdx/fnox/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: fcb87bc1b1b6bd7b1ce54d9c37f2278e39cc36abf3c2fa98fd5fd0b2081ab122\n\nbuild:\n  number: 1\n  script:\n    env:\n      AWS_LC_SYS_CMAKE_BUILDER: ${{ \"1\" if win else \"0\" }} # force CMake builder for `aws-lc-sys` native C/C++ code on Windows\n      CARGO_PROFILE_RELEASE_LTO: ${{ \"fat\" if build_platform == host_platform else \"thin\" }} # avoid linker crashes with `fat` LTO when cross-compiling (e.g. with Apple's `ld64`) \n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      OPENSSL_NO_VENDOR: \"1\" # force linking to host's (conda-forge's) OpenSSL libs (for Linux)\n      PKG_CONFIG_ALLOW_CROSS: \"1\" # ignore `pkg-config` crate's host-target mismatch safeguard to fix cross compilation\n    interpreter: nu\n    content:\n      - let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX\n      # set LIBCLANG_PATH for bindgen to find libclang (used by aws-lc-rs)\n      # cf. https://github.com/conda-forge/clangdev-feedstock/issues/373 & https://github.com/rust-lang/rust-bindgen/issues/918\n      - if: unix\n        then: $env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join lib\n      - if: win\n        then:\n          - $env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join Library lib\n          # bindgen expects libclang.dll but conda-forge only provides versioned DLLs on Windows, so create a copy\n          - let bin_dir = ($env.BUILD_PREFIX)/Library/bin | str replace --all '\\' '/'\n          - let source_dll = glob ($bin_dir)/libclang-*.dll | first\n          - cp $source_dll ($bin_dir)/libclang.dll\n      # build main app and generate license data\n      - cargo auditable install --path=. --root=($prefix) --no-track --locked --bins\n      - cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml\n      # generate shell completions\n      - if: build_platform == host_platform\n        then:\n          - mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions\n          - let bin = ($prefix)/bin/fnox\n          - ^$bin completion bash | save ($prefix)/share/bash-completion/completions/fnox\n          - ^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/fnox.fish\n          - ^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_fnox\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - clang\n    - cmake\n    - libclang\n    - make\n    - ninja\n    - nushell\n    - perl\n    - pkg-config\n  host:\n    - if: linux\n      then:\n        - libudev\n        - openssl\n\ntests:\n  - script:\n      - fnox --help\n      - fnox --version\n  - package_contents:\n      bin:\n        - fnox\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/bash-completion/completions/fnox\n            - share/fish/vendor_completions.d/fnox.fish\n            - share/zsh/site-functions/_fnox\n        - if: win and build_platform == host_platform\n          then:\n            - Library/share/bash-completion/completions/fnox\n            - Library/share/fish/vendor_completions.d/fnox.fish\n            - Library/share/zsh/site-functions/_fnox\n      strict: true\n\nabout:\n  summary: Fort Knox for your secrets — flexible secret management with encryption and cloud providers\n  description: |\n    fnox is a flexible secret management tool that supports storing secrets with\n    encryption (age, AWS KMS, Azure KMS, GCP KMS) or remotely in cloud providers\n    (AWS Secrets Manager, AWS Parameter Store, Azure Key Vault, GCP Secret Manager,\n    1Password, Bitwarden, HashiCorp Vault, and more). It provides a unified\n    interface to work with secrets across development, CI, and production,\n    and supports shell integration to auto-load secrets on directory change.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://fnox.jdx.dev\n  repository: https://github.com/jdx/fnox\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -949,6 +981,7 @@
       "libudev",
       "make",
       "ninja",
+      "nushell",
       "openssl",
       "perl",
       "pkg-config",
@@ -969,6 +1002,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
@@ -1012,6 +1046,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
@@ -1052,10 +1087,13 @@
       "number": "1",
       "script": {
         "content": [
-          "powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"",
-          "set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"",
-          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join Library lib",
+          "let bin_dir = ($env.BUILD_PREFIX)/Library/bin | str replace --all '\\' '/'",
+          "let source_dll = glob ($bin_dir)/libclang-*.dll | first",
+          "cp $source_dll ($bin_dir)/libclang.dll",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
@@ -1063,7 +1101,8 @@
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "OPENSSL_NO_VENDOR": "1",
           "PKG_CONFIG_ALLOW_CROSS": "1"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -1088,6 +1127,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -1130,6 +1170,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config"
       ]
@@ -1154,6 +1195,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
@@ -1186,10 +1228,13 @@
       "number": "1",
       "script": {
         "content": [
-          "powershell -Command \"cp (gci $env:BUILD_PREFIX\\Library\\bin\\libclang-*.dll)[0] $env:BUILD_PREFIX\\Library\\bin\\libclang.dll\"",
-          "set \"LIBCLANG_PATH=%BUILD_PREFIX%\\Library\\bin\"",
-          "cargo auditable install --path=. --root=\"%LIBRARY_PREFIX%\" --no-track --locked --bins",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "$env.LIBCLANG_PATH = $env.BUILD_PREFIX | path join Library lib",
+          "let bin_dir = ($env.BUILD_PREFIX)/Library/bin | str replace --all '\\' '/'",
+          "let source_dll = glob ($bin_dir)/libclang-*.dll | first",
+          "cp $source_dll ($bin_dir)/libclang.dll",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml"
         ],
         "env": {
           "AWS_LC_SYS_CMAKE_BUILDER": "1",
@@ -1197,7 +1242,8 @@
           "CARGO_PROFILE_RELEASE_STRIP": "symbols",
           "OPENSSL_NO_VENDOR": "1",
           "PKG_CONFIG_ALLOW_CROSS": "1"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -1222,6 +1268,7 @@
             "libclang",
             "make",
             "ninja",
+            "nushell",
             "perl",
             "pkg-config"
           ],
@@ -1264,6 +1311,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config"
       ]
@@ -1288,6 +1336,7 @@
         "libclang",
         "make",
         "ninja",
+        "nushell",
         "perl",
         "pkg-config",
         "rust_compiler_stub"
