@@ -1,10 +1,14 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibprotobuf:\n- 6.33.5\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibprotobuf:\n- 7.35.1\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n",
+  "ci_support_migrations": {},
   "conda-forge.yml": {
     "bot": {
       "automerge": true
+    },
+    "build_platform": {
+      "win_arm64": "win_64"
     },
     "conda_build": {
       "error_overlinking": true
@@ -22,8 +26,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "1ec99f0308b2b96e621482eeada922ce71dbeda0",
-  "feedstock_hash_ts": 1785414623,
+  "feedstock_hash": "386d1fda103053b4806d28b3a966af62a0691a8c",
+  "feedstock_hash_ts": 1789399738,
   "feedstock_name": "rustfs",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -276,7 +280,12 @@
       "script": {
         "content": [
           "cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path ./rustfs",
-          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml",
+          "set \"AWS_LC_SYS_CMAKE_BUILDER=1\"",
+          "set \"ZSTD_SYS_USE_PKG_CONFIG=1\"",
+          "set \"PKG_CONFIG_ALLOW_CROSS=1\"",
+          "set \"PKG_CONFIG_PATH=%LIBRARY_PREFIX%\\lib\\pkgconfig\"",
+          "cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path ./rustfs"
         ],
         "env": {
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
@@ -424,6 +433,80 @@
           }
         ],
         "version": "1.0.0beta.12"
+      },
+      {
+        "build": null,
+        "name": "rustfs",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja",
+            "make",
+            "libprotobuf",
+            "pkg-config"
+          ],
+          "host": [
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "rustfs --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rustfs"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.0.0beta.12"
+      },
+      {
+        "build": null,
+        "name": "rustfs",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja",
+            "make",
+            "libprotobuf",
+            "pkg-config"
+          ],
+          "host": [
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "rustfs --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rustfs"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.0.0beta.12"
       }
     ],
     "package": {
@@ -441,7 +524,11 @@
         "cmake",
         "ninja",
         "make",
-        "libprotobuf"
+        "libprotobuf",
+        "pkg-config"
+      ],
+      "host": [
+        "zstd"
       ]
     },
     "schema_version": 1,
@@ -696,12 +783,14 @@
     "linux_64",
     "linux_aarch64",
     "osx_64",
-    "osx_arm64"
+    "osx_arm64",
+    "win_64",
+    "win_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/rustfs.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"1.0.0beta.12\"\n  tag: ${{ version | replace(\"beta\", \"-beta\") }}\n\npackage:\n  name: rustfs\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/rustfs/rustfs/archive/refs/tags/${{ tag }}.tar.gz\n  sha256: a80b8eff2d9234ac6a0a507f41ec3fc4572422d43b38498ef06a95b389391fad\n\nbuild:\n  number: 0\n  # Currently don't ship the web console because `rustfs/static` is empty at build time.\n  skip: win\n  script:\n    env:\n      # No fat LTO: the final binary is large and fat-LTO linking exhausts CI\n      # memory (OOM). Upstream's default release profile also omits LTO.\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path ./rustfs\n      - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    - cmake\n    - ninja\n    - make\n    - libprotobuf\n\ntests:\n  - script: rustfs --help\n  - package_contents:\n      bin:\n        - rustfs\n      strict: true\n\nabout:\n  homepage: https://rustfs.com\n  summary: High-performance distributed S3-compatible object storage written in Rust\n  description: |\n    RustFS is an open-source, S3-compatible high-performance object storage\n    system built in Rust. It supports erasure coding, identity and access\n    management, policy management, S3 Select, and migration and coexistence\n    with other S3-compatible platforms such as MinIO and Ceph.\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  documentation: https://docs.rustfs.com/\n  repository: https://github.com/rustfs/rustfs\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
+  "raw_meta_yaml": "context:\n  version: \"1.0.0beta.12\"\n  tag: ${{ version | replace(\"beta\", \"-beta\") }}\n\npackage:\n  name: rustfs\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/rustfs/rustfs/archive/refs/tags/${{ tag }}.tar.gz\n  sha256: a80b8eff2d9234ac6a0a507f41ec3fc4572422d43b38498ef06a95b389391fad\n\nbuild:\n  number: 0\n  # Currently don't ship the web console because `rustfs/static` is empty at build time.\n  script:\n    env:\n      # No fat LTO: the final binary is large and fat-LTO linking exhausts CI\n      # memory (OOM). Upstream's default release profile also omits LTO.\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - if: unix\n        then:\n          - cargo auditable install --locked --no-track --bins --root ${{ PREFIX }} --path ./rustfs\n        else:\n          # The env vars below are only correct on Windows, so they are exported\n          # here instead of in `script.env` (which applies to every platform).\n          #\n          # aws-lc-sys' default build path emits x86_64 objects when\n          # cross-compiling win-64 -> win-arm64:\n          #   fatal error LNK1112: module machine type 'x64' conflicts with\n          #   target machine type 'ARM64'\n          # Its CMake builder honours the target architecture instead.\n          - set \"AWS_LC_SYS_CMAKE_BUILDER=1\"\n          # Link the host zstd rather than zstd-sys' vendored copy, which does\n          # not survive the cross-compile:\n          #   error LNK2019: unresolved external symbol ZSTD_compressStream\n          # `pkg-config` refuses to run for a foreign target unless cross\n          # lookups are opted into. No PKG_CONFIG_SYSROOT_DIR: conda's .pc\n          # files already carry the relocated host prefix, so prepending a\n          # sysroot would break the paths they contain.\n          - set \"ZSTD_SYS_USE_PKG_CONFIG=1\"\n          - set \"PKG_CONFIG_ALLOW_CROSS=1\"\n          - set \"PKG_CONFIG_PATH=%LIBRARY_PREFIX%\\lib\\pkgconfig\"\n          - cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path ./rustfs\n      - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ compiler('rust') }}\n    - cargo-bundle-licenses\n    - cargo-auditable\n    - cmake\n    - ninja\n    - make\n    - libprotobuf\n    - if: win\n      then:\n        - pkg-config\n  host:\n    - if: win\n      then:\n        - zstd\n\ntests:\n  - script: rustfs --help\n  - package_contents:\n      bin:\n        - rustfs\n      strict: true\n\nabout:\n  homepage: https://rustfs.com\n  summary: High-performance distributed S3-compatible object storage written in Rust\n  description: |\n    RustFS is an open-source, S3-compatible high-performance object storage\n    system built in Rust. It supports erasure coding, identity and access\n    management, policy management, S3 Select, and migration and coexistence\n    with other S3-compatible platforms such as MinIO and Ceph.\n  license: Apache-2.0\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  documentation: https://docs.rustfs.com/\n  repository: https://github.com/rustfs/rustfs\n\nextra:\n  recipe-maintainers:\n    - pavelzw\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -714,7 +803,9 @@
       "libprotobuf",
       "make",
       "ninja",
-      "rust_compiler_stub"
+      "pkg-config",
+      "rust_compiler_stub",
+      "zstd"
     ]
   },
   "requirements": {
@@ -730,6 +821,7 @@
         "libprotobuf",
         "make",
         "ninja",
+        "pkg-config",
         "rust_compiler_stub"
       ]
     },
@@ -738,7 +830,8 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
-        "cxx_compiler_stub"
+        "cxx_compiler_stub",
+        "zstd"
       ]
     },
     "run": {
@@ -768,12 +861,15 @@
         "libprotobuf",
         "make",
         "ninja",
+        "pkg-config",
         "rust_compiler_stub"
       ]
     },
     "host": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "zstd"
+      ]
     },
     "run": {
       "__set__": true,
@@ -788,5 +884,267 @@
   "version": "1.0.0beta.12",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/rustfs.json"
+  },
+  "win_64_meta_yaml": {
+    "about": {
+      "description": "RustFS is an open-source, S3-compatible high-performance object storage\nsystem built in Rust. It supports erasure coding, identity and access\nmanagement, policy management, S3 Select, and migration and coexistence\nwith other S3-compatible platforms such as MinIO and Ceph.",
+      "dev_url": "https://github.com/rustfs/rustfs",
+      "doc_url": "https://docs.rustfs.com/",
+      "home": "https://rustfs.com/",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "High-performance distributed S3-compatible object storage written in Rust"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "set \"AWS_LC_SYS_CMAKE_BUILDER=1\"",
+          "set \"ZSTD_SYS_USE_PKG_CONFIG=1\"",
+          "set \"PKG_CONFIG_ALLOW_CROSS=1\"",
+          "set \"PKG_CONFIG_PATH=%LIBRARY_PREFIX%\\lib\\pkgconfig\"",
+          "cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path ./rustfs",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rustfs",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja",
+            "make",
+            "libprotobuf",
+            "pkg-config"
+          ],
+          "host": [
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "rustfs --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rustfs"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.0.0beta.12"
+      }
+    ],
+    "package": {
+      "name": "rustfs",
+      "version": "1.0.0beta.12"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "cmake",
+        "ninja",
+        "make",
+        "libprotobuf",
+        "pkg-config"
+      ],
+      "host": [
+        "zstd"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "a80b8eff2d9234ac6a0a507f41ec3fc4572422d43b38498ef06a95b389391fad",
+      "url": "https://github.com/rustfs/rustfs/archive/refs/tags/1.0.0-beta.12.tar.gz"
+    }
+  },
+  "win_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cmake",
+        "cxx_compiler_stub",
+        "libprotobuf",
+        "make",
+        "ninja",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "zstd"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
+  },
+  "win_arm64_meta_yaml": {
+    "about": {
+      "description": "RustFS is an open-source, S3-compatible high-performance object storage\nsystem built in Rust. It supports erasure coding, identity and access\nmanagement, policy management, S3 Select, and migration and coexistence\nwith other S3-compatible platforms such as MinIO and Ceph.",
+      "dev_url": "https://github.com/rustfs/rustfs",
+      "doc_url": "https://docs.rustfs.com/",
+      "home": "https://rustfs.com/",
+      "license": "Apache-2.0",
+      "license_family": "Apache-2.0",
+      "license_file": "LICENSE",
+      "summary": "High-performance distributed S3-compatible object storage written in Rust"
+    },
+    "build": {
+      "number": "0",
+      "script": {
+        "content": [
+          "set \"AWS_LC_SYS_CMAKE_BUILDER=1\"",
+          "set \"ZSTD_SYS_USE_PKG_CONFIG=1\"",
+          "set \"PKG_CONFIG_ALLOW_CROSS=1\"",
+          "set \"PKG_CONFIG_PATH=%LIBRARY_PREFIX%\\lib\\pkgconfig\"",
+          "cargo auditable install --locked --no-track --bins --root %LIBRARY_PREFIX% --path ./rustfs",
+          "cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml"
+        ],
+        "env": {
+          "CARGO_PROFILE_RELEASE_STRIP": "symbols"
+        }
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "pavelzw"
+      ]
+    },
+    "outputs": [
+      {
+        "build": null,
+        "name": "rustfs",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "rust_compiler_stub",
+            "cargo-bundle-licenses",
+            "cargo-auditable",
+            "cmake",
+            "ninja",
+            "make",
+            "libprotobuf",
+            "pkg-config"
+          ],
+          "host": [
+            "zstd"
+          ],
+          "run": []
+        },
+        "tests": [
+          {
+            "script": "rustfs --help"
+          },
+          {
+            "package_contents": {
+              "bin": [
+                "rustfs"
+              ],
+              "strict": true
+            }
+          }
+        ],
+        "version": "1.0.0beta.12"
+      }
+    ],
+    "package": {
+      "name": "rustfs",
+      "version": "1.0.0beta.12"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
+        "rust_compiler_stub",
+        "cargo-bundle-licenses",
+        "cargo-auditable",
+        "cmake",
+        "ninja",
+        "make",
+        "libprotobuf",
+        "pkg-config"
+      ],
+      "host": [
+        "zstd"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "sha256": "a80b8eff2d9234ac6a0a507f41ec3fc4572422d43b38498ef06a95b389391fad",
+      "url": "https://github.com/rustfs/rustfs/archive/refs/tags/1.0.0-beta.12.tar.gz"
+    }
+  },
+  "win_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cargo-auditable",
+        "cargo-bundle-licenses",
+        "cmake",
+        "cxx_compiler_stub",
+        "libprotobuf",
+        "make",
+        "ninja",
+        "pkg-config",
+        "rust_compiler_stub"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "zstd"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": []
+    },
+    "test": {
+      "__set__": true,
+      "elements": []
+    }
   }
 }
