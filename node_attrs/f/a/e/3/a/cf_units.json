@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.11.____cpython.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nnumpy:\n- '2'\npython_min:\n- '3.11'\ntarget_platform:\n- linux-64\n",
   "ci_support_migrations": {
     "python314": {
       "migration_number": 1,
@@ -17,7 +17,9 @@
     "conda_build": {
       "pkg_format": "2"
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
@@ -31,30 +33,85 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "35541ce572b7d253635396f21d6422a55a2391d7",
-  "feedstock_hash_ts": 1776921702,
+  "feedstock_hash": "251d5e45caecd1a90fd00afef72516a827516883",
+  "feedstock_hash_ts": 1789388253,
   "feedstock_name": "cf_units",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "home": "https://cf-units.readthedocs.io/en/latest/",
+      "doc_url": "https://cf-units.readthedocs.io/",
+      "home": "https://pypi.org/project/cf-units/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
-      "summary": "Units of measure as required by the Climate and Forecast (CF) Metadata Conventions."
+      "summary": "Units of measure as required by the Climate and Forecast (CF) metadata conventions"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "bjlittle",
         "ocefpaf",
         "pelson",
-        "trexfeathers",
-        "pp-mo"
+        "pp-mo",
+        "trexfeathers"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      }
+    ],
     "package": {
       "name": "cf-units",
       "version": "3.3.1"
@@ -65,38 +122,25 @@
         "c_stdlib_stub"
       ],
       "host": [
-        "python",
-        "pip",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "numpy",
-        "cython",
+        "cython >=3.0",
         "udunits2",
-        "setuptools",
-        "setuptools-scm"
+        "pip"
       ],
       "run": [
-        "udunits2",
-        "python",
-        "cftime >=1.5.2",
-        "jinja2"
+        "python >=3.11",
+        "cftime >=1.2",
+        "jinja2",
+        "udunits2"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a",
-      "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check",
-        "pytest --pyargs cf_units"
-      ],
-      "imports": [
-        "cf_units"
-      ],
-      "requires": [
-        "pytest",
-        "pip"
-      ]
+      "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz"
     }
   },
   "linux_64_requirements": {
@@ -131,6 +175,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
@@ -138,66 +183,116 @@
   },
   "linux_aarch64_meta_yaml": {
     "about": {
-      "home": "https://cf-units.readthedocs.io/en/latest/",
+      "doc_url": "https://cf-units.readthedocs.io/",
+      "home": "https://pypi.org/project/cf-units/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
-      "summary": "Units of measure as required by the Climate and Forecast (CF) Metadata Conventions."
+      "summary": "Units of measure as required by the Climate and Forecast (CF) metadata conventions"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "bjlittle",
         "ocefpaf",
         "pelson",
-        "trexfeathers",
-        "pp-mo"
+        "pp-mo",
+        "trexfeathers"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_linux-aarch64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      }
+    ],
     "package": {
       "name": "cf-units",
       "version": "3.3.1"
     },
     "requirements": {
       "build": [
+        "python 3.11.*",
+        "cross-python_linux-aarch64",
+        "numpy >=2",
+        "cython >=3.0",
         "c_compiler_stub",
         "c_stdlib_stub"
       ],
       "host": [
-        "python",
-        "pip",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "numpy",
-        "cython",
+        "cython >=3.0",
         "udunits2",
-        "setuptools",
-        "setuptools-scm"
+        "pip"
       ],
       "run": [
-        "udunits2",
-        "python",
-        "cftime >=1.5.2",
-        "jinja2"
+        "python >=3.11",
+        "cftime >=1.2",
+        "jinja2",
+        "udunits2"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a",
-      "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check",
-        "pytest --pyargs cf_units"
-      ],
-      "imports": [
-        "cf_units"
-      ],
-      "requires": [
-        "pytest",
-        "pip"
-      ]
+      "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz"
     }
   },
   "linux_aarch64_requirements": {
@@ -205,7 +300,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cython",
+        "numpy",
+        "python"
       ]
     },
     "host": {
@@ -232,6 +331,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
@@ -239,66 +339,116 @@
   },
   "linux_ppc64le_meta_yaml": {
     "about": {
-      "home": "https://cf-units.readthedocs.io/en/latest/",
+      "doc_url": "https://cf-units.readthedocs.io/",
+      "home": "https://pypi.org/project/cf-units/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
-      "summary": "Units of measure as required by the Climate and Forecast (CF) Metadata Conventions."
+      "summary": "Units of measure as required by the Climate and Forecast (CF) metadata conventions"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "bjlittle",
         "ocefpaf",
         "pelson",
-        "trexfeathers",
-        "pp-mo"
+        "pp-mo",
+        "trexfeathers"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_linux-ppc64le",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      }
+    ],
     "package": {
       "name": "cf-units",
       "version": "3.3.1"
     },
     "requirements": {
       "build": [
+        "python 3.11.*",
+        "cross-python_linux-ppc64le",
+        "numpy >=2",
+        "cython >=3.0",
         "c_compiler_stub",
         "c_stdlib_stub"
       ],
       "host": [
-        "python",
-        "pip",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "numpy",
-        "cython",
+        "cython >=3.0",
         "udunits2",
-        "setuptools",
-        "setuptools-scm"
+        "pip"
       ],
       "run": [
-        "udunits2",
-        "python",
-        "cftime >=1.5.2",
-        "jinja2"
+        "python >=3.11",
+        "cftime >=1.2",
+        "jinja2",
+        "udunits2"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a",
-      "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check",
-        "pytest --pyargs cf_units"
-      ],
-      "imports": [
-        "cf_units"
-      ],
-      "requires": [
-        "pytest",
-        "pip"
-      ]
+      "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz"
     }
   },
   "linux_ppc64le_requirements": {
@@ -306,7 +456,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_linux-ppc64le",
+        "cython",
+        "numpy",
+        "python"
       ]
     },
     "host": {
@@ -333,6 +487,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
@@ -340,24 +495,354 @@
   },
   "meta_yaml": {
     "about": {
-      "home": "https://cf-units.readthedocs.io/en/latest/",
+      "doc_url": "https://cf-units.readthedocs.io/",
+      "home": "https://pypi.org/project/cf-units/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
-      "summary": "Units of measure as required by the Climate and Forecast (CF) Metadata Conventions."
+      "summary": "Units of measure as required by the Climate and Forecast (CF) metadata conventions"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.bat"
     },
     "extra": {
       "recipe-maintainers": [
         "bjlittle",
         "ocefpaf",
         "pelson",
-        "trexfeathers",
-        "pp-mo"
+        "pp-mo",
+        "trexfeathers"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      },
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_linux-aarch64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      },
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_linux-ppc64le",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      },
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_osx-64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      },
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_osx-arm64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      },
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_win-64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit %SP_DIR%\\\\cf_units\\\\_udunits2.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      }
+    ],
     "package": {
       "name": "cf-units",
       "version": "3.3.1"
@@ -365,106 +850,151 @@
     "requirements": {
       "build": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "python 3.11.*",
+        "cross-python_linux-aarch64",
+        "numpy >=2",
+        "cython >=3.0",
+        "cross-python_linux-ppc64le",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cross-python_win-64"
       ],
       "host": [
-        "python",
-        "pip",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "numpy",
-        "cython",
+        "cython >=3.0",
         "udunits2",
-        "setuptools",
-        "setuptools-scm"
+        "pip"
       ],
       "run": [
-        "udunits2",
-        "python",
-        "cftime >=1.5.2",
-        "jinja2"
+        "python >=3.11",
+        "cftime >=1.2",
+        "jinja2",
+        "udunits2"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a",
-      "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check",
-        "pytest --pyargs cf_units"
-      ],
-      "imports": [
-        "cf_units"
-      ],
-      "requires": [
-        "pytest",
-        "pip"
-      ]
+      "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz"
     }
   },
   "name": "cf-units",
   "osx_64_meta_yaml": {
     "about": {
-      "home": "https://cf-units.readthedocs.io/en/latest/",
+      "doc_url": "https://cf-units.readthedocs.io/",
+      "home": "https://pypi.org/project/cf-units/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
-      "summary": "Units of measure as required by the Climate and Forecast (CF) Metadata Conventions."
+      "summary": "Units of measure as required by the Climate and Forecast (CF) metadata conventions"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "bjlittle",
         "ocefpaf",
         "pelson",
-        "trexfeathers",
-        "pp-mo"
+        "pp-mo",
+        "trexfeathers"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_osx-64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      }
+    ],
     "package": {
       "name": "cf-units",
       "version": "3.3.1"
     },
     "requirements": {
       "build": [
+        "python 3.11.*",
+        "cross-python_osx-64",
+        "numpy >=2",
+        "cython >=3.0",
         "c_compiler_stub",
         "c_stdlib_stub"
       ],
       "host": [
-        "python",
-        "pip",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "numpy",
-        "cython",
+        "cython >=3.0",
         "udunits2",
-        "setuptools",
-        "setuptools-scm"
+        "pip"
       ],
       "run": [
-        "udunits2",
-        "python",
-        "cftime >=1.5.2",
-        "jinja2"
+        "python >=3.11",
+        "cftime >=1.2",
+        "jinja2",
+        "udunits2"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a",
-      "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check",
-        "pytest --pyargs cf_units"
-      ],
-      "imports": [
-        "cf_units"
-      ],
-      "requires": [
-        "pytest",
-        "pip"
-      ]
+      "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz"
     }
   },
   "osx_64_requirements": {
@@ -472,7 +1002,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_osx-64",
+        "cython",
+        "numpy",
+        "python"
       ]
     },
     "host": {
@@ -499,6 +1033,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
@@ -506,66 +1041,116 @@
   },
   "osx_arm64_meta_yaml": {
     "about": {
-      "home": "https://cf-units.readthedocs.io/en/latest/",
+      "doc_url": "https://cf-units.readthedocs.io/",
+      "home": "https://pypi.org/project/cf-units/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
-      "summary": "Units of measure as required by the Climate and Forecast (CF) Metadata Conventions."
+      "summary": "Units of measure as required by the Climate and Forecast (CF) metadata conventions"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.sh"
     },
     "extra": {
       "recipe-maintainers": [
         "bjlittle",
         "ocefpaf",
         "pelson",
-        "trexfeathers",
-        "pp-mo"
+        "pp-mo",
+        "trexfeathers"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_osx-arm64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      }
+    ],
     "package": {
       "name": "cf-units",
       "version": "3.3.1"
     },
     "requirements": {
       "build": [
+        "python 3.11.*",
+        "cross-python_osx-arm64",
+        "numpy >=2",
+        "cython >=3.0",
         "c_compiler_stub",
         "c_stdlib_stub"
       ],
       "host": [
-        "python",
-        "pip",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "numpy",
-        "cython",
+        "cython >=3.0",
         "udunits2",
-        "setuptools",
-        "setuptools-scm"
+        "pip"
       ],
       "run": [
-        "udunits2",
-        "python",
-        "cftime >=1.5.2",
-        "jinja2"
+        "python >=3.11",
+        "cftime >=1.2",
+        "jinja2",
+        "udunits2"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a",
-      "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check",
-        "pytest --pyargs cf_units"
-      ],
-      "imports": [
-        "cf_units"
-      ],
-      "requires": [
-        "pytest",
-        "pip"
-      ]
+      "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz"
     }
   },
   "osx_arm64_requirements": {
@@ -573,7 +1158,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_osx-arm64",
+        "cython",
+        "numpy",
+        "python"
       ]
     },
     "host": {
@@ -600,6 +1189,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
@@ -623,13 +1213,18 @@
   "pr_info": {
     "__lazy_json__": "pr_info/cf_units.json"
   },
-  "raw_meta_yaml": "{% set name = \"cf-units\" %}\n{% set version = \"3.3.1\" %}\n\npackage:\n  name: {{ name }}\n  version: {{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/{{ name[0] }}/cf_units/cf_units-{{ version }}.tar.gz\n  sha256: 84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a\n\nbuild:\n  number: 0\n  skip: true  # [py<311]\n\nrequirements:\n  build:\n    - python                                 # [build_platform != target_platform]\n    - cross-python_{{ target_platform }}     # [build_platform != target_platform]\n    - cython                                 # [build_platform != target_platform]\n    - numpy                                  # [build_platform != target_platform]\n    - {{ compiler('c') }}\n    - {{ stdlib('c') }}\n  host:\n    - python\n    - pip\n    - numpy\n    - cython\n    - udunits2\n    - setuptools\n    - setuptools-scm\n  run:\n    - {{ pin_compatible('udunits2', max_pin='x.x') }}\n    - python\n    - cftime >=1.5.2\n    - jinja2\n\ntest:\n  requires:\n    - pytest\n    - pip\n  imports:\n    - cf_units\n  commands:\n    - pip check\n    - pytest --pyargs cf_units\n\nabout:\n  home: https://cf-units.readthedocs.io/en/latest/\n  license: BSD-3-Clause\n  license_family: BSD\n  license_file: LICENSE\n  summary: Units of measure as required by the Climate and Forecast (CF) Metadata Conventions.\n\nextra:\n  recipe-maintainers:\n    - bjlittle\n    - ocefpaf\n    - pelson\n    - trexfeathers\n    - pp-mo\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"3.3.1\"\n\npackage:\n  name: cf-units\n  version: ${{ version }}\n\nsource:\n  url: https://pypi.org/packages/source/c/cf-units/cf_units-${{ version }}.tar.gz\n  sha256: 84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a\n\nbuild:\n  number: 1\n  script:\n    - if: win\n      then: [build.bat]\n      else: [build.sh]\n  python:\n    version_independent: true\n\nrequirements:\n  build:\n    - if: build_platform != target_platform\n      then:\n        - python ${{ python_min }}.*\n        - cross-python_${{ target_platform }}\n        - numpy >=2\n        - cython >=3.0\n    - ${{ compiler(\"c\") }}\n    - ${{ stdlib(\"c\") }}\n  host:\n    - python ${{ python_min }}.*\n    - setuptools >=77.0.3\n    - setuptools-scm >=8.0\n    - numpy\n    - cython >=3.0\n    - udunits2\n    - pip\n  run:\n    - python >=${{ python_min }}\n    - cftime >=1.2\n    - jinja2\n    - ${{ pin_compatible('udunits2', upper_bound=\"x.x\") }}\n\ntests:\n  - python:\n      imports:\n        - cf_units\n      pip_check: true\n      python_version:\n        - ${{ python_min }}.*\n        - \"*\"\n  - requirements:\n      run:\n        - abi3audit\n        - pytest\n    script:\n      - pytest --pyargs cf_units\n      - if: unix\n        then:\n          - abi3audit $SP_DIR/cf_units/_udunits2.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}\n      - if: win\n        then:\n          - abi3audit %SP_DIR%\\\\cf_units\\\\_udunits2.pyd -s -v --assume-minimum-abi3 ${{ python_min }}\n\nabout:\n  summary: Units of measure as required by the Climate and Forecast (CF) metadata conventions\n  license: BSD-3-Clause\n  license_file: LICENSE\n  homepage: https://pypi.org/project/cf-units/\n  documentation: https://cf-units.readthedocs.io\n\nextra:\n  recipe-maintainers:\n    - bjlittle\n    - ocefpaf\n    - pelson\n    - pp-mo\n    - trexfeathers\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_compiler_stub",
       "c_stdlib_stub",
       "cftime",
+      "cross-python_linux-aarch64",
+      "cross-python_linux-ppc64le",
+      "cross-python_osx-64",
+      "cross-python_osx-arm64",
+      "cross-python_win-64",
       "cython",
       "jinja2",
       "numpy",
@@ -645,7 +1240,15 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cross-python_linux-ppc64le",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cross-python_win-64",
+        "cython",
+        "numpy",
+        "python"
       ]
     },
     "host": {
@@ -653,6 +1256,7 @@
       "elements": [
         "c_compiler_stub",
         "c_stdlib_stub",
+        "cross-python",
         "cython",
         "numpy",
         "pip",
@@ -668,6 +1272,7 @@
         "c_compiler_stub",
         "c_stdlib_stub",
         "cftime",
+        "cross-python",
         "jinja2",
         "python",
         "udunits2"
@@ -676,6 +1281,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
@@ -687,105 +1293,164 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cross-python_linux-ppc64le",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
+        "cross-python_win-64",
+        "cython >=3.0",
+        "numpy >=2",
+        "python 3.11.*"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
-        "cython",
+        "cython >=3.0",
         "numpy",
         "pip",
-        "python",
-        "setuptools",
-        "setuptools-scm",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "udunits2"
       ]
     },
     "run": {
       "__set__": true,
       "elements": [
-        "cftime >=1.5.2",
+        "cftime >=1.2",
         "jinja2",
-        "python",
+        "python >=3.11",
         "udunits2"
       ]
     },
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
     }
   },
-  "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz",
+  "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz",
   "version": "3.3.1",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/cf_units.json"
   },
   "win_64_meta_yaml": {
     "about": {
-      "home": "https://cf-units.readthedocs.io/en/latest/",
+      "doc_url": "https://cf-units.readthedocs.io/",
+      "home": "https://pypi.org/project/cf-units/",
       "license": "BSD-3-Clause",
-      "license_family": "BSD",
+      "license_family": "BSD-3-Clause",
       "license_file": "LICENSE",
-      "summary": "Units of measure as required by the Climate and Forecast (CF) Metadata Conventions."
+      "summary": "Units of measure as required by the Climate and Forecast (CF) metadata conventions"
     },
     "build": {
-      "number": "0"
+      "number": "1",
+      "script": "build.bat"
     },
     "extra": {
       "recipe-maintainers": [
         "bjlittle",
         "ocefpaf",
         "pelson",
-        "trexfeathers",
-        "pp-mo"
+        "pp-mo",
+        "trexfeathers"
       ]
     },
+    "outputs": [
+      {
+        "build": null,
+        "name": "cf-units",
+        "requirements": {
+          "build": [
+            "python 3.11.*",
+            "cross-python_win-64",
+            "numpy >=2",
+            "cython >=3.0",
+            "c_compiler_stub",
+            "c_stdlib_stub"
+          ],
+          "host": [
+            "python 3.11.*",
+            "setuptools >=77.0.3",
+            "setuptools-scm >=8.0",
+            "numpy",
+            "cython >=3.0",
+            "udunits2",
+            "pip"
+          ],
+          "run": [
+            "python >=3.11",
+            "cftime >=1.2",
+            "jinja2",
+            "udunits2"
+          ]
+        },
+        "tests": [
+          {
+            "python": {
+              "imports": [
+                "cf_units"
+              ],
+              "python_version": [
+                "3.11.*",
+                "*"
+              ]
+            }
+          },
+          {
+            "requirements": {
+              "run": [
+                "abi3audit",
+                "pytest"
+              ]
+            },
+            "script": [
+              "pytest --pyargs cf_units",
+              "abi3audit %SP_DIR%\\\\cf_units\\\\_udunits2.pyd -s -v --assume-minimum-abi3 ${{ python_min }}"
+            ]
+          }
+        ],
+        "version": "3.3.1"
+      }
+    ],
     "package": {
       "name": "cf-units",
       "version": "3.3.1"
     },
     "requirements": {
       "build": [
+        "python 3.11.*",
+        "cross-python_win-64",
+        "numpy >=2",
+        "cython >=3.0",
         "c_compiler_stub",
         "c_stdlib_stub"
       ],
       "host": [
-        "python",
-        "pip",
+        "python 3.11.*",
+        "setuptools >=77.0.3",
+        "setuptools-scm >=8.0",
         "numpy",
-        "cython",
+        "cython >=3.0",
         "udunits2",
-        "setuptools",
-        "setuptools-scm"
+        "pip"
       ],
       "run": [
-        "udunits2",
-        "python",
-        "cftime >=1.5.2",
-        "jinja2"
+        "python >=3.11",
+        "cftime >=1.2",
+        "jinja2",
+        "udunits2"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "sha256": "84339f582994ae32ca5c472075c1e603a89f6c6f5a96cc1031bb5da700a14f3a",
-      "url": "https://pypi.org/packages/source/c/cf_units/cf_units-3.3.1.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "pip check",
-        "pytest --pyargs cf_units"
-      ],
-      "imports": [
-        "cf_units"
-      ],
-      "requires": [
-        "pytest",
-        "pip"
-      ]
+      "url": "https://pypi.org/packages/source/c/cf-units/cf_units-3.3.1.tar.gz"
     }
   },
   "win_64_requirements": {
@@ -793,7 +1458,11 @@
       "__set__": true,
       "elements": [
         "c_compiler_stub",
-        "c_stdlib_stub"
+        "c_stdlib_stub",
+        "cross-python_win-64",
+        "cython",
+        "numpy",
+        "python"
       ]
     },
     "host": {
@@ -820,6 +1489,7 @@
     "test": {
       "__set__": true,
       "elements": [
+        "abi3audit",
         "pip",
         "pytest"
       ]
