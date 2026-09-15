@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nlibfuse3:\n- '3'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nlibfuse3:\n- '3'\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
   "ci_support_migrations": {},
   "conda-forge.yml": {
     "conda_build": {
@@ -14,8 +14,8 @@
       "tooling_branch_name": "main"
     }
   },
-  "feedstock_hash": "063e8298cff765107339427324b3d870949ed0c7",
-  "feedstock_hash_ts": 1776836820,
+  "feedstock_hash": "ee78feaecf52f0546faa1a2a603c07c4c721c95e",
+  "feedstock_hash_ts": 1789443509,
   "feedstock_name": "mountpoint-s3",
   "linux_64_meta_yaml": {
     "about": {
@@ -47,6 +47,8 @@
         "requirements": {
           "build": [
             "rust_compiler_stub >=1.85",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
             "cmake",
@@ -73,16 +75,18 @@
             ]
           }
         ],
-        "version": "1.21.0"
+        "version": "1.24.0"
       }
     ],
     "package": {
       "name": "mountpoint-s3",
-      "version": "1.21.0"
+      "version": "1.24.0"
     },
     "requirements": {
       "build": [
         "rust_compiler_stub >=1.85",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
@@ -104,9 +108,11 @@
     "build": {
       "__set__": true,
       "elements": [
+        "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "cxx_compiler_stub",
         "make",
         "pkg-config",
         "rust_compiler_stub"
@@ -161,6 +167,8 @@
         "requirements": {
           "build": [
             "rust_compiler_stub >=1.85",
+            "c_compiler_stub",
+            "cxx_compiler_stub",
             "c_stdlib_stub",
             "cargo-bundle-licenses",
             "cmake",
@@ -187,16 +195,18 @@
             ]
           }
         ],
-        "version": "1.21.0"
+        "version": "1.24.0"
       }
     ],
     "package": {
       "name": "mountpoint-s3",
-      "version": "1.21.0"
+      "version": "1.24.0"
     },
     "requirements": {
       "build": [
         "rust_compiler_stub >=1.85",
+        "c_compiler_stub",
+        "cxx_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
@@ -228,14 +238,16 @@
   "pr_info": {
     "__lazy_json__": "pr_info/mountpoint-s3.json"
   },
-  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\ncontext:\n  name: mountpoint-s3\n  version: \"1.21.0\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  git:  https://github.com/awslabs/mountpoint-s3.git\n  tag: \"v${{ version }}\"\n\nbuild:\n  number: 0\n  skip:\n    - not linux\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content: |\n      echo \"#############################################################################\"\n      echo \"# BUILD START\"\n      echo \"#############################################################################\"\n      set -exo pipefail\n      export LIBCLANG_PATH=\"${PREFIX}/lib\"\n      cargo install --locked --no-track --root \"${PREFIX}\" --path mountpoint-s3\n      cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ compiler('rust') }} >=1.85\n    - ${{ stdlib('c') }}\n    - cargo-bundle-licenses\n    - cmake\n    - make\n    - pkg-config\n\n  host:\n    - clangdev\n    - libclang\n    - libfuse3\n\ntests:\n  - script:\n      - mount-s3 --help\n      - mount-s3 --version | rg ${{ version }}\n    requirements:\n      run:\n        - ripgrep\n\nabout:\n  homepage: https://github.com/awslabs/mountpoint-s3\n  summary: 'A simple, high-throughput file client for mounting an Amazon S3 bucket as a local file system.'\n  license: Apache-2.0\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - dhirschfeld\n",
+  "raw_meta_yaml": "# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json\ncontext:\n  name: mountpoint-s3\n  version: \"1.24.0\"\n\npackage:\n  name: ${{ name|lower }}\n  version: ${{ version }}\n\nsource:\n  git:  https://github.com/awslabs/mountpoint-s3.git\n  tag: \"v${{ version }}\"\n\nbuild:\n  number: 0\n  skip:\n    - not linux\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n      CARGO_PROFILE_RELEASE_LTO: fat\n    content: |\n      echo \"#############################################################################\"\n      echo \"# BUILD START\"\n      echo \"#############################################################################\"\n      set -exo pipefail\n      export LIBCLANG_PATH=\"${PREFIX}/lib\"\n      cargo install --locked --no-track --root \"${PREFIX}\" --path mountpoint-s3\n      cargo-bundle-licenses --format yaml --output THIRDPARTY.yml\n\nrequirements:\n  build:\n    - ${{ compiler('rust') }} >=1.85\n    - ${{ compiler('c') }}\n    - ${{ compiler('cxx') }}\n    - ${{ stdlib('c') }}\n    - cargo-bundle-licenses\n    - cmake\n    - make\n    - pkg-config\n\n  host:\n    - clangdev\n    - libclang\n    - libfuse3\n\ntests:\n  - script:\n      - mount-s3 --help\n      - mount-s3 --version | rg ${{ version }}\n    requirements:\n      run:\n        - ripgrep\n\nabout:\n  homepage: https://github.com/awslabs/mountpoint-s3\n  summary: 'A simple, high-throughput file client for mounting an Amazon S3 bucket as a local file system.'\n  license: Apache-2.0\n  license_file: LICENSE\n\nextra:\n  recipe-maintainers:\n    - dhirschfeld\n",
   "req": {
     "__set__": true,
     "elements": [
+      "c_compiler_stub",
       "c_stdlib_stub",
       "cargo-bundle-licenses",
       "clangdev",
       "cmake",
+      "cxx_compiler_stub",
       "libclang",
       "libfuse3",
       "make",
@@ -247,9 +259,11 @@
     "build": {
       "__set__": true,
       "elements": [
+        "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "cxx_compiler_stub",
         "make",
         "pkg-config",
         "rust_compiler_stub"
@@ -258,8 +272,10 @@
     "host": {
       "__set__": true,
       "elements": [
+        "c_compiler_stub",
         "c_stdlib_stub",
         "clangdev",
+        "cxx_compiler_stub",
         "libclang",
         "libfuse3"
       ]
@@ -267,7 +283,9 @@
     "run": {
       "__set__": true,
       "elements": [
-        "c_stdlib_stub"
+        "c_compiler_stub",
+        "c_stdlib_stub",
+        "cxx_compiler_stub"
       ]
     },
     "test": {
@@ -282,9 +300,11 @@
     "build": {
       "__set__": true,
       "elements": [
+        "c_compiler_stub",
         "c_stdlib_stub",
         "cargo-bundle-licenses",
         "cmake",
+        "cxx_compiler_stub",
         "make",
         "pkg-config",
         "rust_compiler_stub >=1.85"
@@ -310,7 +330,7 @@
     }
   },
   "url": null,
-  "version": "1.21.0",
+  "version": "1.24.0",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/mountpoint-s3.json"
   }
