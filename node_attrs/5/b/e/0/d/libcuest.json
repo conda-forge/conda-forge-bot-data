@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_c_compiler_version14cuda_compiler_version12.9cxx_compiler_version14.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\nxz:\n- '5'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
+  "ci_support_linux_64_c_compiler_version14c_stdlib_version2.17cuda_compiler_version12.9cxx_compiler_version14.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncuda_compiler:\n- cuda-nvcc\ncuda_compiler_version:\n- '12.9'\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\ntarget_platform:\n- linux-64\nxz:\n- '5'\nzip_keys:\n- - c_compiler_version\n  - cxx_compiler_version\n  - c_stdlib_version\n  - cuda_compiler_version\n",
   "ci_support_migrations": {
     "cuda130": {
       "migration_number": 1,
@@ -26,8 +26,8 @@
       "linux_aarch64": "default"
     }
   },
-  "feedstock_hash": "de6009875f9a4adec65e8509089ee5b49c9d457f",
-  "feedstock_hash_ts": 1786643078,
+  "feedstock_hash": "300e3584cd83adce18592b91ec661aa662f90c09",
+  "feedstock_hash_ts": 1789504353,
   "feedstock_name": "libcuest",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -96,7 +96,7 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -217,7 +217,128 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
+            "test -L $PREFIX/lib/libcuest.so.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "run_exports": [
+            "libcuest"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so",
+          "include/"
+        ],
+        "name": "libcuest-dev",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -L $PREFIX/lib/libcuest.so",
+            "test -f $PREFIX/include/cuest.h",
+            "test -d $PREFIX/include/cuest"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ]
+        },
+        "files": [
+          "lib/libcuest_static.a"
+        ],
+        "name": "libcuest-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest-dev"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest-dev"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest_static.a"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "ignore_run_exports_from": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev"
+          ],
+          "missing_dso_whitelist": [
+            "*libcuda.so*"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so.*"
+        ],
+        "name": "libcuest",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev",
+            "cuda-version 13.0"
+          ],
+          "run": [
+            "libcublas",
+            "libcusolver",
+            "libcusparse",
+            "cuda-nvrtc",
+            "libnvjitlink",
+            "cuda-version"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -295,7 +416,7 @@
     ],
     "package": {
       "name": "libcuest-split",
-      "version": "0.2.1.2"
+      "version": "0.2.2.2"
     },
     "requirements": {
       "build": [
@@ -304,8 +425,8 @@
     },
     "schema_version": 0,
     "source": {
-      "sha256": "61b0463a51722b591cc36c65fa29565cb6af2a539842eebc679aedf65f451085",
-      "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.1.2_cuda13-archive.tar.xz"
+      "sha256": "71641ba4aaa068dad037b9837f6fd0920edb7283f8297eccb9bedba6f405d228",
+      "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.2.2_cuda13-archive.tar.xz"
     }
   },
   "linux_64_requirements": {
@@ -416,7 +537,7 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -537,7 +658,128 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
+            "test -L $PREFIX/lib/libcuest.so.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "run_exports": [
+            "libcuest"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so",
+          "include/"
+        ],
+        "name": "libcuest-dev",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -L $PREFIX/lib/libcuest.so",
+            "test -f $PREFIX/include/cuest.h",
+            "test -d $PREFIX/include/cuest"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ]
+        },
+        "files": [
+          "lib/libcuest_static.a"
+        ],
+        "name": "libcuest-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest-dev"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest-dev"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest_static.a"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "ignore_run_exports_from": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev"
+          ],
+          "missing_dso_whitelist": [
+            "*libcuda.so*"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so.*"
+        ],
+        "name": "libcuest",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev",
+            "cuda-version 13.0"
+          ],
+          "run": [
+            "libcublas",
+            "libcusolver",
+            "libcusparse",
+            "cuda-nvrtc",
+            "libnvjitlink",
+            "cuda-version"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -615,7 +857,7 @@
     ],
     "package": {
       "name": "libcuest-split",
-      "version": "0.2.1.2"
+      "version": "0.2.2.2"
     },
     "requirements": {
       "build": [
@@ -624,8 +866,8 @@
     },
     "schema_version": 0,
     "source": {
-      "sha256": "e64e5b7ca985204fcf2cd21953d90337b70f3cb252965bf38ee6a5bd95bc8401",
-      "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.1.2_cuda13-archive.tar.xz"
+      "sha256": "413e9050d2c1e998a0a6eb803e1c468217fbeebe25e5e80068c22b5ce8e66c31",
+      "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.2.2_cuda13-archive.tar.xz"
     }
   },
   "linux_aarch64_requirements": {
@@ -736,7 +978,7 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -857,7 +1099,128 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
+            "test -L $PREFIX/lib/libcuest.so.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "run_exports": [
+            "libcuest"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so",
+          "include/"
+        ],
+        "name": "libcuest-dev",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -L $PREFIX/lib/libcuest.so",
+            "test -f $PREFIX/include/cuest.h",
+            "test -d $PREFIX/include/cuest"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ]
+        },
+        "files": [
+          "lib/libcuest_static.a"
+        ],
+        "name": "libcuest-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest-dev"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest-dev"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest_static.a"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "ignore_run_exports_from": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev"
+          ],
+          "missing_dso_whitelist": [
+            "*libcuda.so*"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so.*"
+        ],
+        "name": "libcuest",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev",
+            "cuda-version 13.0"
+          ],
+          "run": [
+            "libcublas",
+            "libcusolver",
+            "libcusparse",
+            "cuda-nvrtc",
+            "libnvjitlink",
+            "cuda-version"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -978,7 +1341,7 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -1099,7 +1462,128 @@
         },
         "test": {
           "commands": [
-            "test -f $PREFIX/lib/libcuest.so.0.2.1",
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
+            "test -L $PREFIX/lib/libcuest.so.0"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "run_exports": [
+            "libcuest"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so",
+          "include/"
+        ],
+        "name": "libcuest-dev",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -L $PREFIX/lib/libcuest.so",
+            "test -f $PREFIX/include/cuest.h",
+            "test -d $PREFIX/include/cuest"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ]
+        },
+        "files": [
+          "lib/libcuest_static.a"
+        ],
+        "name": "libcuest-static",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-version 13.0",
+            "libcuest-dev"
+          ],
+          "run": [
+            "cuda-version",
+            "libcuest-dev"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest_static.a"
+          ]
+        }
+      },
+      {
+        "build": {
+          "ignore_run_exports": [
+            "cuda-version"
+          ],
+          "ignore_run_exports_from": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev"
+          ],
+          "missing_dso_whitelist": [
+            "*libcuda.so*"
+          ]
+        },
+        "files": [
+          "lib/libcuest*.so.*"
+        ],
+        "name": "libcuest",
+        "requirements": {
+          "build": [
+            "c_compiler_stub",
+            "cxx_compiler_stub",
+            "c_stdlib_stub",
+            "cuda_compiler_stub"
+          ],
+          "host": [
+            "cuda-nvrtc-dev",
+            "libcublas-dev",
+            "libcusolver-dev",
+            "libcusparse-dev",
+            "libnvjitlink-dev",
+            "cuda-version 13.0"
+          ],
+          "run": [
+            "libcublas",
+            "libcusolver",
+            "libcusparse",
+            "cuda-nvrtc",
+            "libnvjitlink",
+            "cuda-version"
+          ]
+        },
+        "test": {
+          "commands": [
+            "test -f $PREFIX/lib/libcuest.so.0.2.2",
             "test -L $PREFIX/lib/libcuest.so.0"
           ]
         }
@@ -1177,7 +1661,7 @@
     ],
     "package": {
       "name": "libcuest-split",
-      "version": "0.2.1.2"
+      "version": "0.2.2.2"
     },
     "requirements": {
       "build": [
@@ -1186,8 +1670,8 @@
     },
     "schema_version": 0,
     "source": {
-      "sha256": "e64e5b7ca985204fcf2cd21953d90337b70f3cb252965bf38ee6a5bd95bc8401",
-      "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.1.2_cuda13-archive.tar.xz"
+      "sha256": "413e9050d2c1e998a0a6eb803e1c468217fbeebe25e5e80068c22b5ce8e66c31",
+      "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.2.2_cuda13-archive.tar.xz"
     }
   },
   "name": "libcuest-split",
@@ -1207,7 +1691,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/libcuest.json"
   },
-  "raw_meta_yaml": "{% set name = \"libcuest\" %}\n{% set version = \"0.2.1.2\" %}\n{% set cuda_compiler_version = cuda_compiler_version | default(\"None\") %}\n{% set abiversion = version.split('.')[0] %}\n{% set majorminorpatch = '.'.join(version.split('.')[:3]) %}\n{% set platform = \"linux-x86_64\" %}  # [linux64]\n{% set platform = \"linux-sbsa\" %}  # [aarch64]\n{% set target_name = \"x86_64-linux\" %}  # [linux64]\n{% set target_name = \"sbsa-linux\" %}  # [aarch64]\n{% set extension = \"tar.xz\" %}  # [not win]\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  url: https://developer.download.nvidia.com/compute/cuest/redist/{{ name }}/{{ platform }}/{{ name }}-{{ platform }}-{{ version }}_cuda12-archive.{{ extension }}  # [(cuda_compiler_version or \"\").startswith(\"12\")]\n  url: https://developer.download.nvidia.com/compute/cuest/redist/{{ name }}/{{ platform }}/{{ name }}-{{ platform }}-{{ version }}_cuda13-archive.{{ extension }}  # [(cuda_compiler_version or \"\").startswith(\"13\")]\n  sha256: 00d645b254ec1ba1f139e13a8b8a5348229d03ec929411c0fd85c3abd7819a42  # [linux64 and (cuda_compiler_version or \"\").startswith(\"12\")]]\n  sha256: 61b0463a51722b591cc36c65fa29565cb6af2a539842eebc679aedf65f451085  # [linux64 and (cuda_compiler_version or \"\").startswith(\"13\")]]\n  sha256: 95516770a22228cb819852e7f811da85a96871740e7beba3aede54b263010403  # [linux and aarch64 and (cuda_compiler_version or \"\").startswith(\"12\")]]\n  sha256: e64e5b7ca985204fcf2cd21953d90337b70f3cb252965bf38ee6a5bd95bc8401  # [linux and aarch64 and (cuda_compiler_version or \"\").startswith(\"13\")]]\n\nbuild:\n  number: 0\n  skip: true  # [not (linux64 or aarch64) or cuda_compiler_version in (\"None\", \"\")]\n\nrequirements:\n  build:\n    - cf-nvidia-tools 1.*  # [linux]\n\noutputs:\n  - name: libcuest\n    build:\n      missing_dso_whitelist:\n        - \"*libcuda.so*\"              # driver, not provided by any conda package\n      # Ignore run_exports on cuda-version which we need to add to avoid hash collision as we have multiple CTK support\n      ignore_run_exports:\n        - cuda-version\n      # cuda-version will take care of constraining versions for the following\n      # and thus we should ignore the run exports from them which are more strict\n      ignore_run_exports_from:\n        - cuda-nvrtc-dev\n        - libcublas-dev\n        - libcusolver-dev\n        - libcusparse-dev\n        - libnvjitlink-dev\n    files:\n      - lib/libcuest*.so.*\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cuda') }}\n      host:\n        - cuda-nvrtc-dev\n        - libcublas-dev\n        - libcusolver-dev\n        - libcusparse-dev\n        - libnvjitlink-dev\n        - cuda-version {{ cuda_compiler_version }}\n      run:\n        - libcublas\n        - libcusolver\n        - libcusparse\n        - cuda-nvrtc\n        - libnvjitlink\n        - {{ pin_compatible('cuda-version', max_pin='x', min_pin='x') }}\n    test:\n      commands:\n        - test -f $PREFIX/lib/libcuest.so.{{ majorminorpatch }}\n        - test -L $PREFIX/lib/libcuest.so.{{ abiversion }}\n\n  - name: libcuest-dev\n    build:\n      ignore_run_exports:\n        - cuda-version\n      # Export libcuest for a consuming feedstock that needs libcuest-dev in their host: section\n      # For this lib, the breaking changes occur at the minor version (until major version reaches 1)\n      run_exports:\n        - {{ pin_subpackage(\"libcuest\", max_pin=\"x.x\") }}\n    files:\n      - lib/libcuest*.so\n      - include/\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cuda') }}\n      host:\n        - cuda-version {{ cuda_compiler_version }}\n        - {{ pin_subpackage(\"libcuest\", exact=True) }}\n      run:\n        - {{ pin_compatible(\"cuda-version\", min_pin=\"x\", max_pin=\"x\") }}\n        - {{ pin_subpackage(\"libcuest\", exact=True) }}\n    test:\n      commands:\n        - test -L $PREFIX/lib/libcuest.so\n        - test -f $PREFIX/include/cuest.h\n        - test -d $PREFIX/include/cuest\n\n  - name: libcuest-static\n    build:\n      ignore_run_exports:\n        - cuda-version\n    files:\n      - lib/libcuest_static.a\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cuda') }}\n      host:\n        - cuda-version {{ cuda_compiler_version }}\n        - {{ pin_subpackage(\"libcuest-dev\", exact=True) }}\n      run:\n        - {{ pin_compatible(\"cuda-version\", min_pin=\"x\", max_pin=\"x\") }}\n        - {{ pin_subpackage(\"libcuest-dev\", exact=True) }}\n    test:\n      commands:\n        - test -f $PREFIX/lib/libcuest_static.a\n\nabout:\n  home: https://developer.nvidia.com/cuest\n  license: LicenseRef-NVIDIA-End-User-License-Agreement\n  license_file: LICENSE\n  license_url: https://docs.nvidia.com/cuda/cuest/latest/license.html\n  summary: cuEST - GPU-powered electronic structure theory\n  description: |\n    Fast, GPU-powered components for electronic structure theory\n  doc_url: https://docs.nvidia.com/cuda/cuest/\n\nextra:\n  feedstock-name: libcuest\n  recipe-maintainers:\n    - conda-forge/cuda\n",
+  "raw_meta_yaml": "{% set name = \"libcuest\" %}\n{% set version = \"0.2.2.2\" %}\n{% set cuda_compiler_version = cuda_compiler_version | default(\"None\") %}\n{% set abiversion = version.split('.')[0] %}\n{% set majorminorpatch = '.'.join(version.split('.')[:3]) %}\n{% set platform = \"linux-x86_64\" %}  # [linux64]\n{% set platform = \"linux-sbsa\" %}  # [aarch64]\n{% set target_name = \"x86_64-linux\" %}  # [linux64]\n{% set target_name = \"sbsa-linux\" %}  # [aarch64]\n{% set extension = \"tar.xz\" %}  # [not win]\n\npackage:\n  name: {{ name|lower }}-split\n  version: {{ version }}\n\nsource:\n  url: https://developer.download.nvidia.com/compute/cuest/redist/{{ name }}/{{ platform }}/{{ name }}-{{ platform }}-{{ version }}_cuda12-archive.{{ extension }}  # [(cuda_compiler_version or \"\").startswith(\"12\")]\n  url: https://developer.download.nvidia.com/compute/cuest/redist/{{ name }}/{{ platform }}/{{ name }}-{{ platform }}-{{ version }}_cuda13-archive.{{ extension }}  # [(cuda_compiler_version or \"\").startswith(\"13\")]\n  sha256: 03417f0a2dfa4ef436a2ea30800a44856b1ab3b8b46fac92cbec2e1c8b4fda10  # [linux64 and (cuda_compiler_version or \"\").startswith(\"12\")]]\n  sha256: 71641ba4aaa068dad037b9837f6fd0920edb7283f8297eccb9bedba6f405d228  # [linux64 and (cuda_compiler_version or \"\").startswith(\"13\")]]\n  sha256: b5a19206e49b7df30080260123649063f8d9e730458634d764fe87f6f02466a6  # [linux and aarch64 and (cuda_compiler_version or \"\").startswith(\"12\")]]\n  sha256: 413e9050d2c1e998a0a6eb803e1c468217fbeebe25e5e80068c22b5ce8e66c31  # [linux and aarch64 and (cuda_compiler_version or \"\").startswith(\"13\")]]\n\nbuild:\n  number: 0\n  skip: true  # [not (linux64 or aarch64) or cuda_compiler_version in (\"None\", \"\")]\n\nrequirements:\n  build:\n    - cf-nvidia-tools 1.*  # [linux]\n\noutputs:\n  - name: libcuest\n    build:\n      missing_dso_whitelist:\n        - \"*libcuda.so*\"              # driver, not provided by any conda package\n      # Ignore run_exports on cuda-version which we need to add to avoid hash collision as we have multiple CTK support\n      ignore_run_exports:\n        - cuda-version\n      # cuda-version will take care of constraining versions for the following\n      # and thus we should ignore the run exports from them which are more strict\n      ignore_run_exports_from:\n        - cuda-nvrtc-dev\n        - libcublas-dev\n        - libcusolver-dev\n        - libcusparse-dev\n        - libnvjitlink-dev\n    files:\n      - lib/libcuest*.so.*\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cuda') }}\n      host:\n        - cuda-nvrtc-dev\n        - libcublas-dev\n        - libcusolver-dev\n        - libcusparse-dev\n        - libnvjitlink-dev\n        - cuda-version {{ cuda_compiler_version }}\n      run:\n        - libcublas\n        - libcusolver\n        - libcusparse\n        - cuda-nvrtc\n        - libnvjitlink\n        - {{ pin_compatible('cuda-version', max_pin='x', min_pin='x') }}\n    test:\n      commands:\n        - test -f $PREFIX/lib/libcuest.so.{{ majorminorpatch }}\n        - test -L $PREFIX/lib/libcuest.so.{{ abiversion }}\n\n  - name: libcuest-dev\n    build:\n      ignore_run_exports:\n        - cuda-version\n      # Export libcuest for a consuming feedstock that needs libcuest-dev in their host: section\n      # For this lib, the breaking changes occur at the minor version (until major version reaches 1)\n      run_exports:\n        - {{ pin_subpackage(\"libcuest\", max_pin=\"x.x\") }}\n    files:\n      - lib/libcuest*.so\n      - include/\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cuda') }}\n      host:\n        - cuda-version {{ cuda_compiler_version }}\n        - {{ pin_subpackage(\"libcuest\", exact=True) }}\n      run:\n        - {{ pin_compatible(\"cuda-version\", min_pin=\"x\", max_pin=\"x\") }}\n        - {{ pin_subpackage(\"libcuest\", exact=True) }}\n    test:\n      commands:\n        - test -L $PREFIX/lib/libcuest.so\n        - test -f $PREFIX/include/cuest.h\n        - test -d $PREFIX/include/cuest\n\n  - name: libcuest-static\n    build:\n      ignore_run_exports:\n        - cuda-version\n    files:\n      - lib/libcuest_static.a\n    requirements:\n      build:\n        - {{ compiler(\"c\") }}\n        - {{ compiler(\"cxx\") }}\n        - {{ stdlib(\"c\") }}\n        - {{ compiler('cuda') }}\n      host:\n        - cuda-version {{ cuda_compiler_version }}\n        - {{ pin_subpackage(\"libcuest-dev\", exact=True) }}\n      run:\n        - {{ pin_compatible(\"cuda-version\", min_pin=\"x\", max_pin=\"x\") }}\n        - {{ pin_subpackage(\"libcuest-dev\", exact=True) }}\n    test:\n      commands:\n        - test -f $PREFIX/lib/libcuest_static.a\n\nabout:\n  home: https://developer.nvidia.com/cuest\n  license: LicenseRef-NVIDIA-End-User-License-Agreement\n  license_file: LICENSE\n  license_url: https://docs.nvidia.com/cuda/cuest/latest/license.html\n  summary: cuEST - GPU-powered electronic structure theory\n  description: |\n    Fast, GPU-powered components for electronic structure theory\n  doc_url: https://docs.nvidia.com/cuda/cuest/\n\nextra:\n  feedstock-name: libcuest\n  recipe-maintainers:\n    - conda-forge/cuda\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -1325,8 +1809,8 @@
       "elements": []
     }
   },
-  "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.1.2_cuda13-archive.tar.xz",
-  "version": "0.2.1.2",
+  "url": "https://developer.download.nvidia.com/compute/cuest/redist/libcuest/linux-sbsa/libcuest-linux-sbsa-0.2.2.2_cuda13-archive.tar.xz",
+  "version": "0.2.2.2",
   "version_pr_info": {
     "__lazy_json__": "version_pr_info/libcuest.json"
   }
