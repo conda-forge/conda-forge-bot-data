@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '14'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_.yaml": "c_compiler:\n- gcc\nc_compiler_version:\n- '15'\nc_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\nrust_compiler:\n- rust\ntarget_platform:\n- linux-64\n",
   "ci_support_migrations": {},
   "conda-forge.yml": {
     "bot": {
@@ -24,8 +24,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "ad80f759a7a1d14c364a783fc51310148d9a8804",
-  "feedstock_hash_ts": 1783866760,
+  "feedstock_hash": "06adb5bb49a7a6c629179b5f68e2c262353062b9",
+  "feedstock_hash_ts": 1789520752,
   "feedstock_name": "handlr-regex",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -42,18 +42,22 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "mkdir -p \"$PREFIX\"/share/man/man1 \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "cp -r target/*/release/build/handlr-regex-*/out/manual/man1/* \"$PREFIX\"/share/man/man1/",
-          "COMPLETE=bash \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/bash-completion/completions/handlr",
-          "COMPLETE=fish \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/fish/vendor_completions.d/handlr.fish",
-          "COMPLETE=zsh  \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/zsh/site-functions/_handlr",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml",
+          "mkdir ($prefix)/share/man/man1",
+          "cp --recursive target/*/release/build/handlr-regex-*/out/manual/man1/* ($prefix)/share/man/man1/",
+          "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
+          "let bin = ($prefix)/bin/handlr",
+          "COMPLETE=bash ^$bin completion bash | save ($prefix)/share/bash-completion/completions/handlr",
+          "COMPLETE=fish ^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/handlr.fish",
+          "COMPLETE=zsh  ^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_handlr"
         ],
         "env": {
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -71,7 +75,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -111,7 +116,8 @@
         "c_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -128,6 +134,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "nushell",
         "rust_compiler_stub"
       ]
     },
@@ -158,18 +165,17 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "mkdir -p \"$PREFIX\"/share/man/man1 \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "cp -r target/*/release/build/handlr-regex-*/out/manual/man1/* \"$PREFIX\"/share/man/man1/",
-          "COMPLETE=bash \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/bash-completion/completions/handlr",
-          "COMPLETE=fish \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/fish/vendor_completions.d/handlr.fish",
-          "COMPLETE=zsh  \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/zsh/site-functions/_handlr",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml",
+          "mkdir ($prefix)/share/man/man1",
+          "cp --recursive target/*/release/build/handlr-regex-*/out/manual/man1/* ($prefix)/share/man/man1/"
         ],
         "env": {
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -187,7 +193,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -203,12 +210,6 @@
             "package_contents": {
               "bin": [
                 "handlr"
-              ],
-              "files": [
-                "share/man/man1/handlr*.1",
-                "share/bash-completion/completions/handlr",
-                "share/fish/vendor_completions.d/handlr.fish",
-                "share/zsh/site-functions/_handlr"
               ],
               "strict": true
             }
@@ -227,7 +228,8 @@
         "c_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -244,6 +246,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "nushell",
         "rust_compiler_stub"
       ]
     },
@@ -274,18 +277,17 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "mkdir -p \"$PREFIX\"/share/man/man1 \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "cp -r target/*/release/build/handlr-regex-*/out/manual/man1/* \"$PREFIX\"/share/man/man1/",
-          "COMPLETE=bash \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/bash-completion/completions/handlr",
-          "COMPLETE=fish \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/fish/vendor_completions.d/handlr.fish",
-          "COMPLETE=zsh  \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/zsh/site-functions/_handlr",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml",
+          "mkdir ($prefix)/share/man/man1",
+          "cp --recursive target/*/release/build/handlr-regex-*/out/manual/man1/* ($prefix)/share/man/man1/"
         ],
         "env": {
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -303,7 +305,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -319,12 +322,6 @@
             "package_contents": {
               "bin": [
                 "handlr"
-              ],
-              "files": [
-                "share/man/man1/handlr*.1",
-                "share/bash-completion/completions/handlr",
-                "share/fish/vendor_completions.d/handlr.fish",
-                "share/zsh/site-functions/_handlr"
               ],
               "strict": true
             }
@@ -343,7 +340,8 @@
         "c_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -360,6 +358,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "nushell",
         "rust_compiler_stub"
       ]
     },
@@ -390,18 +389,22 @@
       "number": "1",
       "script": {
         "content": [
-          "cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins",
-          "mkdir -p \"$PREFIX\"/share/man/man1 \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions",
-          "cp -r target/*/release/build/handlr-regex-*/out/manual/man1/* \"$PREFIX\"/share/man/man1/",
-          "COMPLETE=bash \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/bash-completion/completions/handlr",
-          "COMPLETE=fish \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/fish/vendor_completions.d/handlr.fish",
-          "COMPLETE=zsh  \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/zsh/site-functions/_handlr",
-          "cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml"
+          "let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX",
+          "cargo auditable install --path=. --root=($prefix) --no-track --locked --bins",
+          "cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml",
+          "mkdir ($prefix)/share/man/man1",
+          "cp --recursive target/*/release/build/handlr-regex-*/out/manual/man1/* ($prefix)/share/man/man1/",
+          "mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions",
+          "let bin = ($prefix)/bin/handlr",
+          "COMPLETE=bash ^$bin completion bash | save ($prefix)/share/bash-completion/completions/handlr",
+          "COMPLETE=fish ^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/handlr.fish",
+          "COMPLETE=zsh  ^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_handlr"
         ],
         "env": {
           "CARGO_PROFILE_RELEASE_LTO": "fat",
           "CARGO_PROFILE_RELEASE_STRIP": "symbols"
-        }
+        },
+        "interpreter": "nu"
       }
     },
     "extra": {
@@ -419,7 +422,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -457,7 +461,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -473,12 +478,6 @@
             "package_contents": {
               "bin": [
                 "handlr"
-              ],
-              "files": [
-                "share/man/man1/handlr*.1",
-                "share/bash-completion/completions/handlr",
-                "share/fish/vendor_completions.d/handlr.fish",
-                "share/zsh/site-functions/_handlr"
               ],
               "strict": true
             }
@@ -495,7 +494,8 @@
             "c_compiler_stub",
             "rust_compiler_stub",
             "cargo-auditable",
-            "cargo-bundle-licenses"
+            "cargo-bundle-licenses",
+            "nushell"
           ],
           "host": [],
           "run": []
@@ -511,12 +511,6 @@
             "package_contents": {
               "bin": [
                 "handlr"
-              ],
-              "files": [
-                "share/man/man1/handlr*.1",
-                "share/bash-completion/completions/handlr",
-                "share/fish/vendor_completions.d/handlr.fish",
-                "share/zsh/site-functions/_handlr"
               ],
               "strict": true
             }
@@ -535,7 +529,8 @@
         "c_compiler_stub",
         "rust_compiler_stub",
         "cargo-auditable",
-        "cargo-bundle-licenses"
+        "cargo-bundle-licenses",
+        "nushell"
       ]
     },
     "schema_version": 1,
@@ -560,7 +555,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/handlr-regex.json"
   },
-  "raw_meta_yaml": "context:\n  version: \"0.13.0\"\n\npackage:\n  name: handlr-regex\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Anomalocaridid/handlr-regex/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 963126a7aa8277b7cc7886c518528473ce5117a5999c949b809e14beffdbad0d\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    content:\n      - cargo auditable install --path=. --root=\"$PREFIX\" --no-track --locked --bins\n      # copy manpage and generate shell completions\n      - mkdir -p \"$PREFIX\"/share/man/man1 \"$PREFIX\"/share/bash-completion/completions \"$PREFIX\"/share/fish/vendor_completions.d \"$PREFIX\"/share/zsh/site-functions\n      - cp -r target/*/release/build/handlr-regex-*/out/manual/man1/* \"$PREFIX\"/share/man/man1/\n      - COMPLETE=bash \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/bash-completion/completions/handlr\n      - COMPLETE=fish \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/fish/vendor_completions.d/handlr.fish\n      - COMPLETE=zsh  \"$PREFIX\"/bin/handlr > \"$PREFIX\"/share/zsh/site-functions/_handlr\n      - cargo-bundle-licenses --format=yaml --output=./THIRDPARTY.yml\n  skip:\n    - osx\n    - win\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n\ntests:\n  - script:\n      - handlr --help\n      - handlr --version\n  - package_contents:\n      bin:\n        - handlr\n      files:\n        - share/man/man1/handlr*.1\n        - share/bash-completion/completions/handlr\n        - share/fish/vendor_completions.d/handlr.fish\n        - share/zsh/site-functions/_handlr\n      strict: true\n\nabout:\n  summary: Modern CLI to set default file handlers by extension or MIME type\n  description: |\n    `handlr-regex` is a fork of the unmaintained [`handlr`](https://github.com/chmln/handlr) with additional support for\n    regular expressions. It is a modern alternative to [`xdg-utils`](https://www.freedesktop.org/wiki/Software/xdg-utils/)\n    that allows to set default file handlers by file extension or MIME type, to set arbitrary commands as handlers based\n    on regular expressions, to open multiple files at once, and more.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/Anomalocaridid/handlr-regex\n  repository: https://github.com/Anomalocaridid/handlr-regex\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
+  "raw_meta_yaml": "context:\n  version: \"0.13.0\"\n\npackage:\n  name: handlr-regex\n  version: ${{ version }}\n\nsource:\n  url: https://github.com/Anomalocaridid/handlr-regex/archive/refs/tags/v${{ version }}.tar.gz\n  sha256: 963126a7aa8277b7cc7886c518528473ce5117a5999c949b809e14beffdbad0d\n\nbuild:\n  number: 1\n  script:\n    env:\n      CARGO_PROFILE_RELEASE_LTO: fat\n      CARGO_PROFILE_RELEASE_STRIP: symbols\n    interpreter: nu\n    content:\n      - let prefix = $env.LIBRARY_PREFIX? | default $env.PREFIX\n      # build main app and generate license data\n      - cargo auditable install --path=. --root=($prefix) --no-track --locked --bins\n      - cargo-bundle-licenses --format=yaml --output=THIRDPARTY.yml\n      # copy manpage\n      - mkdir ($prefix)/share/man/man1\n      - cp --recursive target/*/release/build/handlr-regex-*/out/manual/man1/* ($prefix)/share/man/man1/\n      # generate shell completions\n      - if: build_platform == host_platform\n        then:\n          - mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions\n          - let bin = ($prefix)/bin/handlr\n          - COMPLETE=bash ^$bin completion bash | save ($prefix)/share/bash-completion/completions/handlr\n          - COMPLETE=fish ^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/handlr.fish\n          - COMPLETE=zsh  ^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_handlr\n  skip:\n    - osx\n    - win\n\nrequirements:\n  build:\n    - ${{ stdlib('c') }}\n    - ${{ compiler('c') }}\n    - ${{ compiler('rust') }}\n    - cargo-auditable\n    - cargo-bundle-licenses\n    - nushell\n\ntests:\n  - script:\n      - handlr --help\n      - handlr --version\n  - package_contents:\n      bin:\n        - handlr\n      files:\n        - if: unix and build_platform == host_platform\n          then:\n            - share/man/man1/handlr*.1\n            - share/bash-completion/completions/handlr\n            - share/fish/vendor_completions.d/handlr.fish\n            - share/zsh/site-functions/_handlr\n      strict: true\n\nabout:\n  summary: Modern CLI to set default file handlers by extension or MIME type\n  description: |\n    `handlr-regex` is a fork of the unmaintained [`handlr`](https://github.com/chmln/handlr) with additional support for\n    regular expressions. It is a modern alternative to [`xdg-utils`](https://www.freedesktop.org/wiki/Software/xdg-utils/)\n    that allows to set default file handlers by file extension or MIME type, to set arbitrary commands as handlers based\n    on regular expressions, to open multiple files at once, and more.\n  license: MIT\n  license_file:\n    - LICENSE\n    - THIRDPARTY.yml\n  homepage: https://github.com/Anomalocaridid/handlr-regex\n  repository: https://github.com/Anomalocaridid/handlr-regex\n\nextra:\n  recipe-maintainers:\n    - salim-b\n",
   "req": {
     "__set__": true,
     "elements": [
@@ -568,6 +563,7 @@
       "c_stdlib_stub",
       "cargo-auditable",
       "cargo-bundle-licenses",
+      "nushell",
       "rust_compiler_stub"
     ]
   },
@@ -579,6 +575,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "nushell",
         "rust_compiler_stub"
       ]
     },
@@ -610,6 +607,7 @@
         "c_stdlib_stub",
         "cargo-auditable",
         "cargo-bundle-licenses",
+        "nushell",
         "rust_compiler_stub"
       ]
     },
