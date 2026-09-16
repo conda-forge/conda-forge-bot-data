@@ -29,8 +29,8 @@
     },
     "test": "native_and_emulated"
   },
-  "feedstock_hash": "bca2582d350bc928303df0ec47d30eba96c2c76e",
-  "feedstock_hash_ts": 1789493638,
+  "feedstock_hash": "e3ee6f74788f55933565825d1bc7efaae4620f1a",
+  "feedstock_hash_ts": 1789523558,
   "feedstock_name": "dagmc",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
@@ -45,7 +45,7 @@
       "summary": "Direct Accelerated Geometry Toolkit"
     },
     "build": {
-      "number": "7",
+      "number": "8",
       "run_exports": {
         "weak": [
           "dagmc * mpi_mpich_*",
@@ -979,7 +979,7 @@
       "summary": "Direct Accelerated Geometry Toolkit"
     },
     "build": {
-      "number": "7",
+      "number": "8",
       "run_exports": {
         "weak": [
           "dagmc * mpi_mpich_*",
@@ -1913,7 +1913,7 @@
       "summary": "Direct Accelerated Geometry Toolkit"
     },
     "build": {
-      "number": "7",
+      "number": "8",
       "run_exports": {
         "weak": [
           "dagmc * mpi_mpich_*",
@@ -5246,7 +5246,7 @@
       "summary": "Direct Accelerated Geometry Toolkit"
     },
     "build": {
-      "number": "7",
+      "number": "8",
       "run_exports": {
         "weak": [
           "dagmc * mpi_mpich_*",
@@ -6180,7 +6180,7 @@
       "summary": "Direct Accelerated Geometry Toolkit"
     },
     "build": {
-      "number": "7",
+      "number": "8",
       "run_exports": {
         "weak": [
           "dagmc * mpi_mpich_*",
@@ -7118,7 +7118,7 @@
   "pr_info": {
     "__lazy_json__": "pr_info/dagmc.json"
   },
-  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"3.2.4\"\n  build_number: 7\n\npackage:\n  name: \"dagmc\"\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/svalinn/DAGMC/archive/v${{ version }}.tar.gz\n    sha256: ace39cb6cc05f1de316815512a0afe9f96c771449f8f0b12d65dfed915fb9788\n    patches:\n      # c.f. https://github.com/svalinn/DAGMC/pull/990\n      - cmake-policy-max.patch\n      # amalgamate_pyne.sh runs `git rev-parse HEAD` into an unused variable,\n      # which aborts the script (`set -e`) before remove_unsupported.py runs,\n      # as the source tarball is not a git repository.\n      - amalgamate-pyne-no-git.patch\n      # c.f. https://github.com/svalinn/DAGMC/pull/998\n      - namespace-include-headers.patch\n  # DAGMC vendors PyNE as a git submodule, which the GitHub release tarball\n  # does not include, so add the submodule commit pinned by the DAGMC release\n  # as an additional source.\n  # c.f. https://github.com/svalinn/DAGMC/tree/v3.2.4/src/pyne\n  - url: https://github.com/pyne/pyne/archive/e55e52e24a5394aebec78a15e94842fba86f68c9.tar.gz\n    sha256: 30207b34a555c62bf1d641d69a3ab320d4413097b72c502a4cf3303560df1c7e\n    target_directory: src/pyne/pyne\n\nbuild:\n  # add build string so packages can depend on\n  # mpi or nompi variants explicitly:\n  # `dagmc * mpi_mpich_*` for mpich\n  # `dagmc * mpi_openmpi_*` for openmpi\n  # `dagmc * nompi_*` for no mpi\n\n  # prioritize nompi variant\n  # Need to set build_number both times\n  number: ${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  string: ${{ mpi_prefix }}_${{ dd }}_h${{ hash }}_${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  variant:\n    # prefer 'nompi' over other variants\n    down_prioritize_variant: ${{ 0 if mpi == \"nompi\" else 1 }}\n  skip:\n    - win\n  prefix_detection:\n    ignore_binary_files: true\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - make\n    # needed by the PyNE amalgamation scripts run from src/pyne/CMakeLists.txt\n    # python has a version bound so conda-smithy does not treat python as a build\n    # matrix variant, which would multiply the CI jobs across python versions\n    - python >=3\n  host:\n    # DAGMC (KDEKernel.hpp) and MOAB (Matrix3.hpp) expose Eigen types in\n    # their public headers, so depend on eigen-abi-devel to get the eigen-abi\n    # ABI marker run export. Constrain to the Eigen v3 API/ABI to match MOAB,\n    # which is built against eigen 3.*.\n    # c.f. https://github.com/conda-forge/eigen-feedstock/blob/main/recipe/README.md\n    - eigen-abi-devel 3.*\n    - if: dd != \"nodoubledown\"\n      then: double-down\n    # matching MOAB HDF5 host requirements to ensure matched pinning of HDF5 versions\n    - hdf5\n    - hdf5 [build=${{ mpi_prefix }}_*]\n    # DAGMC does not need TempestRemap\n    # c.f. https://github.com/conda-forge/dagmc-feedstock/issues/41\n    - moab [build=${{ mpi_prefix }}_notempest_*]\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n  run:\n    - if: dd != \"nodoubledown\"\n      then: double-down\n    - hdf5 * [build=${{ mpi_prefix }}_*]\n    - moab * [build=${{ mpi_prefix }}_notempest_*]\n    - zlib\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n  run_exports:\n    # constrain downstream packages to the same mpi variant\n    - if: mpi != \"nompi\"\n      then: dagmc * ${{ mpi_prefix }}_*\n\ntests:\n  - package_contents:\n      bin:\n        - build_obb\n        - check_watertight\n        - make_watertight\n        - overlap_check\n        - pt_vol_test\n        - ray_fire_test\n        - test_geom\n        - uwuw_preproc\n      include:\n        - dagmc/DagMC.hpp\n        - dagmc/pyne.h\n        - dagmc/uwuw.hpp\n      lib:\n        - dagmc\n        - dagtally\n        - makeWatertight\n        - pyne_dagmc\n        - uwuw\n      files:\n        - lib/cmake/dagmc/DAGMCConfig.cmake\n        - lib/cmake/dagmc/DAGMCConfigVersion.cmake\n        - lib/cmake/dagmc/DAGMCTargets-release.cmake\n        - lib/cmake/dagmc/DAGMCTargets.cmake\n\n  - script:\n      - make_watertight --help\n\nabout:\n  license: BSD-2-Clause\n  license_file: LICENSE.txt\n  summary: Direct Accelerated Geometry Toolkit\n  description: |\n    Direct Accelerated Geometry Monte Carlo (DAGMC) is a software package that\n    allows users to perform Monte Carlo radiation transport directly on CAD\n    models.\n  homepage: https://svalinn.github.io/DAGMC/\n  repository: https://github.com/svalinn/DAGMC\n  documentation: https://svalinn.github.io/DAGMC/\n\nextra:\n  recipe-maintainers:\n    - gonuke\n    - pshriwise\n    - ljacobson64\n    - kkiesling\n    - bam241\n    - ngranda\n    - shimwell\n    - bquan0\n    - matthewfeickert\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"3.2.4\"\n  build_number: 8\n\npackage:\n  name: \"dagmc\"\n  version: ${{ version }}\n\nsource:\n  - url: https://github.com/svalinn/DAGMC/archive/v${{ version }}.tar.gz\n    sha256: ace39cb6cc05f1de316815512a0afe9f96c771449f8f0b12d65dfed915fb9788\n    patches:\n      # c.f. https://github.com/svalinn/DAGMC/pull/990\n      - cmake-policy-max.patch\n      # amalgamate_pyne.sh runs `git rev-parse HEAD` into an unused variable,\n      # which aborts the script (`set -e`) before remove_unsupported.py runs,\n      # as the source tarball is not a git repository.\n      - amalgamate-pyne-no-git.patch\n      # c.f. https://github.com/svalinn/DAGMC/pull/998\n      - namespace-include-headers.patch\n  # DAGMC vendors PyNE as a git submodule, which the GitHub release tarball\n  # does not include, so add the submodule commit pinned by the DAGMC release\n  # as an additional source.\n  # c.f. https://github.com/svalinn/DAGMC/tree/v3.2.4/src/pyne\n  - url: https://github.com/pyne/pyne/archive/e55e52e24a5394aebec78a15e94842fba86f68c9.tar.gz\n    sha256: 30207b34a555c62bf1d641d69a3ab320d4413097b72c502a4cf3303560df1c7e\n    target_directory: src/pyne/pyne\n\nbuild:\n  # add build string so packages can depend on\n  # mpi or nompi variants explicitly:\n  # `dagmc * mpi_mpich_*` for mpich\n  # `dagmc * mpi_openmpi_*` for openmpi\n  # `dagmc * nompi_*` for no mpi\n\n  # prioritize nompi variant\n  # rattler-build exposes the resolved build.number as `build_number` when\n  # rendering build.string, so only apply the offset here\n  number: ${{ build_number | int + 100 if mpi == \"nompi\" else build_number }}\n  string: ${{ mpi_prefix }}_${{ dd }}_h${{ hash }}_${{ build_number }}\n  variant:\n    # prefer 'nompi' over other variants\n    down_prioritize_variant: ${{ 0 if mpi == \"nompi\" else 1 }}\n  skip:\n    - win\n  prefix_detection:\n    ignore_binary_files: true\n\nrequirements:\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - cmake\n    - make\n    # needed by the PyNE amalgamation scripts run from src/pyne/CMakeLists.txt\n    # python has a version bound so conda-smithy does not treat python as a build\n    # matrix variant, which would multiply the CI jobs across python versions\n    - python >=3\n  host:\n    # DAGMC (KDEKernel.hpp) and MOAB (Matrix3.hpp) expose Eigen types in\n    # their public headers, so depend on eigen-abi-devel to get the eigen-abi\n    # ABI marker run export. Constrain to the Eigen v3 API/ABI to match MOAB,\n    # which is built against eigen 3.*.\n    # c.f. https://github.com/conda-forge/eigen-feedstock/blob/main/recipe/README.md\n    - eigen-abi-devel 3.*\n    - if: dd != \"nodoubledown\"\n      then: double-down\n    # matching MOAB HDF5 host requirements to ensure matched pinning of HDF5 versions\n    - hdf5\n    - hdf5 [build=${{ mpi_prefix }}_*]\n    # DAGMC does not need TempestRemap\n    # c.f. https://github.com/conda-forge/dagmc-feedstock/issues/41\n    - moab [build=${{ mpi_prefix }}_notempest_*]\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n  run:\n    - if: dd != \"nodoubledown\"\n      then: double-down\n    - hdf5 * [build=${{ mpi_prefix }}_*]\n    - moab * [build=${{ mpi_prefix }}_notempest_*]\n    - zlib\n    - if: mpi != \"nompi\"\n      then: ${{ mpi }}\n  run_exports:\n    # constrain downstream packages to the same mpi variant\n    - if: mpi != \"nompi\"\n      then: dagmc * ${{ mpi_prefix }}_*\n\ntests:\n  - package_contents:\n      bin:\n        - build_obb\n        - check_watertight\n        - make_watertight\n        - overlap_check\n        - pt_vol_test\n        - ray_fire_test\n        - test_geom\n        - uwuw_preproc\n      include:\n        - dagmc/DagMC.hpp\n        - dagmc/pyne.h\n        - dagmc/uwuw.hpp\n      lib:\n        - dagmc\n        - dagtally\n        - makeWatertight\n        - pyne_dagmc\n        - uwuw\n      files:\n        - lib/cmake/dagmc/DAGMCConfig.cmake\n        - lib/cmake/dagmc/DAGMCConfigVersion.cmake\n        - lib/cmake/dagmc/DAGMCTargets-release.cmake\n        - lib/cmake/dagmc/DAGMCTargets.cmake\n\n  - script:\n      - make_watertight --help\n\nabout:\n  license: BSD-2-Clause\n  license_file: LICENSE.txt\n  summary: Direct Accelerated Geometry Toolkit\n  description: |\n    Direct Accelerated Geometry Monte Carlo (DAGMC) is a software package that\n    allows users to perform Monte Carlo radiation transport directly on CAD\n    models.\n  homepage: https://svalinn.github.io/DAGMC/\n  repository: https://github.com/svalinn/DAGMC\n  documentation: https://svalinn.github.io/DAGMC/\n\nextra:\n  recipe-maintainers:\n    - gonuke\n    - pshriwise\n    - ljacobson64\n    - kkiesling\n    - bam241\n    - ngranda\n    - shimwell\n    - bquan0\n    - matthewfeickert\n",
   "req": {
     "__set__": true,
     "elements": [
