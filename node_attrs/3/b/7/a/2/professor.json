@@ -1,7 +1,7 @@
 {
   "archived": false,
   "branch": "main",
-  "ci_support_linux_64_python3.10.____cpython.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '14'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma9\nnumpy:\n- '2'\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.10.* *_cpython\ntarget_platform:\n- linux-64\n",
+  "ci_support_linux_64_python3.11.____cpython.yaml": "c_stdlib:\n- sysroot\nc_stdlib_version:\n- '2.17'\nchannel_sources:\n- conda-forge\nchannel_targets:\n- conda-forge main\ncxx_compiler:\n- gxx\ncxx_compiler_version:\n- '15'\ndocker_image:\n- quay.io/condaforge/linux-anvil-x86_64:alma10\npin_run_as_build:\n  python:\n    min_pin: x.x\n    max_pin: x.x\npython:\n- 3.11.* *_cpython\ntarget_platform:\n- linux-64\n",
   "ci_support_migrations": {
     "python314": {
       "migration_number": 1,
@@ -10,105 +10,534 @@
   },
   "conda-forge.yml": {
     "conda_build": {
-      "pkg_format": "2"
+      "error_overlinking": true
     },
+    "conda_build_tool": "rattler-build",
     "conda_forge_output_validation": true,
+    "conda_install_tool": "pixi",
     "github": {
       "branch_name": "main",
       "tooling_branch_name": "main"
-    }
+    },
+    "provider": {
+      "linux_aarch64": "default",
+      "osx_arm64": "default"
+    },
+    "test": "native_and_emulated"
   },
-  "feedstock_hash": "b72ac0a06eb2480fa53c0a95bb901f6368e43823",
-  "feedstock_hash_ts": 1781195219,
+  "feedstock_hash": "1eb388fdf387eb3efa324a49232259ba6fed8e15",
+  "feedstock_hash_ts": 1789596557,
   "feedstock_name": "professor",
   "hash_type": "sha256",
   "linux_64_meta_yaml": {
     "about": {
-      "description": "Professor is a tuning tool for Monte Carlo event generators, based on the ideas\ndescribed in \"Tuning and Test of Fragmentation Models Based on Identified\nParticles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).\n",
-      "dev_url": "https://gitlab.com/hepcedar/professor/",
-      "doc_url": "https://professor.hepforge.org/docs.sphinx220/index.html",
-      "home": "https://professor.hepforge.org",
+      "description": "Professor is a tuning tool for Monte Carlo event generators, based on the ideas\ndescribed in \"Tuning and Test of Fragmentation Models Based on Identified\nParticles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).",
+      "dev_url": "https://gitlab.com/hepcedar/professor",
+      "doc_url": "https://professor.hepforge.org/",
+      "home": "https://professor.hepforge.org/",
       "license": "GPL-3.0-only",
+      "license_family": "GPL-3.0-only",
       "license_file": "LICENSE",
       "summary": "A tuning tool for Monte Carlo event generators"
     },
     "build": {
-      "number": "0",
-      "skip": true
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "professor"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
         "admorris"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      }
+    ],
     "package": {
       "name": "professor",
       "version": "2.5.9"
     },
     "requirements": {
       "build": [
-        "cxx_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "cxx_compiler_stub",
+        "make",
+        "sed",
+        "pkg-config",
+        "gnuconfig"
       ],
       "host": [
         "python",
         "cython",
         "pip",
         "setuptools",
-        "eigen",
-        "numpy"
+        "eigen"
       ],
       "run": [
         "python",
         "emcee",
         "h5py",
         "iminuit",
-        "ipython",
         "matplotlib-base",
         "numpy",
         "pydoe",
-        "pymultinest",
+        "pyyaml",
         "scikit-learn",
         "scipy",
         "sympy",
         "tabulate",
-        "wxpython",
         "yoda"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "0001-Fix-LC_ID_DYLIB-on-macOS.patch"
+        "update-to-python3.patch"
       ],
-      "sha256": "f8d89038141387c39c9e372ee710d9942770c24cab17f6914104b0374a649df7",
+      "sha256": "201b95e701d1ac6071ba27968a6617fe7b8a2f481112d7a0eb4dc90d4f94f5e2",
       "url": "https://gitlab.com/hepcedar/professor/-/archive/professor-2.5.9/professor-professor-2.5.9.tar.gz"
-    },
-    "test": {
-      "commands": [
-        "prof2-bootstrap --help",
-        "prof2-config --help",
-        "prof2-eigentunes --help",
-        "prof2-envelopes --help",
-        "prof2-errors --help",
-        "prof2-I --help",
-        "prof2-ipol --help",
-        "prof2-jackknife --help",
-        "prof2-ls --help",
-        "prof2-ncoeffs --help",
-        "prof2-plotspace --help",
-        "prof2-predict --help",
-        "prof2-residuals --help",
-        "prof2-runcombs --help",
-        "prof2-sample --help",
-        "prof2-sens --help",
-        "prof2-tune --help",
-        "prof2-tune-nest --help"
-      ],
-      "imports": [
-        "professor2"
-      ]
     }
   },
   "linux_64_requirements": {
@@ -117,7 +546,10 @@
       "elements": [
         "c_stdlib_stub",
         "cxx_compiler_stub",
-        "make"
+        "gnuconfig",
+        "make",
+        "pkg-config",
+        "sed"
       ]
     },
     "host": {
@@ -125,7 +557,6 @@
       "elements": [
         "cython",
         "eigen",
-        "numpy",
         "pip",
         "python",
         "setuptools"
@@ -137,115 +568,3630 @@
         "emcee",
         "h5py",
         "iminuit",
-        "ipython",
         "matplotlib-base",
         "numpy",
         "pydoe",
-        "pymultinest",
         "python",
+        "pyyaml",
         "scikit-learn",
         "scipy",
         "sympy",
         "tabulate",
-        "wxpython",
         "yoda"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cxx-compiler",
+        "pip"
+      ]
     }
   },
-  "meta_yaml": {
+  "linux_aarch64_meta_yaml": {
     "about": {
-      "description": "Professor is a tuning tool for Monte Carlo event generators, based on the ideas\ndescribed in \"Tuning and Test of Fragmentation Models Based on Identified\nParticles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).\n",
-      "dev_url": "https://gitlab.com/hepcedar/professor/",
-      "doc_url": "https://professor.hepforge.org/docs.sphinx220/index.html",
-      "home": "https://professor.hepforge.org",
+      "description": "Professor is a tuning tool for Monte Carlo event generators, based on the ideas\ndescribed in \"Tuning and Test of Fragmentation Models Based on Identified\nParticles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).",
+      "dev_url": "https://gitlab.com/hepcedar/professor",
+      "doc_url": "https://professor.hepforge.org/",
+      "home": "https://professor.hepforge.org/",
       "license": "GPL-3.0-only",
+      "license_family": "GPL-3.0-only",
       "license_file": "LICENSE",
       "summary": "A tuning tool for Monte Carlo event generators"
     },
     "build": {
-      "number": "0",
-      "skip": true
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "professor"
+        ]
+      }
     },
     "extra": {
       "recipe-maintainers": [
         "admorris"
       ]
     },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      }
+    ],
     "package": {
       "name": "professor",
       "version": "2.5.9"
     },
     "requirements": {
       "build": [
-        "cxx_compiler_stub",
         "c_stdlib_stub",
-        "make"
+        "cxx_compiler_stub",
+        "make",
+        "sed",
+        "pkg-config",
+        "gnuconfig",
+        "python",
+        "cross-python_linux-aarch64",
+        "cython"
       ],
       "host": [
         "python",
         "cython",
         "pip",
         "setuptools",
-        "eigen",
-        "numpy"
+        "eigen"
       ],
       "run": [
         "python",
         "emcee",
         "h5py",
         "iminuit",
-        "ipython",
         "matplotlib-base",
         "numpy",
         "pydoe",
-        "pymultinest",
+        "pyyaml",
         "scikit-learn",
         "scipy",
         "sympy",
         "tabulate",
-        "wxpython",
         "yoda"
       ]
     },
-    "schema_version": 0,
+    "schema_version": 1,
     "source": {
       "patches": [
-        "0001-Fix-LC_ID_DYLIB-on-macOS.patch"
+        "update-to-python3.patch"
       ],
-      "sha256": "f8d89038141387c39c9e372ee710d9942770c24cab17f6914104b0374a649df7",
+      "sha256": "201b95e701d1ac6071ba27968a6617fe7b8a2f481112d7a0eb4dc90d4f94f5e2",
       "url": "https://gitlab.com/hepcedar/professor/-/archive/professor-2.5.9/professor-professor-2.5.9.tar.gz"
+    }
+  },
+  "linux_aarch64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cxx_compiler_stub",
+        "cython",
+        "gnuconfig",
+        "make",
+        "pkg-config",
+        "python",
+        "sed"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "eigen",
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "emcee",
+        "h5py",
+        "iminuit",
+        "matplotlib-base",
+        "numpy",
+        "pydoe",
+        "python",
+        "pyyaml",
+        "scikit-learn",
+        "scipy",
+        "sympy",
+        "tabulate",
+        "yoda"
+      ]
     },
     "test": {
-      "commands": [
-        "prof2-bootstrap --help",
-        "prof2-config --help",
-        "prof2-eigentunes --help",
-        "prof2-envelopes --help",
-        "prof2-errors --help",
-        "prof2-I --help",
-        "prof2-ipol --help",
-        "prof2-jackknife --help",
-        "prof2-ls --help",
-        "prof2-ncoeffs --help",
-        "prof2-plotspace --help",
-        "prof2-predict --help",
-        "prof2-residuals --help",
-        "prof2-runcombs --help",
-        "prof2-sample --help",
-        "prof2-sens --help",
-        "prof2-tune --help",
-        "prof2-tune-nest --help"
-      ],
-      "imports": [
-        "professor2"
+      "__set__": true,
+      "elements": [
+        "cxx-compiler",
+        "pip"
       ]
     }
   },
+  "meta_yaml": {
+    "about": {
+      "description": "Professor is a tuning tool for Monte Carlo event generators, based on the ideas\ndescribed in \"Tuning and Test of Fragmentation Models Based on Identified\nParticles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).",
+      "dev_url": "https://gitlab.com/hepcedar/professor",
+      "doc_url": "https://professor.hepforge.org/",
+      "home": "https://professor.hepforge.org/",
+      "license": "GPL-3.0-only",
+      "license_family": "GPL-3.0-only",
+      "license_file": "LICENSE",
+      "summary": "A tuning tool for Monte Carlo event generators"
+    },
+    "build": {
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "professor"
+        ]
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "admorris"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_linux-aarch64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      }
+    ],
+    "package": {
+      "name": "professor",
+      "version": "2.5.9"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "make",
+        "sed",
+        "pkg-config",
+        "gnuconfig",
+        "python",
+        "cross-python_linux-aarch64",
+        "cython",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64"
+      ],
+      "host": [
+        "python",
+        "cython",
+        "pip",
+        "setuptools",
+        "eigen"
+      ],
+      "run": [
+        "python",
+        "emcee",
+        "h5py",
+        "iminuit",
+        "matplotlib-base",
+        "numpy",
+        "pydoe",
+        "pyyaml",
+        "scikit-learn",
+        "scipy",
+        "sympy",
+        "tabulate",
+        "yoda"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "update-to-python3.patch"
+      ],
+      "sha256": "201b95e701d1ac6071ba27968a6617fe7b8a2f481112d7a0eb4dc90d4f94f5e2",
+      "url": "https://gitlab.com/hepcedar/professor/-/archive/professor-2.5.9/professor-professor-2.5.9.tar.gz"
+    }
+  },
   "name": "professor",
+  "osx_64_meta_yaml": {
+    "about": {
+      "description": "Professor is a tuning tool for Monte Carlo event generators, based on the ideas\ndescribed in \"Tuning and Test of Fragmentation Models Based on Identified\nParticles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).",
+      "dev_url": "https://gitlab.com/hepcedar/professor",
+      "doc_url": "https://professor.hepforge.org/",
+      "home": "https://professor.hepforge.org/",
+      "license": "GPL-3.0-only",
+      "license_family": "GPL-3.0-only",
+      "license_file": "LICENSE",
+      "summary": "A tuning tool for Monte Carlo event generators"
+    },
+    "build": {
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "professor"
+        ]
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "admorris"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      }
+    ],
+    "package": {
+      "name": "professor",
+      "version": "2.5.9"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "make",
+        "sed",
+        "pkg-config",
+        "gnuconfig",
+        "python",
+        "cross-python_osx-64",
+        "cython"
+      ],
+      "host": [
+        "python",
+        "cython",
+        "pip",
+        "setuptools",
+        "eigen"
+      ],
+      "run": [
+        "python",
+        "emcee",
+        "h5py",
+        "iminuit",
+        "matplotlib-base",
+        "numpy",
+        "pydoe",
+        "pyyaml",
+        "scikit-learn",
+        "scipy",
+        "sympy",
+        "tabulate",
+        "yoda"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "update-to-python3.patch"
+      ],
+      "sha256": "201b95e701d1ac6071ba27968a6617fe7b8a2f481112d7a0eb4dc90d4f94f5e2",
+      "url": "https://gitlab.com/hepcedar/professor/-/archive/professor-2.5.9/professor-professor-2.5.9.tar.gz"
+    }
+  },
+  "osx_64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cross-python_osx-64",
+        "cxx_compiler_stub",
+        "cython",
+        "gnuconfig",
+        "make",
+        "pkg-config",
+        "python",
+        "sed"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "eigen",
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "emcee",
+        "h5py",
+        "iminuit",
+        "matplotlib-base",
+        "numpy",
+        "pydoe",
+        "python",
+        "pyyaml",
+        "scikit-learn",
+        "scipy",
+        "sympy",
+        "tabulate",
+        "yoda"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "cxx-compiler",
+        "pip"
+      ]
+    }
+  },
+  "osx_arm64_meta_yaml": {
+    "about": {
+      "description": "Professor is a tuning tool for Monte Carlo event generators, based on the ideas\ndescribed in \"Tuning and Test of Fragmentation Models Based on Identified\nParticles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).",
+      "dev_url": "https://gitlab.com/hepcedar/professor",
+      "doc_url": "https://professor.hepforge.org/",
+      "home": "https://professor.hepforge.org/",
+      "license": "GPL-3.0-only",
+      "license_family": "GPL-3.0-only",
+      "license_file": "LICENSE",
+      "summary": "A tuning tool for Monte Carlo event generators"
+    },
+    "build": {
+      "number": "1",
+      "run_exports": {
+        "weak": [
+          "professor"
+        ]
+      }
+    },
+    "extra": {
+      "recipe-maintainers": [
+        "admorris"
+      ]
+    },
+    "outputs": [
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      },
+      {
+        "build": {
+          "strong": [],
+          "weak": [
+            "professor"
+          ]
+        },
+        "name": "professor",
+        "requirements": {
+          "build": [
+            "c_stdlib_stub",
+            "cxx_compiler_stub",
+            "make",
+            "sed",
+            "pkg-config",
+            "gnuconfig",
+            "python",
+            "cross-python_osx-arm64",
+            "cython"
+          ],
+          "host": [
+            "python",
+            "cython",
+            "pip",
+            "setuptools",
+            "eigen"
+          ],
+          "run": [
+            "python",
+            "emcee",
+            "h5py",
+            "iminuit",
+            "matplotlib-base",
+            "numpy",
+            "pydoe",
+            "pyyaml",
+            "scikit-learn",
+            "scipy",
+            "sympy",
+            "tabulate",
+            "yoda"
+          ]
+        },
+        "tests": [
+          {
+            "package_contents": {
+              "bin": [
+                "prof2-ls",
+                "prof2-ipol",
+                "prof2-tune",
+                "prof2-sample",
+                "prof2-config"
+              ],
+              "include": [
+                "Professor/Professor.h"
+              ],
+              "lib": [
+                "Professor2"
+              ]
+            }
+          },
+          {
+            "python": {
+              "imports": [
+                "professor2",
+                "professor2.core"
+              ]
+            }
+          },
+          {
+            "script": [
+              "prof2-ls --help",
+              "prof2-ipol --help",
+              "prof2-tune --help",
+              "prof2-sample --help",
+              "prof2-bootstrap --help",
+              "prof2-config --help",
+              "prof2-eigentunes --help",
+              "prof2-envelopes --help",
+              "prof2-ncoeffs --help",
+              "prof2-predict --help",
+              "prof2-residuals --help",
+              "prof2-runcombs --help",
+              "prof2-sens --help",
+              "prof2-config --prefix",
+              "prof2-config --includedir",
+              "prof2-config --libdir",
+              "prof2-config --cppflags",
+              "prof2-config --ldflags",
+              "prof2-config --version",
+              "test \"$(prof2-config --version)\" = \"${PKG_VERSION}\""
+            ]
+          },
+          {
+            "files": {
+              "source": [
+                "test/testIpol.cc"
+              ]
+            },
+            "requirements": {
+              "run": [
+                "cxx-compiler"
+              ]
+            },
+            "script": [
+              "CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"",
+              "$CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol",
+              "./testIpol"
+            ]
+          }
+        ],
+        "version": "2.5.9"
+      }
+    ],
+    "package": {
+      "name": "professor",
+      "version": "2.5.9"
+    },
+    "requirements": {
+      "build": [
+        "c_stdlib_stub",
+        "cxx_compiler_stub",
+        "make",
+        "sed",
+        "pkg-config",
+        "gnuconfig",
+        "python",
+        "cross-python_osx-arm64",
+        "cython"
+      ],
+      "host": [
+        "python",
+        "cython",
+        "pip",
+        "setuptools",
+        "eigen"
+      ],
+      "run": [
+        "python",
+        "emcee",
+        "h5py",
+        "iminuit",
+        "matplotlib-base",
+        "numpy",
+        "pydoe",
+        "pyyaml",
+        "scikit-learn",
+        "scipy",
+        "sympy",
+        "tabulate",
+        "yoda"
+      ]
+    },
+    "schema_version": 1,
+    "source": {
+      "patches": [
+        "update-to-python3.patch"
+      ],
+      "sha256": "201b95e701d1ac6071ba27968a6617fe7b8a2f481112d7a0eb4dc90d4f94f5e2",
+      "url": "https://gitlab.com/hepcedar/professor/-/archive/professor-2.5.9/professor-professor-2.5.9.tar.gz"
+    }
+  },
+  "osx_arm64_requirements": {
+    "build": {
+      "__set__": true,
+      "elements": [
+        "c_stdlib_stub",
+        "cross-python_osx-arm64",
+        "cxx_compiler_stub",
+        "cython",
+        "gnuconfig",
+        "make",
+        "pkg-config",
+        "python",
+        "sed"
+      ]
+    },
+    "host": {
+      "__set__": true,
+      "elements": [
+        "cython",
+        "eigen",
+        "pip",
+        "python",
+        "setuptools"
+      ]
+    },
+    "run": {
+      "__set__": true,
+      "elements": [
+        "emcee",
+        "h5py",
+        "iminuit",
+        "matplotlib-base",
+        "numpy",
+        "pydoe",
+        "python",
+        "pyyaml",
+        "scikit-learn",
+        "scipy",
+        "sympy",
+        "tabulate",
+        "yoda"
+      ]
+    },
+    "test": {
+      "__set__": true,
+      "elements": [
+        "cxx-compiler",
+        "pip"
+      ]
+    }
+  },
   "outputs_names": {
     "__set__": true,
     "elements": [
@@ -254,36 +4200,43 @@
   },
   "parsing_error": false,
   "platforms": [
-    "linux_64"
+    "linux_64",
+    "linux_aarch64",
+    "osx_64",
+    "osx_arm64"
   ],
   "pr_info": {
     "__lazy_json__": "pr_info/professor.json"
   },
-  "raw_meta_yaml": "{% set name = \"Professor\" %}\n{% set version = \"2.5.9\" %}\n{% set tag = name|lower ~ \"-\" ~ version %}\n\npackage:\n  name: {{ name|lower }}\n  version: {{ version }}\n\nsource:\n  url: https://gitlab.com/hepcedar/professor/-/archive/{{ tag }}/professor-{{ tag }}.tar.gz\n  sha256: f8d89038141387c39c9e372ee710d9942770c24cab17f6914104b0374a649df7\n  patches:\n    - 0001-Fix-LC_ID_DYLIB-on-macOS.patch\n\nbuild:\n  number: 0\n  skip: true  # [win or osx or py>311]\n\nrequirements:\n  build:\n    - {{ compiler('cxx') }}\n    - {{ stdlib(\"c\") }}\n    - make\n  host:\n    - python\n    - cython\n    - pip\n    - setuptools\n    - eigen\n    - numpy\n  run:\n    - python\n    - emcee\n    - h5py\n    - iminuit\n    - ipython\n    - matplotlib-base\n    - numpy\n    - pydoe\n    - pymultinest\n    - scikit-learn\n    - scipy\n    - sympy\n    - tabulate\n    - wxpython\n    - yoda\n\ntest:\n  imports:\n    - professor2\n  commands:\n    - prof2-bootstrap --help\n    - prof2-config --help\n    - prof2-eigentunes --help\n    - prof2-envelopes --help\n    - prof2-errors --help\n    - prof2-I --help\n    - prof2-ipol --help\n    - prof2-jackknife --help\n    - prof2-ls --help\n    - prof2-ncoeffs --help\n    - prof2-plotspace --help\n    - prof2-predict --help\n    - prof2-residuals --help\n    - prof2-runcombs --help\n    - prof2-sample --help\n    - prof2-sens --help\n    - prof2-tune --help\n    - prof2-tune-nest --help\n\nabout:\n  home: https://professor.hepforge.org\n  summary: A tuning tool for Monte Carlo event generators\n  description: |\n    Professor is a tuning tool for Monte Carlo event generators, based on the ideas\n    described in \"Tuning and Test of Fragmentation Models Based on Identified\n    Particles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).\n  license: GPL-3.0-only\n  license_file: LICENSE\n  doc_url: https://professor.hepforge.org/docs.sphinx220/index.html\n  dev_url: https://gitlab.com/hepcedar/professor/\n\nextra:\n  recipe-maintainers:\n    - admorris\n",
+  "raw_meta_yaml": "schema_version: 1\n\ncontext:\n  version: \"2.5.9\"\n\npackage:\n  name: professor\n  version: ${{ version }}\n\nsource:\n  url: https://gitlab.com/hepcedar/professor/-/archive/professor-${{ version }}/professor-professor-${{ version }}.tar.gz\n  sha256: 201b95e701d1ac6071ba27968a6617fe7b8a2f481112d7a0eb4dc90d4f94f5e2\n  patches:\n    - update-to-python3.patch\n\nbuild:\n  number: 1\n  skip:\n    - win\n\nrequirements:\n  run_exports:\n    - ${{ pin_subpackage(\"professor\", upper_bound=\"x.x\") }}\n  build:\n    - ${{ stdlib(\"c\") }}\n    - ${{ compiler(\"cxx\") }}\n    - make\n    - sed\n    - pkg-config\n    - gnuconfig\n    - if: build_platform != target_platform\n      then:\n        - python\n        - cross-python_${{ target_platform }}\n        - cython\n  host:\n    - python\n    - cython\n    - pip\n    - setuptools\n    - eigen\n  run:\n    - python\n    - emcee\n    - h5py\n    - iminuit\n    - matplotlib-base\n    - numpy\n    - pydoe\n    - pyyaml\n    - scikit-learn\n    - scipy\n    - sympy\n    - tabulate\n    - yoda\n\ntests:\n  - package_contents:\n      bin:\n        - prof2-ls\n        - prof2-ipol\n        - prof2-tune\n        - prof2-sample\n        - prof2-config\n      lib:\n        - Professor2\n      include:\n        - Professor/Professor.h\n\n  - python:\n      imports:\n        - professor2\n        - professor2.core\n      pip_check: true\n\n  - script:\n      - prof2-ls --help\n      - prof2-ipol --help\n      - prof2-tune --help\n      - prof2-sample --help\n\n      - prof2-bootstrap --help\n      - prof2-config --help\n      - prof2-eigentunes --help\n      - prof2-envelopes --help\n      - prof2-ipol --help\n      - prof2-ls --help\n      - prof2-ncoeffs --help\n      - prof2-predict --help\n      - prof2-residuals --help\n      - prof2-runcombs --help\n      - prof2-sample --help\n      - prof2-sens --help\n      - prof2-tune --help\n\n      - prof2-config --help\n      - prof2-config --prefix\n      - prof2-config --includedir\n      - prof2-config --libdir\n      - prof2-config --cppflags\n      - prof2-config --ldflags\n      - prof2-config --version\n\n      - test \"$(prof2-config --version)\" = \"${PKG_VERSION}\"\n\n  - files:\n      source:\n        - test/testIpol.cc\n    requirements:\n      run:\n        - cxx-compiler\n    script:\n      # Minimal compiler activation does not export CXX, so fall back to the\n      # host-prefixed driver (x86_64-conda-linux-gnu-c++, *-apple-darwin*-clang++).\n      - CXX=\"${CXX:-$(ls \"${PREFIX}\"/bin/*-c++ \"${PREFIX}\"/bin/*-clang++ 2>/dev/null | head -n1)}\"\n      - $CXX -std=c++17 $(prof2-config --cppflags) test/testIpol.cc $(prof2-config --ldflags) -o testIpol\n      - ./testIpol\n\nabout:\n  summary: A tuning tool for Monte Carlo event generators\n  description: |\n    Professor is a tuning tool for Monte Carlo event generators, based on the ideas\n    described in \"Tuning and Test of Fragmentation Models Based on Identified\n    Particles and Precision Event Shape Data\" (Z. Phys., C73 (1996) 11-60).\n  license: GPL-3.0-only\n  license_file: LICENSE\n  homepage: https://professor.hepforge.org\n  repository: https://gitlab.com/hepcedar/professor\n  documentation: https://professor.hepforge.org/\n\nextra:\n  recipe-maintainers:\n    - admorris\n",
   "req": {
     "__set__": true,
     "elements": [
       "c_stdlib_stub",
+      "cross-python_linux-aarch64",
+      "cross-python_osx-64",
+      "cross-python_osx-arm64",
       "cxx_compiler_stub",
       "cython",
       "eigen",
       "emcee",
+      "gnuconfig",
       "h5py",
       "iminuit",
-      "ipython",
       "make",
       "matplotlib-base",
       "numpy",
       "pip",
+      "pkg-config",
       "pydoe",
-      "pymultinest",
       "python",
+      "pyyaml",
       "scikit-learn",
       "scipy",
+      "sed",
       "setuptools",
       "sympy",
       "tabulate",
-      "wxpython",
       "yoda"
     ]
   },
@@ -292,18 +4245,26 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cxx_compiler_stub",
-        "make"
+        "cython",
+        "gnuconfig",
+        "make",
+        "pkg-config",
+        "python",
+        "sed"
       ]
     },
     "host": {
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cross-python",
         "cxx_compiler_stub",
         "cython",
         "eigen",
-        "numpy",
         "pip",
         "python",
         "setuptools"
@@ -313,27 +4274,29 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cross-python",
         "cxx_compiler_stub",
         "emcee",
         "h5py",
         "iminuit",
-        "ipython",
         "matplotlib-base",
         "numpy",
         "pydoe",
-        "pymultinest",
         "python",
+        "pyyaml",
         "scikit-learn",
         "scipy",
         "sympy",
         "tabulate",
-        "wxpython",
         "yoda"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cxx-compiler",
+        "pip"
+      ]
     }
   },
   "strong_exports": false,
@@ -342,8 +4305,16 @@
       "__set__": true,
       "elements": [
         "c_stdlib_stub",
+        "cross-python_linux-aarch64",
+        "cross-python_osx-64",
+        "cross-python_osx-arm64",
         "cxx_compiler_stub",
-        "make"
+        "cython",
+        "gnuconfig",
+        "make",
+        "pkg-config",
+        "python",
+        "sed"
       ]
     },
     "host": {
@@ -351,7 +4322,6 @@
       "elements": [
         "cython",
         "eigen",
-        "numpy",
         "pip",
         "python",
         "setuptools"
@@ -363,23 +4333,24 @@
         "emcee",
         "h5py",
         "iminuit",
-        "ipython",
         "matplotlib-base",
         "numpy",
         "pydoe",
-        "pymultinest",
         "python",
+        "pyyaml",
         "scikit-learn",
         "scipy",
         "sympy",
         "tabulate",
-        "wxpython",
         "yoda"
       ]
     },
     "test": {
       "__set__": true,
-      "elements": []
+      "elements": [
+        "cxx-compiler",
+        "pip"
+      ]
     }
   },
   "url": "https://gitlab.com/hepcedar/professor/-/archive/professor-2.5.9/professor-professor-2.5.9.tar.gz",
