@@ -1,7 +1,5 @@
 # conda-forge-bot-data
 
-[![tests](https://github.com/conda-forge/conda-forge-bot-data/actions/workflows/tests.yaml/badge.svg)](https://github.com/conda-forge/conda-forge-bot-data/actions/workflows/tests.yaml)
-
 Repo for holding the conda-forge dependency graph and its introspection.
 
 Note that this repos is mostly bot managed and operated.
